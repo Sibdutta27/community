@@ -1,0 +1,21 @@
+import { Module } from '@nestjs/common';
+import { DatabaseModule } from '@/database/database.module';
+import { AdminUserModule } from './adminUser/adminUser.module';
+import { AdminEnrollmentModule } from './adminEnrollment/adminEnrollment.module';
+import { AdminCulturalConnectionModule } from './adminCulturalConnection/adminCulturalConnection.module';
+import { AdminConsentModule } from './adminConsent/adminConsent.module';
+import { AdminServiceModule } from './adminService/adminService.module';
+import { AdminEventModule } from './adminEvent/adminEvent.module';
+
+@Module({
+    imports: [
+        DatabaseModule,
+        AdminUserModule,
+        AdminEnrollmentModule,
+        AdminCulturalConnectionModule,
+        AdminConsentModule,
+        AdminServiceModule,
+        AdminEventModule
+    ],
+})
+export class AdminModule {}

@@ -1,0 +1,118 @@
+.userLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.userLink:hover {
+  text-decoration: underline;
+}
+
+.avatar {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.userName {
+  padding-left: 10px ;
+  font-weight: 300 !important;
+  color: #6b7280;
+}
+
+/*  */
+
+.email {
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*  */
+.approvedStatus {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #22c55e !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.rejectedStatus {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.submittedStatus {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #3b82f6 !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.draftStatus {
+  background-color: rgba(156, 163, 175, 0.12) !important;
+  color: #9ca3af !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(156, 163, 175, 0.2);
+}
+
+/*  */
+.publicIdContainer {
+  display: flex;
+  align-items: center;
+}
+
+.publicIdText {
+  font-family: monospace !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #60a5fa;
+  background-color: rgba(96, 165, 250, 0.12);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  white-space: nowrap;
+}
+
+/*  */
+.enrolledChip {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #22c55e !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.notEnrolledChip {
+  background-color: rgba(156, 163, 175, 0.12) !important;
+  color: #9ca3af !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(156, 163, 175, 0.2);
+}
+
+/*  */
+.roleFilterContainer {
+  display: flex;
+  gap: 15px;
+}
+
+/*  */
+.errorContainer {
+  min-height: 320px;
+
+  border-radius: 24px;
+
+  padding: 32px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 18px;
+
+  background: #181A1B;
+  border: 1px solid rgba(169, 85, 247, 0.35);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.28);
+}

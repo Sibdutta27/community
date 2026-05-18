@@ -1,0 +1,250 @@
+/* EnrollmentStep4Review.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* CATEGORY CARD */
+
+.categoryCard {
+    background: #181A1B !important;
+
+    border-radius: 24px !important;
+
+    padding: 28px !important;
+
+    border: 1px solid #aaaaaa;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 28px;
+}
+
+/* HEADER */
+
+.categoryHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid #aaaaaa;
+}
+
+.categoryTitle {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+
+    color: white;
+}
+
+.categorySubTitle {
+    font-size: 14px !important;
+
+    color: #9ca3af;
+
+    margin-top: 4px !important;
+}
+
+.typeChip {
+    background:
+        rgba(168, 85, 247, 0.06) !important;
+
+    color: #c084fc !important;
+
+    border:
+        1px solid rgba(169, 85, 247, 0.5) !important;
+}
+
+/* EMPTY */
+
+.emptyBox {
+    height: 180px;
+
+    border-radius: 20px;
+
+    border:
+        1px dashed rgba(255, 255, 255, 0.2);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+}
+
+.emptyBox svg {
+    font-size: 42px;
+    color: #9ca3af;
+}
+
+.emptyBox p {
+    color: #9ca3af;
+}
+
+/* DOCUMENTS */
+
+.documentsGrid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(320px, 1fr));
+
+    gap: 24px;
+}
+
+.documentCard {
+    background:
+        rgba(255, 255, 255, 0.02);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* IMAGE */
+
+.previewBox {
+    height: 220px;
+
+    background: black;
+}
+
+.previewImage {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+/* BODY */
+
+.documentBody {
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+.documentTitle {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+
+    color: white;
+}
+
+.documentMeta {
+    font-size: 13px !important;
+
+    color: #9ca3af;
+
+    margin-top: 6px !important;
+}
+
+/* STATUS */
+
+.statusRow {
+    display: flex;
+    align-items: center;
+}
+
+/* CHIPS */
+
+.approvedChip {
+    background:
+        rgba(34, 197, 94, 0.12) !important;
+
+    color: #4ade80 !important;
+
+    border:
+        1px solid rgba(34, 197, 94, 0.4) !important;
+}
+
+.pendingChip {
+    background:
+        rgba(245, 158, 11, 0.12) !important;
+
+    color: #facc15 !important;
+
+    border:
+        1px solid rgba(245, 158, 11, 0.4) !important;
+}
+
+/* ACTIONS */
+
+.actionRow {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 12px;
+}
+
+.previewBtn {
+    border-color:
+        rgba(255, 255, 255, 0.15) !important;
+
+    color: white !important;
+}
+
+.approveBtn {
+    background:
+        rgba(34, 197, 94, 0.18) !important;
+
+    border:
+        1px solid rgba(34, 197, 94, 0.4) !important;
+
+    color: #4ade80 !important;
+}
+
+.rejectBtn {
+    border-color:
+        rgba(239, 68, 68, 0.4) !important;
+
+    color: #f87171 !important;
+}
+
+/* LOADING */
+
+.loadingGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .categoryCard {
+        padding: 22px !important;
+    }
+
+    .categoryHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .categoryTitle {
+        font-size: 20px !important;
+    }
+
+    .previewBox {
+        height: 190px;
+    }
+
+}

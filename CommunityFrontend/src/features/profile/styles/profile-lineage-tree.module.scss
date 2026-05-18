@@ -1,0 +1,146 @@
+.treeScroller {
+  margin-top: 1.25rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.treeCanvas {
+  display: inline-block;
+  min-width: 100%;
+  padding: 0 0.25rem;
+}
+
+.treeList {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  padding-top: 1rem;
+  position: relative;
+  width: max-content;
+}
+
+.treeList,
+.treeList ul {
+  list-style: none;
+}
+
+.treeItem {
+  min-width: 11.5rem;
+  padding: 1rem 0.5rem 0;
+  position: relative;
+  text-align: center;
+}
+
+.treeItem::before,
+.treeItem::after {
+  border-top: 1px solid rgba(36, 95, 109, 0.35);
+  content: "";
+  height: 1rem;
+  position: absolute;
+  right: 50%;
+  top: 0;
+  width: 50%;
+}
+
+.treeItem::after {
+  border-left: 1px solid rgba(36, 95, 109, 0.35);
+  left: 50%;
+  right: auto;
+}
+
+.treeItem:only-child::after,
+.treeItem:only-child::before {
+  display: none;
+}
+
+.treeItem:only-child {
+  padding-top: 0;
+}
+
+.treeItem:first-child::before,
+.treeItem:last-child::after {
+  border: 0;
+}
+
+.treeItem:last-child::before {
+  border-radius: 0 8px 0 0;
+  border-right: 1px solid rgba(36, 95, 109, 0.35);
+}
+
+.treeItem:first-child::after {
+  border-radius: 8px 0 0 0;
+}
+
+.treeItem ul::before {
+  border-left: 1px solid rgba(36, 95, 109, 0.35);
+  content: "";
+  height: 1rem;
+  left: 50%;
+  position: absolute;
+  top: 0;
+  width: 0;
+}
+
+.nodeCard {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fcfb 100%);
+  border: 1px solid #d6e2de;
+  border-radius: 14px;
+  box-shadow: 0 14px 28px -24px rgba(36, 95, 109, 0.38);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-height: 8.4rem;
+  padding: 0.72rem 0.75rem;
+}
+
+.nodeName {
+  color: #174451;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.05rem;
+}
+
+.nodeRelation {
+  color: #285f6d;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.nodeMeta {
+  color: #5f7174;
+  font-size: 0.71rem;
+  line-height: 0.95rem;
+}
+
+.nodeStatus {
+  align-self: center;
+  background: #e8f4ef;
+  border-radius: 999px;
+  color: #1f6b55;
+  font-size: 0.64rem;
+  font-weight: 700;
+  margin-top: 0.1rem;
+  padding: 0.2rem 0.55rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .treeItem {
+    min-width: 10rem;
+    padding: 0.9rem 0.35rem 0;
+  }
+
+  .nodeCard {
+    min-height: 7.7rem;
+    padding: 0.65rem 0.65rem;
+  }
+
+  .nodeName {
+    font-size: 0.75rem;
+    line-height: 0.98rem;
+  }
+}

@@ -1,0 +1,22 @@
+@use "../../../styles/scss" as *;
+
+.sectionPanel {
+  overflow: hidden;
+  border: 1px solid #d5e1da;
+  border-radius: 1.75rem;
+  background: #fffdec;
+  box-shadow: 0 28px 64px -42px rgba(16, 47, 52, 0.34);
+
+  @include up(sm) {
+    border-radius: 2.125rem;
+  }
+}
+
+.sectionTitle {
+  color: #2d3338;
+  letter-spacing: -0.04em;
+}
+
+.headerTitle {
+  letter-spacing: -0.04em;
+}

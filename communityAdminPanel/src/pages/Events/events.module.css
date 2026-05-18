@@ -1,0 +1,25 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.title {
+    font-weight: 700 !important;
+    color: white;
+}
+
+.addButton {
+    text-transform: none !important;
+    border-radius: 12px !important;
+    padding-inline: 18px !important;
+    font-weight: 600 !important;
+    height: 42px;
+}

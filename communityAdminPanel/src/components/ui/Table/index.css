@@ -1,0 +1,386 @@
+/* Loading Table Styles */
+.loading-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.loading-table-cell {
+  padding: 1rem;
+}
+
+.loading-table-pulse {
+  height: 1rem;
+  background-color: rgb(229, 231, 235);
+  border-radius: 0.25rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Table Cell Styles */
+.table-cell {
+  display: flex;
+  align-items: center;
+}
+
+/* Main Table Container */
+.table-container {
+  background-color: transparent;
+  color: rgb(107, 114, 128);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.table-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.table-selectable {
+  border: 1px solid rgb(229, 231, 235);
+}
+
+/* Type Counts Section */
+.table-type-counts {
+  display: flex;
+  padding: 0.75rem 1rem;
+  background-color: #19212c;
+  border-bottom: 1px solid #4b556364;
+  /* Soft white border for contrast */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  /* Inner shadow for elegance */
+}
+
+.table-type-counts>*+* {
+  margin-left: 1rem;
+}
+
+.table-type-count-active {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  /* Vibrant blue gradient */
+  color: #ffffff;
+  /* White text for contrast */
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-weight: 250;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Smooth hover effects */
+}
+
+.table-type-count-active:hover {
+  transform: translateY(-1px);
+  /* Slight lift on hover */
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  /* Glow effect */
+}
+
+.table-type-count-inactive {
+  font-weight: 200;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(180deg, #374151, #2d3748);
+  /* Darker gradient for inactive */
+  color: #d1d5db;
+  /* Light gray text for readability */
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-type-count-inactive:hover {
+  background: linear-gradient(180deg, #4b5563, #374151);
+  /* Slightly lighter on hover */
+  transform: translateY(-1px);
+  /* Lift effect */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  /* Subtle shadow */
+}
+
+/* Filters Section */
+.table-filters {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  padding-top: 2rem;
+  background: linear-gradient(180deg, #19212c, #1e293b);
+  /* Matching gradient */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  /* Inner shadow for depth */
+}
+
+.table-filters-inner {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  /* Allow filters to wrap on smaller screens */
+  gap: 0.75rem;
+  /* Use gap instead of margin for consistent spacing */
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 640px) {
+  .table-filters {
+    flex-direction: column;
+    /* Stack filters vertically on mobile */
+    align-items: stretch;
+    /* Ensure filters take full width */
+    padding: 0.5rem;
+    /* Slightly reduce padding for mobile */
+  }
+
+  .table-filters-inner {
+    flex-direction: column;
+    /* Stack filter items vertically */
+    width: 100%;
+    /* Full width for filter container */
+  }
+
+  .table-filters-inner>div {
+    width: 100%;
+    /* Ensure filter elements take full width */
+  }
+
+  .table-filters-inner .role-select-container {
+    min-width: 0;
+    /* Remove min-width for mobile */
+  }
+
+  .table-filters-inner input,
+  .table-filters-inner select {
+    width: 100%;
+    /* Full width for input and select elements */
+    box-sizing: border-box;
+    /* Ensure padding and borders are included in width */
+    background: #2d3748;
+    /* Darker input background for contrast */
+    color: #ffffff;
+    /* White text for readability */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Subtle white border */
+  }
+
+  .table-filters-inner input:focus,
+  .table-filters-inner select:focus {
+    border-color: #3b82f6;
+    /* Blue border on focus */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    /* Focus ring */
+  }
+
+  .table-filters-inner button {
+    width: 100%;
+    /* Full width for buttons */
+    margin-top: 0.5rem;
+    /* Add spacing above buttons */
+    background: linear-gradient(135deg, #10b981, #059669);
+    /* Green gradient for button */
+    color: #ffffff;
+    /* White text */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Smooth hover */
+  }
+
+  .table-filters-inner button:hover {
+    transform: translateY(-1px);
+    /* Lift effect */
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    /* Green glow */
+  }
+}
+
+/* DataTable */
+.table-data {
+  min-width: 100%;
+  background-color: black;
+}
+
+.table-filters-inner .change-role-button {
+  width: auto;
+  /* Reduce width to content size */
+  padding-left: 1.5rem;
+  /* Adjust padding for smaller button */
+  padding-right: 1.5rem;
+  /* Consistent padding */
+  align-self: flex-start;
+  /* Align button to the start (left) */
+  background: linear-gradient(135deg, #10b981, #059669);
+  /* Green gradient */
+  color: #ffffff;
+  /* White text */
+  border-radius: 0.375rem;
+  /* Match other elements */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Smooth hover */
+}
+
+.table-filters-inner .change-role-button:hover {
+  transform: translateY(-1px);
+  /* Lift effect */
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  /* Green glow */
+}
+
+/*
+  checkbox-styles
+  -------------------
+*/
+
+/* Root container */
+.custom-checkbox-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide the native checkbox but keep it accessible */
+.custom-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Visual checkbox shell */
+.custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-checkbox-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.12));
+  box-shadow: 0 2px 6px rgba(2, 6, 23, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  /* white border */
+  display: inline-grid;
+  place-items: center;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, border 140ms ease;
+  position: relative;
+  overflow: visible;
+}
+
+/* Checkmark (SVG) - hidden by default */
+.custom-checkbox-check {
+  width: 14px;
+  height: 14px;
+  transform-origin: center center;
+  transform: scale(0.1) rotate(-10deg);
+  opacity: 0;
+  transition: transform 180ms cubic-bezier(.2, .9, .2, 1), opacity 120ms ease;
+  stroke: white;
+}
+
+/* Focus ring for accessibility */
+.custom-checkbox-input:focus+.custom-checkbox .custom-checkbox-box {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14), 0 3px 10px rgba(2, 6, 23, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Hover state */
+.custom-checkbox-container:hover .custom-checkbox-box {
+  transform: translateY(-2px);
+}
+
+/* When checked -> change appearance */
+.custom-checkbox-input:checked+.custom-checkbox .custom-checkbox-box {
+  background: linear-gradient(180deg, #3b82f6, #2563eb);
+  border: 1px solid #ffffff;
+  /* keep white border when checked */
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28), inset 0 -6px 12px rgba(255, 255, 255, 0.06);
+}
+
+.custom-checkbox-input:checked+.custom-checkbox .custom-checkbox-check {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+}
+
+/* Small subtle pulse when toggled */
+.custom-checkbox-input:checked+.custom-checkbox .custom-checkbox-box::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 8px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.06) 40%, transparent 60%);
+  opacity: 1;
+  transform: scale(0.85);
+  animation: checkbox-pulse 420ms ease-out;
+}
+
+@keyframes checkbox-pulse {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.6);
+  }
+
+  60% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+
+/* Disabled state */
+.custom-checkbox-disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.custom-checkbox-label {
+  color: #d1d5db;
+  /* text-gray-300 */
+  font-size: 0.95rem;
+}
+
+/* Optional: make the checkbox larger when you pass .large className */
+.custom-checkbox-container.large .custom-checkbox-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+
+.custom-checkbox-container.large .custom-checkbox-check {
+  width: 18px;
+  height: 18px;
+}
+
+/* End of CSS */
+/* Select input */
+.rdt_Pagination select {
+  background-color: #1f2937;
+  color: white;
+  border-radius: 6px;
+}
+
+.rdt_Pagination button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.rdt_Pagination button svg {
+  position: static !important;
+  transform: none !important;
+  vertical-align: middle !important;
+}
+
+.rdt_Pagination svg {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}

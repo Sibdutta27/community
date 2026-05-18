@@ -1,0 +1,18 @@
+<svg width="105" height="105" viewBox="106 808 105 105" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sovereignty-first-gradient" x1="132.89" y1="840.439" x2="278.866" y2="1021.41" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1F615C" />
+      <stop offset="1" stop-color="#40C7BC" />
+    </linearGradient>
+    <clipPath id="sovereignty-first-clip">
+      <rect width="54" height="54" fill="white" transform="translate(132 833)" />
+    </clipPath>
+  </defs>
+  <rect x="106" y="808" width="105" height="105" rx="11" fill="url(#sovereignty-first-gradient)" />
+  <g clip-path="url(#sovereignty-first-clip)">
+    <path
+      d="M138.75 833C136.891 833 135.375 834.516 135.375 836.375V863.375C135.375 871.812 141.505 877.706 147.003 881.371C152.5 885.036 157.932 886.829 157.932 886.829C158.631 887.066 159.369 887.066 160.068 886.829C160.068 886.829 165.5 885.036 170.997 881.371C176.495 877.706 182.625 871.812 182.625 863.375V836.375C182.625 834.516 181.109 833 179.25 833H138.75ZM142.125 839.75H175.875V863.375C175.875 868.438 171.88 872.669 167.253 875.754C163.153 878.483 159.896 879.564 159 879.894C158.104 879.564 154.847 878.483 150.747 875.754C146.12 872.669 142.125 868.438 142.125 863.375V839.75ZM145.5 843.125V863.375C145.5 866.75 148.427 870.151 152.619 872.946C155.77 875.042 157.589 875.596 159 876.15V843.125H145.5Z"
+      fill="white"
+    />
+  </g>
+</svg>

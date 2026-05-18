@@ -1,0 +1,45 @@
+:root {
+  --brand-sky: #6fafc4;
+  --brand-red: #c53133;
+  --brand-brown: #b38a5a;
+  --brand-black: #000000;
+  --brand-sand: #ede6dc;
+  --brand-sand-soft: #f7f2ec;
+  --background: #f7f2ec;
+  --foreground: #15110d;
+  --surface: #fffdf9;
+  --surface-muted: #f2ebdf;
+  --border: #d7c7b2;
+  --muted-foreground: #66584b;
+  --primary: #c53133;
+  --primary-foreground: #fffaf5;
+  --secondary: #6fafc4;
+  --secondary-foreground: #16110d;
+  --accent: #b38a5a;
+  --accent-foreground: #16110d;
+  --ring: #c53133;
+  --font-sans-base: var(--font-body-alt), "Segoe UI", sans-serif;
+  --font-ui-base: var(--font-body), "Segoe UI", sans-serif;
+  --font-display-base: var(--font-display), "Times New Roman", serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-brand-sky: var(--brand-sky);
+  --color-brand-red: var(--brand-red);
+  --color-brand-brown: var(--brand-brown);
+  --color-brand-sand: var(--brand-sand);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-sans-base);
+}

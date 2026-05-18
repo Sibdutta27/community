@@ -1,0 +1,224 @@
+/* EnrollmentStep1Review.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* CARD */
+
+.card {
+  background: #181A1B !important;
+
+  border-radius: 24px !important;
+
+  padding: 28px !important;
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.25) !important;
+
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* CARD HEADER */
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding-bottom: 18px;
+
+  border-bottom:
+    1px solid #aaaaaa;
+}
+
+.cardIcon {
+  font-size: 28px !important;
+  color: #a855f7;
+}
+
+.cardTitle {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+
+  color: white;
+}
+
+.cardSubTitle {
+  font-size: 14px !important;
+
+  color: #9ca3af;
+}
+
+/* GRID */
+
+.formGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(260px, 1fr));
+
+  gap: 22px;
+}
+
+/* FIELD */
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fieldLabel {
+  font-size: 13px !important;
+
+  color: #9ca3af;
+
+  font-weight: 600 !important;
+
+  padding-left: 4px;
+}
+
+.fieldBox {
+  min-height: 54px;
+
+  border-radius: 14px;
+
+  padding: 14px 16px;
+
+  display: flex;
+  align-items: center;
+
+  background:
+    rgba(168,85,247,0.06);
+
+  border:
+    1px solid  rgba(169, 85, 247, 0.5);;
+
+  transition: 0.2s;
+}
+
+.fieldBox:hover {
+  border-color:
+    rgba(169, 85, 247, 0.814);
+
+  background:
+    rgba(169, 85, 247, 0.26);
+}
+
+.fieldValue {
+  color: white;
+
+  font-size: 15px !important;
+  font-weight: 500 !important;
+
+  word-break: break-word;
+}
+
+/* ADDRESS */
+
+.addressGrid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 22px;
+}
+
+.addressBox {
+  background:
+    rgba(255,255,255,0.03);
+
+  border:
+    1px solid #aaaaaa;
+
+  border-radius: 18px;
+
+  padding: 22px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.addressTitle {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+
+  color: white !important;
+}
+
+/* LANGUAGE */
+
+.languageSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.languages {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 12px;
+}
+
+.languages :global(.MuiChip-root) {
+  background:
+    rgba(168,85,247,0.12);
+
+  color: white;
+
+  border:
+    1px solid rgba(168,85,247,0.25);
+}
+
+.languages :global(.MuiChip-icon) {
+  color: #c084fc !important;
+}
+
+/* LOADING */
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.skeletonGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(240px, 1fr));
+
+  gap: 20px;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+  .card {
+    padding: 22px !important;
+  }
+
+  .cardTitle {
+    font-size: 20px !important;
+  }
+
+  .addressGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldBox {
+    min-height: 50px;
+  }
+
+}

@@ -1,0 +1,2771 @@
+{
+  "info": {
+    "_postman_id": "69d74169-8e38-40e5-843f-e5396ffabbe4",
+    "name": "Community",
+    "description": "Comprehensive API documentation collection for Community backend. Uses {{baseUrl}} and auto-saves accessToken after successful login.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "24534365"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Root Health",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            },
+            "description": "Public endpoint. Returns basic health status used to verify service is reachable."
+          },
+          "response": [
+            {
+              "name": "200 - OK",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"ok\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Public endpoint intended for Render health checks. Configure Render Health Check Path as /health."
+          },
+          "response": [
+            {
+              "name": "200 - OK",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"ok\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Service health endpoints for uptime checks.",
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.environment.set(\"accessToken\", response.accessToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser@email.com\",\n  \"password\": \"testuser123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Creates a user and returns JWT access token.\n\nValidation rules:\n- name: required string, min 2, max 50\n- email: required valid email\n- password: required string, min 3, max 100"
+          },
+          "response": [
+            {
+              "name": "201 - Registered",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+            },
+            {
+              "name": "409 - Email Exists",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 409,\n  \"message\": \"Email already registered\",\n  \"error\": \"Conflict\"\n}"
+            },
+            {
+              "name": "400 - Validation Error",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": [\n    \"Name must be at least 2 characters\"\n  ],\n  \"error\": \"Bad Request\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.environment.set(\"accessToken\", response.accessToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@email.com\",\n  \"password\": \"testuser123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authenticates user and returns JWT access token.\n\nValidation rules:\n- email: required valid email\n- password: required string, min 3, max 100\n\nPostman test script automatically saves token to collection/environment variable accessToken."
+          },
+          "response": [
+            {
+              "name": "200 - Logged In",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+            },
+            {
+              "name": "409 - Invalid Credentials",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 409,\n  \"message\": \"Invalid credentials\",\n  \"error\": \"Conflict\"\n}"
+            },
+            {
+              "name": "401 - Invalid Credentials",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 401,\n  \"message\": \"Invalid credentials\",\n  \"error\": \"Unauthorized\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Authentication endpoints. Login request auto-saves token.",
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "Consent",
+      "item": [
+        {
+          "name": "Get Active Consents",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/consent/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["consent", "active"]
+            },
+            "description": "Public endpoint. Returns active consent documents (sorted by createdAt ascending)."
+          },
+          "response": [
+            {
+              "name": "200 - Active Consents",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"3a14f092-8c30-4f4b-baa2-45e8de980f11\",\n    \"key\": \"privacy_policy\",\n    \"title\": \"Privacy Policy\",\n    \"content\": \"Long consent text ...\",\n    \"required\": true,\n    \"version\": 1\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Accept Consents",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"acceptRequired\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/consent/accept",
+              "host": ["{{baseUrl}}"],
+              "path": ["consent", "accept"]
+            },
+            "description": "Requires Bearer token.\n\nAt least one strategy should be provided:\n- acceptAll: true\n- acceptRequired: true\n- consentItemIds: [UUID, ...]\n\nImportant: required consent items must all be accepted, otherwise API returns error."
+          },
+          "response": [
+            {
+              "name": "201 - Accepted",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Consents accepted successfully\"\n}"
+            },
+            {
+              "name": "400 - Missing Required Consent",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"User must accept all required consents\",\n  \"error\": \"Bad Request\"\n}"
+            },
+            {
+              "name": "401 - Unauthorized",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 401,\n  \"message\": \"Unauthorized\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Consent catalog and acceptance endpoints."
+    },
+    {
+      "name": "Enrollment",
+      "item": [
+        {
+          "name": "Step 1",
+          "item": [
+            {
+              "name": "Upsert Step 1",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"legalName\": {\n    \"firstName\": \"Ava\",\n    \"middleName\": \"M\",\n    \"lastName\": \"Stone\",\n    \"maternalLastName\": \"Rivera\",\n    \"preferredName\": \"Ava\"\n  },\n  \"birthInfo\": {\n    \"dateOfBirth\": \"1994-07-12T00:00:00.000Z\",\n    \"cityOfBirth\": \"Kolkata\",\n    \"municipalityOfBirth\": \"Kolkata\",\n    \"countryOfBirth\": \"India\"\n  },\n  \"gender\": {\n    \"gender\": \"FEMALE\",\n    \"pronouns\": \"she/her\"\n  },\n  \"contact\": {\n    \"email\": \"testuser@email.com\",\n    \"phoneNumber\": \"+919999999999\",\n    \"phoneType\": \"MOBILE\",\n    \"allowSMS\": true\n  },\n  \"currentAddress\": {\n    \"street\": \"12 Main Street\",\n    \"apartment\": \"2B\",\n    \"city\": \"Kolkata\",\n    \"state\": \"West Bengal\",\n    \"zipCode\": \"700001\",\n    \"country\": \"India\",\n    \"yearsLived\": \"5\"\n  },\n  \"mailingAddress\": {\n    \"street\": \"12 Main Street\",\n    \"apartment\": \"2B\",\n    \"city\": \"Kolkata\",\n    \"state\": \"West Bengal\",\n    \"zipCode\": \"700001\",\n    \"country\": \"India\",\n    \"yearsLived\": \"5\"\n  },\n  \"emergencyContact\": {\n    \"fullName\": \"John Stone\",\n    \"relationship\": \"Brother\",\n    \"phoneNumber\": \"+919888888888\"\n  },\n  \"additionalInfo\": {\n    \"maritalStatus\": \"SINGLE\",\n    \"occupation\": \"Engineer\",\n    \"educationLevel\": \"Bachelor\",\n    \"languagesSpoken\": [\n      \"English\",\n      \"Bengali\"\n    ],\n    \"specialSkills\": \"Community organizing\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step1/upsert",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["enrollment", "step1", "upsert"]
+                },
+                "description": "Requires Bearer token and accepted consent.\nUpdates personal/contact/address info and marks step 1 completed.\n\nEnums used:\n- gender: MALE | FEMALE | NON_BINARY | TWO_SPIRIT | SELF_DESCRIBE | PREFER_NOT_TO_SAY | OTHER\n- phoneType: MOBILE | HOME | WORK\n- maritalStatus: SINGLE | MARRIED | DIVORCED | WIDOWED"
+              },
+              "response": [
+                {
+                  "name": "201 - Step 1 Saved",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"success\": true\n}"
+                },
+                {
+                  "name": "400 - Enrollment Not Started",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Enrollment not started\",\n  \"error\": \"Bad Request\"\n}"
+                },
+                {
+                  "name": "403 - Consent Not Accepted",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 403,\n  \"message\": \"Consent not accepted\",\n  \"error\": \"Forbidden\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Get Step 1",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["enrollment", "step1"]
+                },
+                "description": "Requires Bearer token. Returns saved step 1 data. Fails if step 1 is not marked completed."
+              },
+              "response": [
+                {
+                  "name": "200 - Step 1 Data",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"legalName\": {\n    \"firstName\": \"Ava\",\n    \"middleName\": \"M\",\n    \"lastName\": \"Stone\",\n    \"maternalLastName\": \"Rivera\",\n    \"preferredName\": \"Ava\"\n  },\n  \"birthInfo\": {\n    \"dateOfBirth\": \"1994-07-12T00:00:00.000Z\",\n    \"cityOfBirth\": \"Kolkata\",\n    \"municipalityOfBirth\": \"Kolkata\",\n    \"countryOfBirth\": \"India\"\n  },\n  \"gender\": {\n    \"gender\": \"FEMALE\",\n    \"pronouns\": \"she/her\"\n  },\n  \"contact\": {\n    \"email\": \"testuser@email.com\",\n    \"phoneNumber\": \"+919999999999\",\n    \"phoneType\": \"MOBILE\",\n    \"allowSMS\": true\n  },\n  \"currentAddress\": {\n    \"street\": \"12 Main Street\",\n    \"city\": \"Kolkata\",\n    \"state\": \"West Bengal\",\n    \"zipCode\": \"700001\",\n    \"country\": \"India\"\n  },\n  \"mailingAddress\": {\n    \"street\": \"12 Main Street\",\n    \"city\": \"Kolkata\",\n    \"state\": \"West Bengal\",\n    \"zipCode\": \"700001\",\n    \"country\": \"India\"\n  },\n  \"emergencyContact\": {\n    \"fullName\": \"John Stone\",\n    \"relationship\": \"Brother\",\n    \"phoneNumber\": \"+919888888888\"\n  },\n  \"additionalInfo\": {\n    \"maritalStatus\": \"SINGLE\",\n    \"occupation\": \"Engineer\",\n    \"educationLevel\": \"Bachelor\",\n    \"languagesSpoken\": [\n      \"English\",\n      \"Bengali\"\n    ],\n    \"specialSkills\": \"Community organizing\"\n  }\n}"
+                }
+              ]
+            }
+          ],
+          "auth": {
+            "type": "bearer",
+            "bearer": [
+              {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Step 2",
+          "item": [
+            {
+              "name": "Upsert Step 2",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"maternalLineages\": [\n    {\n      \"relation\": \"MOTHER\",\n      \"fullName\": \"Maria Stone\",\n      \"maidenName\": \"Fernandez\",\n      \"dateOfBirth\": \"1972-03-12T00:00:00.000Z\",\n      \"placeOfBirth\": \"Bogota\",\n      \"livingStatus\": \"LIVING\",\n      \"approximateBirthYear\": 1972,\n      \"regionOfOrigin\": \"Andes\",\n      \"familyOccupation\": \"Teacher\",\n      \"additionalNotes\": \"Primary maternal ancestor record\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step2/upsert",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["enrollment", "step2", "upsert"]
+                },
+                "description": "Requires Bearer token and accepted consent.\nSynchronizes maternalLineages list: creates new, updates with id, deletes missing ids.\n\nEnums used:\n- relation: MOTHER | GRANDMOTHER | GREAT_GRANDMOTHER | GREAT_GREAT_GRANDMOTHER | GREAT_GREAT_GREAT_GRANDMOTHER\n- livingStatus: LIVING | DECEASED"
+              },
+              "response": [
+                {
+                  "name": "201 - Step 2 Saved",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"success\": true\n}"
+                },
+                {
+                  "name": "400 - Validation Error",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": [\n    \"maternalLineages.0.relation must be a valid enum value\"\n  ],\n  \"error\": \"Bad Request\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Delete Maternal Lineage",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step2/delete/{{maternalLineageId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "enrollment",
+                    "step2",
+                    "delete",
+                    "{{maternalLineageId}}"
+                  ]
+                },
+                "description": "Requires Bearer token and accepted consent. Deletes a single maternal lineage by id for current user enrollment."
+              },
+              "response": [
+                {
+                  "name": "201 - Deleted",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"success\": true\n}"
+                }
+              ]
+            },
+            {
+              "name": "Get Step 2",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step2",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["enrollment", "step2"]
+                },
+                "description": "Requires Bearer token. Returns saved maternal lineage array once step 2 is completed."
+              },
+              "response": [
+                {
+                  "name": "200 - Maternal Lineages",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "[\n  {\n    \"id\": \"f1552de6-13d0-4c39-b17f-8586db27b92a\",\n    \"relation\": \"MOTHER\",\n    \"fullName\": \"Maria Stone\",\n    \"maidenName\": \"Fernandez\",\n    \"dateOfBirth\": \"1972-03-12T00:00:00.000Z\",\n    \"placeOfBirth\": \"Bogota\",\n    \"livingStatus\": \"LIVING\",\n    \"approximateBirthYear\": 1972,\n    \"regionOfOrigin\": \"Andes\",\n    \"familyOccupation\": \"Teacher\",\n    \"additionalNotes\": \"Primary maternal ancestor record\"\n  }\n]"
+                }
+              ]
+            }
+          ],
+          "auth": {
+            "type": "bearer",
+            "bearer": [
+              {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Step 3",
+          "item": [
+            {
+              "name": "Get Cultural Connection List",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step3/cultural-connection-list",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["enrollment", "step3", "cultural-connection-list"]
+                },
+                "description": "Requires Bearer token. Returns active selectable cultural connections (keys + descriptions)."
+              },
+              "response": [
+                {
+                  "name": "200 - List",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "[\n  {\n    \"key\": \"language\",\n    \"description\": \"Speaks indigenous language\"\n  },\n  {\n    \"key\": \"ceremony\",\n    \"description\": \"Participates in community ceremonies\"\n  }\n]"
+                }
+              ]
+            },
+            {
+              "name": "Upsert Step 3",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"culturalConnectionKeys\": [\n    \"language\",\n    \"ceremony\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step3/upsert",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["enrollment", "step3", "upsert"]
+                },
+                "description": "Requires Bearer token and accepted consent. Accepts selected culturalConnectionKeys and marks step 3 completed."
+              },
+              "response": [
+                {
+                  "name": "201 - Step 3 Saved",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"success\": true\n}"
+                },
+                {
+                  "name": "400 - Invalid Keys",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid cultural connection keys: invalid_key\",\n  \"error\": \"Bad Request\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Get Step 3 Selection",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step3",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["enrollment", "step3"]
+                },
+                "description": "Requires Bearer token. Returns selected cultural connection keys once step 3 is completed."
+              },
+              "response": [
+                {
+                  "name": "200 - Selected Keys",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"culturalConnectionKeys\": [\n    \"language\",\n    \"ceremony\"\n  ]\n}"
+                }
+              ]
+            }
+          ],
+          "auth": {
+            "type": "bearer",
+            "bearer": [
+              {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Step 4",
+          "item": [
+            {
+              "name": "Complete Step 4 (Documents Validation)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/enrollment/step4/next",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["enrollment", "step4", "next"]
+                },
+                "description": "Requires Bearer token and accepted consent.\nValidates required docs and marks step 4 completed.\nRequired document types: USER_PHOTO and BIRTH_CERTIFICATE."
+              },
+              "response": [
+                {
+                  "name": "201 - Step 4 Completed",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"success\": true\n}"
+                },
+                {
+                  "name": "201 - Missing Required Documents",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"success\": false,\n  \"error\": \"missing_required_documents\"\n}"
+                }
+              ]
+            }
+          ],
+          "auth": {
+            "type": "bearer",
+            "bearer": [
+              {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Start Enrollment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/enrollment/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["enrollment", "start"]
+            },
+            "description": "Requires Bearer token. Creates enrollment in DRAFT state with 4 steps, or returns existing DRAFT enrollment."
+          },
+          "response": [
+            {
+              "name": "201 - Started/Existing Draft",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"enrollment\": {\n    \"id\": \"enrollment-uuid\",\n    \"userId\": \"4a0c7b5d-be64-40c4-8d55-4c88f9d3d404\",\n    \"status\": \"DRAFT\",\n    \"createdAt\": \"2026-04-14T00:00:00.000Z\",\n    \"updatedAt\": \"2026-04-14T00:00:00.000Z\"\n  },\n  \"steps\": [\n    {\n      \"stepNumber\": 1,\n      \"completed\": false\n    },\n    {\n      \"stepNumber\": 2,\n      \"completed\": false\n    },\n    {\n      \"stepNumber\": 3,\n      \"completed\": false\n    },\n    {\n      \"stepNumber\": 4,\n      \"completed\": false\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Complete Enrollment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/enrollment/complete",
+              "host": ["{{baseUrl}}"],
+              "path": ["enrollment", "complete"]
+            },
+            "description": "Requires Bearer token and accepted consent guard.\nCompletes enrollment only when all 4 steps are completed and all required consents are accepted.\nSets status to SUBMITTED."
+          },
+          "response": [
+            {
+              "name": "201 - Enrollment Completed",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Enrollment completed successfully\"\n}"
+            },
+            {
+              "name": "400 - Incomplete Steps",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"All enrollment steps must be completed to complete enrollment\",\n  \"error\": \"Bad Request\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Enrollment lifecycle APIs: start, step upserts, and final submission.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Document",
+      "item": [
+        {
+          "name": "Uploads",
+          "item": [
+            {
+              "name": "Upload USER_PHOTO",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "USER_PHOTO",
+                      "type": "text",
+                      "description": "Enum value from DocumentType"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "description": "Attach file (jpeg/png/webp/pdf, max 10 MB)",
+                      "value": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/document/upload",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["document", "upload"]
+                },
+                "description": "Single-file type. Uploading again replaces existing USER_PHOTO for enrollment."
+              },
+              "response": [
+                {
+                  "name": "200 - Uploaded",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"message\": \"Document uploaded successfully\",\n  \"document\": {\n    \"id\": \"8f9f7a33-4f73-4e2d-aef2-c7fa91234abc\",\n    \"type\": \"USER_PHOTO\",\n    \"fileName\": \"user_photo/enrollment-id\",\n    \"fileKey\": \"documents/user_photo/enrollment-id\",\n    \"fileSize\": 245601,\n    \"mimeType\": \"image/jpeg\",\n    \"url\": \"https://signed-url.example\"\n  }\n}"
+                },
+                {
+                  "name": "400 - Invalid File/Type",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid file type: text/plain. Allowed: image/jpeg, image/png, image/webp, application/pdf\",\n  \"error\": \"Bad Request\"\n}"
+                },
+                {
+                  "name": "403 - Enrollment Not Editable / Consent Not Accepted",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 403,\n  \"message\": \"Enrollment is not editable.\",\n  \"error\": \"Forbidden\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Upload BIRTH_CERTIFICATE",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "BIRTH_CERTIFICATE",
+                      "type": "text",
+                      "description": "Enum value from DocumentType"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "description": "Attach file (jpeg/png/webp/pdf, max 10 MB)",
+                      "value": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/document/upload",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["document", "upload"]
+                },
+                "description": "Single-file type. Uploading again replaces existing BIRTH_CERTIFICATE for enrollment."
+              },
+              "response": [
+                {
+                  "name": "200 - Uploaded",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"message\": \"Document uploaded successfully\",\n  \"document\": {\n    \"id\": \"8f9f7a33-4f73-4e2d-aef2-c7fa91234abc\",\n    \"type\": \"BIRTH_CERTIFICATE\",\n    \"fileName\": \"birth_certificate/enrollment-id\",\n    \"fileKey\": \"documents/birth_certificate/enrollment-id\",\n    \"fileSize\": 245601,\n    \"mimeType\": \"image/jpeg\",\n    \"url\": \"https://signed-url.example\"\n  }\n}"
+                },
+                {
+                  "name": "400 - Invalid File/Type",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid file type: text/plain. Allowed: image/jpeg, image/png, image/webp, application/pdf\",\n  \"error\": \"Bad Request\"\n}"
+                },
+                {
+                  "name": "403 - Enrollment Not Editable / Consent Not Accepted",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 403,\n  \"message\": \"Enrollment is not editable.\",\n  \"error\": \"Forbidden\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Upload FAMILY_RECORD",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "FAMILY_RECORD",
+                      "type": "text",
+                      "description": "Enum value from DocumentType"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "description": "Attach file (jpeg/png/webp/pdf, max 10 MB)",
+                      "value": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/document/upload",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["document", "upload"]
+                },
+                "description": "Multi-file type. Each upload creates a new record."
+              },
+              "response": [
+                {
+                  "name": "200 - Uploaded",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"message\": \"Document uploaded successfully\",\n  \"document\": {\n    \"id\": \"8f9f7a33-4f73-4e2d-aef2-c7fa91234abc\",\n    \"type\": \"FAMILY_RECORD\",\n    \"fileName\": \"family_record/enrollment-id\",\n    \"fileKey\": \"documents/family_record/enrollment-id\",\n    \"fileSize\": 245601,\n    \"mimeType\": \"image/jpeg\",\n    \"url\": \"https://signed-url.example\"\n  }\n}"
+                },
+                {
+                  "name": "400 - Invalid File/Type",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid file type: text/plain. Allowed: image/jpeg, image/png, image/webp, application/pdf\",\n  \"error\": \"Bad Request\"\n}"
+                },
+                {
+                  "name": "403 - Enrollment Not Editable / Consent Not Accepted",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 403,\n  \"message\": \"Enrollment is not editable.\",\n  \"error\": \"Forbidden\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Upload FAMILY_PHOTO",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "FAMILY_PHOTO",
+                      "type": "text",
+                      "description": "Enum value from DocumentType"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "description": "Attach file (jpeg/png/webp/pdf, max 10 MB)",
+                      "value": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/document/upload",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["document", "upload"]
+                },
+                "description": "Multi-file type. Each upload creates a new record."
+              },
+              "response": [
+                {
+                  "name": "200 - Uploaded",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"message\": \"Document uploaded successfully\",\n  \"document\": {\n    \"id\": \"8f9f7a33-4f73-4e2d-aef2-c7fa91234abc\",\n    \"type\": \"FAMILY_PHOTO\",\n    \"fileName\": \"family_photo/enrollment-id\",\n    \"fileKey\": \"documents/family_photo/enrollment-id\",\n    \"fileSize\": 245601,\n    \"mimeType\": \"image/jpeg\",\n    \"url\": \"https://signed-url.example\"\n  }\n}"
+                },
+                {
+                  "name": "400 - Invalid File/Type",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid file type: text/plain. Allowed: image/jpeg, image/png, image/webp, application/pdf\",\n  \"error\": \"Bad Request\"\n}"
+                },
+                {
+                  "name": "403 - Enrollment Not Editable / Consent Not Accepted",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 403,\n  \"message\": \"Enrollment is not editable.\",\n  \"error\": \"Forbidden\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Upload ADDITIONAL_EVIDENCE",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "ADDITIONAL_EVIDENCE",
+                      "type": "text",
+                      "description": "Enum value from DocumentType"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "description": "Attach file (jpeg/png/webp/pdf, max 10 MB)",
+                      "value": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/document/upload",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["document", "upload"]
+                },
+                "description": "Multi-file type. Each upload creates a new record."
+              },
+              "response": [
+                {
+                  "name": "200 - Uploaded",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"message\": \"Document uploaded successfully\",\n  \"document\": {\n    \"id\": \"8f9f7a33-4f73-4e2d-aef2-c7fa91234abc\",\n    \"type\": \"ADDITIONAL_EVIDENCE\",\n    \"fileName\": \"additional_evidence/enrollment-id\",\n    \"fileKey\": \"documents/additional_evidence/enrollment-id\",\n    \"fileSize\": 245601,\n    \"mimeType\": \"image/jpeg\",\n    \"url\": \"https://signed-url.example\"\n  }\n}"
+                },
+                {
+                  "name": "400 - Invalid File/Type",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid file type: text/plain. Allowed: image/jpeg, image/png, image/webp, application/pdf\",\n  \"error\": \"Bad Request\"\n}"
+                },
+                {
+                  "name": "403 - Enrollment Not Editable / Consent Not Accepted",
+                  "originalRequest": {
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n  \"statusCode\": 403,\n  \"message\": \"Enrollment is not editable.\",\n  \"error\": \"Forbidden\"\n}"
+                }
+              ]
+            }
+          ],
+          "auth": {
+            "type": "bearer",
+            "bearer": [
+              {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get Document List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/document/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["document", "list"]
+            },
+            "description": "Returns normalized document groups for all document types. For single-file types, documents is null or object. For multi-file types, documents is array."
+          },
+          "response": [
+            {
+              "name": "200 - Document List",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"type\": \"USER_PHOTO\",\n    \"isSingle\": true,\n    \"documents\": {\n      \"id\": \"doc-uuid-1\",\n      \"type\": \"USER_PHOTO\",\n      \"status\": \"PENDING\",\n      \"fileName\": \"user_photo/enrollment-id\",\n      \"fileKey\": \"documents/user_photo/enrollment-id\",\n      \"fileSize\": 245601,\n      \"url\": \"https://signed-url.example\",\n      \"verifiedByAdmin\": false,\n      \"rejectedReason\": null,\n      \"uploadedAt\": \"2026-04-14T12:00:00.000Z\"\n    }\n  },\n  {\n    \"type\": \"FAMILY_RECORD\",\n    \"isSingle\": false,\n    \"documents\": [\n      {\n        \"id\": \"doc-uuid-2\",\n        \"type\": \"FAMILY_RECORD\",\n        \"status\": \"PENDING\",\n        \"fileName\": \"family_record/enrollment-id/1713097540000-uuid\",\n        \"fileKey\": \"documents/family_record/enrollment-id/1713097540000-uuid\",\n        \"fileSize\": 400001,\n        \"url\": \"https://signed-url.example\",\n        \"verifiedByAdmin\": false,\n        \"rejectedReason\": null,\n        \"uploadedAt\": \"2026-04-14T12:05:00.000Z\"\n      }\n    ]\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/document/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["document", "{{documentId}}"]
+            },
+            "description": "Deletes a document record by document id and triggers safe S3 deletion in background."
+          },
+          "response": [
+            {
+              "name": "201 - Deleted",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Document deleted successfully\"\n}"
+            },
+            {
+              "name": "404 - Not Found",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 404,\n  \"message\": \"Document with ID abc not found\",\n  \"error\": \"Not Found\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Document upload/list/delete APIs. These routes require JWT + consent accepted + editable DRAFT enrollment.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "Get Account Info",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/account/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "info"]
+            },
+            "description": "Returns user summary + enrollment summary + derived flags."
+          },
+          "response": [
+            {
+              "name": "200 - Account Info",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"user\": {\n    \"id\": \"4a0c7b5d-be64-40c4-8d55-4c88f9d3d404\",\n    \"publicId\": \"100001\",\n    \"name\": \"Test User\",\n    \"email\": \"testuser@email.com\",\n    \"role\": \"USER\"\n  },\n  \"enrollment\": {\n    \"id\": \"enrollment-uuid\",\n    \"steps\": {\n      \"1\": true,\n      \"2\": true,\n      \"3\": true,\n      \"4\": false\n    },\n    \"status\": \"DRAFT\",\n    \"personalInfo\": {\n      \"firstName\": \"Ava\",\n      \"lastName\": \"Stone\",\n      \"countryOfBirth\": \"India\"\n    },\n    \"profilePicture\": \"https://signed-url.example\"\n  },\n  \"enrollmentStep\": {\n    \"1\": true,\n    \"2\": true,\n    \"3\": true,\n    \"4\": false\n  },\n  \"enrollmentStatus\": \"DRAFT\",\n  \"hasEnrollment\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Community Meta",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/account/community-meta",
+              "host": ["{{baseUrl}}"],
+              "path": ["account", "community-meta"]
+            },
+            "description": "Public endpoint. Returns aggregate community counts for dashboard/stat-card use cases, plus the latest 10 recently active users. `activeUserCounts` counts users with `lastActiveAt` in the last 30 days."
+          },
+          "response": [
+            {
+              "name": "200 - Community Meta",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"totalUsersCount\": 148,\n  \"totalEnrolledUsersCount\": 92,\n  \"activeUserCounts\": 37,\n  \"recentUsers\": [\n    {\n      \"id\": \"1d7f4e2a-8b31-4d91-9a22-1f55c6a0a101\",\n      \"name\": \"Ava Stone\",\n      \"email\": \"ava.stone@email.com\"\n    },\n    {\n      \"id\": \"2e8a5f3b-9c42-4ea2-ab33-2a66d7b1b202\",\n      \"name\": \"Liam Rivers\",\n      \"email\": \"liam.rivers@email.com\"\n    },\n    {\n      \"id\": \"3f9b6a4c-ad53-4fb3-bc44-3b77e8c2c303\",\n      \"name\": \"Maya Cloud\",\n      \"email\": \"maya.cloud@email.com\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Account endpoints for authenticated user summary data plus public community-level dashboard metrics.",
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["profile"]
+            },
+            "description": "Returns detailed profile payload including enrollment, steps, and regionalMembers list based on current zip code."
+          },
+          "response": [
+            {
+              "name": "200 - Profile Data",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"user\": {\n    \"id\": \"4a0c7b5d-be64-40c4-8d55-4c88f9d3d404\",\n    \"publicId\": \"100001\",\n    \"name\": \"Test User\",\n    \"email\": \"testuser@email.com\",\n    \"role\": \"USER\"\n  },\n  \"enrollment\": {\n    \"id\": \"enrollment-uuid\",\n    \"status\": \"DRAFT\",\n    \"consentAccepted\": true,\n    \"approvalDate\": null,\n    \"personalInfo\": {\n      \"firstName\": \"Ava\",\n      \"lastName\": \"Stone\"\n    },\n    \"addresses\": [],\n    \"maternalLineages\": [],\n    \"culturalConnections\": [],\n    \"consent\": [],\n    \"documents\": [],\n    \"steps\": {\n      \"1\": true,\n      \"2\": false,\n      \"3\": false,\n      \"4\": false\n    }\n  },\n  \"enrollmentStep\": {\n    \"1\": true,\n    \"2\": false,\n    \"3\": false,\n    \"4\": false\n  },\n  \"enrollmentStatus\": \"DRAFT\",\n  \"hasEnrollment\": true,\n  \"regionalMembers\": [\n    {\n      \"id\": \"other-enrollment-uuid\",\n      \"name\": \"Community Member\",\n      \"location\": {\n        \"city\": \"Kolkata\",\n        \"state\": \"West Bengal\",\n        \"zipCode\": \"700001\"\n      }\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Profile endpoint with extended enrollment and regional members.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Get Service Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/services/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["services", "categories"]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Public endpoint. Returns all service categories ordered by `createdAt` ascending. Use the `key` values from this response with `GET /services?category=...`."
+          },
+          "response": [
+            {
+              "name": "200 - Service Categories",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"a1111111-1111-4111-8111-111111111111\",\n    \"key\": \"health\",\n    \"name\": \"Health\",\n    \"icon\": \"health\"\n  },\n  {\n    \"id\": \"b2222222-2222-4222-8222-222222222222\",\n    \"key\": \"legal\",\n    \"name\": \"Legal\",\n    \"icon\": \"legal\"\n  },\n  {\n    \"id\": \"c3333333-3333-4333-8333-333333333333\",\n    \"key\": \"Education\",\n    \"name\": \"Education\",\n    \"icon\": \"education\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["services"]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Public endpoint. Returns all services except those with status `CLOSED`, ordered by `createdAt` descending. Both `ACTIVE` and `INACTIVE` services may appear in this list."
+          },
+          "response": [
+            {
+              "name": "200 - Available Services",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"d4444444-4444-4444-8444-444444444444\",\n    \"name\": \"Primary Care Physicians\",\n    \"description\": \"Primary care, preventive medicine, and traditional healing services for tribal members and families.\",\n    \"icon\": \"primary_care\",\n    \"categoryId\": \"a1111111-1111-4111-8111-111111111111\",\n    \"isFeatured\": false,\n    \"status\": \"ACTIVE\",\n    \"location\": \"123 Primary Care, Reservationville\",\n    \"phone\": \"555-123-4567\",\n    \"email\": \"info@primarycare.com\",\n    \"actionType\": \"EXTERNAL\",\n    \"actionLabel\": \"Contact Us\",\n    \"actionUrl\": \"https://primarycare.com/schedule\",\n    \"actionRoute\": null,\n    \"highlights\": [\n      \"Open Now\",\n      \"Accepting New Patients\",\n      \"Mon-Fri: 8AM-6PM\"\n    ],\n    \"createdAt\": \"2026-05-03T10:00:00.000Z\",\n    \"updatedAt\": \"2026-05-03T10:00:00.000Z\",\n    \"category\": {\n      \"id\": \"a1111111-1111-4111-8111-111111111111\",\n      \"key\": \"health\",\n      \"name\": \"Health\",\n      \"icon\": \"health\",\n      \"createdAt\": \"2026-05-01T09:00:00.000Z\"\n    }\n  },\n  {\n    \"id\": \"e5555555-5555-4555-8555-555555555555\",\n    \"name\": \"Tribal Health Clinic\",\n    \"description\": \"Primary care, preventive medicine, and traditional healing services for tribal members and families.\",\n    \"icon\": \"health_clinic\",\n    \"categoryId\": \"a1111111-1111-4111-8111-111111111111\",\n    \"isFeatured\": false,\n    \"status\": \"INACTIVE\",\n    \"location\": \"123 Tribal Health Rd, Reservationville\",\n    \"phone\": \"555-123-4567\",\n    \"email\": \"info@tribalhealthclinic.com\",\n    \"actionType\": \"EXTERNAL\",\n    \"actionLabel\": \"Schedule Appointment\",\n    \"actionUrl\": \"https://tribalhealthclinic.com/schedule\",\n    \"actionRoute\": null,\n    \"highlights\": [\n      \"Open Now\",\n      \"Accepting New Patients\",\n      \"Mon-Fri: 8AM-6PM\"\n    ],\n    \"createdAt\": \"2026-05-02T09:30:00.000Z\",\n    \"updatedAt\": \"2026-05-02T09:30:00.000Z\",\n    \"category\": {\n      \"id\": \"a1111111-1111-4111-8111-111111111111\",\n      \"key\": \"health\",\n      \"name\": \"Health\",\n      \"icon\": \"health\",\n      \"createdAt\": \"2026-05-01T09:00:00.000Z\"\n    }\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Services By Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/services?category=health",
+              "host": ["{{baseUrl}}"],
+              "path": ["services"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "health",
+                  "description": "Service category key returned by `GET /services/categories`."
+                }
+              ]
+            },
+            "description": "Public endpoint. Returns non-`CLOSED` services for a specific service category key."
+          },
+          "response": [
+            {
+              "name": "200 - Filtered Services",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"d4444444-4444-4444-8444-444444444444\",\n    \"name\": \"Primary Care Physicians\",\n    \"description\": \"Primary care, preventive medicine, and traditional healing services for tribal members and families.\",\n    \"icon\": \"primary_care\",\n    \"categoryId\": \"a1111111-1111-4111-8111-111111111111\",\n    \"isFeatured\": false,\n    \"status\": \"ACTIVE\",\n    \"location\": \"123 Primary Care, Reservationville\",\n    \"phone\": \"555-123-4567\",\n    \"email\": \"info@primarycare.com\",\n    \"actionType\": \"EXTERNAL\",\n    \"actionLabel\": \"Contact Us\",\n    \"actionUrl\": \"https://primarycare.com/schedule\",\n    \"actionRoute\": null,\n    \"highlights\": [\n      \"Open Now\",\n      \"Accepting New Patients\",\n      \"Mon-Fri: 8AM-6PM\"\n    ],\n    \"createdAt\": \"2026-05-03T10:00:00.000Z\",\n    \"updatedAt\": \"2026-05-03T10:00:00.000Z\",\n    \"category\": {\n      \"id\": \"a1111111-1111-4111-8111-111111111111\",\n      \"key\": \"health\",\n      \"name\": \"Health\",\n      \"icon\": \"health\",\n      \"createdAt\": \"2026-05-01T09:00:00.000Z\"\n    }\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Register For Service",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"d4444444-4444-4444-8444-444444444444\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/services/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["services", "register"]
+            },
+            "description": "Requires Bearer token. Registers the current user to a specific service.\n\nValidation / behavior:\n- `serviceId`: required string\n- service must exist\n- service status must be `ACTIVE`\n- duplicate registrations are rejected"
+          },
+          "response": [
+            {
+              "name": "200 - Registered",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Registered to service successfully\"\n}"
+            },
+            {
+              "name": "400 - Missing Service ID",
+              "originalRequest": {},
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Service ID is required\",\n  \"error\": \"Bad Request\"\n}"
+            },
+            {
+              "name": "400 - Service Not Active",
+              "originalRequest": {},
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Service is not active for registration\",\n  \"error\": \"Bad Request\"\n}"
+            },
+            {
+              "name": "400 - Already Registered",
+              "originalRequest": {},
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"User already registered for this service\",\n  \"error\": \"Bad Request\"\n}"
+            },
+            {
+              "name": "401 - Unauthorized",
+              "originalRequest": {},
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 401,\n  \"message\": \"Unauthorized\"\n}"
+            },
+            {
+              "name": "404 - Service Not Found",
+              "originalRequest": {},
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 404,\n  \"message\": \"Service not found\",\n  \"error\": \"Not Found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Registered Services",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/services/register-list",
+              "host": ["{{baseUrl}}"],
+              "path": ["services", "register-list"]
+            },
+            "description": "Requires Bearer token. Returns all services the current user has registered for, ordered by registration `date` descending. No request body is required."
+          },
+          "response": [
+            {
+              "name": "200 - Registered Services",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"f6666666-6666-4666-8666-666666666666\",\n    \"serviceId\": \"d4444444-4444-4444-8444-444444444444\",\n    \"userId\": \"4a0c7b5d-be64-40c4-8d55-4c88f9d3d404\",\n    \"date\": \"2026-05-03T11:30:00.000Z\",\n    \"status\": \"REGISTERED\",\n    \"service\": {\n      \"id\": \"d4444444-4444-4444-8444-444444444444\",\n      \"name\": \"Primary Care Physicians\",\n      \"description\": \"Primary care, preventive medicine, and traditional healing services for tribal members and families.\",\n      \"icon\": \"primary_care\",\n      \"categoryId\": \"a1111111-1111-4111-8111-111111111111\",\n      \"isFeatured\": false,\n      \"status\": \"ACTIVE\",\n      \"location\": \"123 Primary Care, Reservationville\",\n      \"phone\": \"555-123-4567\",\n      \"email\": \"info@primarycare.com\",\n      \"actionType\": \"EXTERNAL\",\n      \"actionLabel\": \"Contact Us\",\n      \"actionUrl\": \"https://primarycare.com/schedule\",\n      \"actionRoute\": null,\n      \"highlights\": [\n        \"Open Now\",\n        \"Accepting New Patients\",\n        \"Mon-Fri: 8AM-6PM\"\n      ],\n      \"createdAt\": \"2026-05-03T10:00:00.000Z\",\n      \"updatedAt\": \"2026-05-03T10:00:00.000Z\",\n      \"category\": {\n        \"id\": \"a1111111-1111-4111-8111-111111111111\",\n        \"key\": \"health\",\n        \"name\": \"Health\",\n        \"icon\": \"health\",\n        \"createdAt\": \"2026-05-01T09:00:00.000Z\"\n      }\n    }\n  }\n]"
+            },
+            {
+              "name": "401 - Unauthorized",
+              "originalRequest": {},
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 401,\n  \"message\": \"Unauthorized\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Public service discovery endpoints and authenticated service registration APIs.",
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Get Event Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "categories"]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Public endpoint. Returns all event categories. Use the `key` values from this response with `GET /events?category=...` or `GET /events/previous?category=...`."
+          },
+          "response": [
+            {
+              "name": "200 - Event Categories",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"11111111-1111-4111-8111-111111111111\",\n    \"key\": \"cultural_events\",\n    \"name\": \"Cultural Events\",\n    \"description\": \"Ceremonies, festivals, and traditional celebrations\",\n    \"icon\": \"cultural_events\"\n  },\n  {\n    \"id\": \"22222222-2222-4222-8222-222222222222\",\n    \"key\": \"workshops\",\n    \"name\": \"Workshops\",\n    \"description\": \"Hands-on learning and skill development sessions\",\n    \"icon\": \"workshops\"\n  },\n  {\n    \"id\": \"33333333-3333-4333-8333-333333333333\",\n    \"key\": \"ceremonies\",\n    \"name\": \"Ceremonies\",\n    \"description\": \"Sacred rituals and spiritual gatherings\",\n    \"icon\": \"ceremonies\"\n  },\n  {\n    \"id\": \"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\n    \"key\": \"social_events\",\n    \"name\": \"Social Events\",\n    \"description\": \"Community gatherings and networking\",\n    \"icon\": \"social_events\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Upcoming Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["events"]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Public endpoint. Returns upcoming events only when no `date` query is provided (`startDateTime >= now`), ordered by `startDateTime` ascending. Response includes nested category data, raw `_count`, and computed `registrationCount`."
+          },
+          "response": [
+            {
+              "name": "200 - Upcoming Events",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"44444444-4444-4444-8444-444444444444\",\n    \"title\": \"Winter Solstice Ceremony\",\n    \"description\": \"Traditional celebration honoring the changing seasons\",\n    \"categoryId\": \"11111111-1111-4111-8111-111111111111\",\n    \"startDateTime\": \"2026-12-21T18:00:00.000Z\",\n    \"endDateTime\": \"2026-12-21T21:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Sacred Grounds\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 50,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:15:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:15:00.000Z\",\n    \"category\": {\n      \"id\": \"11111111-1111-4111-8111-111111111111\",\n      \"key\": \"cultural_events\",\n      \"name\": \"Cultural Events\",\n      \"description\": \"Ceremonies, festivals, and traditional celebrations\",\n      \"icon\": \"cultural_events\"\n    },\n    \"_count\": {\n      \"registrations\": 8\n    },\n    \"registrationCount\": 8\n  },\n  {\n    \"id\": \"55555555-5555-4555-8555-555555555555\",\n    \"title\": \"Art & Craft Workshop\",\n    \"description\": \"Hands-on session for creative art skills\",\n    \"categoryId\": \"22222222-2222-4222-8222-222222222222\",\n    \"startDateTime\": \"2026-06-15T10:00:00.000Z\",\n    \"endDateTime\": \"2026-06-15T13:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Art Center\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 20,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:00:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:00:00.000Z\",\n    \"category\": {\n      \"id\": \"22222222-2222-4222-8222-222222222222\",\n      \"key\": \"workshops\",\n      \"name\": \"Workshops\",\n      \"description\": \"Hands-on learning and skill development sessions\",\n      \"icon\": \"workshops\"\n    },\n    \"_count\": {\n      \"registrations\": 4\n    },\n    \"registrationCount\": 4\n  },\n  {\n    \"id\": \"66666666-6666-4666-8666-666666666666\",\n    \"title\": \"Spiritual Chanting Ceremony\",\n    \"description\": \"Group chanting and spiritual gathering\",\n    \"categoryId\": \"33333333-3333-4333-8333-333333333333\",\n    \"startDateTime\": \"2026-07-10T05:00:00.000Z\",\n    \"endDateTime\": \"2026-07-10T07:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Temple Grounds\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 70,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:05:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:05:00.000Z\",\n    \"category\": {\n      \"id\": \"33333333-3333-4333-8333-333333333333\",\n      \"key\": \"ceremonies\",\n      \"name\": \"Ceremonies\",\n      \"description\": \"Sacred rituals and spiritual gatherings\",\n      \"icon\": \"ceremonies\"\n    },\n    \"_count\": {\n      \"registrations\": 2\n    },\n    \"registrationCount\": 2\n  },\n  {\n    \"id\": \"77777777-7777-4777-8777-777777777777\",\n    \"title\": \"Startup Networking Night\",\n    \"description\": \"Entrepreneurs meet and share ideas\",\n    \"categoryId\": \"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\n    \"startDateTime\": \"2026-08-01T17:00:00.000Z\",\n    \"endDateTime\": \"2026-08-01T20:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Business Hub\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 100,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:20:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:20:00.000Z\",\n    \"category\": {\n      \"id\": \"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\n      \"key\": \"social_events\",\n      \"name\": \"Social Events\",\n      \"description\": \"Community gatherings and networking\",\n      \"icon\": \"social_events\"\n    },\n    \"_count\": {\n      \"registrations\": 6\n    },\n    \"registrationCount\": 6\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Events By Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events?category=cultural_events",
+              "host": ["{{baseUrl}}"],
+              "path": ["events"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "cultural_events",
+                  "description": "Event category key returned by `GET /events/categories`."
+                }
+              ]
+            },
+            "description": "Public endpoint. Returns upcoming events filtered by category key. Saved examples below show representative responses for all currently seeded event category types."
+          },
+          "response": [
+            {
+              "name": "200 - Cultural Events",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"44444444-4444-4444-8444-444444444444\",\n    \"title\": \"Winter Solstice Ceremony\",\n    \"description\": \"Traditional celebration honoring the changing seasons\",\n    \"categoryId\": \"11111111-1111-4111-8111-111111111111\",\n    \"startDateTime\": \"2026-12-21T18:00:00.000Z\",\n    \"endDateTime\": \"2026-12-21T21:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Sacred Grounds\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 50,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:15:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:15:00.000Z\",\n    \"category\": {\n      \"id\": \"11111111-1111-4111-8111-111111111111\",\n      \"key\": \"cultural_events\",\n      \"name\": \"Cultural Events\",\n      \"description\": \"Ceremonies, festivals, and traditional celebrations\",\n      \"icon\": \"cultural_events\"\n    },\n    \"_count\": {\n      \"registrations\": 8\n    },\n    \"registrationCount\": 8\n  }\n]"
+            },
+            {
+              "name": "200 - Workshops",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"55555555-5555-4555-8555-555555555555\",\n    \"title\": \"Art & Craft Workshop\",\n    \"description\": \"Hands-on session for creative art skills\",\n    \"categoryId\": \"22222222-2222-4222-8222-222222222222\",\n    \"startDateTime\": \"2026-06-15T10:00:00.000Z\",\n    \"endDateTime\": \"2026-06-15T13:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Art Center\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 20,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:00:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:00:00.000Z\",\n    \"category\": {\n      \"id\": \"22222222-2222-4222-8222-222222222222\",\n      \"key\": \"workshops\",\n      \"name\": \"Workshops\",\n      \"description\": \"Hands-on learning and skill development sessions\",\n      \"icon\": \"workshops\"\n    },\n    \"_count\": {\n      \"registrations\": 4\n    },\n    \"registrationCount\": 4\n  }\n]"
+            },
+            {
+              "name": "200 - Ceremonies",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"66666666-6666-4666-8666-666666666666\",\n    \"title\": \"Spiritual Chanting Ceremony\",\n    \"description\": \"Group chanting and spiritual gathering\",\n    \"categoryId\": \"33333333-3333-4333-8333-333333333333\",\n    \"startDateTime\": \"2026-07-10T05:00:00.000Z\",\n    \"endDateTime\": \"2026-07-10T07:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Temple Grounds\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 70,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:05:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:05:00.000Z\",\n    \"category\": {\n      \"id\": \"33333333-3333-4333-8333-333333333333\",\n      \"key\": \"ceremonies\",\n      \"name\": \"Ceremonies\",\n      \"description\": \"Sacred rituals and spiritual gatherings\",\n      \"icon\": \"ceremonies\"\n    },\n    \"_count\": {\n      \"registrations\": 2\n    },\n    \"registrationCount\": 2\n  }\n]"
+            },
+            {
+              "name": "200 - Social Events",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"77777777-7777-4777-8777-777777777777\",\n    \"title\": \"Startup Networking Night\",\n    \"description\": \"Entrepreneurs meet and share ideas\",\n    \"categoryId\": \"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\n    \"startDateTime\": \"2026-08-01T17:00:00.000Z\",\n    \"endDateTime\": \"2026-08-01T20:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Business Hub\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 100,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:20:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:20:00.000Z\",\n    \"category\": {\n      \"id\": \"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\n      \"key\": \"social_events\",\n      \"name\": \"Social Events\",\n      \"description\": \"Community gatherings and networking\",\n      \"icon\": \"social_events\"\n    },\n    \"_count\": {\n      \"registrations\": 6\n    },\n    \"registrationCount\": 6\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Events By Date",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events?date=2026-06-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["events"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-06-15",
+                  "description": "Any JavaScript-parsable date string. The API returns events overlapping that calendar day."
+                }
+              ]
+            },
+            "description": "Public endpoint. Returns events that start on, end on, or span across the provided date. When `date` is provided, the default upcoming-only filter is not used."
+          },
+          "response": [
+            {
+              "name": "200 - Events For Date",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"55555555-5555-4555-8555-555555555555\",\n    \"title\": \"Art & Craft Workshop\",\n    \"description\": \"Hands-on session for creative art skills\",\n    \"categoryId\": \"22222222-2222-4222-8222-222222222222\",\n    \"startDateTime\": \"2026-06-15T10:00:00.000Z\",\n    \"endDateTime\": \"2026-06-15T13:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"Art Center\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 20,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-05-01T10:00:00.000Z\",\n    \"updatedAt\": \"2026-05-01T10:00:00.000Z\",\n    \"category\": {\n      \"id\": \"22222222-2222-4222-8222-222222222222\",\n      \"key\": \"workshops\",\n      \"name\": \"Workshops\",\n      \"description\": \"Hands-on learning and skill development sessions\",\n      \"icon\": \"workshops\"\n    },\n    \"_count\": {\n      \"registrations\": 4\n    },\n    \"registrationCount\": 4\n  }\n]"
+            },
+            {
+              "name": "400 - Invalid Date",
+              "originalRequest": {},
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid date format\",\n  \"error\": \"Bad Request\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Previous Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events/previous?category=social_events",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "previous"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "social_events",
+                  "description": "Optional event category key. When omitted, all previous events from the last 30 days are returned."
+                }
+              ]
+            },
+            "description": "Public endpoint. Returns events whose `startDateTime` falls within the last 30 days and is already in the past, ordered by `startDateTime` descending. Optional category filter is supported."
+          },
+          "response": [
+            {
+              "name": "200 - Previous Events",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"88888888-8888-4888-8888-888888888888\",\n    \"title\": \"Community Networking Meetup\",\n    \"description\": \"Meet and connect with local professionals\",\n    \"categoryId\": \"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\n    \"startDateTime\": \"2026-04-18T16:00:00.000Z\",\n    \"endDateTime\": \"2026-04-18T19:00:00.000Z\",\n    \"locationType\": \"PHYSICAL\",\n    \"location\": \"City Hall\",\n    \"meetingUrl\": null,\n    \"maxCapacity\": 80,\n    \"isFeatured\": false,\n    \"externalUrl\": null,\n    \"createdAt\": \"2026-04-01T10:00:00.000Z\",\n    \"updatedAt\": \"2026-04-01T10:00:00.000Z\",\n    \"category\": {\n      \"id\": \"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa\",\n      \"key\": \"social_events\",\n      \"name\": \"Social Events\",\n      \"description\": \"Community gatherings and networking\",\n      \"icon\": \"social_events\"\n    },\n    \"_count\": {\n      \"registrations\": 12\n    },\n    \"registrationCount\": 12\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Register For Event",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": \"55555555-5555-4555-8555-555555555555\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "register"]
+            },
+            "description": "Requires Bearer token. Registers the current user for a specific event.\n\nValidation / behavior:\n- `eventId`: required string\n- event must exist\n- duplicate registrations are rejected\n- current implementation does not enforce event capacity or event date constraints"
+          },
+          "response": [
+            {
+              "name": "200 - Registered",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Event registered successfully\"\n}"
+            },
+            {
+              "name": "400 - Missing Event ID",
+              "originalRequest": {},
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Event ID is required\",\n  \"error\": \"Bad Request\"\n}"
+            },
+            {
+              "name": "400 - Already Registered",
+              "originalRequest": {},
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"User already registered for this event\",\n  \"error\": \"Bad Request\"\n}"
+            },
+            {
+              "name": "401 - Unauthorized",
+              "originalRequest": {},
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 401,\n  \"message\": \"Unauthorized\"\n}"
+            },
+            {
+              "name": "404 - Event Not Found",
+              "originalRequest": {},
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 404,\n  \"message\": \"Event not found\",\n  \"error\": \"Not Found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Registered Events",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/register-list",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "register-list"]
+            },
+            "description": "Requires Bearer token. Returns all event registrations for the current user, ordered by registration `createdAt` descending. No request body is required."
+          },
+          "response": [
+            {
+              "name": "200 - Registered Events",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"99999999-9999-4999-8999-999999999999\",\n    \"eventId\": \"55555555-5555-4555-8555-555555555555\",\n    \"userId\": \"4a0c7b5d-be64-40c4-8d55-4c88f9d3d404\",\n    \"createdAt\": \"2026-05-03T12:00:00.000Z\",\n    \"event\": {\n      \"id\": \"55555555-5555-4555-8555-555555555555\",\n      \"title\": \"Art & Craft Workshop\",\n      \"description\": \"Hands-on session for creative art skills\",\n      \"categoryId\": \"22222222-2222-4222-8222-222222222222\",\n      \"startDateTime\": \"2026-06-15T10:00:00.000Z\",\n      \"endDateTime\": \"2026-06-15T13:00:00.000Z\",\n      \"locationType\": \"PHYSICAL\",\n      \"location\": \"Art Center\",\n      \"meetingUrl\": null,\n      \"maxCapacity\": 20,\n      \"isFeatured\": false,\n      \"externalUrl\": null,\n      \"createdAt\": \"2026-05-01T10:00:00.000Z\",\n      \"updatedAt\": \"2026-05-01T10:00:00.000Z\",\n      \"category\": {\n        \"id\": \"22222222-2222-4222-8222-222222222222\",\n        \"key\": \"workshops\",\n        \"name\": \"Workshops\",\n        \"description\": \"Hands-on learning and skill development sessions\",\n        \"icon\": \"workshops\"\n      }\n    }\n  }\n]"
+            },
+            {
+              "name": "401 - Unauthorized",
+              "originalRequest": {},
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"statusCode\": 401,\n  \"message\": \"Unauthorized\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Public event discovery endpoints plus authenticated event registration APIs.",
+      "auth": {
+        "type": "noauth"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string",
+      "description": "Backend base URL. Update for Render/prod when needed."
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT saved automatically from login response test script."
+    },
+    {
+      "key": "maternalLineageId",
+      "value": "",
+      "type": "string",
+      "description": "Used by Step2 delete endpoint (/enrollment/step2/delete/:id)."
+    },
+    {
+      "key": "documentId",
+      "value": "",
+      "type": "string",
+      "description": "Used by document delete endpoint (/document/:id)."
+    }
+  ]
+}

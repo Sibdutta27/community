@@ -1,0 +1,65 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.headerBlock {
+  padding: 28px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #ffffff, #efe7ff);
+  border: 1px solid rgba(124, 58, 237, 0.12);
+}
+
+.headerBlock h1 {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 4vw, 42px);
+  color: #160032;
+}
+
+.headerBlock p {
+  margin: 0;
+  color: #655775;
+}
+
+.statsGrid,
+.panelGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.panelGrid {
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+.panel {
+  padding: 24px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  box-shadow: 0 18px 45px rgba(52, 20, 93, 0.07);
+}
+
+.panel h2 {
+  margin: 0 0 16px;
+  color: #1b1033;
+}
+
+.panel ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #655775;
+}
+
+.panel p {
+  margin: 0;
+  color: #655775;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .statsGrid,
+  .panelGrid {
+    grid-template-columns: 1fr;
+  }
+}

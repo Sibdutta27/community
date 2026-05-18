@@ -1,0 +1,81 @@
+.userLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.userLink:hover {
+  text-decoration: underline;
+}
+
+.avatar {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.userName {
+  font-weight: 300 !important;
+  color: #6b7280;
+}
+
+/*  */
+
+.email {
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*  */
+.adminRole {
+  color: #22c55e;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+
+.userRole {
+  color: #9ca3af;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+
+/*  */
+.publicIdContainer {
+  display: flex;
+  align-items: center;
+}
+
+.publicIdText {
+  font-family: monospace !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #60a5fa;
+  background-color: rgba(96, 165, 250, 0.12);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  white-space: nowrap;
+}
+
+/*  */
+.enrolledChip {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #22c55e !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.notEnrolledChip {
+  background-color: rgba(156, 163, 175, 0.12) !important;
+  color: #9ca3af !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(156, 163, 175, 0.2);
+}
+
+/*  */
+.roleFilterContainer {
+  display: flex;
+  gap: 15px;
+}

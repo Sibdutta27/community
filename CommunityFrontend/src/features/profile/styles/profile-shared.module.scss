@@ -1,0 +1,29 @@
+%empty-state-base {
+  text-align: center;
+  border: 1px dashed rgba(36, 95, 109, 0.3);
+  border-radius: 18px;
+}
+
+.emptyStateRaised {
+  @extend %empty-state-base;
+
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 16px 34px -26px rgba(36, 95, 109, 0.16);
+}
+
+.emptyStatePlain {
+  @extend %empty-state-base;
+
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.emptyTitle {
+  color: #245f6d;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.emptyDescription {
+  color: #5f7174;
+  line-height: 1.25rem;
+}

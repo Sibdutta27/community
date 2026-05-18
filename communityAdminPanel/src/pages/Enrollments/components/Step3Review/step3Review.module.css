@@ -1,0 +1,170 @@
+/* EnrollmentStep3Review.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* TOP CARD */
+
+.topCard {
+    background: #181A1B !important;
+
+    border-radius: 24px !important;
+
+    padding: 28px !important;
+
+    border: 1px solid #aaaaaa;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.title {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+
+    color: white;
+}
+
+.subTitle {
+    font-size: 15px !important;
+
+    color: #9ca3af;
+
+    line-height: 1.7;
+}
+
+/* GRID */
+
+.grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 24px;
+}
+
+/* CARD */
+
+.card {
+    background: #181A1B !important;
+
+    border-radius: 24px !important;
+
+    padding: 28px !important;
+
+    border: 1px solid #aaaaaa;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+
+    transition: 0.25s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(169, 85, 247, 0.814);
+}
+
+/* ICON */
+
+.iconBox {
+    width: 70px;
+    height: 70px;
+
+    border-radius: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(168, 85, 247, 0.06);
+
+    border:
+        1px solid rgba(169, 85, 247, 0.5);
+}
+
+.iconBox svg {
+    color: #c084fc;
+
+    font-size: 34px;
+}
+
+/* TEXT */
+
+.cardTitle {
+    padding-left: 7px;
+    font-size: 14px !important;
+    /* font-weight: 700 !important; */
+
+    color: white;
+
+    /* line-height: 1.5; */
+}
+
+.keyBox {
+    margin-top: auto;
+
+    padding: 12px 14px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255, 255, 255, 0.03);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+}
+
+.keyText {
+    font-size: 15px !important;
+
+    color: #9ca3af;
+
+    text-transform: uppercase;
+
+    line-height: 1.6;
+}
+
+/* LOADING */
+
+.loadingGrid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 24px;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .topCard {
+        padding: 22px !important;
+    }
+
+    .card {
+        padding: 22px !important;
+    }
+
+    .title {
+        font-size: 24px !important;
+    }
+
+    .cardTitle {
+        font-size: 18px !important;
+    }
+
+}

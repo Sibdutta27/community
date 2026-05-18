@@ -1,0 +1,33 @@
+@use "../../../styles/scss" as *;
+
+.sectionContainer {
+  margin-inline: auto;
+  max-width: 76rem;
+  padding-inline: 0.875rem;
+
+  @include up(sm) {
+    padding-inline: 1.25rem;
+  }
+
+  @include up(lg) {
+    padding-inline: 1.5rem;
+  }
+}
+
+.sectionBadge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.gradientText {
+  color: var(--primary);
+}
+
+.glassPanel {
+  background: rgb(255 253 249 / 0.86);
+  backdrop-filter: blur(1px);
+}

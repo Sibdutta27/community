@@ -1,0 +1,19 @@
+@use "../../../styles/scss" as *;
+
+.sectionContainer {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1rem;
+
+  @include up(sm) {
+    padding-inline: 1.5rem;
+  }
+
+  @include up(lg) {
+    padding-inline: 2rem;
+  }
+}
+
+.gradientText {
+  color: var(--primary);
+}

@@ -1,0 +1,560 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+// user model
+model User {
+  id String @id @default(uuid())
+
+  serial   BigInt  @unique @default(autoincrement())
+  publicId String? @unique
+
+  name     String?
+  email    String  @unique
+  password String
+  role     Role    @default(USER)
+
+  enrollment          Enrollment?
+  serviceAppointments ServiceRegistration[]
+  eventRegistrations  EventRegistration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lastActiveAt DateTime?
+  documents    Document[]
+}
+
+// Define user role for user model
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Enrollment model
+model Enrollment {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  status EnrollmentStatus @default(DRAFT)
+
+  firstName        String?
+  middleName       String?
+  lastName         String?
+  maternalLastName String?
+  preferredName    String?
+
+  dateOfBirth         DateTime?
+  cityOfBirth         String?
+  municipalityOfBirth String?
+  countryOfBirth      String?
+
+  gender   Gender?
+  pronouns String?
+
+  maritalStatus   MaritalStatus?
+  occupation      String?
+  educationLevel  String?
+  languagesSpoken String[]
+  specialSkills   String?
+
+  consentAccepted Boolean @default(false)
+
+  approvalDate DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+
+  contact             Contact?
+  addresses           Address[]
+  emergencyContact    EmergencyContact?
+  consent             EnrollmentConsent[]
+  maternalLineages    MaternalLineage[]
+  culturalConnections EnrollmentCulturalConnection[]
+  documents           Document[]
+  steps               EnrollmentStep[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Enrollment status enum
+enum EnrollmentStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+// Gender enume
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
+  TWO_SPIRIT
+  SELF_DESCRIBE
+  PREFER_NOT_TO_SAY
+  OTHER
+}
+
+// Marital status enume
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+model EnrollmentStep {
+  id           String @id @default(uuid())
+  enrollmentId String
+  stepNumber   Int
+
+  isCompleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  @@unique([enrollmentId, stepNumber])
+  @@index([enrollmentId])
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Address model
+model Address {
+  id           String @id @default(uuid())
+  enrollmentId String
+
+  type AddressType
+
+  street    String
+  apartment String?
+  city      String
+  state     String
+  zipCode   String
+  country   String
+
+  yearsLived Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+
+  @@unique([enrollmentId, type])
+  @@index([enrollmentId])
+}
+
+// Address type enum
+enum AddressType {
+  CURRENT
+  MAILING
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Contact model
+model Contact {
+  id           String @id @default(uuid())
+  enrollmentId String @unique
+
+  email       String
+  phoneNumber String
+  phoneType   PhoneType
+  allowSMS    Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+}
+
+// Phone type enume
+enum PhoneType {
+  MOBILE
+  HOME
+  WORK
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Emergency contact model
+model EmergencyContact {
+  id           String @id @default(uuid())
+  enrollmentId String @unique
+
+  fullName     String
+  relationship String
+  phoneNumber  String
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Document model
+model Document {
+  id           String  @id @default(uuid())
+  enrollmentId String?
+  userId       String?
+
+  type   DocumentType
+  status DocumentStatus @default(PENDING)
+
+  fileName String
+  fileKey  String @unique
+  fileUrl  String
+
+  mimeType String
+  fileSize Int
+
+  storageProvider StorageProvider @default(S3)
+
+  verifiedByAdmin Boolean @default(false)
+  rejectedReason  String?
+
+  uploadedAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  enrollment Enrollment? @relation(fields: [enrollmentId], references: [id])
+  user       User?       @relation(fields: [userId], references: [id])
+
+  @@index([enrollmentId])
+  @@index([userId])
+}
+
+// Document type enume
+enum DocumentType {
+  // User's profile picture
+  PROFILE_PICTURE
+
+  // User provided documents
+  USER_PHOTO
+  BIRTH_CERTIFICATE
+  FAMILY_RECORD
+  FAMILY_PHOTO
+  ADDITIONAL_EVIDENCE
+
+  // Unknown type for admin uploads.
+  UNKNOWN
+}
+
+// Document status enume
+enum DocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Storage provider enume
+enum StorageProvider {
+  S3
+  MINIO
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Enrollment consent table
+model EnrollmentConsent {
+  id           String @id @default(uuid())
+  enrollmentId String
+  consentId    String
+
+  accepted   Boolean
+  acceptedAt DateTime?
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  consent    Consent    @relation(fields: [consentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([enrollmentId, consentId])
+  @@index([enrollmentId])
+  @@index([consentId])
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Consent table
+model Consent {
+  id      String @id @default(uuid())
+  key     String
+  version Int
+  title   String
+  content String @db.Text
+
+  required Boolean @default(true)
+  active   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  enrollments EnrollmentConsent[]
+
+  @@unique([key, version])
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+model MaternalLineage {
+  id           String @id @default(uuid())
+  enrollmentId String
+
+  relation RelationType
+
+  fullName   String
+  maidenName String?
+
+  dateOfBirth  DateTime?
+  placeOfBirth String?
+
+  livingStatus LivingStatus
+
+  approximateBirthYear Int?
+
+  regionOfOrigin   String?
+  familyOccupation String?
+
+  additionalNotes String? @db.Text
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([enrollmentId])
+}
+
+enum RelationType {
+  MOTHER
+  GRANDMOTHER
+  GREAT_GRANDMOTHER
+  GREAT_GREAT_GRANDMOTHER
+  GREAT_GREAT_GREAT_GRANDMOTHER
+}
+
+enum LivingStatus {
+  LIVING
+  DECEASED
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+model CulturalConnection {
+  id String @id @default(uuid())
+
+  key         String  @unique
+  description String  @db.Text
+  active      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enrollments EnrollmentCulturalConnection[]
+}
+
+// Enrollment culturalConnection table
+model EnrollmentCulturalConnection {
+  id                   String @id @default(uuid())
+  enrollmentId         String
+  culturalConnectionId String
+
+  enrollment         Enrollment         @relation(fields: [enrollmentId], references: [id])
+  CulturalConnection CulturalConnection @relation(fields: [culturalConnectionId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([enrollmentId, culturalConnectionId])
+  @@index([culturalConnectionId])
+  @@index([enrollmentId])
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+model Service {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  icon        String? // store icon name or URL
+
+  categoryId String
+  category   ServiceCategory @relation(fields: [categoryId], references: [id])
+
+  isFeatured Boolean       @default(false)
+  status     ServiceStatus @default(ACTIVE)
+
+  // Contact / Meta
+  location String?
+  phone    String?
+  email    String?
+
+  // CTA
+  actionType  ActionType @default(EXTERNAL)
+  actionLabel String? // "Schedule Appointment", "Request Consultation"
+  actionUrl   String? // external or internal link
+
+  // optional: for internal routing
+  actionRoute String? // "/apply", "/register"
+
+  highlights String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registrations ServiceRegistration[]
+
+  @@index([categoryId])
+  @@index([isFeatured])
+}
+
+model ServiceCategory {
+  id   String  @id @default(uuid())
+  key  String  @unique
+  name String
+  icon String? // store icon name or URL
+
+  services Service[]
+
+  createdAt DateTime @default(now())
+}
+
+enum ServiceStatus {
+  ACTIVE
+  INACTIVE
+  CLOSED
+}
+
+enum ActionType {
+  INTERNAL // open page inside app
+  EXTERNAL // redirect to website
+  MODAL // open popup (form, booking)
+  NONE // no action, just display info
+}
+
+model ServiceRegistration {
+  id        String @id @default(uuid())
+  serviceId String
+  userId    String
+
+  date   DateTime
+  status String
+
+  service Service @relation(fields: [serviceId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+model Event {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+
+  categoryId String
+  category   EventCategory @relation(fields: [categoryId], references: [id])
+
+  // Date & Time
+  startDateTime DateTime
+  endDateTime   DateTime?
+
+  // Location
+  locationType LocationType @default(PHYSICAL)
+  location     String? // "Zoom", "Sacred Grounds"
+  meetingUrl   String? // for virtual events
+
+  // Meta
+  maxCapacity Int?
+  isFeatured  Boolean @default(false)
+  externalUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registrations EventRegistration[]
+
+  @@index([categoryId])
+  @@index([startDateTime])
+}
+
+model EventCategory {
+  id          String  @id @default(uuid())
+  key         String  @unique
+  name        String
+  description String?
+  icon        String?
+
+  events Event[]
+}
+
+model EventRegistration {
+  id      String @id @default(uuid())
+  eventId String
+  userId  String
+
+  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([eventId])
+}
+
+enum LocationType {
+  PHYSICAL
+  VIRTUAL
+}
