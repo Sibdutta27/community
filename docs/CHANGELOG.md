@@ -20,7 +20,16 @@ All notable changes to the Community monorepo are recorded here, categorized by
 - [repo/tooling] Playwright behavior-parity E2E suite (web + admin) — e2e/
 
 ### Changed
+- [repo/tooling] Restructured into a pnpm + Turborepo monorepo: CommunityBackend→apps/api,
+  CommunityFrontend→apps/web, communityAdminPanel→apps/admin; added root package.json,
+  pnpm-workspace.yaml, turbo.json, tsconfig.base.json; single root pnpm-lock.yaml
+- [repo/tooling] Scaffolded apps/pwa + apps/mobile placeholders and packages/ (planned shared pkgs)
+- [repo/tooling] Hoisted husky/commitlint/lint-staged to the repo root
+- [repo/docs] Repointed all docs/skills references to the apps/* layout
 
 ### Fixed
+- [backend/infra] apps/api/.gitignore now correctly ignores /src/generated/prisma (was /generated/prisma)
 
 ### Removed
+- [repo/tooling] Per-app npm/pnpm lockfiles (consolidated into one root pnpm-lock.yaml)
+- [backend/infra] Stopped tracking the generated Prisma client (apps/api/src/generated/prisma — build artifact)
