@@ -1,8 +1,8 @@
-# CommunityFrontend — Next.js member app
+# apps/web — Next.js member app
 
 Next.js 16 (App Router) + React 19, Tailwind v4, shadcn/ui (+ Radix), TanStack Query, axios,
-react-hook-form + Zod, framer-motion. Full map: [`../docs/architecture/frontend.md`](../docs/architecture/frontend.md).
-**Design language: [`../docs/design-system.md`](../docs/design-system.md) — read before building UI.**
+react-hook-form + Zod, framer-motion. Full map: [`../../docs/architecture/frontend.md`](../../docs/architecture/frontend.md).
+**Design language: [`../../docs/design-system.md`](../../docs/design-system.md) — read before building UI.**
 
 ## Layout
 
@@ -58,10 +58,10 @@ CSS vars in `src/styles/tokens.css`, exposed to Tailwind v4 via `@theme inline`.
 ## Run
 
 ```bash
-npm run dev        # next dev
-npm run build
-npm run typecheck  # tsc --noEmit
-npm run lint
+pnpm dev        # next dev
+pnpm build
+pnpm typecheck  # tsc --noEmit
+pnpm lint
 ```
 
 Env: `NEXT_PUBLIC_API_BASE_URL` (validated in `src/config/env.ts` — throws if missing).

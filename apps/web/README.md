@@ -1,4 +1,4 @@
-# CommunityFrontendWeb
+# apps/webWeb
 
 Frontend project for a community platform built with Next.js.
 

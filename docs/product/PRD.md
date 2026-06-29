@@ -40,13 +40,13 @@ visibility into their status. The community also wants a single place to offer m
 
 - **Prospective member (applicant)** — an individual seeking citizenship/enrollment in
   the nation. Registers an account, accepts consent, completes the 4-step enrollment,
-  uploads documents, and tracks status. Uses the **member frontend** (`CommunityFrontend`).
+  uploads documents, and tracks status. Uses the **member frontend** (`apps/web`).
 - **Member** — an applicant whose enrollment is approved; continues to use the member
   frontend for profile, services, and events.
 - **Enrollment officer / administrator** — community staff who review applications,
   verify documents and lineage, make approve/reject decisions, and manage consents,
   cultural connections, services, and events. Uses the **admin panel**
-  (`communityAdminPanel`).
+  (`apps/admin`).
 - **Public visitor** — anyone browsing public/marketing pages (about, community,
   yucayeke, services, contact) before signing up.
 
@@ -163,13 +163,13 @@ that the platform's reference data stays correct.
 ## 5. Solution overview
 
 Three applications over one REST API:
-- **Member frontend** (`CommunityFrontend`, Next.js 16): public/marketing pages, auth,
+- **Member frontend** (`apps/web`, Next.js 16): public/marketing pages, auth,
   consent, the 4-step enrollment flow, document upload, dashboard, profile, services,
   and events. Talks to the backend through its own BFF route handlers.
-- **Admin panel** (`communityAdminPanel`, Vite + React + MUI): staff review of
+- **Admin panel** (`apps/admin`, Vite + React + MUI): staff review of
   enrollments (with status filters and approve/reject), plus management of users,
   consents, cultural connections, services, and events.
-- **Backend API** (`CommunityBackend`, NestJS 11 + Prisma 7, Postgres, S3/MinIO): the
+- **Backend API** (`apps/api`, NestJS 11 + Prisma 7, Postgres, S3/MinIO): the
   single source of truth — auth, enrollment, documents, consent, services, events,
   account/profile, and admin modules, with JWT and consent guards.
 

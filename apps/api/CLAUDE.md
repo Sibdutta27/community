@@ -1,8 +1,8 @@
-# CommunityBackend — NestJS API
+# apps/api — NestJS API
 
 NestJS 11 + Prisma 7 (Postgres via `@prisma/adapter-pg`) REST API. JWT/passport auth, AWS S3 /
-MinIO file storage, multer uploads. Full map: [`../docs/architecture/backend.md`](../docs/architecture/backend.md);
-data model: [`../docs/data-model.md`](../docs/data-model.md).
+MinIO file storage, multer uploads. Full map: [`../../docs/architecture/backend.md`](../../docs/architecture/backend.md);
+data model: [`../../docs/data-model.md`](../../docs/data-model.md).
 
 ## Layout
 
@@ -54,12 +54,12 @@ S3 (virtual-host) and MinIO (path-style) via `S3_PROVIDER`.
 ## Run / DB / test
 
 ```bash
-npm run start:dev          # watch mode (nest start --watch)
-npm run db:generate        # prisma generate  → src/generated/prisma
-npm run db:migrate:deploy  # apply migrations
-npm run db:seed            # prisma/seed/seed.ts (users, consents, cultural connections,
+pnpm start:dev          # watch mode (nest start --watch)
+pnpm db:generate        # prisma generate  → src/generated/prisma
+pnpm db:migrate:deploy  # apply migrations
+pnpm db:seed            # prisma/seed/seed.ts (users, consents, cultural connections,
                            #   service & event categories + items)
-npm test                   # jest (*.spec.ts)
+pnpm test                   # jest (*.spec.ts)
 ```
 
 - Copy `.env.copy → .env`. Vars: `DATABASE_URL`, `JWT_SECRET`, `S3_*` (`S3_PROVIDER` = aws|minio),

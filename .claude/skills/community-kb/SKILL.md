@@ -32,9 +32,9 @@ based on the user's intent (or run several):
 | File | Scope | Owner |
 |------|-------|-------|
 | `CLAUDE.md` | monorepo overview + design-system warning + pointers | community-kb |
-| `CommunityBackend/CLAUDE.md` | backend quick reference | community-kb |
-| `CommunityFrontend/CLAUDE.md` | frontend quick reference | community-kb |
-| `communityAdminPanel/CLAUDE.md` | admin quick reference | community-kb |
+| `apps/api/CLAUDE.md` | backend quick reference | community-kb |
+| `apps/web/CLAUDE.md` | frontend quick reference | community-kb |
+| `apps/admin/CLAUDE.md` | admin quick reference | community-kb |
 | `docs/architecture/backend.md` | modules, endpoints, guards | community-kb |
 | `docs/architecture/frontend.md` | routes, data layer, auth | community-kb |
 | `docs/architecture/admin-panel.md` | pages, routing, tables | community-kb |
@@ -69,12 +69,12 @@ one fact per file.
 
 1. **Scope it.** Determine which `area`(s) changed (git diff, the user's description, or
    files just edited). Map area → docs:
-   - `backend` → `docs/architecture/backend.md`, `docs/data-model.md`, `CommunityBackend/CLAUDE.md`, `docs/architecture/categories.yaml`
-   - `frontend` → `docs/architecture/frontend.md`, `CommunityFrontend/CLAUDE.md`, `docs/architecture/categories.yaml`
-   - `admin` → `docs/architecture/admin-panel.md`, `communityAdminPanel/CLAUDE.md`, `docs/architecture/categories.yaml`
+   - `backend` → `docs/architecture/backend.md`, `docs/data-model.md`, `apps/api/CLAUDE.md`, `docs/architecture/categories.yaml`
+   - `frontend` → `docs/architecture/frontend.md`, `apps/web/CLAUDE.md`, `docs/architecture/categories.yaml`
+   - `admin` → `docs/architecture/admin-panel.md`, `apps/admin/CLAUDE.md`, `docs/architecture/categories.yaml`
    - always re-check whether the root `CLAUDE.md` overview still holds.
 2. **Re-map.** Launch **Explore** subagents (parallel, ≤3) scoped to the changed area(s).
-   - For `data-model.md`, read `CommunityBackend/prisma/schema.prisma` directly — it is the
+   - For `data-model.md`, read `apps/api/prisma/schema.prisma` directly — it is the
      source of truth; mirror models/relations/enums exactly.
    - For any **frontend/admin design** change, **defer the design-system docs to the
      `style-guide` skill** (`/style-guide refresh frontend` or `/style-guide refresh admin`).
@@ -103,7 +103,7 @@ Report staleness without editing anything.
    <area>`, `/style-guide refresh <app>`, `/create-prd`). Make no edits.
 
 > Tip: the user can wire this into a Stop hook via `/update-config` to auto-flag drift after
-> sessions that touched `CommunityBackend|CommunityFrontend|communityAdminPanel`. Document the
+> sessions that touched `apps/api|apps/web|apps/admin`. Document the
 > suggestion; do not install it automatically.
 
 ## Mode: record

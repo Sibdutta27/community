@@ -1,7 +1,7 @@
-# Admin Panel Architecture — communityAdminPanel
+# Admin Panel Architecture — apps/admin
 
 Vite 6 + React 19 (plain **JS/JSX**), MUI v9. See
-[`../../communityAdminPanel/CLAUDE.md`](../../communityAdminPanel/CLAUDE.md) for the quick reference.
+[`../../apps/admin/CLAUDE.md`](../../apps/admin/CLAUDE.md) for the quick reference.
 
 ## Layout (`src/`)
 

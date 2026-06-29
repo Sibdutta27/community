@@ -40,7 +40,7 @@ the map, say so and suggest `/community-kb refresh` to add it first.
    (controllers/DTOs/services for backend; routes/features/api handlers for web; pages/
    api for admin).
 4. **Add cross-cutting touches.** Check the `cross-cutting` section and include them when
-   relevant — e.g. a data-shape change implies `CommunityBackend/prisma/schema.prisma`
+   relevant — e.g. a data-shape change implies `apps/api/prisma/schema.prisma`
    **and** `docs/data-model.md`; a UI change implies the design tokens + a `/style-guide
    check`.
 5. **Output a routed plan.** Per app: the domain, the concrete files, and the order of
@@ -60,7 +60,7 @@ Make NO edits in this mode.
 3. **Classify.** Added / Changed / Fixed / Removed (Keep-a-Changelog).
 4. **Append.** Add the entry under the `## [Unreleased]` section of `docs/CHANGELOG.md`,
    each line ending with a representative path pointer, e.g.:
-   `- [web/services] Filter services by category — CommunityFrontend/src/features/services`
+   `- [web/services] Filter services by category — apps/web/src/features/services`
    Create the `[Unreleased]` section/headers if missing. **Append only — never rewrite
    prior entries.**
 5. **Report.** Show the appended lines. Do **not** commit.

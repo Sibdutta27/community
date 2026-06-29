@@ -1,7 +1,7 @@
 # Data Model (Prisma)
 
-Source of truth: `CommunityBackend/prisma/schema.prisma`. Postgres; client generated to
-`CommunityBackend/src/generated/prisma`. Keep this file in sync after migrations
+Source of truth: `apps/api/prisma/schema.prisma`. Postgres; client generated to
+`apps/api/src/generated/prisma`. Keep this file in sync after migrations
 (`community-kb refresh backend`).
 
 ## Core entities & relations
@@ -74,4 +74,4 @@ User 1───1 Enrollment 1───1 Contact
 | `ActionType` | INTERNAL, EXTERNAL, MODAL, NONE |
 | `LocationType` | PHYSICAL, VIRTUAL |
 
-Migrations in `CommunityBackend/prisma/migrations/`; seed data in `prisma/seed/`.
+Migrations in `apps/api/prisma/migrations/`; seed data in `prisma/seed/`.

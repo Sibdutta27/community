@@ -1,9 +1,9 @@
-# Design System — CommunityFrontend
+# Design System — apps/web
 
-The member-facing app's visual language. **This applies to `CommunityFrontend` only.** The
-`communityAdminPanel` is a separate dark MUI dashboard — never mix the two.
+The member-facing app's visual language. **This applies to `apps/web` only.** The
+`apps/admin` is a separate dark MUI dashboard — never mix the two.
 
-Source of truth: `CommunityFrontend/src/styles/tokens.css`, `src/styles/fonts.ts`,
+Source of truth: `apps/web/src/styles/tokens.css`, `src/styles/fonts.ts`,
 `src/app/globals.css`, `src/components/ui/*`, `src/lib/motion.ts`. When you change those, run
 `community-kb refresh frontend` to update this doc.
 

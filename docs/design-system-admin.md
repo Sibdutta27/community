@@ -1,9 +1,9 @@
-# Design System — communityAdminPanel
+# Design System — apps/admin
 
-The internal admin dashboard's visual language. **This applies to `communityAdminPanel`
-only.** `CommunityFrontend` is a separate warm, earthy app — never mix the two.
+The internal admin dashboard's visual language. **This applies to `apps/admin`
+only.** `apps/web` is a separate warm, earthy app — never mix the two.
 
-Source of truth: `communityAdminPanel/src/styles/style.css`, per-component CSS Modules
+Source of truth: `apps/admin/src/styles/style.css`, per-component CSS Modules
 (`*.module.css`), and inline MUI `sx` props. There is **no `ThemeProvider`/`createTheme`**
 — colors are applied ad hoc. When you change those, run `/style-guide refresh admin` to
 update this doc.
@@ -66,6 +66,6 @@ No serif/display split (unlike the frontend). Keep everything Inter.
 2. Inter only — no Cinzel/Montserrat (those are the frontend).
 3. Purple (`#7c3aed`/`#c084fc`) for primary/active; green/red/blue for status semantics.
 4. Put tabular data in the shared `ui/Table` wrapper; keep server-side pagination + search.
-5. **Never import or mirror `CommunityFrontend` tokens/components** — different design system.
+5. **Never import or mirror `apps/web` tokens/components** — different design system.
 6. If the team introduces a real MUI `createTheme` theme later, migrate these ad-hoc values
    into it and re-run `/style-guide refresh admin`.

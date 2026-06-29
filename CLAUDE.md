@@ -1,13 +1,15 @@
 # Community — Monorepo Guide
 
-Indigenous-heritage **community enrollment & engagement** platform. Three independent apps
-(no root workspace / no shared `package.json` — install & run each separately).
+Indigenous-heritage **community enrollment & engagement** platform. A **pnpm + Turborepo
+monorepo**: the three apps live under `apps/*` and share one root install. Run `pnpm install`
+once at the root; drive tasks with Turborepo (`pnpm build|dev|lint|typecheck`, or
+`pnpm --filter <app> <script>`). Shared packages go under `packages/*`.
 
 | App | Stack | Role |
 |-----|-------|------|
-| [`CommunityBackend/`](./CommunityBackend/CLAUDE.md) | NestJS 11 + Prisma 7 (Postgres), JWT, S3/MinIO | REST API — the single source of truth |
-| [`CommunityFrontend/`](./CommunityFrontend/CLAUDE.md) | Next.js 16 (App Router) + React 19, Tailwind v4, shadcn/ui | Member-facing app (public + authenticated) |
-| [`communityAdminPanel/`](./communityAdminPanel/CLAUDE.md) | Vite 6 + React 19, MUI v9 | Internal admin dashboard |
+| [`apps/api/`](./apps/api/CLAUDE.md) | NestJS 11 + Prisma 7 (Postgres), JWT, S3/MinIO | REST API — the single source of truth |
+| [`apps/web/`](./apps/web/CLAUDE.md) | Next.js 16 (App Router) + React 19, Tailwind v4, shadcn/ui | Member-facing app (public + authenticated) |
+| [`apps/admin/`](./apps/admin/CLAUDE.md) | Vite 6 + React 19, MUI v9 | Internal admin dashboard |
 
 Both frontends talk to the same backend API.
 
@@ -25,9 +27,9 @@ Both frontends talk to the same backend API.
 
 ## ⚠️ Two distinct design systems — do not cross-pollinate
 
-- **CommunityFrontend** = warm, earthy, Indigenous-inspired (sand/brown/red, Cinzel + Montserrat,
+- **apps/web** = warm, earthy, Indigenous-inspired (sand/brown/red, Cinzel + Montserrat,
   Tailwind + shadcn, `rounded-full` buttons). See [`docs/design-system.md`](./docs/design-system.md).
-- **communityAdminPanel** = dark purple/blue admin theme, MUI defaults + inline `sx`. See
+- **apps/admin** = dark purple/blue admin theme, MUI defaults + inline `sx`. See
   [`docs/design-system-admin.md`](./docs/design-system-admin.md).
 
 When building UI, match the design system of the app you're in. Never copy frontend tokens into the

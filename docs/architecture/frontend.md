@@ -1,7 +1,7 @@
-# Frontend Architecture — CommunityFrontend
+# Frontend Architecture — apps/web
 
 Next.js 16 App Router + React 19. See [`../design-system.md`](../design-system.md) for the visual
-language and [`../../CommunityFrontend/CLAUDE.md`](../../CommunityFrontend/CLAUDE.md) for the quick reference.
+language and [`../../apps/web/CLAUDE.md`](../../apps/web/CLAUDE.md) for the quick reference.
 
 ## Routing
 

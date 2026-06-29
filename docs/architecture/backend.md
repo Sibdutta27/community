@@ -1,7 +1,7 @@
-# Backend Architecture — CommunityBackend
+# Backend Architecture — apps/api
 
 NestJS 11 + Prisma 7 (Postgres via `@prisma/adapter-pg`). See also
-[`../data-model.md`](../data-model.md) and [`../../CommunityBackend/CLAUDE.md`](../../CommunityBackend/CLAUDE.md).
+[`../data-model.md`](../data-model.md) and [`../../apps/api/CLAUDE.md`](../../apps/api/CLAUDE.md).
 
 ## Module map (`src/`)
 

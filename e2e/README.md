@@ -20,7 +20,7 @@ You need the apps running and reachable at the URLs in `.env`:
 - **web** (Next.js) — `next dev`, default `http://localhost:3000`
 - **admin** (Vite) — `vite`, default `http://localhost:5173`
 - the **backend** (NestJS) + Postgres/MinIO must be up for authenticated flows
-  (`cd CommunityBackend && docker compose -f compose.yaml up -d && npm run start:dev`).
+  (`cd apps/api && docker compose -f compose.yaml up -d && npm run start:dev`).
 
 > Note: the repo has a pre-existing port ambiguity (frontend README references the backend
 > on `:4000/api`; admin `.env` points at `:3000`). Set `WEB_BASE_URL` / `ADMIN_BASE_URL`
@@ -53,7 +53,7 @@ A green run = the app does what it used to. Investigate any diff before proceedi
 
 Authenticated tests (member dashboard/enrollment; admin CRUD pages) **skip** unless you
 set `TEST_MEMBER_EMAIL/PASSWORD` and `TEST_ADMIN_EMAIL/PASSWORD` in `.env`. Use seeded
-accounts (see `CommunityBackend/prisma/seed/`). They assert pages load and forms render;
+accounts (see `apps/api/prisma/seed/`). They assert pages load and forms render;
 they do not submit data that would mutate state.
 
 ## Layout

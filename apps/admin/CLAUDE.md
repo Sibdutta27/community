@@ -1,10 +1,10 @@
-# communityAdminPanel — admin dashboard
+# apps/admin — admin dashboard
 
 Vite 6 + React 19 (**JS, not TS**), MUI v9 + Emotion, react-router-dom v7, TanStack Query, axios,
 react-hook-form + Zod, react-data-table-component, react-toastify. Full map:
-[`../docs/architecture/admin-panel.md`](../docs/architecture/admin-panel.md).
+[`../../docs/architecture/admin-panel.md`](../../docs/architecture/admin-panel.md).
 
-> ⚠️ This app has its **own dark purple/blue design system** — distinct from CommunityFrontend.
+> ⚠️ This app has its **own dark purple/blue design system** — distinct from apps/web.
 > Do not import or mirror the frontend's tokens/components here.
 
 ## Layout
@@ -46,10 +46,10 @@ Vite aliases: `@`, `@components`, `@pages`, `@hooks`, `@utils`, `@assets`, `@the
 ## Run
 
 ```bash
-npm run dev       # vite
-npm run build
-npm run preview
-npm run lint
+pnpm dev       # vite
+pnpm build
+pnpm preview
+pnpm lint
 ```
 
 Env: `VITE_API_URL` (default `http://localhost:3000`). Copy `.env.copy → .env`.
