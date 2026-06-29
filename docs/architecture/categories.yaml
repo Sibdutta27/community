@@ -1,0 +1,181 @@
+# Community monorepo — App -> Domain categorization map.
+#
+# Purpose: a fast, machine-readable index of where each business domain lives in each
+# app, so change requests can be routed to the exact files/areas efficiently.
+#
+# Owned/refreshed by the `community-kb` skill (run `/community-kb refresh` after the
+# code structure changes). Read (never written) by the `change-router` skill.
+#
+# NOTE: paths reflect the CURRENT pre-migration layout. When the monorepo restructure
+# lands, repoint roots: CommunityBackend -> apps/api, CommunityFrontend -> apps/web,
+# communityAdminPanel -> apps/admin (and update every path below accordingly).
+
+apps:
+  backend:
+    root: CommunityBackend
+    stack: "NestJS 11 + Prisma 7 (Postgres), JWT, S3/MinIO"
+    note: "Single source of truth. Change API/DTO here before either frontend."
+  web:
+    root: CommunityFrontend
+    stack: "Next.js 16 (App Router) + React 19, Tailwind v4, shadcn/ui"
+    note: "Member-facing. Proxies the backend via BFF route handlers in src/app/api."
+  admin:
+    root: communityAdminPanel
+    stack: "Vite 6 + React 19 (plain JS), MUI v9"
+    note: "Internal staff dashboard."
+
+domains:
+  auth:
+    desc: "Registration, login (member + admin), JWT issue/verify, sessions, route guards."
+    docs: [docs/architecture/backend.md, docs/architecture/frontend.md]
+    backend: [CommunityBackend/src/modules/auth]
+    web:
+      - CommunityFrontend/src/app/(auth)
+      - CommunityFrontend/src/features/auth
+      - CommunityFrontend/src/app/api/auth
+      - CommunityFrontend/src/middleware.ts
+      - CommunityFrontend/src/lib/auth.ts
+      - CommunityFrontend/src/lib/auth-session.ts
+    admin:
+      - communityAdminPanel/src/pages/Login
+      - communityAdminPanel/src/api/auth.api.js
+      - communityAdminPanel/src/routes
+
+  enrollment:
+    desc: "4-step enrollment flow + lifecycle DRAFT->SUBMITTED->APPROVED/REJECTED; addresses, contacts, maternal lineage."
+    docs: [docs/architecture/backend.md, docs/data-model.md]
+    backend: [CommunityBackend/src/modules/enrollment]
+    web:
+      - CommunityFrontend/src/app/(protected)/enrollment
+      - CommunityFrontend/src/app/(public)/enrollment
+      - CommunityFrontend/src/features/enrollment
+      - CommunityFrontend/src/app/api/enrollment
+    admin:
+      - communityAdminPanel/src/pages/Enrollments
+      - communityAdminPanel/src/api/enrollment.api.js
+
+  consent:
+    desc: "Versioned consent templates + acceptance gating (ConsentAcceptedGuard) before personal-data writes."
+    docs: [docs/architecture/backend.md]
+    backend: [CommunityBackend/src/modules/consent]
+    web: [CommunityFrontend/src/app/api/consent]
+    admin:
+      - communityAdminPanel/src/pages/Consents
+      - communityAdminPanel/src/api/consent.api.js
+
+  documents:
+    desc: "Typed file upload/list/delete to S3/MinIO; single- vs multi-file rules; review status."
+    docs: [docs/architecture/backend.md]
+    backend:
+      - CommunityBackend/src/modules/document
+      - CommunityBackend/src/common/s3
+    web: [CommunityFrontend/src/app/api/document]
+    admin: []
+
+  services:
+    desc: "Service catalog + categories + member registration; admin CRUD."
+    docs: [docs/architecture/backend.md]
+    backend: [CommunityBackend/src/modules/service]
+    web:
+      - CommunityFrontend/src/app/(public)/services
+      - CommunityFrontend/src/features/services
+      - CommunityFrontend/src/app/api/services
+    admin:
+      - communityAdminPanel/src/pages/Services
+      - communityAdminPanel/src/pages/ServiceCategories
+      - communityAdminPanel/src/api/service.api.js
+      - communityAdminPanel/src/api/serviceCat.api.js
+
+  events:
+    desc: "Event catalog + categories + member registration; admin CRUD."
+    docs: [docs/architecture/backend.md]
+    backend: [CommunityBackend/src/modules/event]
+    web: [CommunityFrontend/src/app/api/events]
+    admin:
+      - communityAdminPanel/src/pages/Events
+      - communityAdminPanel/src/pages/EventCategories
+      - communityAdminPanel/src/api/event.api.js
+      - communityAdminPanel/src/api/eventCat.api.js
+
+  profile:
+    desc: "Member profile, dashboard, account info, photo upload, user records."
+    docs: [docs/architecture/backend.md, docs/architecture/frontend.md]
+    backend:
+      - CommunityBackend/src/modules/profile
+      - CommunityBackend/src/modules/user
+      - CommunityBackend/src/modules/account
+    web:
+      - CommunityFrontend/src/app/(protected)/my-profile
+      - CommunityFrontend/src/app/(protected)/profile
+      - CommunityFrontend/src/app/(protected)/dashboard
+      - CommunityFrontend/src/features/profile
+      - CommunityFrontend/src/features/dashboard
+      - CommunityFrontend/src/app/api/profile
+      - CommunityFrontend/src/app/api/account
+    admin:
+      - communityAdminPanel/src/pages/Users
+      - communityAdminPanel/src/pages/Dashboard
+      - communityAdminPanel/src/api/user.api.js
+      - communityAdminPanel/src/api/account.api.js
+
+  cultural-connection:
+    desc: "Cultural connections + maternal lineage (captured in the enrollment step)."
+    docs: [docs/architecture/backend.md, docs/data-model.md]
+    backend: [CommunityBackend/src/modules/enrollment]
+    web: [CommunityFrontend/src/features/enrollment]
+    admin:
+      - communityAdminPanel/src/pages/CulturalConnections
+      - communityAdminPanel/src/api/culturalConnection.api.js
+
+  admin-management:
+    desc: "Backend admin CRUD surface + admin-panel shell (layout/nav)."
+    docs: [docs/architecture/admin-panel.md]
+    backend: [CommunityBackend/src/modules/admin]
+    admin:
+      - communityAdminPanel/src/pages
+      - communityAdminPanel/src/layouts
+
+  marketing-content:
+    desc: "Public/marketing pages (no domain backend): about, community, yucayeke, contact, landing, policies."
+    docs: [docs/architecture/frontend.md]
+    web:
+      - CommunityFrontend/src/app/(public)/about
+      - CommunityFrontend/src/app/(public)/community
+      - CommunityFrontend/src/app/(public)/yucayeke
+      - CommunityFrontend/src/app/(public)/contact
+      - CommunityFrontend/src/app/(public)/cookie-policy
+      - CommunityFrontend/src/app/(public)/privacy-policy
+      - CommunityFrontend/src/app/(public)/terms-of-service
+      - CommunityFrontend/src/features/home
+      - CommunityFrontend/src/features/about
+      - CommunityFrontend/src/features/community
+      - CommunityFrontend/src/features/contact
+      - CommunityFrontend/src/features/yucayeke
+
+cross-cutting:
+  data-model:
+    desc: "Prisma schema — source of truth for models/relations/enums."
+    backend: [CommunityBackend/prisma/schema.prisma]
+    doc: docs/data-model.md
+  design-system:
+    desc: "Two deliberately separate systems — never cross-pollinate."
+    web:
+      - CommunityFrontend/src/styles
+      - CommunityFrontend/src/components/ui
+      - CommunityFrontend/src/lib/motion.ts
+    admin:
+      - communityAdminPanel/src/styles
+      - communityAdminPanel/src/components/ui
+    docs: [docs/design-system.md, docs/design-system-admin.md]
+  http-client:
+    desc: "Axios clients + endpoint catalogs."
+    web:
+      - CommunityFrontend/src/services/http
+      - CommunityFrontend/src/app/api/_shared
+    admin: [communityAdminPanel/src/api/client.js]
+  infra:
+    desc: "DB client, config, local infra (Postgres + MinIO)."
+    backend:
+      - CommunityBackend/src/database
+      - CommunityBackend/src/config
+      - CommunityBackend/compose.yaml

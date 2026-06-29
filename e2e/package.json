@@ -1,0 +1,19 @@
+{
+  "name": "community-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Playwright end-to-end / behavior-parity suite for the Community monorepo (member frontend + admin panel).",
+  "scripts": {
+    "test": "playwright test",
+    "test:web": "playwright test --project=web",
+    "test:admin": "playwright test --project=admin",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "baseline:update": "playwright test --update-snapshots",
+    "install:browsers": "playwright install --with-deps"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "dotenv": "^16.6.1"
+  }
+}

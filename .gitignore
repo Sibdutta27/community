@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.turbo/
+
+# Test / coverage
+coverage/
+test-results/
+playwright-report/
+blob-report/
+
+# Misc
+*.tsbuildinfo
+.DS_Store
+
+# Claude Code runtime (skills ARE tracked; lock file is not)
+.claude/scheduled_tasks.lock
