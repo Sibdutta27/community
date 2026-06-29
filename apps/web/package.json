@@ -12,8 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint-staged": "lint-staged",
-    "commitlint": "commitlint --edit",
-    "prepare": "husky"
+    "commitlint": "commitlint --edit"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [

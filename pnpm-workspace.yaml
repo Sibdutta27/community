@@ -1,0 +1,11 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Shared dependency versions. Apps are NOT yet converted to `catalog:` — that's a
+# follow-up so this migration stays a pure structural move (build parity). When ready,
+# change each app's react/react-dom/typescript to "catalog:" and run pnpm install.
+catalog:
+  react: 19.2.4
+  react-dom: 19.2.4
+  typescript: ^5.7.3
