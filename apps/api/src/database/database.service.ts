@@ -19,8 +19,10 @@ export class DatabaseService extends PrismaClient implements OnModuleInit, OnMod
             await this.$queryRaw`SELECT 1`;
             console.log('SUCCESS:: Prisma connected to PgSQL database');
         } catch (error) {
+            // Do NOT rethrow: on serverless a bad/cold DB connection would otherwise
+            // fail Nest init and 500 every route (incl. /health). Log and continue;
+            // DB-touching routes will surface their own errors.
             console.error('ERROR:: Prisma connection error:', error);
-            throw error;
         }
     }
 
