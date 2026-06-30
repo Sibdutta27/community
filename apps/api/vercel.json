@@ -1,11 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "pnpm run db:generate && pnpm run build",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "npm run db:generate && npm run build",
+  "installCommand": "npm install",
   "outputDirectory": "dist",
   "functions": {
     "api/index.js": {
-      "runtime": "nodejs22.x",
       "memory": 1024,
       "maxDuration": 30,
       "includeFiles": "dist/src/generated/prisma/**"
