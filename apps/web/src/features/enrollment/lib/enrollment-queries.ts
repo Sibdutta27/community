@@ -7,9 +7,12 @@ import type {
   AccountInfoResponse,
   ActiveConsent,
   ConsentAcceptRequest,
+  EnrollmentCompleteRequest,
+  EnrollmentCompleteResponse,
   EnrollmentDocumentListResponse,
   EnrollmentDocumentType,
   EnrollmentDocumentUploadResponse,
+  EnrollmentStepFourNextResponse,
   EnrollmentStepOnePrefillResponse,
   EnrollmentStepOneUpsertRequest,
   EnrollmentStepOneUpsertResponse,
@@ -230,7 +233,34 @@ export function useEnrollmentDocumentUploadMutation() {
   });
 }
 
+export function useEnrollmentStepFourNextMutation() {
+  return useMutation({
+    mutationFn: () =>
+      requestJson<EnrollmentStepFourNextResponse>("/api/enrollment/step4/next", {
+        method: "POST",
+        fallbackMessage:
+          "Unable to complete the document upload step right now.",
+      }),
+  });
+}
+
+export function useCompleteEnrollmentMutation() {
+  return useMutation({
+    mutationFn: (payload: EnrollmentCompleteRequest) =>
+      requestJson<EnrollmentCompleteResponse, EnrollmentCompleteRequest>(
+        "/api/enrollment/complete",
+        {
+          method: "POST",
+          body: payload,
+          fallbackMessage:
+            "Unable to submit your enrollment application right now.",
+        },
+      ),
+  });
+}
+
 export type {
+  EnrollmentCompleteResponse,
   EnrollmentDocumentUploadResponse,
   EnrollmentStepOneUpsertResponse,
   EnrollmentStepThreeUpsertResponse,

@@ -300,9 +300,14 @@ export class EnrollmentService {
     }
 
     /**
-     * Complete the enrollment by setting the status to COMPLETED. This should only be allowed if all required consents are accepted.
+     * Complete the enrollment: persists the confirmation e-signature
+     * (signatureName / signatureDate / agreedToTerms) and sets the status to SUBMITTED.
+     * This is only allowed if all required consents are accepted and every step is completed.
      */
-    public async completeEnrollment(userId: string) {
+    public async completeEnrollment(
+        userId   : string,
+        signature: { signatureName: string; signatureDate: string; agreedToTerms: boolean },
+    ) {
         const enrollment = await this.database.enrollment.findFirst({
             where: { userId },
             include: {
@@ -339,10 +344,33 @@ export class EnrollmentService {
             throw new BadRequestException('All enrollment steps must be completed to complete enrollment');
         }
 
-        // Update enrollment status to COMPLETED
+        // Require the confirmation e-signature
+        if (!signature.agreedToTerms) {
+            throw new BadRequestException('You must agree to the terms of service to complete enrollment');
+        }
+
+        const signatureName = signature.signatureName?.trim();
+
+        if (!signatureName) {
+            throw new BadRequestException('A signature name is required to complete enrollment');
+        }
+
+        const signatureDate = new Date(signature.signatureDate);
+
+        if (Number.isNaN(signatureDate.getTime())) {
+            throw new BadRequestException('A valid signature date is required to complete enrollment');
+        }
+
+        // Persist the e-signature and update enrollment status to SUBMITTED
         await this.database.enrollment.update({
             where: { id: enrollment.id },
-            data: { status: EnrollmentStatus.SUBMITTED, consentAccepted: true },
+            data: {
+                status         : EnrollmentStatus.SUBMITTED,
+                consentAccepted: true,
+                signatureName,
+                signatureDate,
+                agreedToTerms  : signature.agreedToTerms,
+            },
         });
 
         return { success: true, message: 'Enrollment completed successfully' };

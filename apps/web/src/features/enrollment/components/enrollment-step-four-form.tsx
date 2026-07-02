@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState, type ChangeEvent } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
   accountQueryKeys,
   enrollmentQueryKeys,
   useEnrollmentStepFourDocumentListQuery,
+  useEnrollmentStepFourNextMutation,
   useEnrollmentDocumentUploadMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
@@ -162,6 +163,7 @@ export function EnrollmentStepFourForm() {
   const queryClient = useQueryClient();
   const documentListQuery = useEnrollmentStepFourDocumentListQuery();
   const uploadMutation = useEnrollmentDocumentUploadMutation();
+  const stepFourNextMutation = useEnrollmentStepFourNextMutation();
   const inputRefs = useRef<
     Partial<Record<EnrollmentStepFourUploadSlotId, HTMLInputElement | null>>
   >({});
@@ -267,6 +269,34 @@ export function EnrollmentStepFourForm() {
       );
     } finally {
       setActiveUploadSlotId(null);
+    }
+  };
+
+  const handleContinueToConfirmation = async () => {
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    try {
+      const result = await stepFourNextMutation.mutateAsync();
+
+      if (!result.success) {
+        setErrorMessage(
+          "Some required documents are still missing. Please upload every mandatory document before continuing.",
+        );
+        return;
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: accountQueryKeys.info,
+      });
+
+      router.push("/enrollment/step-5");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to complete the document upload step right now.",
+      );
     }
   };
 
@@ -508,7 +538,8 @@ export function EnrollmentStepFourForm() {
               </h2>
               {hasMandatoryDocuments ? (
                 <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Mandatory documents are uploaded.
+                  Mandatory documents are uploaded. Continue to the
+                  confirmation step to sign and submit your application.
                 </p>
               ) : (
                 <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
@@ -549,14 +580,19 @@ export function EnrollmentStepFourForm() {
                 disabled={
                   isListLoading ||
                   uploadMutation.isPending ||
+                  stepFourNextMutation.isPending ||
                   !hasMandatoryDocuments
                 }
-                onClick={() => router.push("/dashboard")}
-                rightIcon={<CheckCircle2 />}
+                loading={stepFourNextMutation.isPending}
+                loadingText="Saving Step 4..."
+                onClick={() => {
+                  void handleContinueToConfirmation();
+                }}
+                rightIcon={<ArrowRight />}
                 size="lg"
                 type="button"
               >
-                Back to Dashboard
+                Next Step
               </Button>
             </div>
           </div>

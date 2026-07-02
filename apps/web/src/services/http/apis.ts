@@ -31,6 +31,7 @@ export const endpoints = {
   },
   ENROLLMENT: {
     START: normalizePath("/enrollment/start"),
+    COMPLETE: normalizePath("/enrollment/complete"),
     STEP_1_PERSONAL_INFO: normalizePath("/enrollment/step1"),
     STEP_1_PERSONAL_INFO_UPSERT: normalizePath("/enrollment/step1/upsert"),
     STEP_2_MATERNAL_LINEAGE: normalizePath("/enrollment/step2"),
@@ -42,6 +43,7 @@ export const endpoints = {
     STEP_3_CULTURAL_CONNECTION_UPSERT: normalizePath(
       "/enrollment/step3/upsert",
     ),
+    STEP_4_DOCUMENTS_NEXT: normalizePath("/enrollment/step4/next"),
   },
   DOCUMENT: {
     LIST: normalizePath("/document/list"),

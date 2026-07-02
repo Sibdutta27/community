@@ -11,7 +11,7 @@ export type ConsentAcceptRequest = Readonly<{
   acceptRequired: boolean;
 }>;
 
-export type EnrollmentStepKey = "1" | "2" | "3" | "4";
+export type EnrollmentStepKey = "1" | "2" | "3" | "4" | "5";
 
 export type EnrollmentStepState = Readonly<Record<EnrollmentStepKey, boolean>>;
 
@@ -351,6 +351,22 @@ export type EnrollmentStepThreeUpsertRequest = Readonly<{
 
 export type EnrollmentStepThreeUpsertResponse = Readonly<{
   success: boolean;
+}>;
+
+export type EnrollmentStepFourNextResponse = Readonly<{
+  success: boolean;
+  error?: string;
+}>;
+
+export type EnrollmentCompleteRequest = Readonly<{
+  signatureName: string;
+  signatureDate: string;
+  agreedToTerms: boolean;
+}>;
+
+export type EnrollmentCompleteResponse = Readonly<{
+  success: boolean;
+  message?: string;
 }>;
 
 export type EnrollmentDocumentListResponse =

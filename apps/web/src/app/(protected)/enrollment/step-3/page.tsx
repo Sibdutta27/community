@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { EnrollmentProgressSection } from "@/features/enrollment/components/enrollment-progress-section";
 import { EnrollmentStepHero } from "@/features/enrollment/components/enrollment-step-hero";
 import { EnrollmentStepThreeForm } from "@/features/enrollment/components/enrollment-step-three-form";
-import { getEnrollmentStepDefinition } from "@/features/enrollment/config/enrollment-steps";
-
-const totalSteps = 4;
+import {
+  enrollmentTotalSteps,
+  getEnrollmentStepDefinition,
+} from "@/features/enrollment/config/enrollment-steps";
 
 export default function EnrollmentStep3Page() {
   const step = getEnrollmentStepDefinition(3);
@@ -21,7 +22,7 @@ export default function EnrollmentStep3Page() {
         description="Share how your family maintains cultural traditions, knowledge, and community ties to support your enrollment review."
         step={step.step}
         title="Cultural Connection and Heritage"
-        totalSteps={totalSteps}
+        totalSteps={enrollmentTotalSteps}
       />
       <EnrollmentProgressSection
         className="-mx-4 sm:-mx-6 lg:-mx-8"

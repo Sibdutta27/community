@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
 
+import { EnrollmentConfirmationForm } from "@/features/enrollment/components/enrollment-confirmation-form";
 import { EnrollmentProgressSection } from "@/features/enrollment/components/enrollment-progress-section";
 import { EnrollmentStepHero } from "@/features/enrollment/components/enrollment-step-hero";
-import { EnrollmentStepTwoForm } from "@/features/enrollment/components/enrollment-step-two-form";
 import {
   enrollmentTotalSteps,
   getEnrollmentStepDefinition,
 } from "@/features/enrollment/config/enrollment-steps";
 
-export default function EnrollmentStep2Page() {
-  const step = getEnrollmentStepDefinition(2);
+export default function EnrollmentStep5Page() {
+  const step = getEnrollmentStepDefinition(5);
 
   if (!step) {
     notFound();
@@ -19,9 +19,9 @@ export default function EnrollmentStep2Page() {
     <>
       <EnrollmentStepHero
         className="-mx-4 sm:-mx-6 lg:-mx-8"
-        description="Document your maternal ancestry and family history to continue your enrollment journey and prepare for supporting document submission."
+        description="Sign your application electronically and submit it to the council for enrollment review."
         step={step.step}
-        title="Maternal Lineage Documentation"
+        title={step.title}
         totalSteps={enrollmentTotalSteps}
       />
       <EnrollmentProgressSection
@@ -30,7 +30,7 @@ export default function EnrollmentStep2Page() {
       />
       <section className="-mx-4 bg-background sm:-mx-6 lg:-mx-8">
         <div className="px-4 sm:px-6 lg:px-8">
-          <EnrollmentStepTwoForm />
+          <EnrollmentConfirmationForm />
         </div>
       </section>
     </>
