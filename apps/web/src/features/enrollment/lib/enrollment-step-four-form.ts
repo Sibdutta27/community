@@ -14,77 +14,73 @@ const enrollmentStepFourAllowedMimeTypes = new Set([
   "image/webp",
 ]);
 
-export type EnrollmentStepFourSingleUploadCard = Readonly<{
-  id: "user_photo" | "birth_certificate";
+export type EnrollmentStepFourUploadSlot = Readonly<{
+  id: string;
   title: string;
   description: string;
   documentType: EnrollmentDocumentType;
+  isSingle: boolean;
+  required: boolean;
 }>;
 
-export const enrollmentStepFourSingleUploadCards = [
-  {
-    id: "user_photo",
-    title: "User Photo",
-    description: "Upload a clear, recent photo.",
-    documentType: "USER_PHOTO",
-  },
-  {
-    id: "birth_certificate",
-    title: "Birth Certificate",
-    description: "Upload your birth certificate document.",
-    documentType: "BIRTH_CERTIFICATE",
-  },
-] as const satisfies readonly EnrollmentStepFourSingleUploadCard[];
+/**
+ * The one mandatory upload for Step 4 — a single, clear photo of the
+ * applicant (`USER_PHOTO`, required by `POST /enrollment/step4/next`).
+ */
+export const enrollmentStepFourUserPhotoCard = {
+  id: "user_photo",
+  title: "Your Photo",
+  description: "Upload a clear, recent photo of yourself.",
+  documentType: "USER_PHOTO",
+  isSingle: true,
+  required: true,
+} as const satisfies EnrollmentStepFourUploadSlot;
 
-export type EnrollmentStepFourLineageUploadSlot = Readonly<{
-  id:
-    | "mother_birth_certificate"
-    | "mother_photo"
-    | "grandmother_birth_certificate"
-    | "grandmother_photo";
-  title: string;
-  description: string;
-  documentType: "FAMILY_RECORD" | "FAMILY_PHOTO";
-}>;
-
-export const enrollmentStepFourLineageUploadSlots = [
+/**
+ * Optional multi-file supporting-evidence slots for the kinship / ancestry
+ * proof, matching the backend document types exactly.
+ */
+export const enrollmentStepFourEvidenceUploadSlots = [
   {
-    id: "mother_birth_certificate",
-    title: "Mother's Birth Certificate",
-    description: "Upload your mother's birth certificate.",
-    documentType: "FAMILY_RECORD",
+    id: "genealogical_records",
+    title: "Genealogical Records",
+    description:
+      "Birth, baptism, census, or civil records that trace your family line.",
+    documentType: "GENEALOGICAL_RECORDS",
+    isSingle: false,
+    required: false,
   },
   {
-    id: "mother_photo",
-    title: "Mother's Photo",
-    description: "Upload a clear photo of your mother.",
-    documentType: "FAMILY_PHOTO",
+    id: "kinship_letters",
+    title: "Kinship Letters",
+    description:
+      "Letters from family or community members attesting to your kinship.",
+    documentType: "KINSHIP_LETTERS",
+    isSingle: false,
+    required: false,
   },
   {
-    id: "grandmother_birth_certificate",
-    title: "Grandmother's Birth Certificate",
-    description: "Upload your grandmother's birth certificate.",
-    documentType: "FAMILY_RECORD",
+    id: "oral_history",
+    title: "Oral History",
+    description:
+      "Recorded or transcribed oral history that supports your lineage.",
+    documentType: "ORAL_HISTORY",
+    isSingle: false,
+    required: false,
   },
   {
-    id: "grandmother_photo",
-    title: "Grandmother's Photo",
-    description: "Upload a clear photo of your grandmother.",
-    documentType: "FAMILY_PHOTO",
+    id: "dna_testing",
+    title: "DNA Testing",
+    description: "DNA test results that support your ancestry, if available.",
+    documentType: "DNA_TESTING",
+    isSingle: false,
+    required: false,
   },
-] as const satisfies readonly EnrollmentStepFourLineageUploadSlot[];
-
-export const enrollmentStepFourAdditionalEvidenceCard = {
-  id: "additional_evidence",
-  title: "Additional Evidence",
-  description: "Upload any additional supporting documents, if available.",
-  documentType: "ADDITIONAL_EVIDENCE",
-} as const;
+] as const satisfies readonly EnrollmentStepFourUploadSlot[];
 
 export type EnrollmentStepFourUploadSlotId =
-  | EnrollmentStepFourSingleUploadCard["id"]
-  | EnrollmentStepFourLineageUploadSlot["id"]
-  | typeof enrollmentStepFourAdditionalEvidenceCard.id;
+  | typeof enrollmentStepFourUserPhotoCard.id
+  | (typeof enrollmentStepFourEvidenceUploadSlots)[number]["id"];
 
 export type EnrollmentStepFourDocumentMap = Record<
   EnrollmentDocumentType,
@@ -93,11 +89,12 @@ export type EnrollmentStepFourDocumentMap = Record<
 
 function createEmptyDocumentMap(): EnrollmentStepFourDocumentMap {
   return {
+    PROFILE_PICTURE: [],
     USER_PHOTO: [],
-    BIRTH_CERTIFICATE: [],
-    FAMILY_RECORD: [],
-    FAMILY_PHOTO: [],
-    ADDITIONAL_EVIDENCE: [],
+    GENEALOGICAL_RECORDS: [],
+    KINSHIP_LETTERS: [],
+    ORAL_HISTORY: [],
+    DNA_TESTING: [],
   };
 }
 
@@ -117,7 +114,9 @@ export function buildEnrollmentStepFourDocumentMap(
   const map = createEmptyDocumentMap();
 
   for (const bucket of buckets ?? []) {
-    map[bucket.type] = toDocumentArray(bucket);
+    if (bucket.type in map) {
+      map[bucket.type] = toDocumentArray(bucket);
+    }
   }
 
   return map;

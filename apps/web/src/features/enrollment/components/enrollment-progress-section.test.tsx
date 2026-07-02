@@ -35,10 +35,10 @@ describe("EnrollmentProgressSection", () => {
   it("renders every enrollment step title", () => {
     render(<EnrollmentProgressSection currentStage={1} />);
 
-    expect(screen.getByText("Personal Information")).toBeInTheDocument();
-    expect(screen.getByText("Maternal Lineage")).toBeInTheDocument();
-    expect(screen.getByText("Cultural Connection")).toBeInTheDocument();
-    expect(screen.getByText("Document Upload")).toBeInTheDocument();
+    expect(screen.getByText("Demographics")).toBeInTheDocument();
+    expect(screen.getByText("Maternal Kinship")).toBeInTheDocument();
+    expect(screen.getByText("Paternal Kinship")).toBeInTheDocument();
+    expect(screen.getByText("Documents")).toBeInTheDocument();
     expect(screen.getByText("Confirmation")).toBeInTheDocument();
   });
 
@@ -47,7 +47,7 @@ describe("EnrollmentProgressSection", () => {
 
     const current = document.querySelector('[aria-current="step"]');
     expect(current).not.toBeNull();
-    expect(current).toHaveTextContent("Maternal Lineage");
+    expect(current).toHaveTextContent("Maternal Kinship");
   });
 
   it("uses the minimal monochrome active marker (no hardcoded earthy colors)", () => {
@@ -64,10 +64,10 @@ describe("EnrollmentProgressSection", () => {
     render(<EnrollmentProgressSection currentStage={3} />);
 
     expect(
-      screen.getByRole("link", { name: /step 1: Personal Information/i }),
+      screen.getByRole("link", { name: /step 1: Demographics/i }),
     ).toHaveAttribute("href", "/enrollment/step-1");
     expect(
-      screen.getByRole("link", { name: /step 2: Maternal Lineage/i }),
+      screen.getByRole("link", { name: /step 2: Maternal Kinship/i }),
     ).toHaveAttribute("href", "/enrollment/step-2");
   });
 
@@ -76,10 +76,10 @@ describe("EnrollmentProgressSection", () => {
     render(<EnrollmentProgressSection currentStage={3} />);
 
     expect(
-      screen.queryByRole("link", { name: /Cultural Connection/i }),
+      screen.queryByRole("link", { name: /Paternal Kinship/i }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("link", { name: /Document Upload/i }),
+      screen.queryByRole("link", { name: /Documents/i }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: /Confirmation/i }),
@@ -91,7 +91,7 @@ describe("EnrollmentProgressSection", () => {
     render(<EnrollmentProgressSection currentStage={2} />);
 
     expect(
-      screen.getByRole("link", { name: /step 4: Document Upload/i }),
+      screen.getByRole("link", { name: /step 4: Documents/i }),
     ).toHaveAttribute("href", "/enrollment/step-4");
     expect(
       screen.getByRole("link", { name: /step 5: Confirmation/i }),
@@ -102,10 +102,10 @@ describe("EnrollmentProgressSection", () => {
     render(<EnrollmentProgressSection currentStage={3} />);
 
     expect(
-      screen.getByRole("link", { name: /step 1: Personal Information/i }),
+      screen.getByRole("link", { name: /step 1: Demographics/i }),
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("link", { name: /Document Upload/i }),
+      screen.queryByRole("link", { name: /Documents/i }),
     ).not.toBeInTheDocument();
   });
 });

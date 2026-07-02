@@ -5,8 +5,8 @@ import { useEffect, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, Plus, Trash2, TreePine } from "lucide-react";
-import { useForm, useWatch } from "react-hook-form";
+import { ArrowLeft, ArrowRight, TreePine } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -14,7 +14,6 @@ import {
   EnrollmentDateField,
   EnrollmentInputField,
   EnrollmentRadioGroupField,
-  EnrollmentTextareaField,
 } from "@/features/enrollment/components/enrollment-form-fields";
 import { EnrollmentFormSection } from "@/features/enrollment/components/enrollment-form-section";
 import {
@@ -25,12 +24,11 @@ import {
   useEnrollmentStepTwoUpsertMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
-  emptyEnrollmentStepTwoLineageValue,
-  enrollmentStepTwoLivingStatusOptions,
+  enrollmentKinshipYesNoOptions,
   enrollmentStepTwoSchema,
   getEnrollmentStepTwoDefaultValues,
   mapEnrollmentStepTwoFormToPayload,
-  maternalLineageDefinitions,
+  maternalKinshipDefinitions,
   type EnrollmentStepTwoFormValues,
 } from "@/features/enrollment/lib/enrollment-step-two-form";
 
@@ -65,18 +63,9 @@ export function EnrollmentStepTwoForm() {
     clearErrors,
     control,
     formState: { errors, isDirty },
-    getValues,
     reset,
     setError,
-    setValue,
   } = form;
-  const includedLineages = useWatch({
-    control,
-    name: "includedLineages",
-  });
-
-  const resolvedIncludedLineages =
-    includedLineages ?? maternalLineageDefinitions.map((_, index) => index < 2);
 
   useEffect(() => {
     if (!stepTwoQuery.data || isDirty) {
@@ -103,56 +92,6 @@ export function EnrollmentStepTwoForm() {
       ? stepTwoQuery.error.message
       : null;
 
-  const canAddMoreLineages = resolvedIncludedLineages.some(
-    (isIncluded, index) => index >= 2 && !isIncluded,
-  );
-
-  const handleAddLineage = () => {
-    const nextIndex = resolvedIncludedLineages.findIndex(
-      (isIncluded, index) => index >= 2 && !isIncluded,
-    );
-
-    if (nextIndex < 0) {
-      return;
-    }
-
-    const nextIncludedLineages = [...resolvedIncludedLineages];
-    nextIncludedLineages[nextIndex] = true;
-
-    setValue("includedLineages", nextIncludedLineages, {
-      shouldDirty: true,
-      shouldTouch: false,
-      shouldValidate: true,
-    });
-  };
-
-  const handleRemoveLineage = (index: number) => {
-    if (index < 2) {
-      return;
-    }
-
-    const nextIncludedLineages = [...resolvedIncludedLineages];
-    nextIncludedLineages[index] = false;
-
-    const nextMaternalLineages = getValues("maternalLineages").map(
-      (lineage, lineageIndex) =>
-        lineageIndex === index
-          ? { ...emptyEnrollmentStepTwoLineageValue }
-          : lineage,
-    );
-
-    setValue("includedLineages", nextIncludedLineages, {
-      shouldDirty: true,
-      shouldTouch: false,
-      shouldValidate: true,
-    });
-    setValue("maternalLineages", nextMaternalLineages, {
-      shouldDirty: true,
-      shouldTouch: false,
-      shouldValidate: true,
-    });
-  };
-
   const onSubmit = async (values: EnrollmentStepTwoFormValues) => {
     clearErrors("root");
 
@@ -165,7 +104,7 @@ export function EnrollmentStepTwoForm() {
         queryKey: accountQueryKeys.info,
       });
       await queryClient.invalidateQueries({
-        queryKey: enrollmentQueryKeys.stepTwoMaternalLineage,
+        queryKey: enrollmentQueryKeys.stepTwoMaternalKinship,
       });
       router.push("/enrollment/step-3");
     } catch (error) {
@@ -174,7 +113,7 @@ export function EnrollmentStepTwoForm() {
         message:
           error instanceof Error
             ? error.message
-            : "Unable to save your step 2 maternal lineage information right now.",
+            : "Unable to save your step 2 maternal kinship information right now.",
       });
     }
   };
@@ -202,143 +141,64 @@ export function EnrollmentStepTwoForm() {
 
           <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
             <p className="text-muted-foreground text-[0.78rem] font-semibold tracking-[0.24em] uppercase">
-              Maternal Lineage Guidance
+              Maternal Kinship Guidance
             </p>
             <p className="text-muted-foreground mt-2 max-w-4xl text-[0.92rem] leading-7">
-              Mother and grandmother are required. Additional maternal ancestors
-              can be added one by one as information becomes available. If you
-              do not know the exact date of birth, leave that field blank and
-              provide the approximate birth year instead.
+              Record what you know about your mother and maternal grandparents.
+              Every field is optional — share the most reliable family
+              knowledge you have, and leave anything unknown blank.
             </p>
           </div>
 
-          {maternalLineageDefinitions.map((lineage, index) => {
-            const isRequiredLineage = index < 2;
-            const isIncluded =
-              isRequiredLineage || resolvedIncludedLineages[index];
-
-            if (!isIncluded) {
-              return null;
-            }
-
-            const fieldBase = `maternalLineages.${index}` as const;
-
-            return (
-              <EnrollmentFormSection
-                key={lineage.relation}
-                description={lineage.description}
-                fieldsPerRow={[2, 2, 2, 2, 1]}
-                footer="Use documented records when available, and otherwise capture the most reliable family knowledge you have."
-                headerAction={
-                  isRequiredLineage ? (
-                    <div className="border-border bg-surface-muted text-foreground inline-flex items-center rounded-full border px-3 py-1.5 text-[0.74rem] font-semibold tracking-[0.08em] uppercase">
-                      Required
-                    </div>
-                  ) : (
-                    <Button
-                      className="rounded-full"
-                      leftIcon={<Trash2 />}
-                      onClick={() => handleRemoveLineage(index)}
-                      size="sm"
-                      type="button"
-                      variant="outline"
-                    >
-                      Remove Lineage
-                    </Button>
-                  )
-                }
-                icon={TreePine}
-                title={lineage.title}
-              >
-                <EnrollmentInputField
-                  control={control}
-                  label="Full Name"
-                  name={`${fieldBase}.fullName`}
-                  placeholder="Enter full name"
-                  required
-                />
-                <EnrollmentInputField
-                  control={control}
-                  label="Maiden Name"
-                  name={`${fieldBase}.maidenName`}
-                  placeholder="Enter maiden name if known"
-                />
+          {maternalKinshipDefinitions.map((ancestor) => (
+            <EnrollmentFormSection
+              key={ancestor.key}
+              description={ancestor.description}
+              fieldsPerRow={[2, 2, 1]}
+              icon={TreePine}
+              title={ancestor.title}
+            >
+              <EnrollmentInputField
+                control={control}
+                label="Full Name"
+                name={`${ancestor.key}.name`}
+                placeholder="Enter full name"
+              />
+              {ancestor.key === "mother" ? (
                 <EnrollmentDateField
                   control={control}
                   label="Date of Birth"
                   max={maxBirthDate}
-                  name={`${fieldBase}.dateOfBirth`}
+                  name="mother.dateOfBirth"
                   placeholder="Select date of birth"
                 />
-                <EnrollmentInputField
-                  control={control}
-                  inputMode="numeric"
-                  label="Approximate Birth Year"
-                  name={`${fieldBase}.approximateBirthYear`}
-                  placeholder="1975"
-                />
-                <EnrollmentInputField
-                  control={control}
-                  label="Place of Birth"
-                  name={`${fieldBase}.placeOfBirth`}
-                  placeholder="City, town, or region"
-                />
-                <EnrollmentInputField
-                  control={control}
-                  label="Region of Origin"
-                  name={`${fieldBase}.regionOfOrigin`}
-                  placeholder="Enter region of origin"
-                />
-                <EnrollmentRadioGroupField
-                  control={control}
-                  label="Living Status"
-                  name={`${fieldBase}.livingStatus`}
-                  options={enrollmentStepTwoLivingStatusOptions}
-                  required
-                />
-                <EnrollmentInputField
-                  control={control}
-                  label="Family Occupation"
-                  name={`${fieldBase}.familyOccupation`}
-                  placeholder="Teacher, farmer, homemaker"
-                />
-                <EnrollmentTextareaField
-                  control={control}
-                  label="Additional Notes"
-                  name={`${fieldBase}.additionalNotes`}
-                  placeholder="Record family history, oral tradition, or other lineage details"
-                  rows={4}
-                />
-              </EnrollmentFormSection>
-            );
-          })}
-
-          {canAddMoreLineages ? (
-            <section className="rounded-2xl border border-dashed border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="max-w-2xl">
-                  <h2 className="text-foreground text-[1.02rem] font-semibold tracking-tight">
-                    Add Another Maternal Ancestor
-                  </h2>
-                  <p className="text-muted-foreground mt-1 text-[0.84rem] leading-6 sm:text-[0.9rem]">
-                    Continue building your maternal line with the next ancestor
-                    level when you have enough family history to record it.
-                  </p>
-                </div>
-
-                <Button
-                  className="min-w-[12rem]"
-                  leftIcon={<Plus />}
-                  onClick={handleAddLineage}
-                  size="md"
-                  type="button"
-                  variant="outline"
-                >
-                  Add More
-                </Button>
-              </div>
-            </section>
-          ) : null}
+              ) : null}
+              <EnrollmentInputField
+                control={control}
+                label="Nationality"
+                name={`${ancestor.key}.nationality`}
+                placeholder="Enter nationality"
+              />
+              <EnrollmentInputField
+                control={control}
+                label="Municipality"
+                name={`${ancestor.key}.municipality`}
+                placeholder="Enter municipality"
+              />
+              <EnrollmentInputField
+                control={control}
+                label="Yucayeke"
+                name={`${ancestor.key}.yucayeke`}
+                placeholder="Enter Yucayeke if known"
+              />
+              <EnrollmentRadioGroupField
+                control={control}
+                label={ancestor.heritageQuestion}
+                name={`${ancestor.key}.isBorikuaTaino`}
+                options={enrollmentKinshipYesNoOptions}
+              />
+            </EnrollmentFormSection>
+          ))}
 
           <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -347,8 +207,8 @@ export function EnrollmentStepTwoForm() {
                   Submit Step 2
                 </h2>
                 <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Save your maternal lineage details and continue to the next
-                  enrollment step.
+                  Save your maternal kinship details and continue to the
+                  paternal kinship step.
                 </p>
               </div>
 

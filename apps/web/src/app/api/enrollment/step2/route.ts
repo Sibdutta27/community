@@ -19,7 +19,7 @@ export async function GET() {
   try {
     const payload = await apiConnector<EnrollmentStepTwoPrefillResponse>(
       "get",
-      endpoints.ENROLLMENT.STEP_2_MATERNAL_LINEAGE,
+      endpoints.ENROLLMENT.STEP_2_MATERNAL_KINSHIP,
       undefined,
       authHeaders,
     );
@@ -28,7 +28,7 @@ export async function GET() {
   } catch (error) {
     return mapBackendApiErrorResponse(
       error,
-      "Unable to load your step 2 maternal lineage information right now.",
+      "Unable to load your step 2 maternal kinship information right now.",
     );
   }
 }

@@ -19,9 +19,9 @@ export default function EnrollmentStep3Page() {
     <>
       <EnrollmentStepHero
         className="-mx-4 sm:-mx-6 lg:-mx-8"
-        description="Share how your family maintains cultural traditions, knowledge, and community ties to support your enrollment review."
+        description="Document your father and paternal grandparents to complete the kinship record for your enrollment review."
         step={step.step}
-        title="Cultural Connection and Heritage"
+        title="Paternal Kinship"
         totalSteps={enrollmentTotalSteps}
       />
       <EnrollmentProgressSection

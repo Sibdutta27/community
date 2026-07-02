@@ -26,7 +26,12 @@ export async function POST(request: Request) {
   if (
     !body ||
     typeof body !== "object" ||
-    !Array.isArray(body.culturalConnectionKeys)
+    typeof body.father !== "object" ||
+    body.father === null ||
+    typeof body.paternalGrandmother !== "object" ||
+    body.paternalGrandmother === null ||
+    typeof body.paternalGrandfather !== "object" ||
+    body.paternalGrandfather === null
   ) {
     return NextResponse.json(
       { message: "A valid step 3 payload is required." },
@@ -37,7 +42,7 @@ export async function POST(request: Request) {
   try {
     const payload = await apiConnector<EnrollmentStepThreeUpsertResponse>(
       "post",
-      endpoints.ENROLLMENT.STEP_3_CULTURAL_CONNECTION_UPSERT,
+      endpoints.ENROLLMENT.STEP_3_PATERNAL_KINSHIP_UPSERT,
       body,
       authHeaders,
     );
@@ -46,7 +51,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return mapBackendApiErrorResponse(
       error,
-      "Unable to save your step 3 cultural connection information right now.",
+      "Unable to save your step 3 paternal kinship information right now.",
     );
   }
 }

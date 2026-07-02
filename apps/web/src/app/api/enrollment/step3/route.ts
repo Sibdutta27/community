@@ -19,7 +19,7 @@ export async function GET() {
   try {
     const payload = await apiConnector<EnrollmentStepThreePrefillResponse>(
       "get",
-      endpoints.ENROLLMENT.STEP_3_CULTURAL_CONNECTION,
+      endpoints.ENROLLMENT.STEP_3_PATERNAL_KINSHIP,
       undefined,
       authHeaders,
     );
@@ -28,7 +28,7 @@ export async function GET() {
   } catch (error) {
     return mapBackendApiErrorResponse(
       error,
-      "Unable to load your step 3 cultural connection information right now.",
+      "Unable to load your step 3 paternal kinship information right now.",
     );
   }
 }

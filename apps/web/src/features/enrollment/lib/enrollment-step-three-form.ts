@@ -1,65 +1,85 @@
 import { z } from "zod";
 
+import {
+  buildKinshipParentValue,
+  buildKinshipPersonValue,
+  kinshipParentSchema,
+  kinshipPersonSchema,
+  mapKinshipParentToPayload,
+  mapKinshipPersonToPayload,
+} from "@/features/enrollment/lib/enrollment-kinship-form";
 import type {
-  EnrollmentStepThreeCulturalConnection,
   EnrollmentStepThreePrefillResponse,
   EnrollmentStepThreeUpsertRequest,
 } from "@/types/enrollment";
 
-const culturalConnectionKeySchema = z
-  .string()
-  .trim()
-  .min(1, "Invalid cultural connection key");
+export {
+  enrollmentKinshipYesNoOptions,
+  enrollmentKinshipYesNoValues,
+} from "@/features/enrollment/lib/enrollment-kinship-form";
+
+/**
+ * Step 3 — Paternal Kinship. Mirrors step 2 for the paternal line, matching
+ * the backend `POST /enrollment/step3/upsert` body: father (with date of
+ * birth) plus the paternal grandmother and grandfather.
+ */
+export const paternalKinshipDefinitions = [
+  {
+    key: "father",
+    title: "Father",
+    heritageQuestion: "Is your father of Borikua Taíno heritage?",
+    description:
+      "Share what you know about your father — his name, origin, and connection to the Borikua Taíno people.",
+    hasDateOfBirth: true,
+  },
+  {
+    key: "paternalGrandmother",
+    title: "Paternal Grandmother",
+    heritageQuestion: "Is your paternal grandmother of Borikua Taíno heritage?",
+    description:
+      "Record the best available details about your father's mother.",
+    hasDateOfBirth: false,
+  },
+  {
+    key: "paternalGrandfather",
+    title: "Paternal Grandfather",
+    heritageQuestion: "Is your paternal grandfather of Borikua Taíno heritage?",
+    description:
+      "Record the best available details about your father's father.",
+    hasDateOfBirth: false,
+  },
+] as const;
 
 export const enrollmentStepThreeSchema = z.object({
-  culturalConnectionKeys: z.array(culturalConnectionKeySchema),
+  father: kinshipParentSchema,
+  paternalGrandmother: kinshipPersonSchema,
+  paternalGrandfather: kinshipPersonSchema,
 });
 
 export type EnrollmentStepThreeFormValues = z.infer<
   typeof enrollmentStepThreeSchema
 >;
 
-function trimValue(value: string) {
-  return value.trim();
-}
-
-function uniqueValues(values: readonly string[]) {
-  return Array.from(new Set(values));
-}
-
 export function getEnrollmentStepThreeDefaultValues(
   stepThreeData?: EnrollmentStepThreePrefillResponse | null,
 ): EnrollmentStepThreeFormValues {
-  const keys = uniqueValues(
-    (stepThreeData?.culturalConnectionKeys ?? [])
-      .map((key) => trimValue(key))
-      .filter(Boolean),
-  );
-
   return {
-    culturalConnectionKeys: keys,
+    father: buildKinshipParentValue(stepThreeData?.father),
+    paternalGrandmother: buildKinshipPersonValue(
+      stepThreeData?.paternalGrandmother,
+    ),
+    paternalGrandfather: buildKinshipPersonValue(
+      stepThreeData?.paternalGrandfather,
+    ),
   };
 }
 
 export function mapEnrollmentStepThreeFormToPayload(
   values: EnrollmentStepThreeFormValues,
-  availableConnections?: readonly EnrollmentStepThreeCulturalConnection[],
 ): EnrollmentStepThreeUpsertRequest {
-  const selectedKeys = uniqueValues(
-    values.culturalConnectionKeys.map(trimValue).filter(Boolean),
-  );
-
-  if (!availableConnections?.length) {
-    return {
-      culturalConnectionKeys: selectedKeys,
-    };
-  }
-
-  const allowedKeys = new Set(
-    availableConnections.map((connection) => trimValue(connection.key)),
-  );
-
   return {
-    culturalConnectionKeys: selectedKeys.filter((key) => allowedKeys.has(key)),
+    father: mapKinshipParentToPayload(values.father),
+    paternalGrandmother: mapKinshipPersonToPayload(values.paternalGrandmother),
+    paternalGrandfather: mapKinshipPersonToPayload(values.paternalGrandfather),
   };
 }

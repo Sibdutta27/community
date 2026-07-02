@@ -76,11 +76,12 @@ const lineageRelationLabel: Readonly<
 };
 
 const documentTypeLabels: Readonly<Record<EnrollmentDocumentType, string>> = {
-  USER_PHOTO: "User Photo",
-  BIRTH_CERTIFICATE: "Birth Certificate",
-  FAMILY_RECORD: "Lineage Birth Certificates",
-  FAMILY_PHOTO: "Lineage Photos",
-  ADDITIONAL_EVIDENCE: "Additional Evidence",
+  PROFILE_PICTURE: "Profile Picture",
+  USER_PHOTO: "Your Photo",
+  GENEALOGICAL_RECORDS: "Genealogical Records",
+  KINSHIP_LETTERS: "Kinship Letters",
+  ORAL_HISTORY: "Oral History",
+  DNA_TESTING: "DNA Testing",
 };
 
 const missingValueLabel = "Not provided";
@@ -323,11 +324,12 @@ type DocumentMap = Record<EnrollmentDocumentType, EnrollmentDocumentRecord[]>;
 
 function createEmptyDocumentMap(): DocumentMap {
   return {
+    PROFILE_PICTURE: [],
     USER_PHOTO: [],
-    BIRTH_CERTIFICATE: [],
-    FAMILY_RECORD: [],
-    FAMILY_PHOTO: [],
-    ADDITIONAL_EVIDENCE: [],
+    GENEALOGICAL_RECORDS: [],
+    KINSHIP_LETTERS: [],
+    ORAL_HISTORY: [],
+    DNA_TESTING: [],
   };
 }
 
@@ -397,40 +399,16 @@ function getMissingRequiredDocuments(documentMap: DocumentMap) {
   const missingDocuments: string[] = [];
 
   if (documentMap.USER_PHOTO.length < 1) {
-    missingDocuments.push("User Photo");
-  }
-
-  if (documentMap.BIRTH_CERTIFICATE.length < 1) {
-    missingDocuments.push("Birth Certificate");
-  }
-
-  if (documentMap.FAMILY_RECORD.length < 1) {
-    missingDocuments.push("Mother's Birth Certificate");
-  }
-
-  if (documentMap.FAMILY_RECORD.length < 2) {
-    missingDocuments.push("Grandmother's Birth Certificate");
-  }
-
-  if (documentMap.FAMILY_PHOTO.length < 1) {
-    missingDocuments.push("Mother's Photo");
-  }
-
-  if (documentMap.FAMILY_PHOTO.length < 2) {
-    missingDocuments.push("Grandmother's Photo");
+    missingDocuments.push("Your Photo");
   }
 
   return missingDocuments;
 }
 
 function getRequiredCoverageValue(documentMap: DocumentMap) {
-  const uploadedCount =
-    Math.min(documentMap.USER_PHOTO.length, 1) +
-    Math.min(documentMap.BIRTH_CERTIFICATE.length, 1) +
-    Math.min(documentMap.FAMILY_RECORD.length, 2) +
-    Math.min(documentMap.FAMILY_PHOTO.length, 2);
+  const uploadedCount = Math.min(documentMap.USER_PHOTO.length, 1);
 
-  return `${uploadedCount} / 6`;
+  return `${uploadedCount} / 1`;
 }
 
 function getApprovedDocumentCount(
@@ -874,19 +852,19 @@ function mapDocumentsData(
       },
       {
         ...fallbackDocuments.categories[1],
-        count: String(documentMap.BIRTH_CERTIFICATE.length),
+        count: String(documentMap.GENEALOGICAL_RECORDS.length),
       },
       {
         ...fallbackDocuments.categories[2],
-        count: String(documentMap.FAMILY_RECORD.length),
+        count: String(documentMap.KINSHIP_LETTERS.length),
       },
       {
         ...fallbackDocuments.categories[3],
-        count: String(documentMap.FAMILY_PHOTO.length),
+        count: String(documentMap.ORAL_HISTORY.length),
       },
       {
         ...fallbackDocuments.categories[4],
-        count: String(documentMap.ADDITIONAL_EVIDENCE.length),
+        count: String(documentMap.DNA_TESTING.length),
       },
     ],
     description: fallbackDocuments.description,

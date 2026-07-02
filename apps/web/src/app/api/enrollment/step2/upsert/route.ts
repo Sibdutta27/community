@@ -23,7 +23,16 @@ export async function POST(request: Request) {
     .json()
     .catch(() => null)) as EnrollmentStepTwoUpsertRequest | null;
 
-  if (!body || typeof body !== "object") {
+  if (
+    !body ||
+    typeof body !== "object" ||
+    typeof body.mother !== "object" ||
+    body.mother === null ||
+    typeof body.maternalGrandmother !== "object" ||
+    body.maternalGrandmother === null ||
+    typeof body.maternalGrandfather !== "object" ||
+    body.maternalGrandfather === null
+  ) {
     return NextResponse.json(
       { message: "A valid step 2 payload is required." },
       { status: 400 },
@@ -33,7 +42,7 @@ export async function POST(request: Request) {
   try {
     const payload = await apiConnector<EnrollmentStepTwoUpsertResponse>(
       "post",
-      endpoints.ENROLLMENT.STEP_2_MATERNAL_LINEAGE_UPSERT,
+      endpoints.ENROLLMENT.STEP_2_MATERNAL_KINSHIP_UPSERT,
       body,
       authHeaders,
     );
@@ -42,7 +51,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return mapBackendApiErrorResponse(
       error,
-      "Unable to save your step 2 maternal lineage information right now.",
+      "Unable to save your step 2 maternal kinship information right now.",
     );
   }
 }

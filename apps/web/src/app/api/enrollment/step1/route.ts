@@ -19,7 +19,7 @@ export async function GET() {
   try {
     const payload = await apiConnector<EnrollmentStepOnePrefillResponse>(
       "get",
-      endpoints.ENROLLMENT.STEP_1_PERSONAL_INFO,
+      endpoints.ENROLLMENT.STEP_1_DEMOGRAPHICS,
       undefined,
       authHeaders,
     );
@@ -28,7 +28,7 @@ export async function GET() {
   } catch (error) {
     return mapBackendApiErrorResponse(
       error,
-      "Unable to load your step 1 enrollment information right now.",
+      "Unable to load your step 1 demographics right now.",
     );
   }
 }

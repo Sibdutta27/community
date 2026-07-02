@@ -17,51 +17,29 @@ import {
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
   buildEnrollmentStepFourDocumentMap,
-  enrollmentStepFourAdditionalEvidenceCard,
-  enrollmentStepFourLineageUploadSlots,
-  enrollmentStepFourSingleUploadCards,
+  enrollmentStepFourEvidenceUploadSlots,
+  enrollmentStepFourUserPhotoCard,
   enrollmentStepFourUploadAccept,
   formatEnrollmentDocumentFileSize,
   formatEnrollmentDocumentStatus,
   getEnrollmentDocumentDisplayName,
   getEnrollmentStepFourFileValidationMessage,
+  type EnrollmentStepFourUploadSlot,
   type EnrollmentStepFourUploadSlotId,
 } from "@/features/enrollment/lib/enrollment-step-four-form";
-import { cn } from "@/lib/utils";
-import type {
-  EnrollmentDocumentRecord,
-  EnrollmentDocumentType,
-} from "@/types/enrollment";
+import type { EnrollmentDocumentRecord } from "@/types/enrollment";
 
 type UploadTarget = Readonly<{
-  documentType: EnrollmentDocumentType;
-  slotId: EnrollmentStepFourUploadSlotId;
-  title: string;
+  slot: EnrollmentStepFourUploadSlot;
 }>;
 
 const uploadFormatBadges = ["PDF", "JPG", "PNG", "WEBP", "10 MB Max"] as const;
-const requiredUploadSlotIds = new Set<EnrollmentStepFourUploadSlotId>([
-  "user_photo",
-  "birth_certificate",
-  "mother_birth_certificate",
-  "mother_photo",
-  "grandmother_birth_certificate",
-  "grandmother_photo",
-]);
 
 function UploadedDocumentRow({
   document,
 }: Readonly<{
   document: EnrollmentDocumentRecord;
 }>) {
-  const normalizedStatus = document.status.toUpperCase();
-  const statusClassName =
-    normalizedStatus === "REJECTED"
-      ? "border-border bg-surface-muted text-foreground"
-      : normalizedStatus === "APPROVED"
-        ? "border-border bg-surface-muted text-foreground"
-        : "border-border bg-surface-muted text-foreground";
-
   return (
     <div className="border-border bg-surface flex flex-col gap-2 rounded-xl border px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
@@ -75,12 +53,7 @@ function UploadedDocumentRow({
       </div>
 
       <div className="flex items-center gap-2">
-        <span
-          className={cn(
-            "rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold tracking-[0.04em] uppercase",
-            statusClassName,
-          )}
-        >
+        <span className="border-border bg-surface-muted text-foreground rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold tracking-[0.04em] uppercase">
           {formatEnrollmentDocumentStatus(document.status)}
         </span>
         <a
@@ -182,44 +155,8 @@ export function EnrollmentStepFourForm() {
     [documentListQuery.data],
   );
 
-  const familyRecordDocuments = documentMap.FAMILY_RECORD;
-  const familyPhotoDocuments = documentMap.FAMILY_PHOTO;
-  const additionalEvidenceDocuments = documentMap.ADDITIONAL_EVIDENCE;
-  const sortedFamilyRecordDocuments = [...familyRecordDocuments].sort(
-    (leftDocument, rightDocument) =>
-      new Date(leftDocument.uploadedAt).getTime() -
-      new Date(rightDocument.uploadedAt).getTime(),
-  );
-  const sortedFamilyPhotoDocuments = [...familyPhotoDocuments].sort(
-    (leftDocument, rightDocument) =>
-      new Date(leftDocument.uploadedAt).getTime() -
-      new Date(rightDocument.uploadedAt).getTime(),
-  );
-  const motherBirthCertificate = sortedFamilyRecordDocuments[0] ?? null;
-  const grandmotherBirthCertificate = sortedFamilyRecordDocuments[1] ?? null;
-  const motherPhoto = sortedFamilyPhotoDocuments[0] ?? null;
-  const grandmotherPhoto = sortedFamilyPhotoDocuments[1] ?? null;
   const userPhotoDocument = documentMap.USER_PHOTO[0] ?? null;
-  const birthCertificateDocument = documentMap.BIRTH_CERTIFICATE[0] ?? null;
-
-  const hasMandatoryLineageDocuments =
-    familyRecordDocuments.length >= 2 && familyPhotoDocuments.length >= 2;
-  const hasMandatoryPersonalDocuments = Boolean(
-    userPhotoDocument && birthCertificateDocument,
-  );
-  const hasMandatoryDocuments =
-    hasMandatoryPersonalDocuments && hasMandatoryLineageDocuments;
-
-  const missingMandatoryDocuments = [
-    ...(!userPhotoDocument ? ["User Photo"] : []),
-    ...(!birthCertificateDocument ? ["Birth Certificate"] : []),
-    ...(familyRecordDocuments.length < 1 ? ["Mother's Birth Certificate"] : []),
-    ...(familyRecordDocuments.length < 2
-      ? ["Grandmother's Birth Certificate"]
-      : []),
-    ...(familyPhotoDocuments.length < 1 ? ["Mother's Photo"] : []),
-    ...(familyPhotoDocuments.length < 2 ? ["Grandmother's Photo"] : []),
-  ];
+  const hasMandatoryDocuments = Boolean(userPhotoDocument);
 
   const isListLoading = documentListQuery.isPending && !documentListQuery.data;
 
@@ -227,10 +164,7 @@ export function EnrollmentStepFourForm() {
     inputRefs.current[slotId]?.click();
   };
 
-  const handleUpload = async (
-    { documentType, slotId, title }: UploadTarget,
-    file: File,
-  ) => {
+  const handleUpload = async ({ slot }: UploadTarget, file: File) => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
@@ -241,11 +175,11 @@ export function EnrollmentStepFourForm() {
       return;
     }
 
-    setActiveUploadSlotId(slotId);
+    setActiveUploadSlotId(slot.id as EnrollmentStepFourUploadSlotId);
 
     try {
       const uploadResponse = await uploadMutation.mutateAsync({
-        documentType,
+        documentType: slot.documentType,
         file,
       });
 
@@ -259,7 +193,7 @@ export function EnrollmentStepFourForm() {
       ]);
 
       setSuccessMessage(
-        uploadResponse.message || `${title} uploaded successfully.`,
+        uploadResponse.message || `${slot.title} uploaded successfully.`,
       );
     } catch (error) {
       setErrorMessage(
@@ -281,7 +215,7 @@ export function EnrollmentStepFourForm() {
 
       if (!result.success) {
         setErrorMessage(
-          "Some required documents are still missing. Please upload every mandatory document before continuing.",
+          "Your photo is still missing. Please upload it before continuing.",
         );
         return;
       }
@@ -313,10 +247,9 @@ export function EnrollmentStepFourForm() {
         return;
       }
 
-      const filesToUpload =
-        target.slotId === enrollmentStepFourAdditionalEvidenceCard.id
-          ? selectedFiles
-          : [selectedFiles[0]];
+      const filesToUpload = target.slot.isSingle
+        ? [selectedFiles[0]]
+        : selectedFiles;
 
       for (const file of filesToUpload) {
         if (file) {
@@ -352,181 +285,109 @@ export function EnrollmentStepFourForm() {
             Document Upload Guidance
           </p>
           <p className="text-muted-foreground mt-2 max-w-4xl text-[0.92rem] leading-7">
-            Upload clear files. Required: User Photo, Birth Certificate,
-            Mother&apos;s Birth Certificate, Mother&apos;s Photo,
-            Grandmother&apos;s Birth Certificate, and Grandmother&apos;s Photo.
+            Upload a clear photo of yourself — it is the only required file.
+            Genealogical records, kinship letters, oral history, and DNA
+            testing are optional supporting evidence for your kinship claim.
           </p>
         </div>
 
         <section>
           <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
-            Personal Documents
+            Required Document
+          </h2>
+          <div className="mt-4 sm:mt-5">
+            <section className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
+              <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
+                {enrollmentStepFourUserPhotoCard.title}
+                <span className="text-foreground"> *</span>
+              </h3>
+              <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
+                {enrollmentStepFourUserPhotoCard.description}
+              </p>
+
+              <UploadDropArea
+                accept={enrollmentStepFourUploadAccept}
+                disabled={uploadMutation.isPending}
+                onChange={createInputChangeHandler({
+                  slot: enrollmentStepFourUserPhotoCard,
+                })}
+                onOpen={openPicker}
+                refSetter={(element) => {
+                  inputRefs.current[enrollmentStepFourUserPhotoCard.id] =
+                    element;
+                }}
+                slotId={enrollmentStepFourUserPhotoCard.id}
+                uploading={
+                  uploadMutation.isPending &&
+                  activeUploadSlotId === enrollmentStepFourUserPhotoCard.id
+                }
+              />
+
+              <div className="mt-4">
+                {userPhotoDocument ? (
+                  <UploadedDocumentRow document={userPhotoDocument} />
+                ) : (
+                  <p className="text-muted-foreground text-[0.8rem]">
+                    No file uploaded yet.
+                  </p>
+                )}
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
+            Supporting Evidence
           </h2>
           <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-2">
-            {enrollmentStepFourSingleUploadCards.map((card) => {
-              const currentDocument = documentMap[card.documentType][0] ?? null;
+            {enrollmentStepFourEvidenceUploadSlots.map((slot) => {
+              const slotDocuments = documentMap[slot.documentType];
               const isUploading =
-                uploadMutation.isPending && activeUploadSlotId === card.id;
-              const isRequired = requiredUploadSlotIds.has(card.id);
+                uploadMutation.isPending && activeUploadSlotId === slot.id;
 
               return (
                 <section
                   className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6"
-                  key={card.id}
+                  key={slot.id}
                 >
                   <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
-                    {card.title}
-                    {isRequired ? (
-                      <span className="text-foreground"> *</span>
-                    ) : null}
+                    {slot.title}
                   </h3>
                   <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
-                    {card.description}
+                    {slot.description}
                   </p>
 
                   <UploadDropArea
                     accept={enrollmentStepFourUploadAccept}
                     disabled={uploadMutation.isPending}
-                    onChange={createInputChangeHandler({
-                      documentType: card.documentType,
-                      slotId: card.id,
-                      title: card.title,
-                    })}
+                    multiple
+                    onChange={createInputChangeHandler({ slot })}
                     onOpen={openPicker}
                     refSetter={(element) => {
-                      inputRefs.current[card.id] = element;
+                      inputRefs.current[slot.id] = element;
                     }}
-                    slotId={card.id}
+                    slotId={slot.id}
                     uploading={isUploading}
                   />
 
-                  <div className="mt-4">
-                    {currentDocument ? (
-                      <UploadedDocumentRow document={currentDocument} />
+                  <div className="mt-4 space-y-2.5">
+                    {slotDocuments.length > 0 ? (
+                      slotDocuments.map((document) => (
+                        <UploadedDocumentRow
+                          document={document}
+                          key={document.id}
+                        />
+                      ))
                     ) : (
                       <p className="text-muted-foreground text-[0.8rem]">
-                        No file uploaded yet.
+                        No files uploaded yet.
                       </p>
                     )}
                   </div>
                 </section>
               );
             })}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
-            Lineage Birth Documentations
-          </h2>
-          <div className="mt-4 rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              {enrollmentStepFourLineageUploadSlots.map((slot) => {
-                const isUploading =
-                  uploadMutation.isPending && activeUploadSlotId === slot.id;
-                const isRequired = requiredUploadSlotIds.has(slot.id);
-                const previewDocument =
-                  slot.id === "mother_birth_certificate"
-                    ? motherBirthCertificate
-                    : slot.id === "grandmother_birth_certificate"
-                      ? grandmotherBirthCertificate
-                      : slot.id === "mother_photo"
-                        ? motherPhoto
-                        : grandmotherPhoto;
-
-                return (
-                  <section
-                    className="border-border bg-surface rounded-2xl border p-4"
-                    key={slot.id}
-                  >
-                    <h3 className="text-foreground text-[1.02rem] font-semibold">
-                      {slot.title}
-                      {isRequired ? (
-                        <span className="text-foreground"> *</span>
-                      ) : null}
-                    </h3>
-                    <p className="text-muted-foreground mt-1 text-[0.78rem]">
-                      {slot.description}
-                    </p>
-
-                    <UploadDropArea
-                      accept={enrollmentStepFourUploadAccept}
-                      disabled={uploadMutation.isPending}
-                      onChange={createInputChangeHandler({
-                        documentType: slot.documentType,
-                        slotId: slot.id,
-                        title: slot.title,
-                      })}
-                      onOpen={openPicker}
-                      refSetter={(element) => {
-                        inputRefs.current[slot.id] = element;
-                      }}
-                      slotId={slot.id}
-                      uploading={isUploading}
-                    />
-
-                    <div className="mt-4">
-                      {previewDocument ? (
-                        <UploadedDocumentRow document={previewDocument} />
-                      ) : (
-                        <p className="text-muted-foreground text-[0.8rem]">
-                          No file mapped yet.
-                        </p>
-                      )}
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
-            Additional Evidence
-          </h2>
-          <div className="mt-4 rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-            <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
-              {enrollmentStepFourAdditionalEvidenceCard.title}
-            </h3>
-            <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
-              {enrollmentStepFourAdditionalEvidenceCard.description}
-            </p>
-
-            <UploadDropArea
-              accept={enrollmentStepFourUploadAccept}
-              disabled={uploadMutation.isPending}
-              multiple
-              onChange={createInputChangeHandler({
-                documentType:
-                  enrollmentStepFourAdditionalEvidenceCard.documentType,
-                slotId: enrollmentStepFourAdditionalEvidenceCard.id,
-                title: enrollmentStepFourAdditionalEvidenceCard.title,
-              })}
-              onOpen={openPicker}
-              refSetter={(element) => {
-                inputRefs.current[enrollmentStepFourAdditionalEvidenceCard.id] =
-                  element;
-              }}
-              slotId={enrollmentStepFourAdditionalEvidenceCard.id}
-              uploading={
-                uploadMutation.isPending &&
-                activeUploadSlotId ===
-                  enrollmentStepFourAdditionalEvidenceCard.id
-              }
-            />
-
-            <div className="mt-4 space-y-2.5">
-              {additionalEvidenceDocuments.length > 0 ? (
-                additionalEvidenceDocuments.map((document) => (
-                  <UploadedDocumentRow document={document} key={document.id} />
-                ))
-              ) : (
-                <p className="text-muted-foreground text-[0.8rem]">
-                  No files uploaded yet.
-                </p>
-              )}
-            </div>
           </div>
         </section>
 
@@ -538,13 +399,12 @@ export function EnrollmentStepFourForm() {
               </h2>
               {hasMandatoryDocuments ? (
                 <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Mandatory documents are uploaded. Continue to the
-                  confirmation step to sign and submit your application.
+                  Your photo is uploaded. Continue to the confirmation step to
+                  sign and submit your application.
                 </p>
               ) : (
                 <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Missing mandatory documents:{" "}
-                  {missingMandatoryDocuments.join(", ")}
+                  Missing required document: Your Photo
                 </p>
               )}
             </div>

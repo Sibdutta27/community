@@ -16,7 +16,7 @@ vi.mock("next/image", () => ({
 vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
   accountQueryKeys: { info: ["account", "info"] },
   enrollmentQueryKeys: {
-    stepOnePersonalInfo: ["enrollment", "step1", "personal-info"],
+    stepOneDemographics: ["enrollment", "step1", "demographics"],
   },
   useAccountInfoQuery: () => ({ data: undefined }),
   useEnrollmentStepOneQuery: () => ({ data: undefined, error: null }),
@@ -40,13 +40,30 @@ function renderForm() {
   );
 }
 
-describe("EnrollmentStepOneForm — demographics + yucayeke fields", () => {
-  it("renders the Your Yucayekeno Information section and its fields", () => {
+describe("EnrollmentStepOneForm — demographics only", () => {
+  it("renders the demographics sections from the Figma form", () => {
     renderForm();
 
     expect(
+      screen.getByRole("heading", { name: "Basic Information" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Birth Information" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Sex & Gender" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Marital Status & Occupation" }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("heading", { name: "Your Yucayekeno Information" }),
     ).toBeInTheDocument();
+  });
+
+  it("renders the yucayeke fields", () => {
+    renderForm();
+
     expect(screen.getByText("Identity")).toBeInTheDocument();
     expect(screen.getByText("Yucayeke")).toBeInTheDocument();
     expect(screen.getByText("I don't know my Yucayeke")).toBeInTheDocument();
@@ -59,5 +76,27 @@ describe("EnrollmentStepOneForm — demographics + yucayeke fields", () => {
     expect(
       screen.queryByText("Any children under 18?"),
     ).not.toBeInTheDocument();
+  });
+
+  it("no longer renders the removed contact/address/emergency sections", () => {
+    renderForm();
+
+    expect(
+      screen.queryByRole("heading", { name: "Contact Information" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Current Address" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Mailing Address" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Emergency Contact" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Additional Information" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Middle Name")).not.toBeInTheDocument();
+    expect(screen.queryByText("Pronouns")).not.toBeInTheDocument();
   });
 });

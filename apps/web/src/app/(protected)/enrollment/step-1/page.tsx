@@ -19,7 +19,7 @@ export default function EnrollmentStep1Page() {
     <>
       <EnrollmentStepHero
         className="-mx-4 sm:-mx-6 lg:-mx-8"
-        description="Provide the personal, contact, and address details needed to begin your enrollment application and establish your official member record."
+        description="Provide the personal demographic details needed to begin your enrollment application and establish your official member record."
         step={step.step}
         title={step.title}
         totalSteps={enrollmentTotalSteps}

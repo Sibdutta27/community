@@ -16,7 +16,6 @@ import type {
   EnrollmentStepOnePrefillResponse,
   EnrollmentStepOneUpsertRequest,
   EnrollmentStepOneUpsertResponse,
-  EnrollmentStepThreeCulturalConnectionListResponse,
   EnrollmentStepThreePrefillResponse,
   EnrollmentStepThreeUpsertRequest,
   EnrollmentStepThreeUpsertResponse,
@@ -34,19 +33,14 @@ type ConsentAcceptResponse = Record<string, unknown>;
 
 export const enrollmentQueryKeys = {
   activeConsents: ["enrollment", "consent", "active"] as const,
-  stepOnePersonalInfo: ["enrollment", "step1", "personal-info"] as const,
-  stepTwoMaternalLineage: ["enrollment", "step2", "maternal-lineage"] as const,
-  stepThreeCulturalConnection: [
+  stepOneDemographics: ["enrollment", "step1", "demographics"] as const,
+  stepTwoMaternalKinship: ["enrollment", "step2", "maternal-kinship"] as const,
+  stepThreePaternalKinship: [
     "enrollment",
     "step3",
-    "cultural-connection",
+    "paternal-kinship",
   ] as const,
   stepFourDocumentList: ["enrollment", "step4", "document-list"] as const,
-  stepThreeCulturalConnectionList: [
-    "enrollment",
-    "step3",
-    "cultural-connection-list",
-  ] as const,
 };
 
 export function useAccountInfoQuery() {
@@ -109,18 +103,18 @@ export function useEnrollmentStepOneUpsertMutation() {
         method: "POST",
         body: payload,
         fallbackMessage:
-          "Unable to save your step 1 enrollment information right now.",
+          "Unable to save your step 1 demographics right now.",
       }),
   });
 }
 
 export function useEnrollmentStepOneQuery(enabled = true) {
   return useQuery({
-    queryKey: enrollmentQueryKeys.stepOnePersonalInfo,
+    queryKey: enrollmentQueryKeys.stepOneDemographics,
     queryFn: () =>
       requestJson<EnrollmentStepOnePrefillResponse>("/api/enrollment/step1", {
         fallbackMessage:
-          "Unable to load your step 1 enrollment information right now.",
+          "Unable to load your step 1 demographics right now.",
       }),
     enabled,
     staleTime: 60 * 1000,
@@ -137,46 +131,31 @@ export function useEnrollmentStepTwoUpsertMutation() {
         method: "POST",
         body: payload,
         fallbackMessage:
-          "Unable to save your step 2 maternal lineage information right now.",
+          "Unable to save your step 2 maternal kinship information right now.",
       }),
   });
 }
 
 export function useEnrollmentStepTwoQuery(enabled = true) {
   return useQuery({
-    queryKey: enrollmentQueryKeys.stepTwoMaternalLineage,
+    queryKey: enrollmentQueryKeys.stepTwoMaternalKinship,
     queryFn: () =>
       requestJson<EnrollmentStepTwoPrefillResponse>("/api/enrollment/step2", {
         fallbackMessage:
-          "Unable to load your step 2 maternal lineage information right now.",
+          "Unable to load your step 2 maternal kinship information right now.",
       }),
     enabled,
     staleTime: 60 * 1000,
   });
 }
 
-export function useEnrollmentStepThreeConnectionListQuery() {
-  return useQuery({
-    queryKey: enrollmentQueryKeys.stepThreeCulturalConnectionList,
-    queryFn: () =>
-      requestJson<EnrollmentStepThreeCulturalConnectionListResponse>(
-        "/api/enrollment/step3/cultural-connection-list",
-        {
-          fallbackMessage:
-            "Unable to load the cultural connection options right now.",
-        },
-      ),
-    staleTime: 5 * 60 * 1000,
-  });
-}
-
 export function useEnrollmentStepThreeQuery(enabled = true) {
   return useQuery({
-    queryKey: enrollmentQueryKeys.stepThreeCulturalConnection,
+    queryKey: enrollmentQueryKeys.stepThreePaternalKinship,
     queryFn: () =>
       requestJson<EnrollmentStepThreePrefillResponse>("/api/enrollment/step3", {
         fallbackMessage:
-          "Unable to load your step 3 cultural connection information right now.",
+          "Unable to load your step 3 paternal kinship information right now.",
       }),
     enabled,
     staleTime: 60 * 1000,
@@ -193,7 +172,7 @@ export function useEnrollmentStepThreeUpsertMutation() {
         method: "POST",
         body: payload,
         fallbackMessage:
-          "Unable to save your step 3 cultural connection information right now.",
+          "Unable to save your step 3 paternal kinship information right now.",
       }),
   });
 }

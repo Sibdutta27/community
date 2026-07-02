@@ -15,7 +15,6 @@ import {
   EnrollmentInputField,
   EnrollmentRadioGroupField,
   EnrollmentSelectField,
-  EnrollmentTextareaField,
 } from "@/features/enrollment/components/enrollment-form-fields";
 import { EnrollmentFormSection } from "@/features/enrollment/components/enrollment-form-section";
 import {
@@ -30,7 +29,7 @@ import {
   enrollmentStepOneGenderOptions,
   enrollmentStepOneIdentityOptions,
   enrollmentStepOneMaritalStatusOptions,
-  enrollmentStepOnePhoneTypeOptions,
+  enrollmentStepOneSexOptions,
   enrollmentStepOneYesNoOptions,
   getEnrollmentStepOneDefaultValues,
   mapEnrollmentStepOneFormToPayload,
@@ -41,9 +40,6 @@ const enrollmentSectionIcons = {
   basic: "/icons/enrollment/basic-info.svg",
   birth: "/icons/enrollment/birth-info.svg",
   gender: "/icons/enrollment/gender-info.svg",
-  contact: "/icons/enrollment/contact-info.svg",
-  address: "/icons/enrollment/address-info.svg",
-  emergency: "/icons/enrollment/emergency-contact.svg",
   additional: "/icons/enrollment/additional-info.svg",
   yucayeke: "/icons/enrollment/cultural-connection.svg",
 } as const;
@@ -84,25 +80,13 @@ export function EnrollmentStepOneForm() {
     setValue,
   } = form;
 
-  const sameAsCurrentAddress = useWatch({
-    control,
-    name: "sameAsCurrentAddress",
-  });
-  const currentAddress = useWatch({
-    control,
-    name: "currentAddress",
-  });
-  const mailingAddress = useWatch({
-    control,
-    name: "mailingAddress",
-  });
   const yucayekeUnknown = useWatch({
     control,
-    name: "yucayekeInfo.yucayekeUnknown",
+    name: "yucayekeUnknown",
   });
   const hasChildren = useWatch({
     control,
-    name: "yucayekeInfo.hasChildren",
+    name: "hasChildren",
   });
 
   useEffect(() => {
@@ -125,44 +109,13 @@ export function EnrollmentStepOneForm() {
 
   useEffect(() => {
     if (yucayekeUnknown) {
-      setValue("yucayekeInfo.yucayeke", "", {
+      setValue("yucayeke", "", {
         shouldDirty: true,
         shouldTouch: false,
         shouldValidate: false,
       });
     }
   }, [setValue, yucayekeUnknown]);
-
-  useEffect(() => {
-    if (!sameAsCurrentAddress) {
-      return;
-    }
-
-    const nextMailingAddress = currentAddress ?? {
-      street: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      country: "",
-    };
-    const currentMailingAddress = mailingAddress ?? nextMailingAddress;
-
-    if (
-      nextMailingAddress.street === currentMailingAddress.street &&
-      nextMailingAddress.city === currentMailingAddress.city &&
-      nextMailingAddress.state === currentMailingAddress.state &&
-      nextMailingAddress.zipCode === currentMailingAddress.zipCode &&
-      nextMailingAddress.country === currentMailingAddress.country
-    ) {
-      return;
-    }
-
-    setValue("mailingAddress", nextMailingAddress, {
-      shouldDirty: false,
-      shouldTouch: false,
-      shouldValidate: false,
-    });
-  }, [currentAddress, mailingAddress, sameAsCurrentAddress, setValue]);
 
   const stepOneErrorMessage =
     shouldFetchStepOnePrefill &&
@@ -183,7 +136,7 @@ export function EnrollmentStepOneForm() {
         queryKey: accountQueryKeys.info,
       });
       await queryClient.invalidateQueries({
-        queryKey: enrollmentQueryKeys.stepOnePersonalInfo,
+        queryKey: enrollmentQueryKeys.stepOneDemographics,
       });
       router.push("/enrollment/step-2");
     } catch (error) {
@@ -192,7 +145,7 @@ export function EnrollmentStepOneForm() {
         message:
           error instanceof Error
             ? error.message
-            : "Unable to save your step 1 enrollment information right now.",
+            : "Unable to save your step 1 demographics right now.",
       });
     }
   };
@@ -220,7 +173,7 @@ export function EnrollmentStepOneForm() {
 
           <EnrollmentFormSection
             description="Please provide your legal name exactly as it appears on your government-issued identification."
-            fieldsPerRow={[2, 2, 1]}
+            fieldsPerRow={[2]}
             footer="This name will be used across your enrollment application and your member profile."
             iconSrc={enrollmentSectionIcons.basic}
             title="Basic Information"
@@ -228,34 +181,16 @@ export function EnrollmentStepOneForm() {
             <EnrollmentInputField
               control={control}
               label="First Name"
-              name="legalName.firstName"
+              name="firstName"
               placeholder="Enter your first name"
               required
             />
             <EnrollmentInputField
               control={control}
-              label="Middle Name"
-              name="legalName.middleName"
-              placeholder="Enter your middle name"
-            />
-            <EnrollmentInputField
-              control={control}
               label="Last Name"
-              name="legalName.lastName"
+              name="lastName"
               placeholder="Enter your last name"
               required
-            />
-            <EnrollmentInputField
-              control={control}
-              label="Maiden Name / Maternal Last Name"
-              name="legalName.maternalLastName"
-              placeholder="Enter your maternal last name"
-            />
-            <EnrollmentInputField
-              control={control}
-              label="Preferred Name"
-              name="legalName.preferredName"
-              placeholder="Enter your preferred name"
             />
           </EnrollmentFormSection>
 
@@ -267,53 +202,76 @@ export function EnrollmentStepOneForm() {
           >
             <EnrollmentDateField
               control={control}
-              label="Birth Date"
+              label="Date of Birth"
               max={maxBirthDate}
-              name="birthInfo.dateOfBirth"
-              placeholder="Select birth date"
+              name="dateOfBirth"
+              placeholder="Select date of birth"
               required
             />
             <EnrollmentInputField
               control={control}
-              label="Country of Birth"
-              name="birthInfo.countryOfBirth"
-              placeholder="Enter country of birth"
-              required
-            />
-            <EnrollmentInputField
-              control={control}
-              label="Birth City / Town"
-              name="birthInfo.cityOfBirth"
+              label="City / Town of Birth"
+              name="cityOfBirth"
               placeholder="Enter city or town"
               required
             />
             <EnrollmentInputField
               control={control}
-              label="Municipality / Area"
-              name="birthInfo.municipalityOfBirth"
-              placeholder="Enter municipality or landmark"
+              label="Municipality of Birth"
+              name="municipalityOfBirth"
+              placeholder="Enter municipality"
+              required
+            />
+            <EnrollmentInputField
+              autoComplete="country-name"
+              control={control}
+              label="Country of Birth"
+              name="countryOfBirth"
+              placeholder="Enter country of birth"
               required
             />
           </EnrollmentFormSection>
 
           <EnrollmentFormSection
             description="These details help us address you respectfully throughout the enrollment process."
-            fieldsPerRow={[1, 1]}
+            fieldsPerRow={[2]}
             iconSrc={enrollmentSectionIcons.gender}
-            title="Gender Identity"
+            title="Sex & Gender"
           >
-            <EnrollmentRadioGroupField
+            <EnrollmentSelectField
               control={control}
-              label="How do you identify?"
-              name="gender.gender"
+              label="Sex"
+              name="sex"
+              options={enrollmentStepOneSexOptions}
+              placeholder="Select your sex"
+            />
+            <EnrollmentSelectField
+              control={control}
+              label="Gender"
+              name="gender"
               options={enrollmentStepOneGenderOptions}
-              required
+              placeholder="Select your gender"
+            />
+          </EnrollmentFormSection>
+
+          <EnrollmentFormSection
+            description="Add optional background details that help us better understand your household."
+            fieldsPerRow={[2]}
+            iconSrc={enrollmentSectionIcons.additional}
+            title="Marital Status & Occupation"
+          >
+            <EnrollmentSelectField
+              control={control}
+              label="Marital Status"
+              name="maritalStatus"
+              options={enrollmentStepOneMaritalStatusOptions}
+              placeholder="Select marital status"
             />
             <EnrollmentInputField
               control={control}
-              label="Pronouns"
-              name="gender.pronouns"
-              placeholder="he/him, she/her, they/them"
+              label="Occupation"
+              name="occupation"
+              placeholder="Enter occupation"
             />
           </EnrollmentFormSection>
 
@@ -326,14 +284,14 @@ export function EnrollmentStepOneForm() {
             <EnrollmentSelectField
               control={control}
               label="Identity"
-              name="yucayekeInfo.identity"
+              name="identity"
               options={enrollmentStepOneIdentityOptions}
               placeholder="Select your identity"
             />
             <EnrollmentInputField
               control={control}
               label="Yucayeke"
-              name="yucayekeInfo.yucayeke"
+              name="yucayeke"
               placeholder="Enter your Yucayeke"
               readOnly={yucayekeUnknown}
             />
@@ -341,245 +299,23 @@ export function EnrollmentStepOneForm() {
               className="self-center"
               control={control}
               label="I don't know my Yucayeke"
-              name="yucayekeInfo.yucayekeUnknown"
+              name="yucayekeUnknown"
               variant="plain"
             />
             <EnrollmentRadioGroupField
               control={control}
               label="Do you have children?"
-              name="yucayekeInfo.hasChildren"
+              name="hasChildren"
               options={enrollmentStepOneYesNoOptions}
             />
             {hasChildren === "YES" ? (
               <EnrollmentRadioGroupField
                 control={control}
                 label="Any children under 18?"
-                name="yucayekeInfo.hasMinorChildren"
+                name="hasMinorChildren"
                 options={enrollmentStepOneYesNoOptions}
               />
             ) : null}
-          </EnrollmentFormSection>
-
-          <EnrollmentFormSection
-            description="We will use these details to contact you about your enrollment status and any required follow-up."
-            fieldsPerRow={[2, 2]}
-            iconSrc={enrollmentSectionIcons.contact}
-            title="Contact Information"
-          >
-            <EnrollmentInputField
-              autoComplete="email"
-              control={control}
-              label="Email Address"
-              name="contact.email"
-              placeholder="Enter your email address"
-              required
-              type="email"
-            />
-            <EnrollmentInputField
-              autoComplete="tel"
-              control={control}
-              inputMode="tel"
-              label="Phone Number"
-              name="contact.phoneNumber"
-              placeholder="Enter your phone number"
-              required
-              type="tel"
-            />
-            <EnrollmentSelectField
-              control={control}
-              label="Phone Type"
-              name="contact.phoneType"
-              options={enrollmentStepOnePhoneTypeOptions}
-              placeholder="Select phone type"
-              required
-            />
-            <EnrollmentCheckboxField
-              className="self-center"
-              control={control}
-              label="Allow SMS updates"
-              name="contact.allowSMS"
-              variant="plain"
-            />
-          </EnrollmentFormSection>
-
-          <EnrollmentFormSection
-            description="Where do you currently reside? This helps us provide location-specific services and events."
-            fieldsPerRow={[2, 2, 1]}
-            iconSrc={enrollmentSectionIcons.address}
-            title="Current Address"
-          >
-            <EnrollmentInputField
-              autoComplete="address-line1"
-              control={control}
-              label="Street Address"
-              name="currentAddress.street"
-              placeholder="Enter street address"
-              required
-            />
-            <EnrollmentInputField
-              autoComplete="address-level2"
-              control={control}
-              label="City"
-              name="currentAddress.city"
-              placeholder="Enter city"
-              required
-            />
-            <EnrollmentInputField
-              autoComplete="address-level1"
-              control={control}
-              label="State / Province"
-              name="currentAddress.state"
-              placeholder="Enter state or province"
-              required
-            />
-            <EnrollmentInputField
-              autoComplete="postal-code"
-              control={control}
-              label="ZIP / Postal Code"
-              name="currentAddress.zipCode"
-              placeholder="Enter ZIP or postal code"
-              required
-            />
-            <EnrollmentInputField
-              autoComplete="country-name"
-              control={control}
-              label="Country"
-              name="currentAddress.country"
-              placeholder="Enter country"
-              required
-            />
-          </EnrollmentFormSection>
-
-          <EnrollmentFormSection
-            description="If your mailing address differs from your current residence, include it here."
-            fieldsPerRow={[2, 2, 1]}
-            headerAction={
-              <EnrollmentCheckboxField
-                control={control}
-                label="Same as Current Address"
-                name="sameAsCurrentAddress"
-                variant="inline"
-              />
-            }
-            iconSrc={enrollmentSectionIcons.address}
-            title="Mailing Address"
-          >
-            <EnrollmentInputField
-              autoComplete="address-line1"
-              control={control}
-              label="Street Address"
-              name="mailingAddress.street"
-              placeholder="Enter mailing street address"
-              readOnly={sameAsCurrentAddress}
-              required
-            />
-            <EnrollmentInputField
-              autoComplete="address-level2"
-              control={control}
-              label="City"
-              name="mailingAddress.city"
-              placeholder="Enter city"
-              readOnly={sameAsCurrentAddress}
-              required
-            />
-            <EnrollmentInputField
-              autoComplete="address-level1"
-              control={control}
-              label="State / Province"
-              name="mailingAddress.state"
-              placeholder="Enter state or province"
-              readOnly={sameAsCurrentAddress}
-              required
-            />
-            <EnrollmentInputField
-              autoComplete="postal-code"
-              control={control}
-              label="ZIP / Postal Code"
-              name="mailingAddress.zipCode"
-              placeholder="Enter ZIP or postal code"
-              readOnly={sameAsCurrentAddress}
-              required
-            />
-            <EnrollmentInputField
-              autoComplete="country-name"
-              control={control}
-              label="Country"
-              name="mailingAddress.country"
-              placeholder="Enter country"
-              readOnly={sameAsCurrentAddress}
-              required
-            />
-          </EnrollmentFormSection>
-
-          <EnrollmentFormSection
-            description="Provide someone we can contact if we are unable to reach you directly."
-            fieldsPerRow={[2, 1]}
-            iconSrc={enrollmentSectionIcons.emergency}
-            title="Emergency Contact"
-          >
-            <EnrollmentInputField
-              control={control}
-              label="Full Name"
-              name="emergencyContact.fullName"
-              placeholder="Enter emergency contact name"
-              required
-            />
-            <EnrollmentInputField
-              control={control}
-              label="Relationship"
-              name="emergencyContact.relationship"
-              placeholder="Enter relationship"
-              required
-            />
-            <EnrollmentInputField
-              control={control}
-              inputMode="tel"
-              label="Phone Number"
-              name="emergencyContact.phoneNumber"
-              placeholder="Enter emergency contact phone"
-              required
-              type="tel"
-            />
-          </EnrollmentFormSection>
-
-          <EnrollmentFormSection
-            description="Add any optional background details that help us better understand your personal and community context."
-            fieldsPerRow={[2, 1, 1, 1]}
-            iconSrc={enrollmentSectionIcons.additional}
-            title="Additional Information"
-          >
-            <EnrollmentSelectField
-              control={control}
-              label="Marital Status"
-              name="additionalInfo.maritalStatus"
-              options={enrollmentStepOneMaritalStatusOptions}
-              placeholder="Select marital status"
-            />
-            <EnrollmentInputField
-              control={control}
-              label="Education Level"
-              name="additionalInfo.educationLevel"
-              placeholder="High School, Bachelor's, Trade School"
-            />
-            <EnrollmentInputField
-              control={control}
-              label="Occupation"
-              name="additionalInfo.occupation"
-              placeholder="Enter occupation"
-            />
-            <EnrollmentInputField
-              control={control}
-              label="Languages Spoken"
-              name="additionalInfo.languagesSpokenInput"
-              placeholder="English, Spanish, Taíno"
-            />
-            <EnrollmentTextareaField
-              control={control}
-              label="Special Skills"
-              name="additionalInfo.specialSkills"
-              placeholder="Share any special skills, cultural knowledge, or community strengths"
-              rows={4}
-            />
           </EnrollmentFormSection>
 
           <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
@@ -589,8 +325,8 @@ export function EnrollmentStepOneForm() {
                   Submit Step 1
                 </h2>
                 <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Save your personal information to the enrollment application.
-                  You can return and update this step before final submission.
+                  Save your demographics to the enrollment application. You can
+                  return and update this step before final submission.
                 </p>
               </div>
 

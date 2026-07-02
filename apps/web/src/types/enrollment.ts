@@ -37,11 +37,12 @@ export type AccountEnrollmentConsent = Readonly<{
 }>;
 
 export type EnrollmentDocumentType =
+  | "PROFILE_PICTURE"
   | "USER_PHOTO"
-  | "BIRTH_CERTIFICATE"
-  | "FAMILY_RECORD"
-  | "FAMILY_PHOTO"
-  | "ADDITIONAL_EVIDENCE";
+  | "GENEALOGICAL_RECORDS"
+  | "KINSHIP_LETTERS"
+  | "ORAL_HISTORY"
+  | "DNA_TESTING";
 
 export type EnrollmentDocumentStatus = string;
 
@@ -185,22 +186,13 @@ export type AccountInfoResponse = Readonly<{
 
 export type ProfileResponse = AccountInfoResponse;
 
-export type EnrollmentStepOneLegalName = Readonly<{
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  maternalLastName?: string;
-  preferredName?: string;
-}>;
+export type EnrollmentSexValue =
+  | "MALE"
+  | "FEMALE"
+  | "INTERSEX"
+  | "PREFER_NOT_TO_SAY";
 
-export type EnrollmentStepOneBirthInfo = Readonly<{
-  dateOfBirth: string;
-  cityOfBirth: string;
-  municipalityOfBirth: string;
-  countryOfBirth: string;
-}>;
-
-export type EnrollmentStepOneGenderValue =
+export type EnrollmentGenderValue =
   | "MALE"
   | "FEMALE"
   | "NON_BINARY"
@@ -209,144 +201,117 @@ export type EnrollmentStepOneGenderValue =
   | "PREFER_NOT_TO_SAY"
   | "OTHER";
 
-export type EnrollmentStepOneGenderInfo = Readonly<{
-  gender: EnrollmentStepOneGenderValue;
-  pronouns?: string;
-}>;
-
-export type EnrollmentStepOnePhoneTypeValue = "MOBILE" | "HOME" | "WORK";
-
-export type EnrollmentStepOneContactInfo = Readonly<{
-  email: string;
-  phoneNumber: string;
-  phoneType: EnrollmentStepOnePhoneTypeValue;
-  allowSMS?: boolean;
-}>;
-
-export type EnrollmentStepOneAddressInfo = Readonly<{
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-}>;
-
-export type EnrollmentStepOneEmergencyContact = Readonly<{
-  fullName: string;
-  relationship: string;
-  phoneNumber: string;
-}>;
-
-export type EnrollmentStepOneMaritalStatusValue =
+export type EnrollmentMaritalStatusValue =
   | "SINGLE"
   | "MARRIED"
   | "DIVORCED"
   | "WIDOWED"
   | "DOMESTIC_PARTNERSHIP";
 
-export type EnrollmentStepOneAdditionalInfo = Readonly<{
-  maritalStatus?: EnrollmentStepOneMaritalStatusValue;
-  occupation?: string;
-  educationLevel?: string;
-  languagesSpoken?: string[];
-  specialSkills?: string;
-}>;
-
-export type EnrollmentStepOneIdentityValue =
+export type EnrollmentIdentityValue =
   | "ARAWAK"
   | "KALINAGO"
   | "GARIFUNA"
   | "TAINO";
 
-export type EnrollmentStepOneYucayekeInfo = Readonly<{
-  identity?: EnrollmentStepOneIdentityValue;
+/**
+ * Step 1 — Demographics. Flat body matching the backend
+ * `POST /enrollment/step1/upsert` DTO exactly.
+ */
+export type EnrollmentStepOneUpsertRequest = Readonly<{
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  cityOfBirth: string;
+  municipalityOfBirth: string;
+  countryOfBirth: string;
+  sex?: EnrollmentSexValue;
+  gender?: EnrollmentGenderValue;
+  maritalStatus?: EnrollmentMaritalStatusValue;
+  occupation?: string;
+  identity?: EnrollmentIdentityValue;
   yucayeke?: string;
   yucayekeUnknown?: boolean;
   hasChildren?: boolean;
   hasMinorChildren?: boolean;
 }>;
 
+/** `GET /enrollment/step1/` returns the same flat fields (nullable). */
 export type EnrollmentStepOnePrefillResponse = Readonly<{
-  legalName?: Partial<EnrollmentStepOneLegalName> | null;
-  birthInfo?: Partial<EnrollmentStepOneBirthInfo> | null;
-  gender?: Partial<EnrollmentStepOneGenderInfo> | null;
-  contact?: Partial<EnrollmentStepOneContactInfo> | null;
-  currentAddress?: Partial<EnrollmentStepOneAddressInfo> | null;
-  mailingAddress?: Partial<EnrollmentStepOneAddressInfo> | null;
-  emergencyContact?: Partial<EnrollmentStepOneEmergencyContact> | null;
-  additionalInfo?: Partial<EnrollmentStepOneAdditionalInfo> | null;
-  yucayekeInfo?: Partial<EnrollmentStepOneYucayekeInfo> | null;
-}>;
-
-export type EnrollmentStepOneUpsertRequest = Readonly<{
-  legalName: EnrollmentStepOneLegalName;
-  birthInfo: EnrollmentStepOneBirthInfo;
-  gender: EnrollmentStepOneGenderInfo;
-  contact: EnrollmentStepOneContactInfo;
-  currentAddress: EnrollmentStepOneAddressInfo;
-  mailingAddress: EnrollmentStepOneAddressInfo;
-  emergencyContact: EnrollmentStepOneEmergencyContact;
-  additionalInfo: EnrollmentStepOneAdditionalInfo;
-  yucayekeInfo: EnrollmentStepOneYucayekeInfo;
+  firstName?: string | null;
+  lastName?: string | null;
+  dateOfBirth?: string | null;
+  cityOfBirth?: string | null;
+  municipalityOfBirth?: string | null;
+  countryOfBirth?: string | null;
+  sex?: string | null;
+  gender?: string | null;
+  maritalStatus?: string | null;
+  occupation?: string | null;
+  identity?: string | null;
+  yucayeke?: string | null;
+  yucayekeUnknown?: boolean | null;
+  hasChildren?: boolean | null;
+  hasMinorChildren?: boolean | null;
 }>;
 
 export type EnrollmentStepOneUpsertResponse = Readonly<{
   success: boolean;
 }>;
 
-export type EnrollmentStepTwoMaternalLineage = Readonly<{
-  id?: string;
-  relation: EnrollmentMaternalLineageRelationValue;
-  fullName: string;
-  maidenName?: string;
+/**
+ * One kinship person captured in the maternal (step 2) or paternal (step 3)
+ * form. `dateOfBirth` is only sent for the parent (mother / father) slot.
+ */
+export type EnrollmentAncestryInput = Readonly<{
+  name?: string;
   dateOfBirth?: string;
-  placeOfBirth?: string;
-  livingStatus: EnrollmentMaternalLineageLivingStatusValue;
-  approximateBirthYear?: number;
-  regionOfOrigin?: string;
-  familyOccupation?: string;
-  additionalNotes?: string;
+  nationality?: string;
+  municipality?: string;
+  yucayeke?: string;
+  isBorikuaTaino?: boolean;
 }>;
 
-export type EnrollmentStepTwoPrefillLineage = Readonly<{
-  id?: string | null;
-  relation?: EnrollmentMaternalLineageRelationValue | null;
-  fullName?: string | null;
-  maidenName?: string | null;
+/** A persisted Ancestry row as returned by the step 2/3 prefill endpoints. */
+export type EnrollmentAncestrySummary = Readonly<{
+  name?: string | null;
   dateOfBirth?: string | null;
-  placeOfBirth?: string | null;
-  livingStatus?: EnrollmentMaternalLineageLivingStatusValue | null;
-  approximateBirthYear?: number | null;
-  regionOfOrigin?: string | null;
-  familyOccupation?: string | null;
-  additionalNotes?: string | null;
+  nationality?: string | null;
+  municipality?: string | null;
+  yucayeke?: string | null;
+  isBorikuaTaino?: boolean | null;
 }>;
 
-export type EnrollmentStepTwoPrefillResponse =
-  readonly EnrollmentStepTwoPrefillLineage[];
-
+/** Step 2 — Maternal Kinship (`POST /enrollment/step2/upsert`). */
 export type EnrollmentStepTwoUpsertRequest = Readonly<{
-  maternalLineages: EnrollmentStepTwoMaternalLineage[];
+  mother: EnrollmentAncestryInput;
+  maternalGrandmother: EnrollmentAncestryInput;
+  maternalGrandfather: EnrollmentAncestryInput;
+}>;
+
+/** `GET /enrollment/step2/` — each ancestor is null until saved. */
+export type EnrollmentStepTwoPrefillResponse = Readonly<{
+  mother?: EnrollmentAncestrySummary | null;
+  maternalGrandmother?: EnrollmentAncestrySummary | null;
+  maternalGrandfather?: EnrollmentAncestrySummary | null;
 }>;
 
 export type EnrollmentStepTwoUpsertResponse = Readonly<{
   success: boolean;
 }>;
 
-export type EnrollmentStepThreeCulturalConnection = Readonly<{
-  key: string;
-  description: string;
-}>;
-
-export type EnrollmentStepThreeCulturalConnectionListResponse =
-  readonly EnrollmentStepThreeCulturalConnection[];
-
-export type EnrollmentStepThreePrefillResponse = Readonly<{
-  culturalConnectionKeys: string[];
-}>;
-
+/** Step 3 — Paternal Kinship (`POST /enrollment/step3/upsert`). */
 export type EnrollmentStepThreeUpsertRequest = Readonly<{
-  culturalConnectionKeys: string[];
+  father: EnrollmentAncestryInput;
+  paternalGrandmother: EnrollmentAncestryInput;
+  paternalGrandfather: EnrollmentAncestryInput;
+}>;
+
+/** `GET /enrollment/step3/` — each ancestor is null until saved. */
+export type EnrollmentStepThreePrefillResponse = Readonly<{
+  father?: EnrollmentAncestrySummary | null;
+  paternalGrandmother?: EnrollmentAncestrySummary | null;
+  paternalGrandfather?: EnrollmentAncestrySummary | null;
 }>;
 
 export type EnrollmentStepThreeUpsertResponse = Readonly<{

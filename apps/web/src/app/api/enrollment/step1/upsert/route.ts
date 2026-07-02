@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   try {
     const payload = await apiConnector<EnrollmentStepOneUpsertResponse>(
       "post",
-      endpoints.ENROLLMENT.STEP_1_PERSONAL_INFO_UPSERT,
+      endpoints.ENROLLMENT.STEP_1_DEMOGRAPHICS_UPSERT,
       body,
       authHeaders,
     );
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return mapBackendApiErrorResponse(
       error,
-      "Unable to save your step 1 enrollment information right now.",
+      "Unable to save your step 1 demographics right now.",
     );
   }
 }

@@ -19,9 +19,9 @@ export default function EnrollmentStep2Page() {
     <>
       <EnrollmentStepHero
         className="-mx-4 sm:-mx-6 lg:-mx-8"
-        description="Document your maternal ancestry and family history to continue your enrollment journey and prepare for supporting document submission."
+        description="Document your mother and maternal grandparents to continue your enrollment journey and support your kinship claim."
         step={step.step}
-        title="Maternal Lineage Documentation"
+        title="Maternal Kinship"
         totalSteps={enrollmentTotalSteps}
       />
       <EnrollmentProgressSection
