@@ -139,30 +139,30 @@ export function EnrollmentStepThreeForm() {
           onSubmit={form.handleSubmit(onSubmit)}
         >
           {stepThreeErrorMessage ? (
-            <div className="rounded-[22px] border border-[#e9d8aa] bg-[#fff9eb] px-4 py-3 text-sm font-medium text-[#8a6000] sm:px-5">
+            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
               {stepThreeErrorMessage} You can still continue, but previously
               saved step 3 values may not be prefilled.
             </div>
           ) : null}
 
           {culturalConnectionListErrorMessage ? (
-            <div className="rounded-[22px] border border-[#f0d4b8] bg-[#fff8ef] px-4 py-3 text-sm font-medium text-[#955e24] sm:px-5">
+            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
               {culturalConnectionListErrorMessage} Please refresh and try again
               before submitting Step 3.
             </div>
           ) : null}
 
           {errors.root?.message ? (
-            <div className="rounded-[22px] border border-[#e7c6c2] bg-[#fff3f1] px-4 py-3 text-sm font-medium text-[#9e493f] sm:px-5">
+            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
               {errors.root.message}
             </div>
           ) : null}
 
-          <div className="rounded-[26px] border border-[#d7e3dc] bg-white px-5 py-5 shadow-[0_18px_36px_-30px_rgba(16,47,52,0.18)] sm:px-6 sm:py-6">
-            <p className="text-[0.78rem] font-semibold tracking-[0.24em] text-[#1f8ca5] uppercase">
+          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
+            <p className="text-muted-foreground text-[0.78rem] font-semibold tracking-[0.24em] uppercase">
               Cultural Connection Guidance
             </p>
-            <p className="mt-2 max-w-4xl text-[0.92rem] leading-7 text-[#5c6668]">
+            <p className="text-muted-foreground mt-2 max-w-4xl text-[0.92rem] leading-7">
               Select the traditions, practices, and cultural knowledge areas
               that reflect your family and community connection. Choose all that
               apply.
@@ -174,7 +174,6 @@ export function EnrollmentStepThreeForm() {
             fieldsPerRow={[1]}
             footer="You can update these selections later while your enrollment remains in draft status."
             iconSrc={enrollmentSectionIcons.cultural}
-            iconWrapperClassName="bg-[#8b5e34] shadow-[0_14px_28px_-22px_rgba(139,94,52,0.48)]"
             title="Cultural Connections"
           >
             <FormField
@@ -188,7 +187,7 @@ export function EnrollmentStepThreeForm() {
                 return (
                   <FormItem className="w-full max-w-none">
                     {isListLoading ? (
-                      <div className="rounded-2xl border border-[#d8e2de] bg-[#f7fbf9] px-4 py-4 text-[0.92rem] font-medium text-[#5f666a]">
+                      <div className="rounded-xl border border-border bg-surface-muted px-4 py-4 text-[0.92rem] font-medium text-foreground">
                         Loading cultural connection options...
                       </div>
                     ) : culturalConnectionOptions.length > 0 ? (
@@ -203,7 +202,7 @@ export function EnrollmentStepThreeForm() {
 
                           return (
                             <label
-                              className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#e3e7e4] bg-[#f8faf9] px-4 py-3 transition-colors hover:border-[#b8cbc3] hover:bg-[#f3f8f6]"
+                              className="border-border bg-surface hover:bg-surface-muted flex cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 transition-colors"
                               key={option.key}
                             >
                               <Checkbox
@@ -224,7 +223,7 @@ export function EnrollmentStepThreeForm() {
                                 }}
                               />
                               <span className="min-w-0">
-                                <span className="block cursor-pointer text-[0.9rem] leading-6 font-medium tracking-[-0.01em] text-[#243238]">
+                                <span className="text-foreground block cursor-pointer text-[0.9rem] leading-6 font-medium tracking-tight">
                                   {optionDescription}
                                 </span>
                               </span>
@@ -233,7 +232,7 @@ export function EnrollmentStepThreeForm() {
                         })}
                       </div>
                     ) : (
-                      <div className="rounded-2xl border border-dashed border-[#d4ddda] bg-[#f8faf9] px-4 py-4 text-[0.9rem] text-[#6e7774]">
+                      <div className="rounded-xl border border-dashed border-border bg-surface-muted px-4 py-4 text-[0.9rem] text-muted-foreground">
                         No cultural connection options are available right now.
                       </div>
                     )}
@@ -244,20 +243,20 @@ export function EnrollmentStepThreeForm() {
             />
           </EnrollmentFormSection>
 
-          <div className="rounded-[26px] border border-[#dbe4df] bg-white px-5 py-5 shadow-[0_18px_34px_-28px_rgba(16,47,52,0.2)] sm:px-6 sm:py-6">
+          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="max-w-2xl">
-                <h2 className="text-[1.1rem] font-semibold tracking-[-0.03em] text-[#243238]">
+                <h2 className="text-foreground text-[1.1rem] font-semibold tracking-tight">
                   Submit Step 3
                 </h2>
-                <p className="mt-1 text-[0.88rem] leading-6 text-[#707773] sm:text-[0.92rem]">
+                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
                   Save your cultural connection details and continue to the
                   document upload step.
                 </p>
               </div>
 
               <Button
-                className="min-w-[12rem] border-[#dccab7] bg-[#fbf5ee] text-[#6e553b] hover:bg-[#f3e6d5]"
+                className="min-w-[12rem]"
                 disabled={upsertMutation.isPending}
                 leftIcon={<ArrowLeft />}
                 onClick={() => router.push("/enrollment/step-2")}
@@ -269,7 +268,7 @@ export function EnrollmentStepThreeForm() {
               </Button>
 
               <Button
-                className="bg-primary! min-w-[12rem] text-white! shadow-[0_18px_34px_-22px_rgba(197,49,51,0.42)] hover:bg-[#aa2a2d]! hover:text-white!"
+                className="min-w-[12rem]"
                 disabled={isSubmitDisabled}
                 loading={upsertMutation.isPending}
                 loadingText="Saving Step 3..."

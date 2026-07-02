@@ -92,7 +92,7 @@ type EnrollmentCheckboxFieldProps<TFieldValues extends FieldValues> = Readonly<{
 
 const fieldContainerClassName = "w-full max-w-[34rem] justify-self-start";
 const fieldLabelClassName =
-  "text-[0.82rem] font-medium tracking-[-0.02em] text-[#5f666a]";
+  "text-foreground text-[0.82rem] font-medium tracking-tight";
 
 type RadioOption = {
   label: string;
@@ -109,7 +109,7 @@ function FieldLabel({
   return (
     <FormLabel className={fieldLabelClassName}>
       {label}
-      {required ? <span className="text-[#d65a52]"> *</span> : null}
+      {required ? <span className="text-foreground"> *</span> : null}
     </FormLabel>
   );
 }
@@ -129,7 +129,7 @@ function FieldLegend({
       id={`${formItemId}-legend`}
     >
       {label}
-      {required ? <span className="text-[#d65a52]"> *</span> : null}
+      {required ? <span className="text-foreground"> *</span> : null}
     </legend>
   );
 }
@@ -187,8 +187,8 @@ function EnrollmentRadioGroupControl<TFieldValues extends FieldValues>({
               return (
                 <label
                   className={cn(
-                    "flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border border-[#dedede] bg-[#f8f8f8] px-4 py-3.5 transition-colors",
-                    isSelected && "border-primary/35 bg-primary/8",
+                    "border-border bg-surface flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 transition-colors",
+                    isSelected && "border-foreground bg-surface-muted",
                     fieldState.error && "border-red-300",
                     optionClassName,
                   )}
@@ -196,7 +196,7 @@ function EnrollmentRadioGroupControl<TFieldValues extends FieldValues>({
                   key={option.value}
                 >
                   <RadioGroupItem id={optionId} value={option.value} />
-                  <span className="text-[0.98rem] font-medium tracking-[-0.02em] text-[#243238]">
+                  <span className="text-foreground text-[0.98rem] font-medium tracking-tight">
                     {option.label}
                   </span>
                 </label>
@@ -233,7 +233,7 @@ export function EnrollmentInputField<TFieldValues extends FieldValues>({
             <Input
               autoComplete={autoComplete}
               className={cn(
-                readOnly && "cursor-default bg-[#ebefee] text-[#687174]",
+                readOnly && "bg-surface-muted text-muted-foreground cursor-default",
                 fieldState.error &&
                   "border-red-300 focus-visible:border-red-400/50 focus-visible:ring-red-200/50",
               )}
@@ -437,8 +437,8 @@ export function EnrollmentCheckboxField<TFieldValues extends FieldValues>({
               isPlain
                 ? "inline-flex min-h-0 cursor-pointer items-center gap-2.5"
                 : isInline
-                  ? "inline-flex min-h-0 cursor-pointer items-center gap-2.5 rounded-full border border-[#d7e2dd] bg-[#f7fbf9] px-3.5 py-2"
-                  : "flex min-h-12 cursor-pointer items-start gap-3 rounded-xl border border-[#e3e7e4] bg-[#f8faf9] px-4 py-3",
+                  ? "border-border bg-surface inline-flex min-h-0 cursor-pointer items-center gap-2.5 rounded-full border px-3.5 py-2"
+                  : "border-border bg-surface flex min-h-12 cursor-pointer items-start gap-3 rounded-xl border px-4 py-3",
             )}
           >
             <FormControl>
@@ -456,14 +456,14 @@ export function EnrollmentCheckboxField<TFieldValues extends FieldValues>({
             >
               <span
                 className={cn(
-                  "block font-medium tracking-[-0.02em] text-[#2d383d]",
+                  "text-foreground block font-medium tracking-tight",
                   isInline || isPlain ? "text-[0.86rem]" : "text-[0.9rem]",
                 )}
               >
                 {label}
               </span>
               {description && !isInline && !isPlain ? (
-                <span className="mt-0.5 block text-[0.78rem] leading-5 text-[#7a817d]">
+                <span className="text-muted-foreground mt-0.5 block text-[0.78rem] leading-5">
                   {description}
                 </span>
               ) : null}

@@ -27,7 +27,7 @@ export default function EnrollmentStep2Page() {
         className="-mx-4 sm:-mx-6 lg:-mx-8"
         currentStage={step.step}
       />
-      <section className="-mx-4 bg-[#FFFDEC] sm:-mx-6 lg:-mx-8">
+      <section className="-mx-4 bg-background sm:-mx-6 lg:-mx-8">
         <div className="px-4 sm:px-6 lg:px-8">
           <EnrollmentStepTwoForm />
         </div>

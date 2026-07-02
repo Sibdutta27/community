@@ -86,7 +86,7 @@ export function EnrollmentFormSection({
   return (
     <section
       className={cn(
-        "rounded-[26px] border border-[#e2e8e4] bg-white p-5 shadow-[0_18px_40px_-34px_rgba(16,47,52,0.18)] sm:rounded-[30px] sm:p-6 lg:p-8",
+        "border-border bg-surface rounded-2xl border p-5 sm:p-6 lg:p-8",
         className,
       )}
     >
@@ -94,7 +94,7 @@ export function EnrollmentFormSection({
         <div className="flex min-w-0 items-start gap-3.5 sm:gap-4">
           <div
             className={cn(
-              "flex size-12 shrink-0 items-center justify-center rounded-[10px] bg-[#00594e] text-white shadow-[0_14px_28px_-22px_rgba(0,89,78,0.56)]",
+              "border-border bg-surface-muted text-foreground flex size-12 shrink-0 items-center justify-center rounded-xl border",
               iconWrapperClassName,
             )}
           >
@@ -116,10 +116,10 @@ export function EnrollmentFormSection({
           </div>
 
           <div className="min-w-0 pt-0.5">
-            <h2 className="text-[1.05rem] leading-tight font-semibold tracking-[-0.03em] text-[#243238] sm:text-[1.15rem]">
+            <h2 className="text-foreground text-[1.05rem] leading-tight font-semibold tracking-tight sm:text-[1.15rem]">
               {title}
             </h2>
-            <p className="mt-1 max-w-3xl text-[0.8rem] leading-5 text-[#747976] sm:text-[0.86rem]">
+            <p className="text-muted-foreground mt-1 max-w-3xl text-[0.8rem] leading-5 sm:text-[0.86rem]">
               {description}
             </p>
           </div>
@@ -149,7 +149,7 @@ export function EnrollmentFormSection({
       {footer ? (
         <div
           className={cn(
-            "mt-5 text-[0.72rem] leading-5 text-[#7d8380] sm:text-[0.78rem]",
+            "text-muted-foreground mt-5 text-[0.72rem] leading-5 sm:text-[0.78rem]",
             footerClassName,
           )}
         >

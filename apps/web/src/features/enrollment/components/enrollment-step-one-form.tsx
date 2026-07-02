@@ -185,14 +185,14 @@ export function EnrollmentStepOneForm() {
           onSubmit={form.handleSubmit(onSubmit)}
         >
           {stepOneErrorMessage ? (
-            <div className="rounded-[22px] border border-[#e9d8aa] bg-[#fff9eb] px-4 py-3 text-sm font-medium text-[#8a6000] sm:px-5">
+            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
               {stepOneErrorMessage} You can still complete the form manually,
               but any previously saved step 1 values may not be prefilled.
             </div>
           ) : null}
 
           {errors.root?.message ? (
-            <div className="rounded-[22px] border border-[#e7c6c2] bg-[#fff3f1] px-4 py-3 text-sm font-medium text-[#9e493f] sm:px-5">
+            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
               {errors.root.message}
             </div>
           ) : null}
@@ -242,7 +242,6 @@ export function EnrollmentStepOneForm() {
             description="Your date and place of birth help us verify your identity and trace your lineage."
             fieldsPerRow={[2, 2]}
             iconSrc={enrollmentSectionIcons.birth}
-            iconWrapperClassName="bg-[#c85d57] shadow-[0_14px_28px_-22px_rgba(200,93,87,0.52)]"
             title="Birth Information"
           >
             <EnrollmentDateField
@@ -280,7 +279,6 @@ export function EnrollmentStepOneForm() {
             description="These details help us address you respectfully throughout the enrollment process."
             fieldsPerRow={[1, 1]}
             iconSrc={enrollmentSectionIcons.gender}
-            iconWrapperClassName="bg-[#4D0045] shadow-[0_14px_28px_-22px_rgba(77,0,69,0.4)]"
             title="Gender Identity"
           >
             <EnrollmentRadioGroupField
@@ -302,7 +300,6 @@ export function EnrollmentStepOneForm() {
             description="We will use these details to contact you about your enrollment status and any required follow-up."
             fieldsPerRow={[2, 2]}
             iconSrc={enrollmentSectionIcons.contact}
-            iconWrapperClassName="bg-[#1f6f8b] shadow-[0_14px_28px_-22px_rgba(31,111,139,0.52)]"
             title="Contact Information"
           >
             <EnrollmentInputField
@@ -345,7 +342,6 @@ export function EnrollmentStepOneForm() {
             description="Where do you currently reside? This helps us provide location-specific services and events."
             fieldsPerRow={[2, 2, 1]}
             iconSrc={enrollmentSectionIcons.address}
-            iconWrapperClassName="bg-[#FFBDBD] shadow-[0_14px_28px_-22px_rgba(255,189,189,0.42)]"
             title="Current Address"
           >
             <EnrollmentInputField
@@ -402,7 +398,6 @@ export function EnrollmentStepOneForm() {
               />
             }
             iconSrc={enrollmentSectionIcons.address}
-            iconWrapperClassName="bg-[#FFBDBD] shadow-[0_14px_28px_-22px_rgba(255,189,189,0.42)]"
             title="Mailing Address"
           >
             <EnrollmentInputField
@@ -456,7 +451,6 @@ export function EnrollmentStepOneForm() {
             description="Provide someone we can contact if we are unable to reach you directly."
             fieldsPerRow={[2, 1]}
             iconSrc={enrollmentSectionIcons.emergency}
-            iconWrapperClassName="bg-[#b5465e] shadow-[0_14px_28px_-22px_rgba(181,70,94,0.5)]"
             title="Emergency Contact"
           >
             <EnrollmentInputField
@@ -488,7 +482,6 @@ export function EnrollmentStepOneForm() {
             description="Add any optional background details that help us better understand your personal and community context."
             fieldsPerRow={[2, 1, 1, 1]}
             iconSrc={enrollmentSectionIcons.additional}
-            iconWrapperClassName="bg-[#6d7b2e] shadow-[0_14px_28px_-22px_rgba(109,123,46,0.52)]"
             title="Additional Information"
           >
             <EnrollmentSelectField
@@ -525,20 +518,20 @@ export function EnrollmentStepOneForm() {
             />
           </EnrollmentFormSection>
 
-          <div className="rounded-[26px] border border-[#dbe4df] bg-white px-5 py-5 shadow-[0_18px_34px_-28px_rgba(16,47,52,0.2)] sm:px-6 sm:py-6">
+          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="max-w-2xl">
-                <h2 className="text-[1.1rem] font-semibold tracking-[-0.03em] text-[#243238]">
+                <h2 className="text-foreground text-[1.1rem] font-semibold tracking-tight">
                   Submit Step 1
                 </h2>
-                <p className="mt-1 text-[0.88rem] leading-6 text-[#707773] sm:text-[0.92rem]">
+                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
                   Save your personal information to the enrollment application.
                   You can return and update this step before final submission.
                 </p>
               </div>
 
               <Button
-                className="bg-primary! min-w-[12rem] text-white! shadow-[0_18px_34px_-22px_rgba(197,49,51,0.42)] hover:bg-[#aa2a2d]! hover:text-white!"
+                className="min-w-[12rem]"
                 loading={upsertMutation.isPending}
                 loadingText="Saving Step 1..."
                 rightIcon={<ArrowRight />}

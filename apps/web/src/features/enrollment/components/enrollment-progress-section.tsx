@@ -26,7 +26,7 @@ export function EnrollmentProgressSection({
   return (
     <section
       aria-label="Enrollment progress"
-      className={cn("border-t border-[#e6eeeb] bg-white", className)}
+      className={cn("border-border bg-background border-t", className)}
     >
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
         <div className="-mx-4 overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden">
@@ -45,12 +45,10 @@ export function EnrollmentProgressSection({
                   <div className="flex items-start gap-3.5 sm:gap-4">
                     <div
                       className={cn(
-                        "flex size-14 shrink-0 items-center justify-center rounded-full text-[1.75rem] font-semibold tracking-[-0.05em] text-white sm:size-16 sm:text-[2rem]",
-                        isActive
-                          ? "bg-primary shadow-[0_18px_34px_-20px_rgba(197,49,51,0.42)]"
-                          : isCompleted
-                            ? "bg-primary shadow-[0_14px_28px_-20px_rgba(197,49,51,0.34)]"
-                            : "bg-[#b7b7b7]",
+                        "flex size-14 shrink-0 items-center justify-center rounded-full text-[1.75rem] font-semibold tracking-tight sm:size-16 sm:text-[2rem]",
+                        isActive || isCompleted
+                          ? "bg-foreground text-background"
+                          : "border-border text-muted-foreground border bg-surface",
                       )}
                     >
                       {isCompleted ? (
@@ -63,16 +61,16 @@ export function EnrollmentProgressSection({
                     <div className="pt-1">
                       <p
                         className={cn(
-                          "text-[1.05rem] leading-tight font-medium tracking-[-0.04em] sm:text-[1.2rem]",
-                          isUpcoming ? "text-[#9fa2a1]" : "text-[#173f4c]",
+                          "text-[1.05rem] leading-tight font-medium tracking-tight sm:text-[1.2rem]",
+                          isUpcoming ? "text-muted-foreground" : "text-foreground",
                         )}
                       >
                         {stage.title}
                       </p>
                       <p
                         className={cn(
-                          "mt-2 max-w-[13rem] text-[0.76rem] leading-[1.05rem] sm:max-w-[13.5rem] sm:text-[0.8rem] sm:leading-[1.08rem]",
-                          isUpcoming ? "text-[#c0c4c2]" : "text-[#7a8480]",
+                          "text-muted-foreground mt-2 max-w-[13rem] text-[0.76rem] leading-[1.05rem] sm:max-w-[13.5rem] sm:text-[0.8rem] sm:leading-[1.08rem]",
+                          isUpcoming && "opacity-70",
                         )}
                       >
                         {stage.description}

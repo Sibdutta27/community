@@ -56,18 +56,18 @@ function UploadedDocumentRow({
   const normalizedStatus = document.status.toUpperCase();
   const statusClassName =
     normalizedStatus === "REJECTED"
-      ? "border-[#efc8c3] bg-[#fff3f1] text-[#a5463f]"
+      ? "border-border bg-surface-muted text-foreground"
       : normalizedStatus === "APPROVED"
-        ? "border-[#cde5d5] bg-[#f1fbf5] text-[#287347]"
-        : "border-[#d9e2de] bg-[#f5f8f6] text-[#5a6661]";
+        ? "border-border bg-surface-muted text-foreground"
+        : "border-border bg-surface-muted text-foreground";
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-[#d9e3df] bg-[#f7fbf9] px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="border-border bg-surface flex flex-col gap-2 rounded-xl border px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
-        <p className="truncate text-[0.83rem] font-semibold tracking-[-0.01em] text-[#243238]">
+        <p className="text-foreground truncate text-[0.83rem] font-semibold tracking-tight">
           {getEnrollmentDocumentDisplayName(document.fileName)}
         </p>
-        <p className="mt-0.5 text-[0.73rem] text-[#6f7773]">
+        <p className="text-muted-foreground mt-0.5 text-[0.73rem]">
           {formatEnrollmentDocumentFileSize(document.fileSize)} · Uploaded{" "}
           {new Date(document.uploadedAt).toLocaleDateString()}
         </p>
@@ -83,7 +83,7 @@ function UploadedDocumentRow({
           {formatEnrollmentDocumentStatus(document.status)}
         </span>
         <a
-          className="border-primary/20 text-primary hover:bg-primary/10 rounded-full border bg-white px-2.5 py-1 text-[0.68rem] font-semibold tracking-[0.04em] uppercase transition-colors"
+          className="border-border text-foreground hover:bg-surface-muted rounded-full border bg-surface px-2.5 py-1 text-[0.68rem] font-semibold tracking-[0.04em] uppercase transition-colors"
           href={document.url}
           rel="noreferrer"
           target="_blank"
@@ -126,7 +126,7 @@ function UploadDropArea({
       />
 
       <button
-        className="border-secondary mt-3 flex min-h-[9.5rem] w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-[#f9f6f0] px-4 py-5 transition-colors hover:bg-[#f3ede5] disabled:cursor-not-allowed disabled:opacity-70"
+        className="border-border mt-3 flex min-h-[9.5rem] w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-surface-muted px-4 py-5 transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-70"
         disabled={disabled}
         onClick={() => onOpen(slotId)}
         type="button"
@@ -138,7 +138,7 @@ function UploadDropArea({
           src="/icons/enrollment/file-upload.svg"
           width={48}
         />
-        <span className="mt-2 text-[0.88rem] font-semibold text-[#5f686c] underline underline-offset-2">
+        <span className="text-muted-foreground mt-2 text-[0.88rem] font-semibold underline underline-offset-2">
           {uploading ? "Uploading..." : "Click to upload"}
         </span>
       </button>
@@ -146,7 +146,7 @@ function UploadDropArea({
       <div className="mt-3 flex flex-wrap gap-1.5">
         {uploadFormatBadges.map((badge) => (
           <span
-            className="rounded-md bg-[#ecf0ee] px-2 py-1 text-[0.62rem] font-semibold tracking-[0.04em] text-[#5d676b] uppercase"
+            className="bg-surface-muted text-muted-foreground rounded-md px-2 py-1 text-[0.62rem] font-semibold tracking-[0.04em] uppercase"
             key={`${slotId}-${badge}`}
           >
             {badge}
@@ -299,29 +299,29 @@ export function EnrollmentStepFourForm() {
     <section className="mx-auto w-full max-w-7xl py-6 sm:py-8 lg:py-10">
       <div className="space-y-6 sm:space-y-7">
         {documentListErrorMessage ? (
-          <div className="rounded-[22px] border border-[#f0d4b8] bg-[#fff8ef] px-4 py-3 text-sm font-medium text-[#955e24] sm:px-5">
+          <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
             {documentListErrorMessage} Please refresh and try again before
             completing Step 4.
           </div>
         ) : null}
 
         {errorMessage ? (
-          <div className="rounded-[22px] border border-[#e7c6c2] bg-[#fff3f1] px-4 py-3 text-sm font-medium text-[#9e493f] sm:px-5">
+          <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
             {errorMessage}
           </div>
         ) : null}
 
         {successMessage ? (
-          <div className="rounded-[22px] border border-[#cfe5d6] bg-[#f3fcf6] px-4 py-3 text-sm font-medium text-[#2d6f4f] sm:px-5">
+          <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
             {successMessage}
           </div>
         ) : null}
 
-        <div className="rounded-[26px] border border-[#d7e3dc] bg-white px-5 py-5 shadow-[0_18px_36px_-30px_rgba(16,47,52,0.18)] sm:px-6 sm:py-6">
-          <p className="text-[0.78rem] font-semibold tracking-[0.24em] text-[#1f8ca5] uppercase">
+        <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
+          <p className="text-muted-foreground text-[0.78rem] font-semibold tracking-[0.24em] uppercase">
             Document Upload Guidance
           </p>
-          <p className="mt-2 max-w-4xl text-[0.92rem] leading-7 text-[#5c6668]">
+          <p className="text-muted-foreground mt-2 max-w-4xl text-[0.92rem] leading-7">
             Upload clear files. Required: User Photo, Birth Certificate,
             Mother&apos;s Birth Certificate, Mother&apos;s Photo,
             Grandmother&apos;s Birth Certificate, and Grandmother&apos;s Photo.
@@ -329,7 +329,7 @@ export function EnrollmentStepFourForm() {
         </div>
 
         <section>
-          <h2 className="text-[1.6rem] font-semibold tracking-[-0.04em] text-[#12393d] sm:text-[1.8rem]">
+          <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
             Personal Documents
           </h2>
           <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-2">
@@ -341,16 +341,16 @@ export function EnrollmentStepFourForm() {
 
               return (
                 <section
-                  className="rounded-[26px] border border-[#d9dfdb] bg-white px-5 py-5 shadow-[0_16px_34px_-30px_rgba(16,47,52,0.2)] sm:px-6 sm:py-6"
+                  className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6"
                   key={card.id}
                 >
-                  <h3 className="text-[1.35rem] leading-tight font-semibold tracking-[-0.03em] text-[#12393d]">
+                  <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
                     {card.title}
                     {isRequired ? (
-                      <span className="text-[#d65a52]"> *</span>
+                      <span className="text-foreground"> *</span>
                     ) : null}
                   </h3>
-                  <p className="mt-2 text-[0.9rem] leading-7 text-[#636e70]">
+                  <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
                     {card.description}
                   </p>
 
@@ -374,7 +374,7 @@ export function EnrollmentStepFourForm() {
                     {currentDocument ? (
                       <UploadedDocumentRow document={currentDocument} />
                     ) : (
-                      <p className="text-[0.8rem] text-[#757d7a]">
+                      <p className="text-muted-foreground text-[0.8rem]">
                         No file uploaded yet.
                       </p>
                     )}
@@ -386,10 +386,10 @@ export function EnrollmentStepFourForm() {
         </section>
 
         <section>
-          <h2 className="text-[1.6rem] font-semibold tracking-[-0.04em] text-[#12393d] sm:text-[1.8rem]">
+          <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
             Lineage Birth Documentations
           </h2>
-          <div className="mt-4 rounded-[26px] border border-[#d9dfdb] bg-white px-5 py-5 shadow-[0_16px_34px_-30px_rgba(16,47,52,0.2)] sm:px-6 sm:py-6">
+          <div className="mt-4 rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
             <div className="grid gap-4 sm:grid-cols-2">
               {enrollmentStepFourLineageUploadSlots.map((slot) => {
                 const isUploading =
@@ -406,16 +406,16 @@ export function EnrollmentStepFourForm() {
 
                 return (
                   <section
-                    className="rounded-2xl border border-[#dde4e0] bg-[#fbfdfc] p-4"
+                    className="border-border bg-surface rounded-2xl border p-4"
                     key={slot.id}
                   >
-                    <h3 className="text-[1.02rem] font-semibold text-[#243238]">
+                    <h3 className="text-foreground text-[1.02rem] font-semibold">
                       {slot.title}
                       {isRequired ? (
-                        <span className="text-[#d65a52]"> *</span>
+                        <span className="text-foreground"> *</span>
                       ) : null}
                     </h3>
-                    <p className="mt-1 text-[0.78rem] text-[#6b7477]">
+                    <p className="text-muted-foreground mt-1 text-[0.78rem]">
                       {slot.description}
                     </p>
 
@@ -439,7 +439,7 @@ export function EnrollmentStepFourForm() {
                       {previewDocument ? (
                         <UploadedDocumentRow document={previewDocument} />
                       ) : (
-                        <p className="text-[0.8rem] text-[#757d7a]">
+                        <p className="text-muted-foreground text-[0.8rem]">
                           No file mapped yet.
                         </p>
                       )}
@@ -452,14 +452,14 @@ export function EnrollmentStepFourForm() {
         </section>
 
         <section>
-          <h2 className="text-[1.6rem] font-semibold tracking-[-0.04em] text-[#12393d] sm:text-[1.8rem]">
+          <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
             Additional Evidence
           </h2>
-          <div className="mt-4 rounded-[26px] border border-[#d9dfdb] bg-white px-5 py-5 shadow-[0_16px_34px_-30px_rgba(16,47,52,0.2)] sm:px-6 sm:py-6">
-            <h3 className="text-[1.35rem] leading-tight font-semibold tracking-[-0.03em] text-[#12393d]">
+          <div className="mt-4 rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
+            <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
               {enrollmentStepFourAdditionalEvidenceCard.title}
             </h3>
-            <p className="mt-2 text-[0.9rem] leading-7 text-[#636e70]">
+            <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
               {enrollmentStepFourAdditionalEvidenceCard.description}
             </p>
 
@@ -492,7 +492,7 @@ export function EnrollmentStepFourForm() {
                   <UploadedDocumentRow document={document} key={document.id} />
                 ))
               ) : (
-                <p className="text-[0.8rem] text-[#757d7a]">
+                <p className="text-muted-foreground text-[0.8rem]">
                   No files uploaded yet.
                 </p>
               )}
@@ -500,18 +500,18 @@ export function EnrollmentStepFourForm() {
           </div>
         </section>
 
-        <div className="rounded-[26px] border border-[#dbe4df] bg-white px-5 py-5 shadow-[0_18px_34px_-28px_rgba(16,47,52,0.2)] sm:px-6 sm:py-6">
+        <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-3xl">
-              <h2 className="text-[1.1rem] font-semibold tracking-[-0.03em] text-[#243238]">
+              <h2 className="text-foreground text-[1.1rem] font-semibold tracking-tight">
                 Complete Step 4
               </h2>
               {hasMandatoryDocuments ? (
-                <p className="mt-1 text-[0.88rem] leading-6 text-[#2f7552] sm:text-[0.92rem]">
+                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
                   Mandatory documents are uploaded.
                 </p>
               ) : (
-                <p className="mt-1 text-[0.88rem] leading-6 text-[#905b25] sm:text-[0.92rem]">
+                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
                   Missing mandatory documents:{" "}
                   {missingMandatoryDocuments.join(", ")}
                 </p>
@@ -520,7 +520,6 @@ export function EnrollmentStepFourForm() {
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
               <Button
-                className="border-[#dccab7] bg-[#fbf5ee] text-[#6e553b] hover:bg-[#f3e6d5]"
                 disabled={uploadMutation.isPending}
                 leftIcon={<ArrowLeft />}
                 onClick={() => router.push("/enrollment/step-3")}
@@ -532,7 +531,6 @@ export function EnrollmentStepFourForm() {
               </Button>
 
               <Button
-                className="border-[#d3e4df] bg-white text-[#2f6b67] hover:bg-[#f3f9f7]"
                 disabled={isListLoading || uploadMutation.isPending}
                 leftIcon={<RefreshCw />}
                 loading={documentListQuery.isRefetching}
@@ -548,7 +546,6 @@ export function EnrollmentStepFourForm() {
               </Button>
 
               <Button
-                className="bg-primary! text-white! shadow-[0_18px_34px_-22px_rgba(197,49,51,0.42)] hover:bg-[#aa2a2d]! hover:text-white!"
                 disabled={
                   isListLoading ||
                   uploadMutation.isPending ||

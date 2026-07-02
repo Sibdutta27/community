@@ -188,23 +188,23 @@ export function EnrollmentStepTwoForm() {
           onSubmit={form.handleSubmit(onSubmit)}
         >
           {stepTwoErrorMessage ? (
-            <div className="rounded-[22px] border border-[#e9d8aa] bg-[#fff9eb] px-4 py-3 text-sm font-medium text-[#8a6000] sm:px-5">
+            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
               {stepTwoErrorMessage} You can still complete the form manually,
               but any previously saved step 2 values may not be prefilled.
             </div>
           ) : null}
 
           {errors.root?.message ? (
-            <div className="rounded-[22px] border border-[#e7c6c2] bg-[#fff3f1] px-4 py-3 text-sm font-medium text-[#9e493f] sm:px-5">
+            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
               {errors.root.message}
             </div>
           ) : null}
 
-          <div className="rounded-[26px] border border-[#d7e3dc] bg-white px-5 py-5 shadow-[0_18px_36px_-30px_rgba(16,47,52,0.18)] sm:px-6 sm:py-6">
-            <p className="text-[0.78rem] font-semibold tracking-[0.24em] text-[#1f8ca5] uppercase">
+          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
+            <p className="text-muted-foreground text-[0.78rem] font-semibold tracking-[0.24em] uppercase">
               Maternal Lineage Guidance
             </p>
-            <p className="mt-2 max-w-4xl text-[0.92rem] leading-7 text-[#5c6668]">
+            <p className="text-muted-foreground mt-2 max-w-4xl text-[0.92rem] leading-7">
               Mother and grandmother are required. Additional maternal ancestors
               can be added one by one as information becomes available. If you
               do not know the exact date of birth, leave that field blank and
@@ -231,12 +231,12 @@ export function EnrollmentStepTwoForm() {
                 footer="Use documented records when available, and otherwise capture the most reliable family knowledge you have."
                 headerAction={
                   isRequiredLineage ? (
-                    <div className="border-primary/15 bg-primary/8 text-primary inline-flex items-center rounded-full border px-3 py-1.5 text-[0.74rem] font-semibold tracking-[0.08em] uppercase">
+                    <div className="border-border bg-surface-muted text-foreground inline-flex items-center rounded-full border px-3 py-1.5 text-[0.74rem] font-semibold tracking-[0.08em] uppercase">
                       Required
                     </div>
                   ) : (
                     <Button
-                      className="rounded-full border-[#e4d2cf] text-[#9e493f] hover:bg-[#fff3f1]"
+                      className="rounded-full"
                       leftIcon={<Trash2 />}
                       onClick={() => handleRemoveLineage(index)}
                       size="sm"
@@ -248,7 +248,6 @@ export function EnrollmentStepTwoForm() {
                   )
                 }
                 icon={TreePine}
-                iconWrapperClassName="bg-primary shadow-[0_14px_28px_-22px_rgba(197,49,51,0.38)]"
                 title={lineage.title}
               >
                 <EnrollmentInputField
@@ -315,20 +314,20 @@ export function EnrollmentStepTwoForm() {
           })}
 
           {canAddMoreLineages ? (
-            <section className="rounded-[26px] border border-dashed border-[#c9d8d2] bg-white px-5 py-5 shadow-[0_18px_34px_-30px_rgba(16,47,52,0.12)] sm:px-6 sm:py-6">
+            <section className="rounded-2xl border border-dashed border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="max-w-2xl">
-                  <h2 className="text-[1.02rem] font-semibold tracking-[-0.03em] text-[#243238]">
+                  <h2 className="text-foreground text-[1.02rem] font-semibold tracking-tight">
                     Add Another Maternal Ancestor
                   </h2>
-                  <p className="mt-1 text-[0.84rem] leading-6 text-[#707773] sm:text-[0.9rem]">
+                  <p className="text-muted-foreground mt-1 text-[0.84rem] leading-6 sm:text-[0.9rem]">
                     Continue building your maternal line with the next ancestor
                     level when you have enough family history to record it.
                   </p>
                 </div>
 
                 <Button
-                  className="min-w-[12rem] border-[#dccab7] bg-[#fbf5ee] text-[#6e553b] hover:bg-[#f3e6d5]"
+                  className="min-w-[12rem]"
                   leftIcon={<Plus />}
                   onClick={handleAddLineage}
                   size="md"
@@ -341,20 +340,20 @@ export function EnrollmentStepTwoForm() {
             </section>
           ) : null}
 
-          <div className="rounded-[26px] border border-[#dbe4df] bg-white px-5 py-5 shadow-[0_18px_34px_-28px_rgba(16,47,52,0.2)] sm:px-6 sm:py-6">
+          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="max-w-2xl">
-                <h2 className="text-[1.1rem] font-semibold tracking-[-0.03em] text-[#243238]">
+                <h2 className="text-foreground text-[1.1rem] font-semibold tracking-tight">
                   Submit Step 2
                 </h2>
-                <p className="mt-1 text-[0.88rem] leading-6 text-[#707773] sm:text-[0.92rem]">
+                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
                   Save your maternal lineage details and continue to the next
                   enrollment step.
                 </p>
               </div>
 
               <Button
-                className="min-w-[12rem] border-[#dccab7] bg-[#fbf5ee] text-[#6e553b] hover:bg-[#f3e6d5]"
+                className="min-w-[12rem]"
                 disabled={upsertMutation.isPending}
                 leftIcon={<ArrowLeft />}
                 onClick={() => router.push("/enrollment/step-1")}
@@ -366,7 +365,7 @@ export function EnrollmentStepTwoForm() {
               </Button>
 
               <Button
-                className="bg-primary! min-w-[12rem] text-white! shadow-[0_18px_34px_-22px_rgba(197,49,51,0.42)] hover:bg-[#aa2a2d]! hover:text-white!"
+                className="min-w-[12rem]"
                 loading={upsertMutation.isPending}
                 loadingText="Saving Step 2..."
                 rightIcon={<ArrowRight />}
