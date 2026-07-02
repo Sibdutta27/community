@@ -14,7 +14,8 @@ test.describe("member auth", () => {
   test("sign-up page renders", async ({ page }) => {
     await page.goto("/sign-up");
     await expect(page.getByLabel(/email/i)).toBeVisible();
-    await expect(page.getByLabel(/password/i)).toBeVisible();
+    // Sign-up has Password + Confirm Password; match the first to avoid strict-mode.
+    await expect(page.getByLabel(/password/i).first()).toBeVisible();
   });
 
   test("protected route redirects unauthenticated users to sign-in", async ({
