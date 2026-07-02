@@ -79,6 +79,18 @@ model Enrollment {
   languagesSpoken String[]
   specialSkills   String?
 
+  identity Identity?
+
+  hasChildren      Boolean?
+  hasMinorChildren Boolean? // "children under 18?"
+
+  yucayeke        String? // selected yucayeke (option list TBD later)
+  yucayekeUnknown Boolean? // "I don't know my Yucayeke"
+
+  signatureName String? // confirmation e-signature (full legal name)
+  signatureDate DateTime?
+  agreedToTerms Boolean?
+
   consentAccepted Boolean @default(false)
 
   approvalDate DateTime?
@@ -123,6 +135,15 @@ enum MaritalStatus {
   MARRIED
   DIVORCED
   WIDOWED
+  DOMESTIC_PARTNERSHIP
+}
+
+// Self-identification enum
+enum Identity {
+  ARAWAK
+  KALINAGO
+  GARIFUNA
+  TAINO
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

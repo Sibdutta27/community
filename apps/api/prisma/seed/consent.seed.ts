@@ -35,6 +35,13 @@ export async function seedConsent() {
             content : "I agree to be listed in the Yukayeke member directory so other enrolled members from my region can connect with me.",
             required: false,
             version : 1
+        },
+        {
+            key     : "evergreen_memory",
+            title   : "Evergreen Collective Memory / Indigenous Archives of Puerto Rico",
+            content : "I consent to have my ancestor's information added to the Evergreen Collective Memory, the tribally-governed Indigenous Archives of Puerto Rico. I understand this is a perpetual, community-stewarded archive maintained under the sovereignty of the Taino Nation, and that the information preserved will honor and record the memory of my ancestors for future generations.",
+            required: false,
+            version : 1
         }
     ];
 
