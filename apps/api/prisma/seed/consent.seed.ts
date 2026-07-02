@@ -18,14 +18,14 @@ export async function seedConsent() {
         {
             key     : "data_privacy_agreement",
             title   : "Data Privacy Agreement",
-            content : "I understand that my personal information will be stored securely within the Taino Nation's sovereign database and will only be accessed by authorized enrollment reviewers.",
+            content : "I understand that my personal information will be stored securely within the Taíno Nation of Borikén's sovereign database and will only be accessed by authorized enrollment reviewers.",
             required: true,
             version : 1
         },
         {
             key     : "communication_consent",
             title   : "Communication Consent",
-            content : "I consent to receive communications from the Taino Nation regarding my enrollment application and community updates via email, phone, and/or SMS.",
+            content : "I consent to receive communications from the Taíno Nation of Borikén regarding my enrollment application and community updates via email, phone, and/or SMS.",
             required: true,
             version : 1
         },
@@ -39,7 +39,7 @@ export async function seedConsent() {
         {
             key     : "evergreen_memory",
             title   : "Evergreen Collective Memory / Indigenous Archives of Puerto Rico",
-            content : "I consent to have my ancestor's information added to the Evergreen Collective Memory, the tribally-governed Indigenous Archives of Puerto Rico. I understand this is a perpetual, community-stewarded archive maintained under the sovereignty of the Taino Nation, and that the information preserved will honor and record the memory of my ancestors for future generations.",
+            content : "I consent to have my ancestor's information added to the Evergreen Collective Memory, the tribally-governed Indigenous Archives of Puerto Rico. I understand this is a perpetual, community-stewarded archive maintained under the sovereignty of the Taíno Nation of Borikén, and that the information preserved will honor and record the memory of my ancestors for future generations.",
             required: false,
             version : 1
         }

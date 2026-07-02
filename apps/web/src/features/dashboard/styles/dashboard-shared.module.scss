@@ -2,10 +2,9 @@
 
 .sectionPanel {
   overflow: hidden;
-  border: 1px solid #d5e1da;
+  border: 1px solid var(--border);
   border-radius: 1.75rem;
-  background: #fffdec;
-  box-shadow: 0 28px 64px -42px rgba(16, 47, 52, 0.34);
+  background: var(--surface);
 
   @include up(sm) {
     border-radius: 2.125rem;
@@ -13,7 +12,7 @@
 }
 
 .sectionTitle {
-  color: #2d3338;
+  color: var(--foreground);
   letter-spacing: -0.04em;
 }
 

@@ -64,19 +64,19 @@ export function DashboardConsentDialog({
           }
         }}
       >
-        <div className="flex items-start justify-between gap-3 border-b border-[#dbe5df] px-4 py-3.5 sm:px-5 sm:py-3.5">
+        <div className="border-border flex items-start justify-between gap-3 border-b px-4 py-3.5 sm:px-5 sm:py-3.5">
           <DialogHeader className="min-w-0 flex-1 gap-1">
-            <DialogTitle className="text-[0.72rem] font-semibold tracking-[0.2em] text-[#1f8ca5] uppercase sm:text-xs">
+            <DialogTitle className="text-muted-foreground text-[0.72rem] font-semibold tracking-[0.2em] uppercase sm:text-xs">
               ENROLLMENT CONSENT
             </DialogTitle>
-            <DialogDescription className="text-sm leading-6 text-slate-600 sm:text-[0.92rem]">
+            <DialogDescription className="text-muted-foreground text-sm leading-6 sm:text-[0.92rem]">
               Please accept the required consents to continue.
             </DialogDescription>
           </DialogHeader>
 
           <button
             aria-label="Close consent dialog"
-            className="inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[#d5e1da] bg-white text-slate-500 transition-colors hover:bg-[#f4faf8] hover:text-[#12393d] disabled:cursor-not-allowed disabled:opacity-60"
+            className="border-border bg-surface text-muted-foreground hover:bg-surface-muted hover:text-foreground inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors disabled:cursor-not-allowed disabled:opacity-60"
             disabled={isSubmitting}
             type="button"
             onClick={onClose}
@@ -87,7 +87,7 @@ export function DashboardConsentDialog({
 
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5 sm:py-4">
           {errorMessage ? (
-            <div className="rounded-[18px] border border-[#e7c6c2] bg-[#fff3f1] px-4 py-3 text-sm font-medium text-[#9e493f]">
+            <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium">
               {errorMessage}
             </div>
           ) : null}
@@ -102,10 +102,10 @@ export function DashboardConsentDialog({
                 <label
                   key={consent.id}
                   className={cn(
-                    "grid cursor-pointer grid-cols-[auto_1fr] gap-x-3 gap-y-2 rounded-[18px] border px-3.5 py-3.5 transition-colors sm:gap-x-3.5 sm:px-3.5 sm:py-3.5",
+                    "grid cursor-pointer grid-cols-[auto_1fr] gap-x-3 gap-y-2 rounded-xl border px-3.5 py-3.5 transition-colors sm:gap-x-3.5 sm:px-3.5 sm:py-3.5",
                     isSelected
-                      ? "border-primary bg-primary/10"
-                      : "border-[#d5e1da] bg-white",
+                      ? "border-foreground bg-surface-muted"
+                      : "border-border bg-surface",
                   )}
                 >
                   <Checkbox
@@ -117,15 +117,15 @@ export function DashboardConsentDialog({
 
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-[1.05rem] font-semibold tracking-[-0.03em] text-[#12393d] sm:text-[1rem] lg:text-[1.05rem]">
+                      <p className="text-foreground text-[1.05rem] font-semibold tracking-[-0.03em] sm:text-[1rem] lg:text-[1.05rem]">
                         {consent.title}
                         {consent.required ? (
-                          <span className="ml-1 text-sm text-[#c63d3d]">*</span>
+                          <span className="text-foreground ml-1 text-sm">*</span>
                         ) : null}
                       </p>
                     </div>
 
-                    <p className="mt-1.5 text-[0.95rem] leading-6 text-slate-600 sm:mt-2 sm:text-[0.92rem] sm:leading-6 lg:text-[0.95rem]">
+                    <p className="text-muted-foreground mt-1.5 text-[0.95rem] leading-6 sm:mt-2 sm:text-[0.92rem] sm:leading-6 lg:text-[0.95rem]">
                       {consent.content}
                     </p>
                   </div>
@@ -134,22 +134,21 @@ export function DashboardConsentDialog({
             })}
           </div>
 
-          <p className="mt-4 text-[0.88rem] leading-6 text-slate-600 sm:text-[0.9rem]">
+          <p className="text-muted-foreground mt-4 text-[0.88rem] leading-6 sm:text-[0.9rem]">
             Read all the{" "}
             <Link
-              className="font-medium underline-offset-2 hover:underline"
+              className="text-foreground font-medium underline underline-offset-2"
               href="/privacy-policy"
-              style={{ color: "#20A3B9" }}
             >
               terms and conditions.
             </Link>
           </p>
         </div>
 
-        <DialogFooter className="border-t border-[#dbe5df] bg-white/88 px-4 py-4 sm:px-5 sm:py-4">
+        <DialogFooter className="border-border bg-surface border-t px-4 py-4 sm:px-5 sm:py-4">
           <Button
-            className="h-10 rounded-xl border-[#d5e1da] px-4 text-sm shadow-none"
             disabled={isSubmitting}
+            size="sm"
             type="button"
             variant="outline"
             onClick={onClose}
@@ -158,7 +157,7 @@ export function DashboardConsentDialog({
           </Button>
 
           <Button
-            className="!bg-primary h-10 rounded-xl !bg-none px-4 text-sm !text-white shadow-[0_18px_34px_-22px_rgba(197,49,51,0.45)] hover:!bg-[#aa2a2d]"
+            size="sm"
             disabled={!hasAcceptedAllRequired}
             loading={isSubmitting}
             loadingText="Saving consent..."
