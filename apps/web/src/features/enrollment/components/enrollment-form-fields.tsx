@@ -6,6 +6,7 @@ import type {
   TextareaHTMLAttributes,
 } from "react";
 
+import { Info } from "lucide-react";
 import type {
   Control,
   ControllerFieldState,
@@ -63,6 +64,8 @@ type EnrollmentDateFieldProps<TFieldValues extends FieldValues> =
 type EnrollmentSelectFieldProps<TFieldValues extends FieldValues> =
   SharedFieldProps<TFieldValues> &
     Readonly<{
+      /** Short helper shown as an ⓘ info tooltip beside the label. */
+      labelInfo?: string;
       options: readonly { label: string; value: string }[];
       placeholder: string;
     }>;
@@ -100,9 +103,11 @@ type RadioOption = {
 };
 
 function FieldLabel({
+  info,
   label,
   required = false,
 }: Readonly<{
+  info?: string;
   label: string;
   required?: boolean;
 }>) {
@@ -110,6 +115,16 @@ function FieldLabel({
     <FormLabel className={fieldLabelClassName}>
       {label}
       {required ? <span className="text-foreground"> *</span> : null}
+      {info ? (
+        <span
+          className="text-muted-foreground inline-flex items-center align-middle"
+          tabIndex={0}
+          title={info}
+        >
+          <Info aria-hidden="true" className="size-3.5" />
+          <span className="sr-only">{info}</span>
+        </span>
+      ) : null}
     </FormLabel>
   );
 }
@@ -233,7 +248,8 @@ export function EnrollmentInputField<TFieldValues extends FieldValues>({
             <Input
               autoComplete={autoComplete}
               className={cn(
-                readOnly && "bg-surface-muted text-muted-foreground cursor-default",
+                readOnly &&
+                  "bg-surface-muted text-muted-foreground cursor-default",
                 fieldState.error &&
                   "border-red-300 focus-visible:border-red-400/50 focus-visible:ring-red-200/50",
               )}
@@ -297,6 +313,7 @@ export function EnrollmentSelectField<TFieldValues extends FieldValues>({
   className,
   control,
   label,
+  labelInfo,
   name,
   options,
   placeholder,
@@ -308,7 +325,7 @@ export function EnrollmentSelectField<TFieldValues extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => (
         <FormItem className={cn(fieldContainerClassName, className)}>
-          <FieldLabel label={label} required={required} />
+          <FieldLabel info={labelInfo} label={label} required={required} />
           <Select
             onOpenChange={(nextOpen) => {
               if (!nextOpen) {

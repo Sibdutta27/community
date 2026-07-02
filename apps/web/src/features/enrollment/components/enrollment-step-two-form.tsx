@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, TreePine } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,8 @@ import {
   EnrollmentInputField,
   EnrollmentRadioGroupField,
 } from "@/features/enrollment/components/enrollment-form-fields";
-import { EnrollmentFormSection } from "@/features/enrollment/components/enrollment-form-section";
+import { EnrollmentStepFooter } from "@/features/enrollment/components/enrollment-step-layout";
+import { EnrollmentStepSection } from "@/features/enrollment/components/enrollment-step-section";
 import {
   accountQueryKeys,
   enrollmentQueryKeys,
@@ -119,125 +120,96 @@ export function EnrollmentStepTwoForm() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-7xl py-6 sm:py-8 lg:py-10">
-      <Form {...form}>
-        <form
-          className="space-y-5 sm:space-y-6"
-          noValidate
-          onSubmit={form.handleSubmit(onSubmit)}
+    <Form {...form}>
+      <form
+        className="space-y-9 sm:space-y-10"
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        {stepTwoErrorMessage ? (
+          <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
+            {stepTwoErrorMessage} You can still complete the form manually, but
+            any previously saved step 2 values may not be prefilled.
+          </div>
+        ) : null}
+
+        {errors.root?.message ? (
+          <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
+            {errors.root.message}
+          </div>
+        ) : null}
+
+        <p className="text-muted-foreground max-w-3xl text-[0.95rem] leading-7">
+          Record what you know about your mother and maternal grandparents.
+          Every field is optional — share the most reliable family knowledge you
+          have, and leave anything unknown blank.
+        </p>
+
+        {maternalKinshipDefinitions.map((ancestor) => (
+          <EnrollmentStepSection
+            key={ancestor.key}
+            description={ancestor.description}
+            title={ancestor.title}
+          >
+            <EnrollmentInputField
+              control={control}
+              label="Full Name"
+              name={`${ancestor.key}.name`}
+              placeholder="Enter full name"
+            />
+            {ancestor.key === "mother" ? (
+              <EnrollmentDateField
+                control={control}
+                label="Date of Birth"
+                max={maxBirthDate}
+                name="mother.dateOfBirth"
+                placeholder="Select date of birth"
+              />
+            ) : null}
+            <EnrollmentInputField
+              control={control}
+              label="Nationality"
+              name={`${ancestor.key}.nationality`}
+              placeholder="Enter nationality"
+            />
+            <EnrollmentInputField
+              control={control}
+              label="Municipality"
+              name={`${ancestor.key}.municipality`}
+              placeholder="Enter municipality"
+            />
+            <EnrollmentInputField
+              control={control}
+              label="Yucayeke"
+              name={`${ancestor.key}.yucayeke`}
+              placeholder="Enter Yucayeke if known"
+            />
+            <EnrollmentRadioGroupField
+              className="md:col-span-2"
+              control={control}
+              label={ancestor.heritageQuestion}
+              name={`${ancestor.key}.isBorikuaTaino`}
+              options={enrollmentKinshipYesNoOptions}
+            />
+          </EnrollmentStepSection>
+        ))}
+
+        <EnrollmentStepFooter
+          backDisabled={upsertMutation.isPending}
+          backHref="/enrollment/step-1"
         >
-          {stepTwoErrorMessage ? (
-            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
-              {stepTwoErrorMessage} You can still complete the form manually,
-              but any previously saved step 2 values may not be prefilled.
-            </div>
-          ) : null}
-
-          {errors.root?.message ? (
-            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
-              {errors.root.message}
-            </div>
-          ) : null}
-
-          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-            <p className="text-muted-foreground text-[0.78rem] font-semibold tracking-[0.24em] uppercase">
-              Maternal Kinship Guidance
-            </p>
-            <p className="text-muted-foreground mt-2 max-w-4xl text-[0.92rem] leading-7">
-              Record what you know about your mother and maternal grandparents.
-              Every field is optional — share the most reliable family
-              knowledge you have, and leave anything unknown blank.
-            </p>
-          </div>
-
-          {maternalKinshipDefinitions.map((ancestor) => (
-            <EnrollmentFormSection
-              key={ancestor.key}
-              description={ancestor.description}
-              fieldsPerRow={[2, 2, 1]}
-              icon={TreePine}
-              title={ancestor.title}
-            >
-              <EnrollmentInputField
-                control={control}
-                label="Full Name"
-                name={`${ancestor.key}.name`}
-                placeholder="Enter full name"
-              />
-              {ancestor.key === "mother" ? (
-                <EnrollmentDateField
-                  control={control}
-                  label="Date of Birth"
-                  max={maxBirthDate}
-                  name="mother.dateOfBirth"
-                  placeholder="Select date of birth"
-                />
-              ) : null}
-              <EnrollmentInputField
-                control={control}
-                label="Nationality"
-                name={`${ancestor.key}.nationality`}
-                placeholder="Enter nationality"
-              />
-              <EnrollmentInputField
-                control={control}
-                label="Municipality"
-                name={`${ancestor.key}.municipality`}
-                placeholder="Enter municipality"
-              />
-              <EnrollmentInputField
-                control={control}
-                label="Yucayeke"
-                name={`${ancestor.key}.yucayeke`}
-                placeholder="Enter Yucayeke if known"
-              />
-              <EnrollmentRadioGroupField
-                control={control}
-                label={ancestor.heritageQuestion}
-                name={`${ancestor.key}.isBorikuaTaino`}
-                options={enrollmentKinshipYesNoOptions}
-              />
-            </EnrollmentFormSection>
-          ))}
-
-          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="max-w-2xl">
-                <h2 className="text-foreground text-[1.1rem] font-semibold tracking-tight">
-                  Submit Step 2
-                </h2>
-                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Save your maternal kinship details and continue to the
-                  paternal kinship step.
-                </p>
-              </div>
-
-              <Button
-                className="min-w-[12rem]"
-                disabled={upsertMutation.isPending}
-                leftIcon={<ArrowLeft />}
-                onClick={() => router.push("/enrollment/step-1")}
-                size="lg"
-                type="button"
-                variant="outline"
-              >
-                Previous Step
-              </Button>
-
-              <Button
-                className="min-w-[12rem]"
-                loading={upsertMutation.isPending}
-                loadingText="Saving Step 2..."
-                rightIcon={<ArrowRight />}
-                size="lg"
-                type="submit"
-              >
-                Save and Next
-              </Button>
-            </div>
-          </div>
-        </form>
-      </Form>
-    </section>
+          <Button
+            className="min-w-[10rem]"
+            loading={upsertMutation.isPending}
+            loadingText="Saving..."
+            rightIcon={<ArrowRight />}
+            size="lg"
+            type="submit"
+          >
+            Next
+          </Button>
+        </EnrollmentStepFooter>
+      </form>
+    </Form>
   );
 }

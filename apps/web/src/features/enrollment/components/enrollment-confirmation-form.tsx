@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, PenLine } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import { Fragment } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -14,9 +16,15 @@ import {
   EnrollmentDateField,
   EnrollmentInputField,
 } from "@/features/enrollment/components/enrollment-form-fields";
-import { EnrollmentFormSection } from "@/features/enrollment/components/enrollment-form-section";
+import { EnrollmentStepFooter } from "@/features/enrollment/components/enrollment-step-layout";
+import { EnrollmentStepSection } from "@/features/enrollment/components/enrollment-step-section";
+import {
+  getIncompleteEnrollmentSteps,
+  resolveEnrollmentStepState,
+} from "@/features/enrollment/config/enrollment-steps";
 import {
   accountQueryKeys,
+  useAccountInfoQuery,
   useCompleteEnrollmentMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
@@ -29,7 +37,15 @@ import {
 export function EnrollmentConfirmationForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const accountInfoQuery = useAccountInfoQuery();
   const completeEnrollmentMutation = useCompleteEnrollmentMutation();
+
+  // The backend rejects submission until steps 1-4 are complete
+  // (`allStepsCompleted`); mirror that here so the Submit button is only
+  // enabled once every required step is done.
+  const stepState = resolveEnrollmentStepState(accountInfoQuery.data);
+  const incompleteSteps = getIncompleteEnrollmentSteps(stepState);
+  const hasIncompleteSteps = incompleteSteps.length > 0;
 
   const form = useForm<EnrollmentConfirmationFormValues>({
     resolver: zodResolver(enrollmentConfirmationSchema),
@@ -67,102 +83,94 @@ export function EnrollmentConfirmationForm() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-7xl py-6 sm:py-8 lg:py-10">
-      <Form {...form}>
-        <form
-          className="space-y-5 sm:space-y-6"
-          noValidate
-          onSubmit={form.handleSubmit(onSubmit)}
+    <Form {...form}>
+      <form
+        className="space-y-9 sm:space-y-10"
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        {errors.root?.message ? (
+          <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
+            {errors.root.message}
+          </div>
+        ) : null}
+
+        <p className="text-muted-foreground max-w-3xl text-[0.95rem] leading-7">
+          Sign with your full legal name to confirm that the information in your
+          application is true and complete. Submitting sends your application to
+          the council for review.
+        </p>
+
+        <EnrollmentStepSection
+          description="Type your full legal name as your electronic signature and confirm the agreements below to submit your enrollment application."
+          title="E-Signature"
         >
-          {errors.root?.message ? (
-            <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
-              {errors.root.message}
-            </div>
-          ) : null}
+          <EnrollmentInputField
+            autoComplete="name"
+            control={control}
+            label="Sign your full legal name"
+            name="signatureName"
+            placeholder="Full legal name"
+            required
+          />
+          <EnrollmentDateField
+            control={control}
+            label="Date"
+            name="signatureDate"
+            placeholder="Signature date"
+            required
+          />
+          <EnrollmentCheckboxField
+            className="md:col-span-2"
+            control={control}
+            label="I agree to submit my information"
+            name="agreeToSubmit"
+          />
+          <EnrollmentCheckboxField
+            className="md:col-span-2"
+            control={control}
+            label="I agree to the terms of service"
+            name="agreeToTerms"
+          />
+        </EnrollmentStepSection>
 
-          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-            <p className="text-muted-foreground text-[0.78rem] font-semibold tracking-[0.24em] uppercase">
-              Confirmation Guidance
-            </p>
-            <p className="text-muted-foreground mt-2 max-w-4xl text-[0.92rem] leading-7">
-              Sign with your full legal name to confirm that the information in
-              your application is true and complete. Submitting sends your
-              application to the council for review.
-            </p>
+        {hasIncompleteSteps && !accountInfoQuery.isPending ? (
+          <div className="border-border bg-surface text-foreground rounded-xl border px-4 py-3 text-sm sm:px-5">
+            Almost there — finish:{" "}
+            {incompleteSteps.map((incompleteStep, index) => (
+              <Fragment key={incompleteStep.step}>
+                {index > 0 ? ", " : null}
+                <Link
+                  className="font-medium underline underline-offset-4"
+                  href={incompleteStep.href}
+                >
+                  {incompleteStep.title}
+                </Link>
+              </Fragment>
+            ))}{" "}
+            before submitting your application.
           </div>
+        ) : null}
 
-          <EnrollmentFormSection
-            description="Type your full legal name as your electronic signature and confirm the agreements below to submit your enrollment application."
-            fieldsPerRow={[2, 1, 1]}
-            icon={PenLine}
-            title="E-Signature"
+        <EnrollmentStepFooter
+          backDisabled={completeEnrollmentMutation.isPending}
+          backHref="/enrollment/step-4"
+        >
+          <Button
+            className="min-w-[12rem]"
+            disabled={
+              completeEnrollmentMutation.isPending || hasIncompleteSteps
+            }
+            loading={completeEnrollmentMutation.isPending}
+            loadingText="Submitting..."
+            rightIcon={<CheckCircle2 />}
+            size="lg"
+            type="submit"
           >
-            <EnrollmentInputField
-              autoComplete="name"
-              control={control}
-              label="Sign your full legal name"
-              name="signatureName"
-              placeholder="Full legal name"
-              required
-            />
-            <EnrollmentDateField
-              control={control}
-              label="Date"
-              name="signatureDate"
-              placeholder="Signature date"
-              required
-            />
-            <EnrollmentCheckboxField
-              control={control}
-              label="I agree to submit my information"
-              name="agreeToSubmit"
-            />
-            <EnrollmentCheckboxField
-              control={control}
-              label="I agree to the terms of service"
-              name="agreeToTerms"
-            />
-          </EnrollmentFormSection>
-
-          <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="max-w-2xl">
-                <h2 className="text-foreground text-[1.1rem] font-semibold tracking-tight">
-                  Submit Application
-                </h2>
-                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Once submitted, your application is locked for council review
-                  and can no longer be edited.
-                </p>
-              </div>
-
-              <Button
-                className="min-w-[12rem]"
-                disabled={completeEnrollmentMutation.isPending}
-                leftIcon={<ArrowLeft />}
-                onClick={() => router.push("/enrollment/step-4")}
-                size="lg"
-                type="button"
-                variant="outline"
-              >
-                Previous Step
-              </Button>
-
-              <Button
-                className="min-w-[12rem]"
-                disabled={completeEnrollmentMutation.isPending}
-                loading={completeEnrollmentMutation.isPending}
-                loadingText="Submitting..."
-                rightIcon={<CheckCircle2 />}
-                size="lg"
-                type="submit"
-              >
-                Submit Application
-              </Button>
-            </div>
-          </div>
-        </form>
-      </Form>
-    </section>
+            Submit Application
+          </Button>
+        </EnrollmentStepFooter>
+      </form>
+    </Form>
   );
 }

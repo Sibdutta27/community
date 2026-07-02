@@ -41,24 +41,35 @@ function renderForm() {
 }
 
 describe("EnrollmentStepOneForm — demographics only", () => {
-  it("renders the demographics sections from the Figma form", () => {
+  it("renders one flowing field grid, keeping only the Yucayekeno sub-header", () => {
     renderForm();
 
+    // The Figma layout drops the old per-card section headers…
     expect(
-      screen.getByRole("heading", { name: "Basic Information" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: "Basic Information" }),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Birth Information" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: "Birth Information" }),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Sex & Gender" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: "Sex & Gender" }),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Marital Status & Occupation" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: "Marital Status & Occupation" }),
+    ).not.toBeInTheDocument();
+    // …but keeps the distinct Yucayekeno sub-header + explainer.
     expect(
       screen.getByRole("heading", { name: "Your Yucayekeno Information" }),
     ).toBeInTheDocument();
+    expect(screen.getByText("First Name")).toBeInTheDocument();
+    expect(screen.getByText("Date of Birth")).toBeInTheDocument();
+  });
+
+  it("adds info tooltips to the Sex and Gender labels", () => {
+    renderForm();
+
+    expect(screen.getByTitle("Sex assigned at birth")).toBeInTheDocument();
+    expect(screen.getByTitle("Gender identity")).toBeInTheDocument();
   });
 
   it("renders the yucayeke fields", () => {

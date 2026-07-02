@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState, type ChangeEvent } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, RefreshCw } from "lucide-react";
+import { ArrowRight, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { EnrollmentStepFooter } from "@/features/enrollment/components/enrollment-step-layout";
 import {
   accountQueryKeys,
   enrollmentQueryKeys,
@@ -57,7 +58,7 @@ function UploadedDocumentRow({
           {formatEnrollmentDocumentStatus(document.status)}
         </span>
         <a
-          className="border-border text-foreground hover:bg-surface-muted rounded-full border bg-surface px-2.5 py-1 text-[0.68rem] font-semibold tracking-[0.04em] uppercase transition-colors"
+          className="border-border text-foreground hover:bg-surface-muted bg-surface rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold tracking-[0.04em] uppercase transition-colors"
           href={document.url}
           rel="noreferrer"
           target="_blank"
@@ -100,7 +101,7 @@ function UploadDropArea({
       />
 
       <button
-        className="border-border mt-3 flex min-h-[9.5rem] w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-surface-muted px-4 py-5 transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-70"
+        className="border-border bg-surface-muted hover:bg-surface mt-3 flex min-h-[9.5rem] w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 py-5 transition-colors disabled:cursor-not-allowed disabled:opacity-70"
         disabled={disabled}
         onClick={() => onOpen(slotId)}
         type="button"
@@ -259,205 +260,176 @@ export function EnrollmentStepFourForm() {
     };
 
   return (
-    <section className="mx-auto w-full max-w-7xl py-6 sm:py-8 lg:py-10">
-      <div className="space-y-6 sm:space-y-7">
-        {documentListErrorMessage ? (
-          <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
-            {documentListErrorMessage} Please refresh and try again before
-            completing Step 4.
-          </div>
-        ) : null}
-
-        {errorMessage ? (
-          <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
-            {errorMessage}
-          </div>
-        ) : null}
-
-        {successMessage ? (
-          <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm font-medium text-foreground sm:px-5">
-            {successMessage}
-          </div>
-        ) : null}
-
-        <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-          <p className="text-muted-foreground text-[0.78rem] font-semibold tracking-[0.24em] uppercase">
-            Document Upload Guidance
-          </p>
-          <p className="text-muted-foreground mt-2 max-w-4xl text-[0.92rem] leading-7">
-            Upload a clear photo of yourself — it is the only required file.
-            Genealogical records, kinship letters, oral history, and DNA
-            testing are optional supporting evidence for your kinship claim.
-          </p>
+    <div className="space-y-8 sm:space-y-9">
+      {documentListErrorMessage ? (
+        <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
+          {documentListErrorMessage} Please refresh and try again before
+          completing Step 4.
         </div>
+      ) : null}
 
-        <section>
-          <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
-            Required Document
-          </h2>
-          <div className="mt-4 sm:mt-5">
-            <section className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-              <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
-                {enrollmentStepFourUserPhotoCard.title}
-                <span className="text-foreground"> *</span>
-              </h3>
-              <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
-                {enrollmentStepFourUserPhotoCard.description}
-              </p>
+      {errorMessage ? (
+        <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
+          {errorMessage}
+        </div>
+      ) : null}
 
-              <UploadDropArea
-                accept={enrollmentStepFourUploadAccept}
-                disabled={uploadMutation.isPending}
-                onChange={createInputChangeHandler({
-                  slot: enrollmentStepFourUserPhotoCard,
-                })}
-                onOpen={openPicker}
-                refSetter={(element) => {
-                  inputRefs.current[enrollmentStepFourUserPhotoCard.id] =
-                    element;
-                }}
-                slotId={enrollmentStepFourUserPhotoCard.id}
-                uploading={
-                  uploadMutation.isPending &&
-                  activeUploadSlotId === enrollmentStepFourUserPhotoCard.id
-                }
-              />
+      {successMessage ? (
+        <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
+          {successMessage}
+        </div>
+      ) : null}
 
-              <div className="mt-4">
-                {userPhotoDocument ? (
-                  <UploadedDocumentRow document={userPhotoDocument} />
-                ) : (
-                  <p className="text-muted-foreground text-[0.8rem]">
-                    No file uploaded yet.
-                  </p>
-                )}
-              </div>
-            </section>
-          </div>
-        </section>
+      <p className="text-muted-foreground max-w-3xl text-[0.95rem] leading-7">
+        Upload a clear photo of yourself — it is the only required file.
+        Genealogical records, kinship letters, oral history, and DNA testing are
+        optional supporting evidence for your kinship claim.
+      </p>
 
-        <section>
-          <h2 className="text-foreground text-[1.6rem] font-semibold tracking-tight sm:text-[1.8rem]">
-            Supporting Evidence
-          </h2>
-          <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-2">
-            {enrollmentStepFourEvidenceUploadSlots.map((slot) => {
-              const slotDocuments = documentMap[slot.documentType];
-              const isUploading =
-                uploadMutation.isPending && activeUploadSlotId === slot.id;
+      <section>
+        <h2 className="text-foreground text-[1.2rem] font-semibold tracking-tight sm:text-[1.35rem]">
+          Required Document
+        </h2>
+        <div className="mt-4 sm:mt-5">
+          <section className="border-border bg-surface rounded-2xl border px-5 py-5 sm:px-6 sm:py-6">
+            <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
+              {enrollmentStepFourUserPhotoCard.title}
+              <span className="text-foreground"> *</span>
+            </h3>
+            <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
+              {enrollmentStepFourUserPhotoCard.description}
+            </p>
 
-              return (
-                <section
-                  className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6"
-                  key={slot.id}
-                >
-                  <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
-                    {slot.title}
-                  </h3>
-                  <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
-                    {slot.description}
-                  </p>
+            <UploadDropArea
+              accept={enrollmentStepFourUploadAccept}
+              disabled={uploadMutation.isPending}
+              onChange={createInputChangeHandler({
+                slot: enrollmentStepFourUserPhotoCard,
+              })}
+              onOpen={openPicker}
+              refSetter={(element) => {
+                inputRefs.current[enrollmentStepFourUserPhotoCard.id] = element;
+              }}
+              slotId={enrollmentStepFourUserPhotoCard.id}
+              uploading={
+                uploadMutation.isPending &&
+                activeUploadSlotId === enrollmentStepFourUserPhotoCard.id
+              }
+            />
 
-                  <UploadDropArea
-                    accept={enrollmentStepFourUploadAccept}
-                    disabled={uploadMutation.isPending}
-                    multiple
-                    onChange={createInputChangeHandler({ slot })}
-                    onOpen={openPicker}
-                    refSetter={(element) => {
-                      inputRefs.current[slot.id] = element;
-                    }}
-                    slotId={slot.id}
-                    uploading={isUploading}
-                  />
-
-                  <div className="mt-4 space-y-2.5">
-                    {slotDocuments.length > 0 ? (
-                      slotDocuments.map((document) => (
-                        <UploadedDocumentRow
-                          document={document}
-                          key={document.id}
-                        />
-                      ))
-                    ) : (
-                      <p className="text-muted-foreground text-[0.8rem]">
-                        No files uploaded yet.
-                      </p>
-                    )}
-                  </div>
-                </section>
-              );
-            })}
-          </div>
-        </section>
-
-        <div className="rounded-2xl border border-border bg-surface px-5 py-5 sm:px-6 sm:py-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="max-w-3xl">
-              <h2 className="text-foreground text-[1.1rem] font-semibold tracking-tight">
-                Complete Step 4
-              </h2>
-              {hasMandatoryDocuments ? (
-                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Your photo is uploaded. Continue to the confirmation step to
-                  sign and submit your application.
-                </p>
+            <div className="mt-4">
+              {userPhotoDocument ? (
+                <UploadedDocumentRow document={userPhotoDocument} />
               ) : (
-                <p className="text-muted-foreground mt-1 text-[0.88rem] leading-6 sm:text-[0.92rem]">
-                  Missing required document: Your Photo
+                <p className="text-muted-foreground text-[0.8rem]">
+                  No file uploaded yet.
                 </p>
               )}
             </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-              <Button
-                disabled={uploadMutation.isPending}
-                leftIcon={<ArrowLeft />}
-                onClick={() => router.push("/enrollment/step-3")}
-                size="lg"
-                type="button"
-                variant="outline"
-              >
-                Previous Step
-              </Button>
-
-              <Button
-                disabled={isListLoading || uploadMutation.isPending}
-                leftIcon={<RefreshCw />}
-                loading={documentListQuery.isRefetching}
-                loadingText="Refreshing..."
-                onClick={() => {
-                  void documentListQuery.refetch();
-                }}
-                size="lg"
-                type="button"
-                variant="outline"
-              >
-                Refresh Files
-              </Button>
-
-              <Button
-                disabled={
-                  isListLoading ||
-                  uploadMutation.isPending ||
-                  stepFourNextMutation.isPending ||
-                  !hasMandatoryDocuments
-                }
-                loading={stepFourNextMutation.isPending}
-                loadingText="Saving Step 4..."
-                onClick={() => {
-                  void handleContinueToConfirmation();
-                }}
-                rightIcon={<ArrowRight />}
-                size="lg"
-                type="button"
-              >
-                Next Step
-              </Button>
-            </div>
-          </div>
+          </section>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section>
+        <h2 className="text-foreground text-[1.2rem] font-semibold tracking-tight sm:text-[1.35rem]">
+          Supporting Evidence
+        </h2>
+        <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-2">
+          {enrollmentStepFourEvidenceUploadSlots.map((slot) => {
+            const slotDocuments = documentMap[slot.documentType];
+            const isUploading =
+              uploadMutation.isPending && activeUploadSlotId === slot.id;
+
+            return (
+              <section
+                className="border-border bg-surface rounded-2xl border px-5 py-5 sm:px-6 sm:py-6"
+                key={slot.id}
+              >
+                <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
+                  {slot.title}
+                </h3>
+                <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
+                  {slot.description}
+                </p>
+
+                <UploadDropArea
+                  accept={enrollmentStepFourUploadAccept}
+                  disabled={uploadMutation.isPending}
+                  multiple
+                  onChange={createInputChangeHandler({ slot })}
+                  onOpen={openPicker}
+                  refSetter={(element) => {
+                    inputRefs.current[slot.id] = element;
+                  }}
+                  slotId={slot.id}
+                  uploading={isUploading}
+                />
+
+                <div className="mt-4 space-y-2.5">
+                  {slotDocuments.length > 0 ? (
+                    slotDocuments.map((document) => (
+                      <UploadedDocumentRow
+                        document={document}
+                        key={document.id}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground text-[0.8rem]">
+                      No files uploaded yet.
+                    </p>
+                  )}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+      </section>
+
+      {!hasMandatoryDocuments && !isListLoading ? (
+        <p className="text-muted-foreground text-[0.88rem] leading-6">
+          Missing required document: Your Photo
+        </p>
+      ) : null}
+
+      <EnrollmentStepFooter
+        backDisabled={uploadMutation.isPending}
+        backHref="/enrollment/step-3"
+      >
+        <Button
+          disabled={isListLoading || uploadMutation.isPending}
+          leftIcon={<RefreshCw />}
+          loading={documentListQuery.isRefetching}
+          loadingText="Refreshing..."
+          onClick={() => {
+            void documentListQuery.refetch();
+          }}
+          size="lg"
+          type="button"
+          variant="outline"
+        >
+          Refresh Files
+        </Button>
+
+        <Button
+          className="min-w-[10rem]"
+          disabled={
+            isListLoading ||
+            uploadMutation.isPending ||
+            stepFourNextMutation.isPending ||
+            !hasMandatoryDocuments
+          }
+          loading={stepFourNextMutation.isPending}
+          loadingText="Saving..."
+          onClick={() => {
+            void handleContinueToConfirmation();
+          }}
+          rightIcon={<ArrowRight />}
+          size="lg"
+          type="button"
+        >
+          Next
+        </Button>
+      </EnrollmentStepFooter>
+    </div>
   );
 }

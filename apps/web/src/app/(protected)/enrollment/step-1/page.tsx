@@ -1,38 +1,10 @@
-import { notFound } from "next/navigation";
-
-import { EnrollmentStepHero } from "@/features/enrollment/components/enrollment-step-hero";
-import { EnrollmentProgressSection } from "@/features/enrollment/components/enrollment-progress-section";
 import { EnrollmentStepOneForm } from "@/features/enrollment/components/enrollment-step-one-form";
-import {
-  enrollmentTotalSteps,
-  getEnrollmentStepDefinition,
-} from "@/features/enrollment/config/enrollment-steps";
+import { EnrollmentStepLayout } from "@/features/enrollment/components/enrollment-step-layout";
 
 export default function EnrollmentStep1Page() {
-  const step = getEnrollmentStepDefinition(1);
-
-  if (!step) {
-    notFound();
-  }
-
   return (
-    <>
-      <EnrollmentStepHero
-        className="-mx-4 sm:-mx-6 lg:-mx-8"
-        description="Provide the personal demographic details needed to begin your enrollment application and establish your official member record."
-        step={step.step}
-        title={step.title}
-        totalSteps={enrollmentTotalSteps}
-      />
-      <EnrollmentProgressSection
-        className="-mx-4 sm:-mx-6 lg:-mx-8"
-        currentStage={step.step}
-      />
-      <section className="-mx-4 bg-background sm:-mx-6 lg:-mx-8">
-        <div className="px-4 sm:px-6 lg:px-8">
-          <EnrollmentStepOneForm />
-        </div>
-      </section>
-    </>
+    <EnrollmentStepLayout step={1}>
+      <EnrollmentStepOneForm />
+    </EnrollmentStepLayout>
   );
 }

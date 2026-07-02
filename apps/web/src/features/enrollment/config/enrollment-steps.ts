@@ -10,6 +10,8 @@ import type {
 export type EnrollmentStepDefinition = Readonly<{
   step: number;
   title: string;
+  /** Page heading, rendered as "N. {headingTitle}" on the step page. */
+  headingTitle: string;
   description: string;
   progressTitle: string;
   progressDescription: string;
@@ -31,6 +33,7 @@ export const enrollmentStepDefinitions = [
   {
     step: 1,
     title: "Demographics",
+    headingTitle: "Add your demographics",
     description: "Provide your personal demographic details.",
     progressTitle: "Demographics",
     progressDescription: "Provide your personal demographic details",
@@ -45,6 +48,7 @@ export const enrollmentStepDefinitions = [
   {
     step: 2,
     title: "Maternal Kinship",
+    headingTitle: "Add your maternal kinship information",
     description: "Document your mother and maternal grandparents.",
     progressTitle: "Maternal Kinship",
     progressDescription: "Document your mother and maternal grandparents",
@@ -59,6 +63,7 @@ export const enrollmentStepDefinitions = [
   {
     step: 3,
     title: "Paternal Kinship",
+    headingTitle: "Add your paternal kinship information",
     description: "Document your father and paternal grandparents.",
     progressTitle: "Paternal Kinship",
     progressDescription: "Document your father and paternal grandparents",
@@ -73,8 +78,8 @@ export const enrollmentStepDefinitions = [
   {
     step: 4,
     title: "Documents",
-    description:
-      "Upload your photo and any supporting kinship evidence.",
+    headingTitle: "Upload your documents",
+    description: "Upload your photo and any supporting kinship evidence.",
     progressTitle: "Documents",
     progressDescription: "Upload your photo and supporting evidence",
     ctaLabel: "Start Step 4",
@@ -88,6 +93,7 @@ export const enrollmentStepDefinitions = [
   {
     step: 5,
     title: "Confirmation",
+    headingTitle: "Review & confirm",
     description:
       "Review, sign, and submit your enrollment application for council review.",
     progressTitle: "Confirmation",
@@ -131,36 +137,47 @@ function getStepKey(stepNumber: number) {
 }
 
 /**
- * A step is navigable when the user has already started or completed it:
- * either the step itself is completed, or every step before it is completed
- * (which makes it the current "frontier" step). Never-started steps further
- * ahead stay locked.
+ * Free jump navigation: every enrollment step is always navigable, so members
+ * can move between steps in any order. Completion state still drives the
+ * stepper's completed styling and gates the final submit (see
+ * {@link getIncompleteEnrollmentSteps}); the backend enforces
+ * `allStepsCompleted` before an application can be submitted.
  */
 export function isEnrollmentStepNavigable(
-  stepState: EnrollmentStepState | null | undefined,
-  stepNumber: number,
+  // Parameters kept so existing callers (stepper, dashboard) don't change;
+  // free jump navigation ignores them.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _stepState: EnrollmentStepState | null | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _stepNumber: number,
 ) {
-  if (stepNumber <= 1) {
-    return true;
-  }
+  return true;
+}
 
+export type IncompleteEnrollmentStep = Readonly<{
+  step: number;
+  title: string;
+  href: string;
+}>;
+
+/**
+ * The steps (1-4) that still need attention before the enrollment can be
+ * submitted from the confirmation step. A null/undefined (still loading)
+ * state is treated as all-incomplete so the submit stays gated until the
+ * real completion map arrives.
+ */
+export function getIncompleteEnrollmentSteps(
+  stepState: EnrollmentStepState | null | undefined,
+): readonly IncompleteEnrollmentStep[] {
   const resolvedStepState = stepState ?? defaultEnrollmentStepState;
 
-  if (resolvedStepState[getStepKey(stepNumber)]) {
-    return true;
-  }
-
-  for (
-    let previousStep = 1;
-    previousStep < stepNumber;
-    previousStep += 1
-  ) {
-    if (!resolvedStepState[getStepKey(previousStep)]) {
-      return false;
-    }
-  }
-
-  return true;
+  return enrollmentStepDefinitions
+    .filter(
+      (definition) =>
+        definition.step < enrollmentTotalSteps &&
+        !resolvedStepState[getStepKey(definition.step)],
+    )
+    .map(({ step, title, href }) => ({ step, title, href }));
 }
 
 export function buildDashboardEnrollmentSteps(

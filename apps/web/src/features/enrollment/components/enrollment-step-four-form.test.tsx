@@ -90,7 +90,7 @@ describe("EnrollmentStepFourForm — document evidence slots", () => {
   it("blocks continuing until the user photo is uploaded", () => {
     renderForm();
 
-    expect(screen.getByRole("button", { name: /Next Step/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /^Next$/ })).toBeDisabled();
     expect(screen.getByText(/Your Photo/i, { selector: "p" })).toBeTruthy();
   });
 });

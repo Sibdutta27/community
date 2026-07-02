@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  getIncompleteEnrollmentSteps,
   isEnrollmentStepNavigable,
   resolveEnrollmentStepState,
 } from "@/features/enrollment/config/enrollment-steps";
@@ -39,58 +40,61 @@ function accountInfoWithEnrollment(
 }
 
 describe("isEnrollmentStepNavigable", () => {
-  // Partition: stepNumber <= 1 — always navigable, regardless of state.
-  it("always allows step 1 (and below), even without any step state", () => {
-    expect(isEnrollmentStepNavigable(null, 1)).toBe(true);
-    expect(isEnrollmentStepNavigable(undefined, 1)).toBe(true);
-    expect(isEnrollmentStepNavigable(stepState(), 1)).toBe(true);
-    expect(isEnrollmentStepNavigable(stepState(), 0)).toBe(true);
-  });
-
-  // Partition: the step's own state is completed — revisiting is allowed
-  // even when an earlier step has since become incomplete.
-  it("allows a step whose own state is completed even with a prior gap", () => {
-    const state = stepState({ "1": true, "2": false, "3": true });
-
-    expect(isEnrollmentStepNavigable(state, 3)).toBe(true);
-  });
-
-  // Partition: the "frontier" — every prior step completed, the step itself not.
-  it("allows the frontier step (all prior steps completed)", () => {
-    const state = stepState({ "1": true, "2": true });
-
-    expect(isEnrollmentStepNavigable(state, 3)).toBe(true);
-  });
-
-  // Partition: a "gap" — some prior step incomplete and the step itself
-  // not completed — must stay locked.
-  it("locks a step past a gap (some prior step incomplete)", () => {
-    const state = stepState({ "1": true, "3": true });
-
-    // Step 2 is incomplete, so steps 4 and 5 beyond the gap stay locked.
-    expect(isEnrollmentStepNavigable(state, 4)).toBe(false);
-    expect(isEnrollmentStepNavigable(state, 5)).toBe(false);
-    // Step 2 itself is the frontier (step 1 completed), so it is navigable.
-    expect(isEnrollmentStepNavigable(state, 2)).toBe(true);
-  });
-
-  it("locks every step past the frontier when nothing is completed", () => {
+  // Free jump navigation: every step is navigable at all times, no matter
+  // what has been completed. Completion only affects styling (and gating
+  // the final submit), never movement between steps.
+  it("allows every step when nothing is completed", () => {
     const state = stepState();
 
-    expect(isEnrollmentStepNavigable(state, 2)).toBe(false);
-    expect(isEnrollmentStepNavigable(state, 3)).toBe(false);
-    expect(isEnrollmentStepNavigable(state, 4)).toBe(false);
-    expect(isEnrollmentStepNavigable(state, 5)).toBe(false);
+    for (const step of [1, 2, 3, 4, 5]) {
+      expect(isEnrollmentStepNavigable(state, step)).toBe(true);
+    }
   });
 
-  // Partition: null/loading state — behaves conservatively (as if nothing
-  // is completed): only step 1 is navigable.
-  it("treats a null/undefined (loading) state conservatively", () => {
+  it("allows every step while the state is still loading (null/undefined)", () => {
     for (const missingState of [null, undefined] as const) {
-      expect(isEnrollmentStepNavigable(missingState, 2)).toBe(false);
-      expect(isEnrollmentStepNavigable(missingState, 3)).toBe(false);
-      expect(isEnrollmentStepNavigable(missingState, 4)).toBe(false);
-      expect(isEnrollmentStepNavigable(missingState, 5)).toBe(false);
+      for (const step of [1, 2, 3, 4, 5]) {
+        expect(isEnrollmentStepNavigable(missingState, step)).toBe(true);
+      }
+    }
+  });
+
+  it("allows steps past a gap (some prior step incomplete)", () => {
+    const state = stepState({ "1": true, "3": true });
+
+    expect(isEnrollmentStepNavigable(state, 2)).toBe(true);
+    expect(isEnrollmentStepNavigable(state, 4)).toBe(true);
+    expect(isEnrollmentStepNavigable(state, 5)).toBe(true);
+  });
+});
+
+describe("getIncompleteEnrollmentSteps", () => {
+  it("returns no steps once steps 1-4 are complete (step 5 never gates itself)", () => {
+    const state = stepState({ "1": true, "2": true, "3": true, "4": true });
+
+    expect(getIncompleteEnrollmentSteps(state)).toEqual([]);
+  });
+
+  it("lists every required step when nothing is completed", () => {
+    expect(
+      getIncompleteEnrollmentSteps(stepState()).map((step) => step.step),
+    ).toEqual([1, 2, 3, 4]);
+  });
+
+  it("lists only the missing steps, with their titles and links", () => {
+    const state = stepState({ "2": true, "3": true });
+
+    expect(getIncompleteEnrollmentSteps(state)).toEqual([
+      { step: 1, title: "Demographics", href: "/enrollment/step-1" },
+      { step: 4, title: "Documents", href: "/enrollment/step-4" },
+    ]);
+  });
+
+  it("treats a null/undefined (loading) state as all-incomplete", () => {
+    for (const missingState of [null, undefined] as const) {
+      expect(
+        getIncompleteEnrollmentSteps(missingState).map((step) => step.step),
+      ).toEqual([1, 2, 3, 4]);
     }
   });
 });
@@ -191,8 +195,6 @@ describe("resolveEnrollmentStepState", () => {
       enrollmentStatus: "SUBMITTED",
     });
 
-    expect(resolved).toEqual(
-      stepState({ "1": true, "2": true, "5": true }),
-    );
+    expect(resolved).toEqual(stepState({ "1": true, "2": true, "5": true }));
   });
 });

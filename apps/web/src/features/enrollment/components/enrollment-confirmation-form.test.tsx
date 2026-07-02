@@ -6,12 +6,36 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const pushMock = vi.fn();
 const mutateAsyncMock = vi.fn();
 
+const stepStateRef: {
+  current: Partial<Record<"1" | "2" | "3" | "4" | "5", boolean>>;
+} = { current: {} };
+
+function setStepState(
+  stepState: Partial<Record<"1" | "2" | "3" | "4" | "5", boolean>>,
+) {
+  stepStateRef.current = stepState;
+}
+
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: pushMock }),
 }));
 
 vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
   accountQueryKeys: { info: ["account", "info"] },
+  useAccountInfoQuery: () => ({
+    data: {
+      enrollmentStep: {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        ...stepStateRef.current,
+      },
+      enrollmentStatus: "DRAFT",
+    },
+    isPending: false,
+  }),
   useCompleteEnrollmentMutation: () => ({
     mutateAsync: mutateAsyncMock,
     isPending: false,
@@ -37,6 +61,40 @@ describe("EnrollmentConfirmationForm", () => {
     pushMock.mockReset();
     mutateAsyncMock.mockReset();
     mutateAsyncMock.mockResolvedValue({ success: true });
+    // Default: everything the submit requires (steps 1-4) is complete.
+    setStepState({ "1": true, "2": true, "3": true, "4": true });
+  });
+
+  it("enables Submit and shows no missing-step notice when steps 1-4 are complete", () => {
+    renderForm();
+
+    expect(
+      screen.getByRole("button", { name: /submit application/i }),
+    ).toBeEnabled();
+    expect(screen.queryByText(/finish/i)).not.toBeInTheDocument();
+  });
+
+  it("disables Submit and lists the unfinished steps, linked, when steps are missing", () => {
+    setStepState({ "2": true, "3": true });
+    renderForm();
+
+    expect(
+      screen.getByRole("button", { name: /submit application/i }),
+    ).toBeDisabled();
+
+    const notice = screen.getByText(/finish/i);
+    expect(notice).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Demographics" })).toHaveAttribute(
+      "href",
+      "/enrollment/step-1",
+    );
+    expect(screen.getByRole("link", { name: "Documents" })).toHaveAttribute(
+      "href",
+      "/enrollment/step-4",
+    );
+    expect(
+      screen.queryByRole("link", { name: "Maternal Kinship" }),
+    ).not.toBeInTheDocument();
   });
 
   it("renders the e-signature fields and both agreements", () => {
