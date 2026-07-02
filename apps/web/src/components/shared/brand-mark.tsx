@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-import { cinzel } from "@/styles/fonts";
 import { cn } from "@/lib/utils";
 
 const brandMarkVariants = {
@@ -61,17 +60,13 @@ export function BrandMark({
       </div>
       {showLabel ? (
         <div className="min-w-0">
-          <span
-            className={cn(
-              cinzel.className,
-              "text-foreground block",
-              variant.title,
-            )}
-          >
+          <span className={cn("text-foreground block", variant.title)}>
             {label}
           </span>
           {showSubtitle ? (
-            <span className={cn("text-accent block", variant.subtitle)}>
+            <span
+              className={cn("text-muted-foreground block", variant.subtitle)}
+            >
               {subtitle}
             </span>
           ) : null}

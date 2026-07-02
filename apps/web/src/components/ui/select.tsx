@@ -66,7 +66,7 @@ function SelectContent({
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border bg-surface text-foreground relative z-40 max-h-80 min-w-[8rem] overflow-hidden rounded-[20px] border shadow-[0_18px_36px_-26px_rgba(21,17,13,0.28)]",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border bg-surface text-foreground relative z-40 max-h-80 min-w-[8rem] overflow-hidden rounded-md border shadow-[0_8px_24px_-12px_rgba(0,0,0,0.16)]",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
           className,
@@ -77,7 +77,7 @@ function SelectContent({
         sideOffset={sideOffset}
         {...props}
       >
-        <SelectPrimitive.ScrollUpButton className="flex cursor-default items-center justify-center py-2 text-[#697578]">
+        <SelectPrimitive.ScrollUpButton className="flex cursor-default items-center justify-center py-2 text-muted-foreground">
           <ChevronUp className="size-4" />
         </SelectPrimitive.ScrollUpButton>
         <SelectPrimitive.Viewport
@@ -89,7 +89,7 @@ function SelectContent({
         >
           {children}
         </SelectPrimitive.Viewport>
-        <SelectPrimitive.ScrollDownButton className="flex cursor-default items-center justify-center py-2 text-[#697578]">
+        <SelectPrimitive.ScrollDownButton className="flex cursor-default items-center justify-center py-2 text-muted-foreground">
           <ChevronDown className="size-4" />
         </SelectPrimitive.ScrollDownButton>
       </SelectPrimitive.Content>
@@ -121,7 +121,7 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       className={cn(
-        "text-foreground focus:bg-surface-muted relative flex w-full cursor-pointer items-center rounded-[14px] py-2.5 pr-8 pl-3.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "text-foreground focus:bg-surface-muted relative flex w-full cursor-pointer items-center rounded-sm py-2.5 pr-8 pl-3.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
       data-slot="select-item"
@@ -129,7 +129,7 @@ function SelectItem({
     >
       <span className="absolute right-3 flex size-4 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="text-primary size-4" />
+          <Check className="text-foreground size-4" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

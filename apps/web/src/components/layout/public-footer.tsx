@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BrandMark } from "@/components/shared/brand-mark";
-import { cinzel } from "@/styles/fonts";
 import {
   footerBottomLinks,
   footerQuickLinks,
@@ -20,17 +19,13 @@ type FooterLinkListProps = Readonly<{
 function FooterLinkList({ title, links }: FooterLinkListProps) {
   return (
     <section>
-      <h3
-        className={`${cinzel.className} text-brand-sky text-lg font-semibold tracking-[0.12em] uppercase sm:text-xl`}
-      >
-        {title}
-      </h3>
+      <h3 className="text-foreground text-[15px] font-semibold">{title}</h3>
 
-      <ul className="mt-3.5 space-y-2.5 text-[0.95rem] leading-6 text-white/78 sm:mt-4 sm:text-base">
+      <ul className="text-muted-foreground mt-3.5 space-y-2.5 text-[0.95rem] leading-6 sm:mt-4 sm:text-base">
         {links.map((link) => (
           <li key={link.label}>
             <Link
-              className="transition-colors hover:text-white"
+              className="hover:text-foreground transition-colors"
               href={link.href}
             >
               {link.label}
@@ -58,7 +53,7 @@ function SocialIconButton({ href, label, iconSrc }: FooterSocialLink) {
 
 export function PublicFooter() {
   return (
-    <footer className="bg-[#120e0c] text-white">
+    <footer className="border-border text-foreground border-t bg-white">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
         <div className="grid gap-8 sm:gap-10 lg:grid-cols-[1.35fr_0.78fr_0.78fr_0.88fr] lg:gap-12">
           <div>
@@ -66,12 +61,12 @@ export function PublicFooter() {
               <BrandMark compact showLabel={false} />
             </Link>
 
-            <p className="mt-5 max-w-lg text-[0.98rem] leading-7 text-white/84 sm:mt-6 sm:text-[1.05rem] sm:leading-8">
+            <p className="text-muted-foreground mt-5 max-w-lg text-[0.98rem] leading-7 sm:mt-6 sm:text-[1.05rem] sm:leading-8">
               Preserving Indigenous heritage through land, lineage, and
               community connection.
             </p>
 
-            <div className="mt-6 h-px w-full max-w-96 bg-white/12" />
+            <div className="bg-border mt-6 h-px w-full max-w-96" />
 
             <div className="mt-4 flex items-center gap-2 sm:gap-2.5">
               {footerSocialLinks.map((item) => (
@@ -85,21 +80,19 @@ export function PublicFooter() {
           <FooterLinkList title="Support" links={footerSupportLinks} />
 
           <section>
-            <h3
-              className={`${cinzel.className} text-brand-sky text-lg font-semibold tracking-[0.12em] uppercase sm:text-xl`}
-            >
+            <h3 className="text-foreground text-[15px] font-semibold">
               Contact
             </h3>
 
-            <div className="mt-3.5 space-y-2.5 text-[0.95rem] leading-6 text-white/78 sm:mt-4 sm:text-base">
+            <div className="text-muted-foreground mt-3.5 space-y-2.5 text-[0.95rem] leading-6 sm:mt-4 sm:text-base">
               <a
-                className="block transition-colors hover:text-white"
+                className="hover:text-foreground block transition-colors"
                 href="tel:+17875550100"
               >
                 (787) 555-0100
               </a>
               <a
-                className="block transition-colors hover:text-white"
+                className="hover:text-foreground block transition-colors"
                 href="mailto:info@tainonation.org"
               >
                 info@tainonation.org
@@ -114,8 +107,8 @@ export function PublicFooter() {
         </div>
       </div>
 
-      <div className="border-t border-white/12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 text-[0.8rem] text-white/90 sm:px-6 sm:text-[0.85rem] lg:flex-row lg:items-center lg:justify-between lg:px-8">
+      <div className="border-border border-t">
+        <div className="text-muted-foreground mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 text-[0.8rem] sm:px-6 sm:text-[0.85rem] lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <p>
             © 2024 Taíno Nation of Borikén. All rights reserved. Living
             Indigenous Sovereignty.
@@ -125,10 +118,10 @@ export function PublicFooter() {
             {footerBottomLinks.map((link, index) => (
               <span key={link.label} className="flex items-center">
                 {index > 0 ? (
-                  <span className="mx-2 text-white/70">•</span>
+                  <span className="text-border mx-2">•</span>
                 ) : null}
                 <Link
-                  className="transition-colors hover:text-white"
+                  className="hover:text-foreground transition-colors"
                   href={link.href}
                 >
                   {link.label}

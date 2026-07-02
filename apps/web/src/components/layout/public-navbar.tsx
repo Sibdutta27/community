@@ -34,8 +34,8 @@ export function PublicNavbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.84, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
-        <div className="border-border/90 bg-surface/95 supports-backdrop-filter:bg-surface/92 flex items-center justify-between rounded-full border px-4 py-3 shadow-[0_16px_32px_-24px_rgba(21,17,13,0.18)] backdrop-blur-md">
+      <div className="border-border bg-background/95 supports-backdrop-filter:bg-background/85 border-b backdrop-blur-md">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="shrink-0">
             <BrandMark showSubtitle={false} />
           </Link>
@@ -50,9 +50,9 @@ export function PublicNavbar() {
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                    "px-4 py-2 text-[15px] transition-colors",
                     isActive
-                      ? "bg-surface-muted text-primary"
+                      ? "text-foreground font-medium"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
@@ -65,13 +65,13 @@ export function PublicNavbar() {
           <div className="hidden items-center gap-2 lg:flex">
             <Button variant="ghost" size="sm" asChild>
               <Link
-                className={cn(isSignInPage && "text-primary")}
+                className={cn(isSignInPage && "text-foreground")}
                 href="/sign-in"
               >
                 Sign In
               </Link>
             </Button>
-            <Button className="text-white!" size="sm" asChild>
+            <Button size="sm" asChild>
               <Link href="/sign-up">Apply Now</Link>
             </Button>
           </div>
@@ -92,7 +92,7 @@ export function PublicNavbar() {
           {isMobileMenuOpen ? (
             <motion.div
               key="mobile-menu"
-              className="border-border bg-surface mt-3 rounded-3xl border p-4 shadow-[0_18px_34px_-24px_rgba(21,17,13,0.2)] lg:hidden"
+              className="border-border bg-background border-t p-4 lg:hidden"
               initial="hidden"
               animate="visible"
               exit="exit"
@@ -109,9 +109,9 @@ export function PublicNavbar() {
                       aria-current={isActive ? "page" : undefined}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        "rounded-2xl px-4 py-3 text-sm font-medium transition-colors",
+                        "rounded-md px-4 py-3 text-[15px] transition-colors",
                         isActive
-                          ? "bg-surface-muted text-primary"
+                          ? "bg-surface-muted text-foreground font-medium"
                           : "text-muted-foreground hover:bg-surface-muted hover:text-foreground",
                       )}
                     >
@@ -124,14 +124,14 @@ export function PublicNavbar() {
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <Button variant="outline" asChild>
                   <Link
-                    className={cn(isSignInPage && "text-primary")}
+                    className={cn(isSignInPage && "text-foreground")}
                     href="/sign-in"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign In
                   </Link>
                 </Button>
-                <Button className="text-white!" asChild>
+                <Button asChild>
                   <Link
                     href="/sign-up"
                     onClick={() => setIsMobileMenuOpen(false)}

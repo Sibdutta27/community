@@ -7,20 +7,25 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold tracking-[0.01em] transition-[color,background-color,border-color,box-shadow,transform] duration-200 select-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-[200px] font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-200 select-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
+        // Solid black pill.
         primary:
-          "bg-primary text-primary-foreground shadow-[0_12px_24px_-18px_rgba(197,49,51,0.45)] hover:brightness-[0.96]",
+          "bg-primary text-primary-foreground hover:opacity-90",
+        // Prominent outline pill — the Figma default: hairline border, transparent
+        // bg, dark text; fills to solid black on hover.
         outline:
-          "border border-border bg-surface text-foreground shadow-[0_10px_22px_-18px_rgba(21,17,13,0.18)] hover:bg-surface-muted",
+          "border border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background",
+        // Dark-grey solid pill.
         secondary:
-          "bg-secondary text-secondary-foreground shadow-[0_12px_24px_-18px_rgba(111,175,196,0.35)] hover:brightness-[0.98]",
+          "bg-secondary text-secondary-foreground hover:opacity-90",
+        // Mid-grey solid pill.
         accent:
-          "bg-accent text-accent-foreground shadow-[0_12px_24px_-18px_rgba(179,138,90,0.38)] hover:brightness-[0.97]",
+          "bg-accent text-accent-foreground hover:opacity-90",
         ghost:
-          "bg-transparent text-foreground hover:bg-surface-muted hover:shadow-none",
+          "bg-transparent text-foreground hover:bg-surface-muted",
       },
       size: {
         sm: "h-10 px-4 text-sm [&_svg]:size-4",
