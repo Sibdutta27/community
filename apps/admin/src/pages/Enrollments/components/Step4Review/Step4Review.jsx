@@ -30,18 +30,18 @@ import { fetchEnrollmentStep4, verifyEnrollmentDocument } from '@/api/enrollment
 
 const DOCUMENT_TYPES = [
     'USER_PHOTO',
-    'BIRTH_CERTIFICATE',
-    'FAMILY_RECORD',
-    'FAMILY_PHOTO',
-    'ADDITIONAL_EVIDENCE'
+    'GENEALOGICAL_RECORDS',
+    'KINSHIP_LETTERS',
+    'ORAL_HISTORY',
+    'DNA_TESTING',
 ]
 
 const DOCUMENT_TITLES = {
     USER_PHOTO: 'User Photo',
-    BIRTH_CERTIFICATE: 'Birth Certificate',
-    FAMILY_RECORD: 'Family Record',
-    FAMILY_PHOTO: 'Family Photo',
-    ADDITIONAL_EVIDENCE: 'Additional Evidence',
+    GENEALOGICAL_RECORDS: 'Genealogical Records',
+    KINSHIP_LETTERS: 'Kinship Letters',
+    ORAL_HISTORY: 'Oral History',
+    DNA_TESTING: 'DNA Testing',
 };
 
 export default function EnrollmentStep4Review({

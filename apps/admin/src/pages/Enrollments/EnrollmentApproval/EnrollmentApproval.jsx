@@ -110,7 +110,7 @@ export default function EnrollmentApproval() {
                     <div className={styles.stepBody}>
                         <Box sx={{borderBottom: '1px solid #aaaaaa', paddingBottom: 2}}>
                             <Typography variant="h5">
-                                Personal details and contacts
+                                Demographics
                             </Typography>
                         </Box>
                         <Box>
@@ -124,7 +124,7 @@ export default function EnrollmentApproval() {
                     <div className={styles.stepBody}>
                         <Box sx={{borderBottom: '1px solid #aaaaaa', paddingBottom: 2}}>
                             <Typography variant="h5">
-                                Maternal Lineage 
+                                Maternal Kinship
                             </Typography>
                         </Box>
                         <Box>
@@ -138,7 +138,7 @@ export default function EnrollmentApproval() {
                     <div className={styles.stepBody}>
                         <Box sx={{borderBottom: '1px solid #aaaaaa', paddingBottom: 2}}>
                             <Typography variant="h5">
-                                Cultural Connections
+                                Paternal Kinship
                             </Typography>
                         </Box>
                         <Box>
@@ -151,7 +151,7 @@ export default function EnrollmentApproval() {
                     <div className={styles.stepBody}>
                         <Box sx={{borderBottom: '1px solid #aaaaaa', paddingBottom: 2}}>
                             <Typography variant="h5">
-                                Personal details and contacts
+                                Documents
                             </Typography>
                         </Box>
                         <Box>

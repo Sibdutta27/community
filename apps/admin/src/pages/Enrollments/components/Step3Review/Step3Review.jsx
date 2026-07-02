@@ -1,18 +1,19 @@
 // EnrollmentStep3Review.jsx
-
-import styles from './step3Review.module.css';
+//
+// Step 3 — Paternal Kinship: father + paternal grandparents.
+// Contract: { father, paternalGrandmother, paternalGrandfather },
+// each null or { name, dateOfBirth (father only), nationality,
+// municipality, yucayeke, isBorikuaTaino }.
 
 import { useQuery } from '@tanstack/react-query';
 
-import {
-    Alert,
-    Paper,
-    Skeleton,
-    Typography,
-} from '@mui/material';
+import { Alert } from '@mui/material';
 
 import { fetchEnrollmentStep3 } from '@/api/enrollment.api';
 
+import KinshipReview, {
+    KinshipReviewSkeleton,
+} from '../KinshipReview/KinshipReview';
 
 export default function EnrollmentStep3Review({
     enrollmentId,
@@ -31,44 +32,7 @@ export default function EnrollmentStep3Review({
      * Loading
      */
     if (isLoading) {
-        return (
-            <div className={styles.loadingGrid}>
-
-                {[1, 2, 3, 4].map((item) => (
-                    <Paper
-                        key={item}
-                        className={styles.card}
-                    >
-
-                        <Skeleton
-                            variant="circular"
-                            width={60}
-                            height={60}
-                        />
-
-                        <Skeleton
-                            variant="text"
-                            width="70%"
-                            height={35}
-                        />
-
-                        <Skeleton
-                            variant="text"
-                            width="100%"
-                            height={20}
-                        />
-
-                        <Skeleton
-                            variant="text"
-                            width="85%"
-                            height={20}
-                        />
-
-                    </Paper>
-                ))}
-
-            </div>
-        );
+        return <KinshipReviewSkeleton />;
     }
 
     /**
@@ -77,42 +41,28 @@ export default function EnrollmentStep3Review({
     if (error) {
         return (
             <Alert severity="error">
-                Failed to load cultural connections
+                Failed to load paternal kinship data
             </Alert>
         );
     }
 
     return (
-        <div className={styles.container}>
-
-            {/* CONNECTIONS */}
-            <div className={styles.grid}>
-
+        <KinshipReview
+            entries={[
                 {
-                    data.map((item) => (
-
-                        <Paper
-                            key={item.key}
-                            className={styles.card}
-                        >
-
-                            {/* KEY */}
-                            <div className={styles.keyBox}>
-
-                                <Typography
-                                    className={styles.keyText}
-                                >
-                                    {item.describtion}
-                                </Typography>
-
-                            </div>
-                        </Paper>
-
-                    ))
-                }
-
-            </div>
-
-        </div>
+                    label: 'Father',
+                    person: data?.father,
+                    showDateOfBirth: true,
+                },
+                {
+                    label: 'Paternal Grandmother',
+                    person: data?.paternalGrandmother,
+                },
+                {
+                    label: 'Paternal Grandfather',
+                    person: data?.paternalGrandfather,
+                },
+            ]}
+        />
     );
 }

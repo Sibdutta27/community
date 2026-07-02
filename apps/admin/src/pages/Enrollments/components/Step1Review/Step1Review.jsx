@@ -6,8 +6,6 @@ import { useQuery } from '@tanstack/react-query';
 
 import {
     Alert,
-    Box,
-    Chip,
     Paper,
     Skeleton,
     Typography,
@@ -16,16 +14,13 @@ import {
 import {
     Badge,
     Cake,
-    ContactMail,
     Diversity3,
-    Home,
-    Language,
     Person,
-    Phone,
-    Work,
 } from '@mui/icons-material';
 
 import { fetchEnrollmentStep1 } from '@/api/enrollment.api';
+
+import { formatWords } from '@/utils/formatWord.util';
 
 export default function EnrollmentStep1Review({
     enrollmentId,
@@ -95,6 +90,8 @@ export default function EnrollmentStep1Review({
         );
     }
 
+    const demographics = data?.demographics;
+
     return (
         <div className={styles.container}>
 
@@ -109,27 +106,12 @@ export default function EnrollmentStep1Review({
 
                     <InfoItem
                         label="First Name"
-                        value={data.legalName.firstName}
-                    />
-
-                    <InfoItem
-                        label="Middle Name"
-                        value={data.legalName.middleName}
+                        value={demographics?.firstName}
                     />
 
                     <InfoItem
                         label="Last Name"
-                        value={data.legalName.lastName}
-                    />
-
-                    <InfoItem
-                        label="Maternal Last Name"
-                        value={data.legalName.maternalLastName}
-                    />
-
-                    <InfoItem
-                        label="Preferred Name"
-                        value={data.legalName.preferredName}
+                        value={demographics?.lastName}
                     />
 
                 </div>
@@ -148,266 +130,65 @@ export default function EnrollmentStep1Review({
                     <InfoItem
                         label="Date of Birth"
                         value={
-                            new Date(
-                                data.birthInfo.dateOfBirth,
-                            ).toLocaleDateString()
+                            demographics?.dateOfBirth
+                                ? new Date(
+                                    demographics.dateOfBirth,
+                                ).toLocaleDateString()
+                                : null
                         }
                     />
 
                     <InfoItem
                         label="Country of Birth"
-                        value={data.birthInfo.countryOfBirth}
+                        value={demographics?.countryOfBirth}
                     />
 
                     <InfoItem
                         label="City of Birth"
-                        value={data.birthInfo.cityOfBirth}
+                        value={demographics?.cityOfBirth}
                     />
 
                     <InfoItem
                         label="Municipality"
-                        value={data.birthInfo.municipalityOfBirth}
+                        value={
+                            demographics?.municipalityOfBirth
+                        }
                     />
 
                 </div>
 
             </SectionCard>
 
-            {/* GENDER */}
+            {/* DEMOGRAPHICS */}
             <SectionCard
                 icon={<Badge className={styles.cardIcon} />}
-                title="Gender Information"
-                subtitle="Gender and pronouns"
+                title="Demographics"
+                subtitle="Sex, gender, marital status and occupation"
             >
 
                 <div className={styles.formGrid}>
+
+                    <InfoItem
+                        label="Sex"
+                        value={formatWords(demographics?.sex)}
+                    />
 
                     <InfoItem
                         label="Gender"
-                        value={data.gender.gender}
+                        value={demographics?.gender}
                     />
-
-                    <InfoItem
-                        label="Pronouns"
-                        value={data.gender.pronouns}
-                    />
-
-                </div>
-
-            </SectionCard>
-
-            {/* CONTACT */}
-            <SectionCard
-                icon={
-                    <ContactMail className={styles.cardIcon} />
-                }
-                title="Contact Information"
-                subtitle="Communication details"
-            >
-
-                <div className={styles.formGrid}>
-
-                    <InfoItem
-                        label="Email"
-                        value={data.contact.email}
-                    />
-
-                    <InfoItem
-                        label="Phone Number"
-                        value={data.contact.phoneNumber}
-                    />
-
-                    <InfoItem
-                        label="Phone Type"
-                        value={data.contact.phoneType}
-                    />
-
-                    <InfoItem
-                        label="Allow SMS"
-                        value={
-                            data.contact.allowSMS
-                                ? 'Yes'
-                                : 'No'
-                        }
-                    />
-
-                </div>
-
-            </SectionCard>
-
-            {/* ADDRESS */}
-            <SectionCard
-                icon={<Home className={styles.cardIcon} />}
-                title="Address Information"
-                subtitle="Current and mailing address"
-            >
-
-                <div className={styles.addressGrid}>
-
-                    <Box className={styles.addressBox}>
-
-                        <Typography
-                            className={styles.addressTitle}
-                        >
-                            Current Address
-                        </Typography>
-
-                        <InfoItem
-                            label="Street"
-                            value={data.currentAddress.street}
-                        />
-
-                        <InfoItem
-                            label="City"
-                            value={data.currentAddress.city}
-                        />
-
-                        <InfoItem
-                            label="State"
-                            value={data.currentAddress.state}
-                        />
-
-                        <InfoItem
-                            label="Zip Code"
-                            value={data.currentAddress.zipCode}
-                        />
-
-                        <InfoItem
-                            label="Country"
-                            value={data.currentAddress.country}
-                        />
-
-                    </Box>
-
-                    <Box className={styles.addressBox}>
-
-                        <Typography
-                            className={styles.addressTitle}
-                        >
-                            Mailing Address
-                        </Typography>
-
-                        <InfoItem
-                            label="Street"
-                            value={data.mailingAddress.street}
-                        />
-
-                        <InfoItem
-                            label="City"
-                            value={data.mailingAddress.city}
-                        />
-
-                        <InfoItem
-                            label="State"
-                            value={data.mailingAddress.state}
-                        />
-
-                        <InfoItem
-                            label="Zip Code"
-                            value={data.mailingAddress.zipCode}
-                        />
-
-                        <InfoItem
-                            label="Country"
-                            value={data.mailingAddress.country}
-                        />
-
-                    </Box>
-
-                </div>
-
-            </SectionCard>
-
-            {/* EMERGENCY */}
-            <SectionCard
-                icon={<Phone className={styles.cardIcon} />}
-                title="Emergency Contact"
-                subtitle="Emergency communication details"
-            >
-
-                <div className={styles.formGrid}>
-
-                    <InfoItem
-                        label="Full Name"
-                        value={data.emergencyContact.fullName}
-                    />
-
-                    <InfoItem
-                        label="Relationship"
-                        value={
-                            data.emergencyContact.relationship
-                        }
-                    />
-
-                    <InfoItem
-                        label="Phone Number"
-                        value={
-                            data.emergencyContact.phoneNumber
-                        }
-                    />
-
-                </div>
-
-            </SectionCard>
-
-            {/* ADDITIONAL */}
-            <SectionCard
-                icon={<Work className={styles.cardIcon} />}
-                title="Additional Information"
-                subtitle="Extra personal details"
-            >
-
-                <div className={styles.formGrid}>
 
                     <InfoItem
                         label="Marital Status"
-                        value={
-                            data.additionalInfo.maritalStatus
-                        }
+                        value={demographics?.maritalStatus}
                     />
 
                     <InfoItem
                         label="Occupation"
-                        value={data.additionalInfo.occupation}
-                    />
-
-                    <InfoItem
-                        label="Education Level"
-                        value={
-                            data.additionalInfo.educationLevel
-                        }
+                        value={demographics?.occupation}
                     />
 
                 </div>
-
-                <div className={styles.languageSection}>
-
-                    <Typography className={styles.fieldLabel}>
-                        Languages Spoken
-                    </Typography>
-
-                    <div className={styles.languages}>
-                        {
-                            data.additionalInfo.languagesSpoken.map(
-                                (lang) => (
-                                    <Chip
-                                        key={lang}
-                                        label={lang}
-                                        icon={<Language />}
-                                    />
-                                ),
-                            )
-                        }
-                    </div>
-
-                </div>
-
-                <InfoItem
-                    label="Special Skills"
-                    value={
-                        data.additionalInfo.specialSkills
-                    }
-                />
 
             </SectionCard>
 
@@ -535,7 +316,7 @@ function InfoItem({
             <div className={styles.fieldBox}>
 
                 <Typography className={styles.fieldValue}>
-                    {value || '-'}
+                    {value || '—'}
                 </Typography>
 
             </div>

@@ -121,69 +121,6 @@
   word-break: break-word;
 }
 
-/* ADDRESS */
-
-.addressGrid {
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  gap: 22px;
-}
-
-.addressBox {
-  background:
-    rgba(255,255,255,0.03);
-
-  border:
-    1px solid #aaaaaa;
-
-  border-radius: 18px;
-
-  padding: 22px;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 18px;
-}
-
-.addressTitle {
-  font-size: 18px !important;
-  font-weight: 700 !important;
-
-  color: white !important;
-}
-
-/* LANGUAGE */
-
-.languageSection {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.languages {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 12px;
-}
-
-.languages :global(.MuiChip-root) {
-  background:
-    rgba(168,85,247,0.12);
-
-  color: white;
-
-  border:
-    1px solid rgba(168,85,247,0.25);
-}
-
-.languages :global(.MuiChip-icon) {
-  color: #c084fc !important;
-}
-
 /* LOADING */
 
 .loadingContainer {
@@ -211,10 +148,6 @@
 
   .cardTitle {
     font-size: 20px !important;
-  }
-
-  .addressGrid {
-    grid-template-columns: 1fr;
   }
 
   .fieldBox {
