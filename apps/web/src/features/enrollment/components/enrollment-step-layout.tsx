@@ -34,7 +34,7 @@ export function EnrollmentStepLayout({
   const backHref = step > 1 ? `/enrollment/step-${step - 1}` : "/dashboard";
 
   return (
-    <div className="mx-auto w-full max-w-5xl pt-8 pb-16 sm:pt-10 lg:pt-12">
+    <div className="mx-auto w-full max-w-5xl pt-24 pb-16 sm:pt-28 lg:pt-32">
       <header>
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
           <Button asChild size="sm" variant="outline">
