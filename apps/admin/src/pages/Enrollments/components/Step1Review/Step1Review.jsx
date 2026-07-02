@@ -17,6 +17,7 @@ import {
     Badge,
     Cake,
     ContactMail,
+    Diversity3,
     Home,
     Language,
     Person,
@@ -410,8 +411,71 @@ export default function EnrollmentStep1Review({
 
             </SectionCard>
 
+            {/* IDENTITY & YUCAYEKE */}
+            <SectionCard
+                icon={
+                    <Diversity3 className={styles.cardIcon} />
+                }
+                title="Identity & Yucayeke"
+                subtitle="Heritage identity, yucayeke and children"
+            >
+
+                <div className={styles.formGrid}>
+
+                    <InfoItem
+                        label="Identity"
+                        value={data.yucayekeInfo?.identity}
+                    />
+
+                    <InfoItem
+                        label="Yucayeke"
+                        value={
+                            data.yucayekeInfo?.yucayekeUnknown
+                                ? "Unknown (member doesn't know)"
+                                : data.yucayekeInfo?.yucayeke
+                        }
+                    />
+
+                    <InfoItem
+                        label="Has Children"
+                        value={
+                            formatBoolean(
+                                data.yucayekeInfo?.hasChildren,
+                            )
+                        }
+                    />
+
+                    <InfoItem
+                        label="Has Children Under 18"
+                        value={
+                            formatBoolean(
+                                data.yucayekeInfo?.hasMinorChildren,
+                            )
+                        }
+                    />
+
+                </div>
+
+            </SectionCard>
+
         </div>
     );
+}
+
+/**
+ * Format nullable boolean
+ */
+function formatBoolean(value) {
+
+    if (value === true) {
+        return 'Yes';
+    }
+
+    if (value === false) {
+        return 'No';
+    }
+
+    return null;
 }
 
 /**

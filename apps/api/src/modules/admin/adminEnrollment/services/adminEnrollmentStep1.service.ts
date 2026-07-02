@@ -111,6 +111,20 @@ export class AdminEnrollmentStep1Service {
                 languagesSpoken: enrollment.languagesSpoken,
                 specialSkills: enrollment.specialSkills,
             },
+
+            yucayekeInfo: {
+                identity: enrollment.identity,
+                yucayeke: enrollment.yucayeke,
+                yucayekeUnknown: enrollment.yucayekeUnknown,
+                hasChildren: enrollment.hasChildren,
+                hasMinorChildren: enrollment.hasMinorChildren,
+            },
+
+            signature: {
+                signatureName: enrollment.signatureName,
+                signatureDate: enrollment.signatureDate,
+                agreedToTerms: enrollment.agreedToTerms,
+            },
         };
     }
 }

@@ -24,6 +24,7 @@ import Step1Review from '../components/Step1Review/Step1Review';
 import Step2Review from '../components/Step2Review/Step2Review';
 import Step3Review from '../components/Step3Review/Step3Review';
 import Step4Review from '../components/Step4Review/Step4Review';
+import SignatureReview from '../components/SignatureReview/SignatureReview';
 
 import { verifyEnrollment } from '@/api/enrollment.api';
 
@@ -166,6 +167,10 @@ export default function EnrollmentApproval() {
                             <Typography variant="h5">
                                 Approval section
                             </Typography>
+                        </Box>
+
+                        <Box sx={{ marginTop: 3, marginBottom: 3 }}>
+                            <SignatureReview enrollmentId={enrollmentId} />
                         </Box>
 
                         <div className={styles.actionButtons}>
