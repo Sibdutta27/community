@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { EnrollmentService } from '../enrollment/enrollment.service';
-import { AddressType } from '@/generated/prisma/enums';
 import { DatabaseService } from '@/database/database.service';
-import { profile } from 'console';
 
 @Injectable()
 export class ProfileService {
@@ -32,32 +30,16 @@ export class ProfileService {
         // Get the enrollment status
         const enrollmentStatus = enrollment?.status;
 
-        // Get the zip code for regional members
-        const zipCode = enrollment?.addresses?.find(address => address.type === AddressType.CURRENT)?.zipCode;
-
-        // Get the regional members
-        if ( !enrollment || !zipCode ) {
-            return {
-                user,
-                enrollment,
-                enrollmentStep,
-                enrollmentStatus,
-                hasEnrollment: !!enrollment,
-                regionalMembers: [],
-            }
-        }
-
-        // Get the regional members
-        const regionalMembers = await this.getRegionalMembers(enrollment.id, zipCode);
-
         return {
             user,
             enrollment,
             enrollmentStep,
             enrollmentStatus,
             hasEnrollment: !!enrollment,
-            regionalMembers,
-        }
+            // Regional-member lookup previously keyed off the (now removed)
+            // address model; kept as an empty list until it is re-scoped.
+            regionalMembers: [],
+        };
     }
 
     /**
@@ -87,51 +69,5 @@ export class ProfileService {
      */
     public async getEnrollmentInfo(userId: string) {
         return await this.enrollmentService.getExtendedEnrollmentByUserId(userId);
-    }
-
-    /**
-     * Helper function for get regional members
-     */
-    public async getRegionalMembers(enrollmentId: string, zipCode: string) {
-
-        const members = await this.databaseServices.enrollment.findMany({
-            where: {
-                id: { not: enrollmentId }, // exclude current user
-                addresses: {
-                    some: {
-                        zipCode: zipCode,
-                        type   : AddressType.CURRENT,
-                    },
-                },
-            },
-            select: {
-                id           : true,
-                firstName    : true,
-                lastName     : true,
-                preferredName: true,
-                addresses    : {
-                    where: {
-                        type: AddressType.CURRENT,
-                    },
-                    select: {
-                        city   : true,
-                        state  : true,
-                        zipCode: true,
-                    },
-                },
-                user: {
-                    select: {
-                        id   : true,
-                    },
-                },
-            },
-        });
-
-        return await Promise.all(members.map(async (member) => ({
-            id            : member.id,
-            name          : member.preferredName || `${member.firstName ?? ''} ${member.lastName ?? ''}`.trim(),
-            location      : member.addresses[0] || null,
-            profilePicture: member.user.id ? await this.userService.getUserProfilePicture(member.user.id) : null,
-        })));
     }
 }

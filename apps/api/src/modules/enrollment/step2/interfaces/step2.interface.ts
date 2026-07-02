@@ -1,5 +1,8 @@
-import { MaternalLineage } from "@/modules/enrollment/common/interfaces/enrollment.interface";
+import { AncestryInput } from '@/modules/enrollment/common/interfaces/enrollment.interface';
 
+// Step 2 — Maternal Kinship.
 export interface Step2 {
-  maternalLineages: MaternalLineage[];
+  mother: AncestryInput;
+  maternalGrandmother: AncestryInput;
+  maternalGrandfather: AncestryInput;
 }

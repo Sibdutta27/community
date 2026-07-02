@@ -1,4 +1,4 @@
-import { Identity, MaritalStatus } from '@/generated/prisma/enums';
+import { Identity, MaritalStatus, Sex } from '@/generated/prisma/enums';
 import { AdminEnrollmentStep1Service } from './adminEnrollmentStep1.service';
 
 describe('AdminEnrollmentStep1Service.getStep1 (admin enrollment detail)', () => {
@@ -9,24 +9,18 @@ describe('AdminEnrollmentStep1Service.getStep1 (admin enrollment detail)', () =>
             id: enrollmentId,
 
             firstName: 'Anani',
-            middleName: null,
             lastName: 'Guarocuya',
-            maternalLastName: 'Higuamota',
-            preferredName: 'Anani',
 
             dateOfBirth: new Date('1990-01-15'),
             cityOfBirth: 'Ponce',
             municipalityOfBirth: 'Ponce',
             countryOfBirth: 'Puerto Rico',
 
+            sex: Sex.FEMALE,
             gender: 'FEMALE',
-            pronouns: 'she/her',
 
             maritalStatus: MaritalStatus.DOMESTIC_PARTNERSHIP,
             occupation: 'Teacher',
-            educationLevel: 'Bachelors',
-            languagesSpoken: ['Spanish', 'English'],
-            specialSkills: 'Weaving',
 
             identity: Identity.TAINO,
             yucayeke: 'Guainía',
@@ -38,9 +32,6 @@ describe('AdminEnrollmentStep1Service.getStep1 (admin enrollment detail)', () =>
             signatureDate: new Date('2026-07-02'),
             agreedToTerms: true,
 
-            contact: null,
-            addresses: [],
-            emergencyContact: null,
             steps: [{ stepNumber: 1, isCompleted: true }],
 
             ...overrides,
@@ -58,6 +49,18 @@ describe('AdminEnrollmentStep1Service.getStep1 (admin enrollment detail)', () =>
 
         return { service, database };
     }
+
+    it('includes the demographics block (including sex)', async () => {
+        const { service } = buildService(buildEnrollment());
+
+        const result = await service.getStep1(enrollmentId);
+
+        expect(result.demographics.sex).toBe(Sex.FEMALE);
+        expect(result.demographics.firstName).toBe('Anani');
+        expect(result.demographics.maritalStatus).toBe(
+            MaritalStatus.DOMESTIC_PARTNERSHIP,
+        );
+    });
 
     it('includes the yucayeke info block (identity, yucayeke, children)', async () => {
         const { service } = buildService(buildEnrollment());
@@ -85,19 +88,10 @@ describe('AdminEnrollmentStep1Service.getStep1 (admin enrollment detail)', () =>
         });
     });
 
-    it('returns the DOMESTIC_PARTNERSHIP marital status in additional info', async () => {
-        const { service } = buildService(buildEnrollment());
-
-        const result = await service.getStep1(enrollmentId);
-
-        expect(result.additionalInfo.maritalStatus).toBe(
-            MaritalStatus.DOMESTIC_PARTNERSHIP,
-        );
-    });
-
     it('passes through null values for enrollments without the new fields', async () => {
         const { service } = buildService(
             buildEnrollment({
+                sex: null,
                 identity: null,
                 yucayeke: null,
                 yucayekeUnknown: null,
@@ -111,6 +105,7 @@ describe('AdminEnrollmentStep1Service.getStep1 (admin enrollment detail)', () =>
 
         const result = await service.getStep1(enrollmentId);
 
+        expect(result.demographics.sex).toBeNull();
         expect(result.yucayekeInfo).toEqual({
             identity: null,
             yucayeke: null,

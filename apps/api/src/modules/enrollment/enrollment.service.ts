@@ -1,7 +1,8 @@
 import { DatabaseService } from '@/database/database.service';
-import { Address, Consent, Contact, CulturalConnection, Document, EmergencyContact, Enrollment, EnrollmentStep, MaternalLineage, User } from '@/generated/prisma/client';
-import { EnrollmentStatus, LivingStatus } from '@/generated/prisma/enums';
+import { Ancestry, Consent, Contact, Enrollment, EnrollmentStep, User } from '@/generated/prisma/client';
+import { EnrollmentStatus } from '@/generated/prisma/enums';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { mapAncestryOut } from './common/utils/ancestry.util';
 import { DocumentService } from '../document/document.service';
 
 // The backend tracks enrollment steps 1-4 (created in startEnrollment); the
@@ -136,18 +137,9 @@ export class EnrollmentService {
         const enrollment = await this.database.enrollment.findUnique({
             where: { userId },
             include: {
-                user            : true,
-                contact         : true,
-                addresses       : true,
-                emergencyContact: true,
-
-                maternalLineages: true,
-
-                culturalConnections: {
-                    include: {
-                        CulturalConnection: true,
-                    },
-                },
+                user    : true,
+                contact : true,
+                ancestry: true,
 
                 consent: {
                     include: {
@@ -170,14 +162,11 @@ export class EnrollmentService {
      * Preaper extended enrollment data
      */
     private async ExtendedEnrollmentData(enrollment: Enrollment & {
-        user               : User,
-        contact            : Contact | null,
-        addresses          : Address[],
-        emergencyContact   : EmergencyContact | null,
-        maternalLineages   : MaternalLineage[],
-        culturalConnections: { CulturalConnection: CulturalConnection }[],
-        consent            : { consent: Consent, accepted: boolean, acceptedAt: Date | null }[],
-        steps              : EnrollmentStep[],
+        user    : User,
+        contact : Contact | null,
+        ancestry: Ancestry[],
+        consent : { consent: Consent, accepted: boolean, acceptedAt: Date | null }[],
+        steps   : EnrollmentStep[],
     }) {
 
         if (!enrollment) {
@@ -210,35 +199,13 @@ export class EnrollmentService {
             required  : c.consent.required,
         }));
 
-        const allRequiredAccepted = consentSummary
-            .filter(c => c.required)
-            .every(c => c.accepted);
-
         // -----------------------------
-        // MATERNAL LINEAGE SUMMARY
+        // ANCESTRY (KINSHIP) SUMMARY — keyed by relation
         // -----------------------------
-        const maternalLineageSummary = enrollment.maternalLineages.map((ml) => ({
-            id                  : ml.id,
-            fullName            : ml.fullName,
-            maidenName          : ml?.maidenName || null,
-            dateOfBirth         : ml.dateOfBirth,
-            placeOfBirth        : ml.placeOfBirth,
-            LivingStatus        : ml.livingStatus,
-            approximateBirthYear: ml.approximateBirthYear,
-            regionOfOrigin      : ml.regionOfOrigin,
-            familyOccupation    : ml.familyOccupation,
-            additionalNotes     : ml.additionalNotes,
-            relation            : ml.relation,
-        }));
-
-        // -----------------------------
-        // CULTURAL CONNECTION SUMMARY
-        // -----------------------------
-        const culturalConnectionSummary = enrollment.culturalConnections.map((cc) => ({
-            id         : cc.CulturalConnection.id,
-            key        : cc.CulturalConnection.key,
-            description: cc.CulturalConnection.description,
-        }));
+        const ancestrySummary = enrollment.ancestry.reduce((acc, row) => {
+            acc[row.relation] = mapAncestryOut(row);
+            return acc;
+        }, {} as Record<string, ReturnType<typeof mapAncestryOut>>);
 
         // -----------------------------
         // FINAL RESPONSE (CLEAN SHAPE)
@@ -257,35 +224,32 @@ export class EnrollmentService {
             },
 
             personalInfo: {
-                firstName       : enrollment.firstName,
-                middleName      : enrollment.middleName,
-                lastName        : enrollment.lastName,
-                preferredName   : enrollment.preferredName,
-                maternalLastName: enrollment.maternalLastName,
+                firstName: enrollment.firstName,
+                lastName : enrollment.lastName,
 
                 dateOfBirth        : enrollment.dateOfBirth,
                 cityOfBirth        : enrollment.cityOfBirth,
                 municipalityOfBirth: enrollment.municipalityOfBirth,
                 countryOfBirth     : enrollment.countryOfBirth,
 
-                gender  : enrollment.gender,
-                pronouns: enrollment.pronouns,
+                sex   : enrollment.sex,
+                gender: enrollment.gender,
 
-                maritalStatus  : enrollment.maritalStatus,
-                occupation     : enrollment.occupation,
-                educationLevel : enrollment.educationLevel,
-                languagesSpoken: enrollment.languagesSpoken,
-                specialSkills  : enrollment.specialSkills,
+                maritalStatus: enrollment.maritalStatus,
+                occupation   : enrollment.occupation,
+
+                identity        : enrollment.identity,
+                yucayeke        : enrollment.yucayeke,
+                yucayekeUnknown : enrollment.yucayekeUnknown,
+                hasChildren     : enrollment.hasChildren,
+                hasMinorChildren: enrollment.hasMinorChildren,
             },
 
-            contact            : enrollment.contact,
-            addresses          : enrollment.addresses,
-            emergencyContact   : enrollment.emergencyContact,
-            maternalLineages   : maternalLineageSummary,
-            culturalConnections: culturalConnectionSummary,
-            consent            : consentSummary,
-            documents          : documentsMap,
-            steps              : stepsMap,
+            contact  : enrollment.contact,
+            ancestry : ancestrySummary,
+            consent  : consentSummary,
+            documents: documentsMap,
+            steps    : stepsMap,
         }
     }
 

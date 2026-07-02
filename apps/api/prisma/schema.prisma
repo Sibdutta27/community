@@ -59,25 +59,19 @@ model Enrollment {
 
   status EnrollmentStatus @default(DRAFT)
 
-  firstName        String?
-  middleName       String?
-  lastName         String?
-  maternalLastName String?
-  preferredName    String?
+  firstName String?
+  lastName  String?
 
   dateOfBirth         DateTime?
   cityOfBirth         String?
   municipalityOfBirth String?
   countryOfBirth      String?
 
-  gender   Gender?
-  pronouns String?
+  sex    Sex?
+  gender Gender?
 
-  maritalStatus   MaritalStatus?
-  occupation      String?
-  educationLevel  String?
-  languagesSpoken String[]
-  specialSkills   String?
+  maritalStatus MaritalStatus?
+  occupation    String?
 
   identity Identity?
 
@@ -97,14 +91,11 @@ model Enrollment {
 
   user User @relation(fields: [userId], references: [id])
 
-  contact             Contact?
-  addresses           Address[]
-  emergencyContact    EmergencyContact?
-  consent             EnrollmentConsent[]
-  maternalLineages    MaternalLineage[]
-  culturalConnections EnrollmentCulturalConnection[]
-  documents           Document[]
-  steps               EnrollmentStep[]
+  contact   Contact?
+  consent   EnrollmentConsent[]
+  ancestry  Ancestry[]
+  documents Document[]
+  steps     EnrollmentStep[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,6 +118,14 @@ enum Gender {
   SELF_DESCRIBE
   PREFER_NOT_TO_SAY
   OTHER
+}
+
+// Sex (biological) enum — from the Figma demographics step
+enum Sex {
+  MALE
+  FEMALE
+  INTERSEX
+  PREFER_NOT_TO_SAY
 }
 
 // Marital status enume
@@ -171,35 +170,38 @@ model EnrollmentStep {
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// Address model
-model Address {
+// Ancestry model — kinship rows for the maternal (step 2) and paternal (step 3)
+// lineage of the enrollee, matching the Figma "Maternal / Paternal Kinship" forms.
+model Ancestry {
   id           String @id @default(uuid())
   enrollmentId String
 
-  type AddressType
+  relation AncestryRelation
 
-  street    String
-  apartment String?
-  city      String
-  state     String
-  zipCode   String
-  country   String
-
-  yearsLived Int?
+  name           String?
+  dateOfBirth    DateTime?
+  nationality    String?
+  municipality   String?
+  yucayeke       String?
+  isBorikuaTaino Boolean?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
 
-  @@unique([enrollmentId, type])
+  @@unique([enrollmentId, relation])
   @@index([enrollmentId])
 }
 
-// Address type enum
-enum AddressType {
-  CURRENT
-  MAILING
+// Ancestry relation enum — the six kinship slots captured across steps 2 & 3.
+enum AncestryRelation {
+  MOTHER
+  MATERNAL_GRANDMOTHER
+  MATERNAL_GRANDFATHER
+  FATHER
+  PATERNAL_GRANDMOTHER
+  PATERNAL_GRANDFATHER
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -227,22 +229,6 @@ enum PhoneType {
   MOBILE
   HOME
   WORK
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-
-// Emergency contact model
-model EmergencyContact {
-  id           String @id @default(uuid())
-  enrollmentId String @unique
-
-  fullName     String
-  relationship String
-  phoneNumber  String
-
-  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -291,6 +277,12 @@ enum DocumentType {
   FAMILY_RECORD
   FAMILY_PHOTO
   ADDITIONAL_EVIDENCE
+
+  // Figma document-evidence slots (kinship / ancestry proof)
+  GENEALOGICAL_RECORDS
+  KINSHIP_LETTERS
+  ORAL_HISTORY
+  DNA_TESTING
 
   // Unknown type for admin uploads.
   UNKNOWN
@@ -358,52 +350,8 @@ model Consent {
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-model MaternalLineage {
-  id           String @id @default(uuid())
-  enrollmentId String
-
-  relation RelationType
-
-  fullName   String
-  maidenName String?
-
-  dateOfBirth  DateTime?
-  placeOfBirth String?
-
-  livingStatus LivingStatus
-
-  approximateBirthYear Int?
-
-  regionOfOrigin   String?
-  familyOccupation String?
-
-  additionalNotes String? @db.Text
-
-  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([enrollmentId])
-}
-
-enum RelationType {
-  MOTHER
-  GRANDMOTHER
-  GREAT_GRANDMOTHER
-  GREAT_GREAT_GRANDMOTHER
-  GREAT_GREAT_GREAT_GRANDMOTHER
-}
-
-enum LivingStatus {
-  LIVING
-  DECEASED
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-
+// Cultural connection reference table (kept as a lookup; the enrollment join
+// step was removed in the Figma rebuild).
 model CulturalConnection {
   id String @id @default(uuid())
 
@@ -413,24 +361,6 @@ model CulturalConnection {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  enrollments EnrollmentCulturalConnection[]
-}
-
-// Enrollment culturalConnection table
-model EnrollmentCulturalConnection {
-  id                   String @id @default(uuid())
-  enrollmentId         String
-  culturalConnectionId String
-
-  enrollment         Enrollment         @relation(fields: [enrollmentId], references: [id])
-  CulturalConnection CulturalConnection @relation(fields: [culturalConnectionId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  @@unique([enrollmentId, culturalConnectionId])
-  @@index([culturalConnectionId])
-  @@index([enrollmentId])
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

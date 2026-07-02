@@ -1,4 +1,4 @@
-import { Gender, Identity, MaritalStatus, PhoneType } from "@/generated/prisma/enums";
+import { Gender, Identity, MaritalStatus, Sex } from "@/generated/prisma/enums";
 
 /**
  * GENDER_MAP: A mapping of string values from the DTO to the corresponding enum values in the database.
@@ -14,12 +14,13 @@ const GENDER_MAP = {
 };
 
 /**
- * PHoNE_TYPE_MAP: A mapping of string values from the DTO to the corresponding enum values in the database.
+ * SEX_MAP: A mapping of string values from the DTO to the corresponding Sex enum values in the database.
  */
-const PHONE_TYPE_MAP = {
-    MOBILE: PhoneType.MOBILE,
-    HOME  : PhoneType.HOME,
-    WORK  : PhoneType.WORK,
+const SEX_MAP = {
+    MALE             : Sex.MALE,
+    FEMALE           : Sex.FEMALE,
+    INTERSEX         : Sex.INTERSEX,
+    PREFER_NOT_TO_SAY: Sex.PREFER_NOT_TO_SAY,
 };
 
 /**
@@ -43,16 +44,16 @@ const IDENTITY_MAP = {
     TAINO   : Identity.TAINO,
 };
 
-export { GENDER_MAP, PHONE_TYPE_MAP, MARITAL_STATUS_MAP, IDENTITY_MAP };
+export { GENDER_MAP, SEX_MAP, MARITAL_STATUS_MAP, IDENTITY_MAP };
 
 /**
  * mapGender: A utility function that takes a string input and returns the corresponding Gender enum value.
- * It throws an error if the input is invalid or not provided.
+ * The field is optional, so it returns undefined when no value is provided, and throws an error if the input is invalid.
  */
-export function mapGender(genderStr: string): Gender {
+export function mapGender(genderStr: string | undefined | null): Gender | undefined {
 
     if ( !genderStr ) {
-        throw new Error('Gender is required');
+        return undefined; // Optional field — leave unset if not provided
     }
 
     const gender = GENDER_MAP[genderStr.toUpperCase()];
@@ -63,20 +64,20 @@ export function mapGender(genderStr: string): Gender {
 }
 
 /**
- * mapPhoneType: A utility function that takes a string input and returns the corresponding PhoneType enum value.
- * It defaults to MOBILE if the input is not provided, and throws an error if the input is invalid.
+ * mapSex: A utility function that takes a string input and returns the corresponding Sex enum value.
+ * The field is optional, so it returns undefined when no value is provided, and throws an error if the input is invalid.
  */
-export function mapPhoneType(phoneTypeStr: string): PhoneType {
+export function mapSex(sexStr: string | undefined | null): Sex | undefined {
 
-    if ( !phoneTypeStr ) {
-        return PHONE_TYPE_MAP.MOBILE; // Default to MOBILE if not provided
+    if ( !sexStr ) {
+        return undefined; // Optional field — leave unset if not provided
     }
 
-    const phoneType = PHONE_TYPE_MAP[phoneTypeStr.toUpperCase()];
-    if (!phoneType) {
-        throw new Error(`Invalid phone type value: ${phoneTypeStr}`);
+    const sex = SEX_MAP[sexStr.toUpperCase()];
+    if (!sex) {
+        throw new Error(`Invalid sex value: ${sexStr}`);
     }
-    return phoneType;
+    return sex;
 }
 
 /**

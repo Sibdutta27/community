@@ -1,68 +1,44 @@
 import { DatabaseService } from '@/database/database.service';
-import { EnrollmentStatus, Prisma } from '@/generated/prisma/client';
+import { EnrollmentStatus } from '@/generated/prisma/client';
+import { AncestryRelation } from '@/generated/prisma/enums';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EnrollmentStepService } from '@/modules/enrollment/common/services/enrollmentStep.service';
-// import { Step2 } from './interfaces/step2.interface';
+import { mapAncestryOut, upsertAncestry } from '@/modules/enrollment/common/utils/ancestry.util';
+import { Step3 } from './interfaces/step3.interface';
 
 @Injectable()
 export class Step3Service {
     constructor(
         private readonly database: DatabaseService,
         private readonly enrollmentStepService: EnrollmentStepService,
-
     ) { }
 
     /**
-     * get the cultural connection list to show
+     * upsert: Persists the Step 3 (Paternal Kinship) data as three Ancestry rows
+     * (FATHER, PATERNAL_GRANDMOTHER, PATERNAL_GRANDFATHER).
      */
-    public async getCulturalConnectionList() {
-
-        const culturalConnections = await this.database.culturalConnection.findMany({
-            where: {
-                active: true
-            }
-        });
-
-        return culturalConnections.map(connection => ({
-            key: connection.key,
-            description: connection.description,
-        }));
-    }
-
-    /**
-     * upsert: Upserts the Step 3 data into the database for the user's enrollment.
-     */
-    public async upsert(userId: string, step3Input: { culturalConnectionKeys: string[] }) {
-
+    public async upsert(userId: string, step3Input: Step3) {
 
         return await this.database.$transaction(async (tx) => {
 
-            // Find enrollment
             const enrollment = await tx.enrollment.findFirst({
                 where: { userId },
             });
 
-            // Validate enrollment exists
             if (!enrollment) {
                 throw new BadRequestException('Enrollment not started');
             }
 
-            // Validate enrollment is in DRAFT status
             if (enrollment.status !== EnrollmentStatus.DRAFT) {
                 throw new BadRequestException('Enrollment is not in draft status');
             }
 
-            /**
-             * Start syncing the step3 fields
-             */
-            await this.syncCulturalConnections(tx, enrollment.id, step3Input.culturalConnectionKeys);
+            await upsertAncestry(tx, enrollment.id, AncestryRelation.FATHER, step3Input.father);
+            await upsertAncestry(tx, enrollment.id, AncestryRelation.PATERNAL_GRANDMOTHER, step3Input.paternalGrandmother);
+            await upsertAncestry(tx, enrollment.id, AncestryRelation.PATERNAL_GRANDFATHER, step3Input.paternalGrandfather);
 
-            /**
-             * Update the step number
-             */
             await this.enrollmentStepService.markStepComplete(tx, enrollment.id, 3);
 
-            // Return updated enrollment
             return {
                 success: true,
             };
@@ -70,100 +46,13 @@ export class Step3Service {
     }
 
     /**
-     * Helper methods to sync cultural connections data 
+     * getPaternalKinship: prefill — returns the three paternal Ancestry rows.
      */
-    private async syncCulturalConnections(tx: Prisma.TransactionClient, enrollmentId: string, keys: string[]) {
-
-        // Normalize keys to lowercase and remove duplicates
-        const normalizedKeys = [...new Set(keys.map(k => k.toLowerCase()))];
-
-
-        // Fetch valid cultural connections
-        const connections = await tx.culturalConnection.findMany({
-            where: {
-                key: { in: normalizedKeys },
-                active: true,
-            },
-            select: { id: true, key: true },
-        });
-
-        // Validate keys
-        const foundKeys = connections.map(c => c.key);
-        const missingKeys = normalizedKeys.filter(k => !foundKeys.includes(k));
-
-        if (missingKeys.length > 0) {
-            throw new BadRequestException(
-                `Invalid cultural connection keys: ${missingKeys.join(', ')}`,
-            );
-        }
-
-        const newIds = connections.map(c => c.id);
-
-        // Get existing mappings
-        const existingMappings =
-            await tx.enrollmentCulturalConnection.findMany({
-                where: { enrollmentId },
-                select: { culturalConnectionId: true },
-            });
-
-        const existingIds = existingMappings.map(e => e.culturalConnectionId);
-
-
-        // Compute diff
-        const toAdd = newIds.filter(id => !existingIds.includes(id));
-        const toRemove = existingIds.filter(id => !newIds.includes(id));
-
-        // Remove the diff
-        if (toRemove.length > 0) {
-            await tx.enrollmentCulturalConnection.deleteMany({
-                where: {
-                    enrollmentId,
-                    culturalConnectionId: { in: toRemove },
-                },
-            });
-        }
-
-        // Add the diff
-        if (toAdd.length > 0) {
-            const createData = toAdd.map(culturalConnectionId => ({
-                enrollmentId,
-                culturalConnectionId,
-            }));
-            await tx.enrollmentCulturalConnection.createMany({
-                data: createData,
-            });
-        }
-
-        return {
-            added: toAdd.length,
-            removed: toRemove.length,
-            total: newIds.length,
-        }
-
-    }
-
-    /**
-     * Get all selected cultural connections
-     */
-    public async getSelectedCulturalConnections(
-        userId: string
-    ): Promise<{ culturalConnectionKeys: string[] }> {
+    public async getPaternalKinship(userId: string) {
 
         const enrollment = await this.database.enrollment.findFirst({
             where: { userId },
-            select: {
-                id                 : true,
-                steps              : true,
-                culturalConnections: {
-                    select: {
-                        CulturalConnection: {
-                            select: {
-                                key: true,
-                            },
-                        },
-                    },
-                },
-            },
+            include: { steps: true },
         });
 
         if (!enrollment) {
@@ -178,10 +67,26 @@ export class Step3Service {
             throw new BadRequestException('Step 3 not completed yet');
         }
 
+        const rows = await this.database.ancestry.findMany({
+            where: {
+                enrollmentId: enrollment.id,
+                relation: {
+                    in: [
+                        AncestryRelation.FATHER,
+                        AncestryRelation.PATERNAL_GRANDMOTHER,
+                        AncestryRelation.PATERNAL_GRANDFATHER,
+                    ],
+                },
+            },
+        });
+
+        const byRelation = (relation: AncestryRelation) =>
+            mapAncestryOut(rows.find(r => r.relation === relation));
+
         return {
-            culturalConnectionKeys: enrollment.culturalConnections.map(
-                item => item.CulturalConnection.key
-            ),
+            father             : byRelation(AncestryRelation.FATHER),
+            paternalGrandmother: byRelation(AncestryRelation.PATERNAL_GRANDMOTHER),
+            paternalGrandfather: byRelation(AncestryRelation.PATERNAL_GRANDFATHER),
         };
     }
 }

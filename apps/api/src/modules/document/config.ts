@@ -14,14 +14,15 @@ export const DOCUMENT_CONFIG = {
 // Arrays categorizing document types into single-file.
 export const SINGLE_FILE_TYPES: DocumentType[] = [
     DocumentType.PROFILE_PICTURE,
-    
+
     DocumentType.USER_PHOTO,
-    DocumentType.BIRTH_CERTIFICATE,
 ];
 
 // Arrays categorizing document types that can have multiple files.
+// These are the Figma "supporting evidence" slots for the kinship / ancestry proof.
 export const MULTIPLE_FILE_TYPES: DocumentType[] = [
-    DocumentType.ADDITIONAL_EVIDENCE,
-    DocumentType.FAMILY_PHOTO,
-    DocumentType.FAMILY_RECORD,
+    DocumentType.GENEALOGICAL_RECORDS,
+    DocumentType.KINSHIP_LETTERS,
+    DocumentType.ORAL_HISTORY,
+    DocumentType.DNA_TESTING,
 ];

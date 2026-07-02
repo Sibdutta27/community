@@ -49,12 +49,6 @@ export class AdminEnrollmentService {
                     },
 
                     {
-                        preferredName: {
-                            contains: search,
-                            mode: 'insensitive',
-                        },
-                    },
-                    {
                         user: {
                             email: {
                                 contains: search,
@@ -84,7 +78,6 @@ export class AdminEnrollmentService {
                     status: true,
 
                     firstName: true,
-                    middleName: true,
                     lastName: true,
 
                     approvalDate: true,
@@ -133,7 +126,6 @@ export class AdminEnrollmentService {
                     status: enrollment.status,
 
                     firstName: enrollment.firstName,
-                    middleName: enrollment.middleName,
                     lastName: enrollment.lastName,
 
                     user: {
@@ -252,9 +244,7 @@ export class AdminEnrollmentService {
          * Check required documents verified
          */
         const requiredDocuments = enrollment.documents.filter(
-            (doc) =>
-                doc.type === DocumentType.USER_PHOTO ||
-                doc.type === DocumentType.BIRTH_CERTIFICATE,
+            (doc) => doc.type === DocumentType.USER_PHOTO,
         );
 
         const allDocumentsVerified = requiredDocuments.every(

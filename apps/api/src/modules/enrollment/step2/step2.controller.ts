@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ConsentAcceptedGuard } from '@/modules/consent/guards/consentAccepted.guard';
 import { JwtAuthGuard } from '@/modules/auth/guards/auth.guard';
 import { ActivityGuard } from '@/modules/user/guard/activity.guard';
@@ -12,14 +12,15 @@ import { Step2Service } from './step2.service';
 export class Step2Controller {
     constructor(private step2Service: Step2Service) { }
 
+    // Prefill: fetch the user's maternal kinship (mother + grandparents).
     @Get('/')
     step2Get(
         @CurrentUser('id') userId: string,
     ) {
-        return this.step2Service.getMaternalLineages(userId);
+        return this.step2Service.getMaternalKinship(userId);
     }
 
-    // This endpoint is used to upsert (insert or update) the Step 2 data for the user's enrollment.
+    // Upsert the Step 2 (Maternal Kinship) data for the user's enrollment.
     @Post('upsert')
     @UseGuards(ConsentAcceptedGuard)
     step2Upsert(
@@ -27,15 +28,5 @@ export class Step2Controller {
         @Body() dto: Step2Dto,
     ) {
         return this.step2Service.upsert(userId, dto);
-    }
-
-    // This endpoint is used to delete a maternal lineage entry.
-    @Post('delete/:id')
-    @UseGuards(ConsentAcceptedGuard)
-    deleteMaternalLineage(
-        @CurrentUser('id') userId: string,
-        @Param('id') id: string,
-    ) {
-        return this.step2Service.deleteMaternalLineage(userId, id);
     }
 }

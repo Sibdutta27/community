@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '@/database/database.service';
+import { AncestryRelation } from '@/generated/prisma/enums';
+import { mapAncestryOut } from '@/modules/enrollment/common/utils/ancestry.util';
 
 @Injectable()
 export class AdminEnrollmentStep2Service {
@@ -9,14 +11,13 @@ export class AdminEnrollmentStep2Service {
     ) { }
 
     /**
-     * Get formated meternal lineages
+     * Get the maternal kinship (Step 2) — mother + maternal grandparents.
      */
     public async getStep2(enrollmentId: string) {
 
-        // Find enrollment
         const enrollment = await this.database.enrollment.findFirst({
             where: { id: enrollmentId },
-            include: { steps: true }
+            include: { steps: true },
         });
 
         if (!enrollment) {
@@ -31,24 +32,26 @@ export class AdminEnrollmentStep2Service {
             throw new BadRequestException('Step 2 not completed yet');
         }
 
-        // Fetch maternal lineages
-        const maternalLineages = await this.database.maternalLineage.findMany({
-            where: { enrollmentId: enrollment.id },
+        const rows = await this.database.ancestry.findMany({
+            where: {
+                enrollmentId: enrollment.id,
+                relation: {
+                    in: [
+                        AncestryRelation.MOTHER,
+                        AncestryRelation.MATERNAL_GRANDMOTHER,
+                        AncestryRelation.MATERNAL_GRANDFATHER,
+                    ],
+                },
+            },
         });
 
-        return maternalLineages.map(item => ({
-            id                  : item.id,
-            relation            : item.relation,
-            fullName            : item.fullName,
-            maidenName          : item.maidenName,
-            dateOfBirth         : item.dateOfBirth,
-            placeOfBirth        : item.placeOfBirth,
-            livingStatus        : item.livingStatus,
-            approximateBirthYear: item.approximateBirthYear,
-            regionOfOrigin      : item.regionOfOrigin,
-            familyOccupation    : item.familyOccupation,
-            additionalNotes     : item.additionalNotes,
-        }))
-    }
+        const byRelation = (relation: AncestryRelation) =>
+            mapAncestryOut(rows.find(r => r.relation === relation));
 
+        return {
+            mother             : byRelation(AncestryRelation.MOTHER),
+            maternalGrandmother: byRelation(AncestryRelation.MATERNAL_GRANDMOTHER),
+            maternalGrandfather: byRelation(AncestryRelation.MATERNAL_GRANDFATHER),
+        };
+    }
 }

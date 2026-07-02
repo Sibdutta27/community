@@ -1,6 +1,5 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '@/database/database.service';
-import { AddressType } from '@/generated/prisma/enums';
 
 @Injectable()
 export class AdminEnrollmentStep1Service {
@@ -10,7 +9,7 @@ export class AdminEnrollmentStep1Service {
     ) { }
 
     /**
-     * Get all step 1 data for the user's enrollment.
+     * Get all step 1 (Demographics) data for the enrollment.
      */
     public async getStep1(enrollmentId: string) {
 
@@ -18,9 +17,6 @@ export class AdminEnrollmentStep1Service {
         const enrollment = await this.database.enrollment.findFirst({
             where: { id: enrollmentId },
             include: {
-                contact: true,
-                addresses: true,
-                emergencyContact: true,
                 steps: true,
             },
         });
@@ -37,86 +33,28 @@ export class AdminEnrollmentStep1Service {
             throw new BadRequestException('Step 1 not completed yet');
         }
 
-        // Extract addresses
-        const currentAddress = enrollment.addresses.find(
-            addr => addr.type === AddressType.CURRENT
-        );
-
-        const mailingAddress = enrollment.addresses.find(
-            addr => addr.type === AddressType.MAILING
-        );
-
         return {
-            legalName: {
-                firstName: enrollment.firstName,
-                middleName: enrollment.middleName,
-                lastName: enrollment.lastName,
-                maternalLastName: enrollment.maternalLastName,
-                preferredName: enrollment.preferredName,
-            },
+            demographics: {
+                firstName          : enrollment.firstName,
+                lastName           : enrollment.lastName,
 
-            birthInfo: {
-                dateOfBirth: enrollment.dateOfBirth,
-                cityOfBirth: enrollment.cityOfBirth,
+                dateOfBirth        : enrollment.dateOfBirth,
+                cityOfBirth        : enrollment.cityOfBirth,
                 municipalityOfBirth: enrollment.municipalityOfBirth,
-                countryOfBirth: enrollment.countryOfBirth,
-            },
+                countryOfBirth     : enrollment.countryOfBirth,
 
-            gender: {
-                gender: enrollment.gender,
-                pronouns: enrollment.pronouns,
-            },
+                sex                : enrollment.sex,
+                gender             : enrollment.gender,
 
-            contact: enrollment.contact
-                ? {
-                    email: enrollment.contact.email,
-                    phoneNumber: enrollment.contact.phoneNumber,
-                    phoneType: enrollment.contact.phoneType,
-                    allowSMS: enrollment.contact.allowSMS,
-                }
-                : null,
-
-            currentAddress: currentAddress
-                ? {
-                    street: currentAddress.street,
-                    city: currentAddress.city,
-                    state: currentAddress.state,
-                    zipCode: currentAddress.zipCode,
-                    country: currentAddress.country,
-                }
-                : null,
-
-            mailingAddress: mailingAddress
-                ? {
-                    street: mailingAddress.street,
-                    city: mailingAddress.city,
-                    state: mailingAddress.state,
-                    zipCode: mailingAddress.zipCode,
-                    country: mailingAddress.country,
-                }
-                : null,
-
-            emergencyContact: enrollment.emergencyContact
-                ? {
-                    fullName: enrollment.emergencyContact.fullName,
-                    relationship: enrollment.emergencyContact.relationship,
-                    phoneNumber: enrollment.emergencyContact.phoneNumber,
-                }
-                : null,
-
-            additionalInfo: {
-                maritalStatus: enrollment.maritalStatus,
-                occupation: enrollment.occupation,
-                educationLevel: enrollment.educationLevel,
-                languagesSpoken: enrollment.languagesSpoken,
-                specialSkills: enrollment.specialSkills,
+                maritalStatus      : enrollment.maritalStatus,
+                occupation         : enrollment.occupation,
             },
 
             yucayekeInfo: {
-                identity: enrollment.identity,
-                yucayeke: enrollment.yucayeke,
-                yucayekeUnknown: enrollment.yucayekeUnknown,
-                hasChildren: enrollment.hasChildren,
+                identity        : enrollment.identity,
+                yucayeke        : enrollment.yucayeke,
+                yucayekeUnknown : enrollment.yucayekeUnknown,
+                hasChildren     : enrollment.hasChildren,
                 hasMinorChildren: enrollment.hasMinorChildren,
             },
 

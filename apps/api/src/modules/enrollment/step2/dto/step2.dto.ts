@@ -1,68 +1,54 @@
 import {
     IsString,
-    IsNotEmpty,
     IsOptional,
-    IsEnum,
-    IsArray,
-    ValidateNested,
-    IsInt,
-    Min,
+    IsBoolean,
     IsDate,
+    ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { LivingStatus, RelationType } from '@/generated/prisma/enums';
 
-
-// ---------- SINGLE ENTRY DTO ----------
-class MaternalLineageItemDto {
-    @IsOptional()
-    id: string; // This will be used for updates. For new entries, it can be left undefined.
-
-    @IsEnum(RelationType)
-    relation: RelationType;
-
+// A grandparent kinship person (no date of birth captured).
+class KinshipPersonDto {
     @IsString()
-    @IsNotEmpty()
-    fullName: string;
+    @IsOptional()
+    name?: string;
 
     @IsString()
     @IsOptional()
-    maidenName?: string;
+    nationality?: string;
 
-    @Type(() => Date)   // auto convert string → Date
-    @IsDate()           // validate it's a valid Date
+    @IsString()
+    @IsOptional()
+    municipality?: string;
+
+    @IsString()
+    @IsOptional()
+    yucayeke?: string;
+
+    @IsBoolean()
+    @IsOptional()
+    isBorikuaTaino?: boolean;
+}
+
+// The mother — same shape as a grandparent, plus an optional date of birth.
+class MotherDto extends KinshipPersonDto {
+    @Type(() => Date)
+    @IsDate()
     @IsOptional()
     dateOfBirth?: Date;
-
-    @IsString()
-    @IsOptional()
-    placeOfBirth?: string;
-
-    @IsEnum(LivingStatus)
-    livingStatus: LivingStatus;
-
-    @IsInt()
-    @Min(1800)
-    @IsOptional()
-    approximateBirthYear?: number;
-
-    @IsString()
-    @IsOptional()
-    regionOfOrigin?: string;
-
-    @IsString()
-    @IsOptional()
-    familyOccupation?: string;
-
-    @IsString()
-    @IsOptional()
-    additionalNotes?: string;
 }
 
 // ---------- MAIN DTO ----------
 export class Step2Dto {
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => MaternalLineageItemDto)
-    maternalLineages: MaternalLineageItemDto[];
+    @ValidateNested()
+    @Type(() => MotherDto)
+    mother: MotherDto;
+
+    @ValidateNested()
+    @Type(() => KinshipPersonDto)
+    maternalGrandmother: KinshipPersonDto;
+
+    @ValidateNested()
+    @Type(() => KinshipPersonDto)
+    maternalGrandfather: KinshipPersonDto;
 }

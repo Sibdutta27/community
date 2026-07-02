@@ -1,7 +1,9 @@
 import { DatabaseService } from '@/database/database.service';
-import { EnrollmentStatus, Prisma } from '@/generated/prisma/client';
+import { EnrollmentStatus } from '@/generated/prisma/client';
+import { AncestryRelation } from '@/generated/prisma/enums';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EnrollmentStepService } from '@/modules/enrollment/common/services/enrollmentStep.service';
+import { mapAncestryOut, upsertAncestry } from '@/modules/enrollment/common/utils/ancestry.util';
 import { Step2 } from './interfaces/step2.interface';
 
 @Injectable()
@@ -9,43 +11,34 @@ export class Step2Service {
     constructor(
         private readonly database: DatabaseService,
         private readonly enrollmentStepService: EnrollmentStepService,
-
     ) { }
 
     /**
-     * upsert: Upserts the Step 2 data into the database for the user's enrollment.
+     * upsert: Persists the Step 2 (Maternal Kinship) data as three Ancestry rows
+     * (MOTHER, MATERNAL_GRANDMOTHER, MATERNAL_GRANDFATHER).
      */
     public async upsert(userId: string, step2Input: Step2) {
 
-
         return await this.database.$transaction(async (tx) => {
 
-            // Find enrollment
             const enrollment = await tx.enrollment.findFirst({
                 where: { userId },
             });
 
-            // Validate enrollment exists
             if (!enrollment) {
                 throw new BadRequestException('Enrollment not started');
             }
 
-            // Validate enrollment is in DRAFT status
             if (enrollment.status !== EnrollmentStatus.DRAFT) {
                 throw new BadRequestException('Enrollment is not in draft status');
             }
 
-            /**
-             * Start syncing the step2 fields
-             */
-            await this.syncMaternalLineages(tx, enrollment.id, step2Input.maternalLineages);
+            await upsertAncestry(tx, enrollment.id, AncestryRelation.MOTHER, step2Input.mother);
+            await upsertAncestry(tx, enrollment.id, AncestryRelation.MATERNAL_GRANDMOTHER, step2Input.maternalGrandmother);
+            await upsertAncestry(tx, enrollment.id, AncestryRelation.MATERNAL_GRANDFATHER, step2Input.maternalGrandfather);
 
-            /**
-             * Update the step number
-             */
             await this.enrollmentStepService.markStepComplete(tx, enrollment.id, 2);
 
-            // Return updated enrollment
             return {
                 success: true,
             };
@@ -53,118 +46,13 @@ export class Step2Service {
     }
 
     /**
-     * Helper methods to sync maternal lineages data 
+     * getMaternalKinship: prefill — returns the three maternal Ancestry rows.
      */
-    private async syncMaternalLineages(tx: Prisma.TransactionClient, enrollmentId: string, maternalLineages: Step2['maternalLineages']) {
+    public async getMaternalKinship(userId: string) {
 
-        // Fetch existing maternal lineage entries for the enrollment
-        const existing = await tx.maternalLineage.findMany({
-            where: { enrollmentId },
-            select: { id: true },
-        });
-
-        // Create sets of existing and incoming IDs for easy comparison
-        const existingIds = new Set(existing.map(e => e.id));
-        const incomingIds = new Set(
-            maternalLineages.filter(i => i.id).map(i => i.id!)
-        );
-
-        // Delete removed records
-        const toDelete = [...existingIds].filter(id => !incomingIds.has(id));
-
-        if (toDelete.length > 0) {
-            await tx.maternalLineage.deleteMany({
-                where: { id: { in: toDelete } },
-            });
-        }
-
-        // Upsert (update or create) incoming records
-        for (const item of maternalLineages) {
-            const data = this.mapMaternalLineage(item);
-
-            if (item.id) {
-                // update existing
-                await tx.maternalLineage.update({
-                    where: { id: item.id },
-                    data,
-                });
-            } else {
-                // create new
-                await tx.maternalLineage.create({
-                    data: {
-                        enrollmentId,
-                        ...data,
-                    },
-                });
-            }
-        }
-
-    }
-
-    /**
-     * Map input for creating the meternal lineage
-     */
-    private mapMaternalLineage(item: Step2['maternalLineages'][0]) {
-
-        return {
-            relation: item.relation,
-            fullName: item.fullName,
-            maidenName: item.maidenName,
-            dateOfBirth: item.dateOfBirth ? new Date(item.dateOfBirth) : null,
-            placeOfBirth: item.placeOfBirth,
-            livingStatus: item.livingStatus,
-            approximateBirthYear: item.approximateBirthYear,
-            regionOfOrigin: item.regionOfOrigin,
-            familyOccupation: item.familyOccupation,
-            additionalNotes: item.additionalNotes,
-        };
-    }
-
-    /**
-     * Delete a meternal lineage by using the id
-     */
-    public async deleteMaternalLineage(userId: string, id: string) {
-
-        return await this.database.$transaction(async (tx) => {
-
-            // Find enrollment
-            const enrollment = await tx.enrollment.findFirst({
-                where: { userId },
-            });
-
-            // Validate enrollment exists
-            if (!enrollment) {
-                throw new BadRequestException('Enrollment not started');
-            }
-
-            // Validate enrollment is in DRAFT status
-            if (enrollment.status !== EnrollmentStatus.DRAFT) {
-                throw new BadRequestException('Enrollment is not in draft status');
-            }
-
-            // Delete the maternal lineage entry
-            await tx.maternalLineage.deleteMany({
-                where: {
-                    id,
-                    enrollmentId: enrollment.id,
-                },
-            });
-
-            return {
-                success: true,
-            };
-        });
-    }
-
-    /**
-     * Get formated meternal lineages
-     */
-    public async getMaternalLineages(userId: string) {
-
-        // Find enrollment
         const enrollment = await this.database.enrollment.findFirst({
             where: { userId },
-            include: { steps: true }
+            include: { steps: true },
         });
 
         if (!enrollment) {
@@ -179,23 +67,26 @@ export class Step2Service {
             throw new BadRequestException('Step 2 not completed yet');
         }
 
-        // Fetch maternal lineages
-        const maternalLineages = await this.database.maternalLineage.findMany({
-            where: { enrollmentId: enrollment.id },
+        const rows = await this.database.ancestry.findMany({
+            where: {
+                enrollmentId: enrollment.id,
+                relation: {
+                    in: [
+                        AncestryRelation.MOTHER,
+                        AncestryRelation.MATERNAL_GRANDMOTHER,
+                        AncestryRelation.MATERNAL_GRANDFATHER,
+                    ],
+                },
+            },
         });
 
-        return maternalLineages.map(item => ({
-            id                  : item.id,
-            relation            : item.relation,
-            fullName            : item.fullName,
-            maidenName          : item.maidenName,
-            dateOfBirth         : item.dateOfBirth,
-            placeOfBirth        : item.placeOfBirth,
-            livingStatus        : item.livingStatus,
-            approximateBirthYear: item.approximateBirthYear,
-            regionOfOrigin      : item.regionOfOrigin,
-            familyOccupation    : item.familyOccupation,
-            additionalNotes     : item.additionalNotes,
-        }))
+        const byRelation = (relation: AncestryRelation) =>
+            mapAncestryOut(rows.find(r => r.relation === relation));
+
+        return {
+            mother             : byRelation(AncestryRelation.MOTHER),
+            maternalGrandmother: byRelation(AncestryRelation.MATERNAL_GRANDMOTHER),
+            maternalGrandfather: byRelation(AncestryRelation.MATERNAL_GRANDFATHER),
+        };
     }
 }
