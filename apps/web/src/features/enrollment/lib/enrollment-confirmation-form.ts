@@ -24,8 +24,18 @@ export type EnrollmentConfirmationFormValues = z.infer<
   typeof enrollmentConfirmationSchema
 >;
 
+/**
+ * Today's date as YYYY-MM-DD in the user's LOCAL timezone. Deliberately not
+ * `toISOString()` (UTC), which would prefill tomorrow's date for users west
+ * of UTC in the evening.
+ */
 function todayIsoDate() {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 export function getEnrollmentConfirmationDefaultValues(): EnrollmentConfirmationFormValues {
@@ -41,8 +51,13 @@ export function mapEnrollmentConfirmationFormToPayload(
   values: EnrollmentConfirmationFormValues,
 ): EnrollmentCompleteRequest {
   return {
-    signatureName: values.signatureName.trim(),
+    // Already trimmed at the schema boundary (z.string().trim()); zodResolver
+    // hands the parsed values to submit handlers, so don't re-trim here.
+    signatureName: values.signatureName,
     signatureDate: values.signatureDate,
-    agreedToTerms: values.agreeToTerms && values.agreeToSubmit,
+    // Both checkboxes gate submission (the schema refines each to true); the
+    // persisted record is the single terms-of-service attestation, so it maps
+    // from the terms checkbox alone.
+    agreedToTerms: values.agreeToTerms,
   };
 }

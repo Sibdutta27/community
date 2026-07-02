@@ -155,7 +155,7 @@ class AdditionalInfoDto {
     specialSkills?: string;
 }
 
-// ---------- Yucayekeno Information ----------
+// ---------- Yucayeke Information ----------
 class YucayekeInfoDto {
     @IsEnum(Identity)
     @IsOptional()

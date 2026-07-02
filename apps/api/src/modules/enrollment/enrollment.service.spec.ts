@@ -139,6 +139,39 @@ describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () =
         expect(database.enrollment.update).not.toHaveBeenCalled();
     });
 
+    it('throws when the enrollment has no step records at all (no vacuous pass)', async () => {
+        const { service, database } = buildService(
+            buildDraftEnrollment({ steps: [] }),
+        );
+
+        await expect(
+            service.completeEnrollment(userId, signature),
+        ).rejects.toThrow(
+            'All enrollment steps must be completed to complete enrollment',
+        );
+        expect(database.enrollment.update).not.toHaveBeenCalled();
+    });
+
+    it('throws when an expected step record is missing, even if the present ones are completed', async () => {
+        const { service, database } = buildService(
+            buildDraftEnrollment({
+                steps: [
+                    { stepNumber: 1, isCompleted: true },
+                    { stepNumber: 2, isCompleted: true },
+                    { stepNumber: 3, isCompleted: true },
+                    // stepNumber 4 is missing entirely
+                ],
+            }),
+        );
+
+        await expect(
+            service.completeEnrollment(userId, signature),
+        ).rejects.toThrow(
+            'All enrollment steps must be completed to complete enrollment',
+        );
+        expect(database.enrollment.update).not.toHaveBeenCalled();
+    });
+
     it('throws when the terms of service are not agreed to', async () => {
         const { service, database } = buildService(buildDraftEnrollment());
 

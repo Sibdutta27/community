@@ -58,7 +58,7 @@ export interface AdditionalInfo {
   specialSkills?: string;
 }
 
-// ---------- Yucayekeno Information ----------
+// ---------- Yucayeke Information ----------
 export interface YucayekeInfo {
   identity?: string;
   yucayeke?: string;

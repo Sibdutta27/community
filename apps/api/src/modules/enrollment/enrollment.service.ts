@@ -4,6 +4,10 @@ import { EnrollmentStatus, LivingStatus } from '@/generated/prisma/enums';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DocumentService } from '../document/document.service';
 
+// The backend tracks enrollment steps 1-4 (created in startEnrollment); the
+// confirmation "step 5" is the completeEnrollment call itself.
+const REQUIRED_ENROLLMENT_STEP_NUMBERS = [1, 2, 3, 4] as const;
+
 @Injectable()
 export class EnrollmentService {
     constructor(
@@ -337,8 +341,12 @@ export class EnrollmentService {
             throw new BadRequestException('All required consents must be accepted to complete enrollment');
         }
 
-        // Check all steps are complete
-        const allStepsCompleted = enrollment.steps.every(step => step.isCompleted);
+        // Check all steps are complete. `Array.every` is vacuously true for an
+        // empty array, so require every expected step record to be present AND
+        // completed — an enrollment with missing step rows must not submit.
+        const allStepsCompleted = REQUIRED_ENROLLMENT_STEP_NUMBERS.every(stepNumber =>
+            enrollment.steps.some(step => step.stepNumber === stepNumber && step.isCompleted),
+        );
 
         if (!allStepsCompleted) {
             throw new BadRequestException('All enrollment steps must be completed to complete enrollment');

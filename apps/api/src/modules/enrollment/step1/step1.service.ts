@@ -65,7 +65,7 @@ export class Step1Service {
             // Upsert additional info
             await this.upsertAdditionalInfo(tx, enrollment.id, step1Input.additionalInfo);
 
-            // Upsert yucayekeno info (identity + yucayeke + children)
+            // Upsert yucayeke info (identity + yucayeke + children)
             await this.upsertYucayekeInfo(tx, enrollment.id, step1Input.yucayekeInfo);
 
             /**
@@ -223,7 +223,7 @@ export class Step1Service {
     }
 
     /**
-     * upsertYucayekeInfo: Helper function to upsert yucayekeno info (identity, yucayeke, children) for step 1.
+     * upsertYucayekeInfo: Helper function to upsert yucayeke info (identity, yucayeke, children) for step 1.
      * All fields are optional; only the provided values are written.
      */
     private async upsertYucayekeInfo(tx: Prisma.TransactionClient, enrollmentId: string, yucayekeInfo: Step1['yucayekeInfo']) {
