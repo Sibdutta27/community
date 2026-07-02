@@ -7,9 +7,12 @@ import {
     IsArray,
     ValidateNested,
     IsDate,
+    IsEnum,
 } from 'class-validator';
 
 import { Type } from 'class-transformer';
+
+import { Identity } from '@/generated/prisma/enums';
 
 // ---------- Legal Name ----------
 class LegalNameDto {
@@ -152,6 +155,29 @@ class AdditionalInfoDto {
     specialSkills?: string;
 }
 
+// ---------- Yucayekeno Information ----------
+class YucayekeInfoDto {
+    @IsEnum(Identity)
+    @IsOptional()
+    identity?: Identity;
+
+    @IsString()
+    @IsOptional()
+    yucayeke?: string;
+
+    @IsBoolean()
+    @IsOptional()
+    yucayekeUnknown?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    hasChildren?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    hasMinorChildren?: boolean;
+}
+
 export class Step1Dto {
     @ValidateNested()
     @Type(() => LegalNameDto)
@@ -184,4 +210,9 @@ export class Step1Dto {
     @ValidateNested()
     @Type(() => AdditionalInfoDto)
     additionalInfo: AdditionalInfoDto;
+
+    @ValidateNested()
+    @Type(() => YucayekeInfoDto)
+    @IsOptional()
+    yucayekeInfo?: YucayekeInfoDto;
 }

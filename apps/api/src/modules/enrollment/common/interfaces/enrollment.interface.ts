@@ -58,6 +58,15 @@ export interface AdditionalInfo {
   specialSkills?: string;
 }
 
+// ---------- Yucayekeno Information ----------
+export interface YucayekeInfo {
+  identity?: string;
+  yucayeke?: string;
+  yucayekeUnknown?: boolean;
+  hasChildren?: boolean;
+  hasMinorChildren?: boolean;
+}
+
 // ---------- Maternal Lineage ----------
 export interface MaternalLineage {
   id?: string;

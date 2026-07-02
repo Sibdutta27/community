@@ -1,4 +1,4 @@
-import { Gender, MaritalStatus, PhoneType } from "@/generated/prisma/enums";
+import { Gender, Identity, MaritalStatus, PhoneType } from "@/generated/prisma/enums";
 
 /**
  * GENDER_MAP: A mapping of string values from the DTO to the corresponding enum values in the database.
@@ -26,13 +26,24 @@ const PHONE_TYPE_MAP = {
  * MARITAL_STATUS_MAP: A mapping of string values from the DTO to the corresponding enum values in the database.
  */
 const MARITAL_STATUS_MAP = {
-    SINGLE  : MaritalStatus.SINGLE,
-    MARRIED : MaritalStatus.MARRIED,
-    DIVORCED: MaritalStatus.DIVORCED,
-    WIDOWED : MaritalStatus.WIDOWED,
+    SINGLE              : MaritalStatus.SINGLE,
+    MARRIED             : MaritalStatus.MARRIED,
+    DIVORCED            : MaritalStatus.DIVORCED,
+    WIDOWED             : MaritalStatus.WIDOWED,
+    DOMESTIC_PARTNERSHIP: MaritalStatus.DOMESTIC_PARTNERSHIP,
 };
 
-export { GENDER_MAP, PHONE_TYPE_MAP, MARITAL_STATUS_MAP };
+/**
+ * IDENTITY_MAP: A mapping of string values from the DTO to the corresponding Identity enum values in the database.
+ */
+const IDENTITY_MAP = {
+    ARAWAK  : Identity.ARAWAK,
+    KALINAGO: Identity.KALINAGO,
+    GARIFUNA: Identity.GARIFUNA,
+    TAINO   : Identity.TAINO,
+};
+
+export { GENDER_MAP, PHONE_TYPE_MAP, MARITAL_STATUS_MAP, IDENTITY_MAP };
 
 /**
  * mapGender: A utility function that takes a string input and returns the corresponding Gender enum value.
@@ -83,4 +94,21 @@ export function mapMaritalStatus(maritalStatusStr: string | undefined): MaritalS
         throw new Error(`Invalid marital status value: ${maritalStatusStr}`);
     }
     return maritalStatus;
+}
+
+/**
+ * mapIdentity: A utility function that takes a string input and returns the corresponding Identity enum value.
+ * The field is optional, so it returns undefined when no value is provided, and throws an error if the input is invalid.
+ */
+export function mapIdentity(identityStr: string | undefined | null): Identity | undefined {
+
+    if ( !identityStr ) {
+        return undefined; // Optional field — leave unset if not provided
+    }
+
+    const identity = IDENTITY_MAP[identityStr.toUpperCase()];
+    if (!identity) {
+        throw new Error(`Invalid identity value: ${identityStr}`);
+    }
+    return identity;
 }

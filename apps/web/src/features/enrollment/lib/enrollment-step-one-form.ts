@@ -47,6 +47,7 @@ export const enrollmentStepOneMaritalStatusValues = [
   "MARRIED",
   "DIVORCED",
   "WIDOWED",
+  "DOMESTIC_PARTNERSHIP",
 ] as const;
 
 export const enrollmentStepOneMaritalStatusOptions = [
@@ -54,6 +55,28 @@ export const enrollmentStepOneMaritalStatusOptions = [
   { label: "Married", value: "MARRIED" },
   { label: "Divorced", value: "DIVORCED" },
   { label: "Widowed", value: "WIDOWED" },
+  { label: "Domestic Partnership", value: "DOMESTIC_PARTNERSHIP" },
+] as const;
+
+export const enrollmentStepOneIdentityValues = [
+  "ARAWAK",
+  "KALINAGO",
+  "GARIFUNA",
+  "TAINO",
+] as const;
+
+export const enrollmentStepOneIdentityOptions = [
+  { label: "Arawak", value: "ARAWAK" },
+  { label: "Kalinago", value: "KALINAGO" },
+  { label: "Garifuna", value: "GARIFUNA" },
+  { label: "Taíno", value: "TAINO" },
+] as const;
+
+export const enrollmentStepOneYesNoValues = ["YES", "NO"] as const;
+
+export const enrollmentStepOneYesNoOptions = [
+  { label: "Yes", value: "YES" },
+  { label: "No", value: "NO" },
 ] as const;
 
 const requiredString = (label: string) =>
@@ -160,6 +183,22 @@ export const enrollmentStepOneSchema = z.object({
     languagesSpokenInput: optionalString,
     specialSkills: optionalString,
   }),
+  yucayekeInfo: z.object({
+    identity: createOptionalSelectionSchema(
+      "identity",
+      enrollmentStepOneIdentityValues,
+    ),
+    yucayeke: optionalString,
+    yucayekeUnknown: z.boolean(),
+    hasChildren: createOptionalSelectionSchema(
+      "answer",
+      enrollmentStepOneYesNoValues,
+    ),
+    hasMinorChildren: createOptionalSelectionSchema(
+      "answer",
+      enrollmentStepOneYesNoValues,
+    ),
+  }),
 });
 
 export type EnrollmentStepOneFormValues = z.infer<
@@ -182,6 +221,30 @@ function toOptionalString(value: string) {
   const trimmedValue = trimValue(value);
 
   return trimmedValue || undefined;
+}
+
+function booleanToYesNo(value: unknown): "YES" | "NO" | "" {
+  if (value === true) {
+    return "YES";
+  }
+
+  if (value === false) {
+    return "NO";
+  }
+
+  return "";
+}
+
+function yesNoToBoolean(value: string): boolean | undefined {
+  if (value === "YES") {
+    return true;
+  }
+
+  if (value === "NO") {
+    return false;
+  }
+
+  return undefined;
 }
 
 function normalizeSelectionValue(value: string) {
@@ -305,6 +368,7 @@ export function getEnrollmentStepOneDefaultValues(
   const mailingAddress = stepOneData?.mailingAddress ?? null;
   const emergencyContact = stepOneData?.emergencyContact;
   const additionalInfo = stepOneData?.additionalInfo;
+  const yucayekeInfo = stepOneData?.yucayekeInfo;
 
   return {
     legalName: {
@@ -371,6 +435,16 @@ export function getEnrollmentStepOneDefaultValues(
         : "",
       specialSkills: readString(additionalInfo?.specialSkills),
     },
+    yucayekeInfo: {
+      identity: normalizeKnownSelection(
+        yucayekeInfo?.identity,
+        enrollmentStepOneIdentityValues,
+      ),
+      yucayeke: readString(yucayekeInfo?.yucayeke),
+      yucayekeUnknown: readBoolean(yucayekeInfo?.yucayekeUnknown),
+      hasChildren: booleanToYesNo(yucayekeInfo?.hasChildren),
+      hasMinorChildren: booleanToYesNo(yucayekeInfo?.hasMinorChildren),
+    },
   };
 }
 
@@ -391,6 +465,18 @@ export function mapEnrollmentStepOneFormToPayload(
     values.additionalInfo.languagesSpokenInput,
   );
   const specialSkills = toOptionalString(values.additionalInfo.specialSkills);
+  const identity = resolveOptionalSelection(
+    values.yucayekeInfo.identity,
+    enrollmentStepOneIdentityValues,
+  );
+  const yucayekeUnknown = values.yucayekeInfo.yucayekeUnknown;
+  const yucayeke = yucayekeUnknown
+    ? undefined
+    : toOptionalString(values.yucayekeInfo.yucayeke);
+  const hasChildren = yesNoToBoolean(values.yucayekeInfo.hasChildren);
+  const hasMinorChildren = hasChildren
+    ? yesNoToBoolean(values.yucayekeInfo.hasMinorChildren)
+    : undefined;
 
   return {
     legalName: {
@@ -447,6 +533,13 @@ export function mapEnrollmentStepOneFormToPayload(
       ...(educationLevel ? { educationLevel } : {}),
       ...(languagesSpoken.length > 0 ? { languagesSpoken } : {}),
       ...(specialSkills ? { specialSkills } : {}),
+    },
+    yucayekeInfo: {
+      ...(identity ? { identity } : {}),
+      ...(yucayeke ? { yucayeke } : {}),
+      yucayekeUnknown,
+      ...(hasChildren !== undefined ? { hasChildren } : {}),
+      ...(hasMinorChildren !== undefined ? { hasMinorChildren } : {}),
     },
   };
 }

@@ -5,7 +5,8 @@ import {
     Contact,
     EmergencyContact,
     Gender,
-    LegalName
+    LegalName,
+    YucayekeInfo
 } from "@/modules/enrollment/common/interfaces/enrollment.interface";
 
 export interface Step1 {
@@ -17,4 +18,5 @@ export interface Step1 {
   mailingAddress  : Address;
   emergencyContact: EmergencyContact;
   additionalInfo  : AdditionalInfo;
+  yucayekeInfo?   : YucayekeInfo;
 }

@@ -241,7 +241,8 @@ export type EnrollmentStepOneMaritalStatusValue =
   | "SINGLE"
   | "MARRIED"
   | "DIVORCED"
-  | "WIDOWED";
+  | "WIDOWED"
+  | "DOMESTIC_PARTNERSHIP";
 
 export type EnrollmentStepOneAdditionalInfo = Readonly<{
   maritalStatus?: EnrollmentStepOneMaritalStatusValue;
@@ -249,6 +250,20 @@ export type EnrollmentStepOneAdditionalInfo = Readonly<{
   educationLevel?: string;
   languagesSpoken?: string[];
   specialSkills?: string;
+}>;
+
+export type EnrollmentStepOneIdentityValue =
+  | "ARAWAK"
+  | "KALINAGO"
+  | "GARIFUNA"
+  | "TAINO";
+
+export type EnrollmentStepOneYucayekeInfo = Readonly<{
+  identity?: EnrollmentStepOneIdentityValue;
+  yucayeke?: string;
+  yucayekeUnknown?: boolean;
+  hasChildren?: boolean;
+  hasMinorChildren?: boolean;
 }>;
 
 export type EnrollmentStepOnePrefillResponse = Readonly<{
@@ -260,6 +275,7 @@ export type EnrollmentStepOnePrefillResponse = Readonly<{
   mailingAddress?: Partial<EnrollmentStepOneAddressInfo> | null;
   emergencyContact?: Partial<EnrollmentStepOneEmergencyContact> | null;
   additionalInfo?: Partial<EnrollmentStepOneAdditionalInfo> | null;
+  yucayekeInfo?: Partial<EnrollmentStepOneYucayekeInfo> | null;
 }>;
 
 export type EnrollmentStepOneUpsertRequest = Readonly<{
@@ -271,6 +287,7 @@ export type EnrollmentStepOneUpsertRequest = Readonly<{
   mailingAddress: EnrollmentStepOneAddressInfo;
   emergencyContact: EnrollmentStepOneEmergencyContact;
   additionalInfo: EnrollmentStepOneAdditionalInfo;
+  yucayekeInfo: EnrollmentStepOneYucayekeInfo;
 }>;
 
 export type EnrollmentStepOneUpsertResponse = Readonly<{

@@ -17,3 +17,14 @@ class MockIntersectionObserver implements IntersectionObserver {
 
 globalThis.IntersectionObserver =
   MockIntersectionObserver as unknown as typeof IntersectionObserver;
+
+// jsdom does not implement ResizeObserver, which Radix UI primitives (e.g. the
+// Select trigger) rely on. Provide a no-op stub so those components render.
+class MockResizeObserver implements ResizeObserver {
+  disconnect(): void {}
+  observe(): void {}
+  unobserve(): void {}
+}
+
+globalThis.ResizeObserver =
+  MockResizeObserver as unknown as typeof ResizeObserver;

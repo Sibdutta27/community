@@ -28,8 +28,10 @@ import {
 import {
   enrollmentStepOneSchema,
   enrollmentStepOneGenderOptions,
+  enrollmentStepOneIdentityOptions,
   enrollmentStepOneMaritalStatusOptions,
   enrollmentStepOnePhoneTypeOptions,
+  enrollmentStepOneYesNoOptions,
   getEnrollmentStepOneDefaultValues,
   mapEnrollmentStepOneFormToPayload,
   type EnrollmentStepOneFormValues,
@@ -43,6 +45,7 @@ const enrollmentSectionIcons = {
   address: "/icons/enrollment/address-info.svg",
   emergency: "/icons/enrollment/emergency-contact.svg",
   additional: "/icons/enrollment/additional-info.svg",
+  yucayeke: "/icons/enrollment/cultural-connection.svg",
 } as const;
 
 function formatDateInputValue(date: Date) {
@@ -93,6 +96,14 @@ export function EnrollmentStepOneForm() {
     control,
     name: "mailingAddress",
   });
+  const yucayekeUnknown = useWatch({
+    control,
+    name: "yucayekeInfo.yucayekeUnknown",
+  });
+  const hasChildren = useWatch({
+    control,
+    name: "yucayekeInfo.hasChildren",
+  });
 
   useEffect(() => {
     if (!stepOneQuery.data || isDirty) {
@@ -111,6 +122,16 @@ export function EnrollmentStepOneForm() {
     reset(nextDefaultValues);
     lastHydratedDefaultsRef.current = nextDefaultsSignature;
   }, [isDirty, reset, stepOneQuery.data]);
+
+  useEffect(() => {
+    if (yucayekeUnknown) {
+      setValue("yucayekeInfo.yucayeke", "", {
+        shouldDirty: true,
+        shouldTouch: false,
+        shouldValidate: false,
+      });
+    }
+  }, [setValue, yucayekeUnknown]);
 
   useEffect(() => {
     if (!sameAsCurrentAddress) {
@@ -294,6 +315,49 @@ export function EnrollmentStepOneForm() {
               name="gender.pronouns"
               placeholder="he/him, she/her, they/them"
             />
+          </EnrollmentFormSection>
+
+          <EnrollmentFormSection
+            description="Share how you identify and your connection to your Yucayeke and family."
+            fieldsPerRow={[2, 1, 2]}
+            iconSrc={enrollmentSectionIcons.yucayeke}
+            title="Your Yucayekeno Information"
+          >
+            <EnrollmentSelectField
+              control={control}
+              label="Identity"
+              name="yucayekeInfo.identity"
+              options={enrollmentStepOneIdentityOptions}
+              placeholder="Select your identity"
+            />
+            <EnrollmentInputField
+              control={control}
+              label="Yucayeke"
+              name="yucayekeInfo.yucayeke"
+              placeholder="Enter your Yucayeke"
+              readOnly={yucayekeUnknown}
+            />
+            <EnrollmentCheckboxField
+              className="self-center"
+              control={control}
+              label="I don't know my Yucayeke"
+              name="yucayekeInfo.yucayekeUnknown"
+              variant="plain"
+            />
+            <EnrollmentRadioGroupField
+              control={control}
+              label="Do you have children?"
+              name="yucayekeInfo.hasChildren"
+              options={enrollmentStepOneYesNoOptions}
+            />
+            {hasChildren === "YES" ? (
+              <EnrollmentRadioGroupField
+                control={control}
+                label="Any children under 18?"
+                name="yucayekeInfo.hasMinorChildren"
+                options={enrollmentStepOneYesNoOptions}
+              />
+            ) : null}
           </EnrollmentFormSection>
 
           <EnrollmentFormSection
