@@ -52,7 +52,7 @@ export function HomeEnrollmentFaqSection() {
   return (
     <motion.section
       id="enrollment-faq"
-      className="overflow-hidden bg-[#FFFDEC]"
+      className="bg-background overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.12 }}
@@ -66,7 +66,7 @@ export function HomeEnrollmentFaqSection() {
             className={cn(
               sharedStyles.sectionBadge,
               poppins.className,
-              "bg-[#D7EFD3] px-4.5 py-1.75 text-[0.78rem] tracking-[-0.02em] text-[#183F38] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]",
+              "border-border bg-surface-muted text-foreground border px-4.5 py-1.75 text-[0.78rem] tracking-[-0.02em]",
             )}
             variants={fadeInUpItem}
           >
@@ -76,7 +76,7 @@ export function HomeEnrollmentFaqSection() {
           <motion.h2
             className={cn(
               montserrat.className,
-              "mx-auto mt-4 max-w-4xl text-[clamp(1.55rem,3.15vw,3rem)] leading-[1.08] font-semibold tracking-[-0.05em] text-[#0B3B33]",
+              "text-foreground mx-auto mt-4 max-w-4xl text-[clamp(1.55rem,3.15vw,3rem)] leading-[1.08] font-semibold tracking-[-0.05em]",
             )}
             variants={fadeInUpItem}
           >
@@ -86,7 +86,7 @@ export function HomeEnrollmentFaqSection() {
           <motion.p
             className={cn(
               poppins.className,
-              "mx-auto mt-3 max-w-4xl text-[clamp(0.88rem,1.15vw,0.98rem)] leading-[1.45] tracking-[-0.02em] text-[#24211D]",
+              "text-muted-foreground mx-auto mt-3 max-w-4xl text-[clamp(0.88rem,1.15vw,0.98rem)] leading-[1.45] tracking-[-0.02em]",
             )}
             variants={fadeInUpItem}
           >
@@ -97,7 +97,7 @@ export function HomeEnrollmentFaqSection() {
 
         <div className="mt-6 grid gap-3.5 lg:mt-7 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
           <motion.div
-            className="relative min-h-[15rem] overflow-hidden rounded-[1.5rem] bg-white shadow-[0_24px_56px_-38px_rgba(16,24,40,0.22)] sm:min-h-[19rem] lg:min-h-[28rem]"
+            className="border-border bg-surface-muted relative min-h-[15rem] overflow-hidden rounded-2xl border sm:min-h-[19rem] lg:min-h-[28rem]"
             variants={fadeInUpItem}
           >
             <Image
@@ -116,7 +116,7 @@ export function HomeEnrollmentFaqSection() {
               return (
                 <motion.article
                   key={item.id}
-                  className="overflow-hidden rounded-[1.2rem] border border-[#DCD8C8] bg-white shadow-[0_18px_42px_-32px_rgba(17,24,39,0.18)]"
+                  className="border-border bg-surface overflow-hidden rounded-xl border shadow-[0_14px_30px_-28px_rgba(0,0,0,0.16)]"
                   variants={fadeInUpItem}
                 >
                   <button
@@ -134,7 +134,7 @@ export function HomeEnrollmentFaqSection() {
                       className={cn(
                         montserrat.className,
                         "text-[clamp(0.9rem,1.08vw,1rem)] leading-[1.22] font-semibold tracking-[-0.03em] transition-colors",
-                        isOpen ? "text-[#0F625C]" : "text-[#10100F]",
+                        isOpen ? "text-foreground" : "text-foreground/80",
                       )}
                     >
                       {item.question}
@@ -144,7 +144,7 @@ export function HomeEnrollmentFaqSection() {
                       aria-hidden="true"
                       className={cn(
                         montserrat.className,
-                        "min-w-5 text-center text-[1.15rem] leading-none font-semibold tracking-[-0.06em] text-[#11110F]",
+                        "text-foreground min-w-5 text-center text-[1.15rem] leading-none font-semibold tracking-[-0.06em]",
                       )}
                     >
                       {isOpen ? "−" : "+"}
@@ -153,13 +153,13 @@ export function HomeEnrollmentFaqSection() {
 
                   {isOpen ? (
                     <div
-                      className="border-t border-[#DCD8C8] px-4 pt-3 pb-4 sm:px-4.5 sm:pb-4.5 lg:px-5 lg:pb-5"
+                      className="border-border border-t px-4 pt-3 pb-4 sm:px-4.5 sm:pb-4.5 lg:px-5 lg:pb-5"
                       id={`faq-panel-${item.id}`}
                     >
                       <p
                         className={cn(
                           poppins.className,
-                          "max-w-3xl text-[0.82rem] leading-[1.55] tracking-[-0.01em] text-[#5B5B58] sm:text-[0.86rem]",
+                          "text-muted-foreground max-w-3xl text-[0.82rem] leading-[1.55] tracking-[-0.01em] sm:text-[0.86rem]",
                         )}
                       >
                         {item.answer}

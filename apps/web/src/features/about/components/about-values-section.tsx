@@ -36,7 +36,7 @@ const values = [
 export function AboutValuesSection() {
   return (
     <motion.section
-      className="overflow-hidden bg-[#FFFDEC]"
+      className="bg-background overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.12 }}
@@ -50,7 +50,7 @@ export function AboutValuesSection() {
             className={cn(
               sharedStyles.sectionBadge,
               poppins.className,
-              "bg-[#D7EFD3] px-5 py-2 text-[0.82rem] tracking-[-0.02em] text-[#1B5B4F]",
+              "border-border bg-surface-muted text-foreground border px-5 py-2 text-[0.82rem] tracking-[-0.02em]",
             )}
             variants={fadeInUpItem}
           >
@@ -60,7 +60,7 @@ export function AboutValuesSection() {
           <motion.h2
             className={cn(
               montserrat.className,
-              "mx-auto mt-5 max-w-4xl text-[clamp(1.6rem,3.2vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em] text-[#103F36]",
+              "text-foreground mx-auto mt-5 max-w-4xl text-[clamp(1.6rem,3.2vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em]",
             )}
             variants={fadeInUpItem}
           >
@@ -70,7 +70,7 @@ export function AboutValuesSection() {
           <motion.p
             className={cn(
               poppins.className,
-              "mx-auto mt-4 max-w-4xl text-[clamp(0.9rem,1.15vw,1rem)] leading-[1.5] tracking-[-0.02em] text-[#2A2927]",
+              "text-muted-foreground mx-auto mt-4 max-w-4xl text-[clamp(0.9rem,1.15vw,1rem)] leading-[1.5] tracking-[-0.02em]",
             )}
             variants={fadeInUpItem}
           >

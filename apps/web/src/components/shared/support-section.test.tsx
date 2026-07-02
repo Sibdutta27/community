@@ -1,0 +1,55 @@
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+
+import { SupportSection } from "@/components/shared/support-section";
+
+// `next/font/google` loaders only run inside the Next.js build; stub the fonts
+// module so the section (which imports `@/styles/fonts`) can render in jsdom.
+vi.mock("@/styles/fonts", () => {
+  const mockFont = {
+    className: "mock-font",
+    variable: "mock-font-variable",
+    style: { fontFamily: "mock-font" },
+  };
+  return {
+    inter: mockFont,
+    cinzel: mockFont,
+    montserrat: mockFont,
+    lato: mockFont,
+    poppins: mockFont,
+  };
+});
+
+vi.mock("next/image", () => ({
+  default: ({ alt, src }: { alt?: string; src?: unknown }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img alt={alt ?? ""} src={typeof src === "string" ? src : ""} />
+  ),
+}));
+
+describe("SupportSection", () => {
+  it("keeps the Email Support action", () => {
+    render(<SupportSection />);
+    expect(screen.getByText("Email Support")).toBeInTheDocument();
+    expect(screen.getByText("support@tainonation.org")).toBeInTheDocument();
+  });
+
+  it("no longer renders a phone support card", () => {
+    render(<SupportSection />);
+    expect(screen.queryByText(/phone support/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\(787\) 555-0100/)).not.toBeInTheDocument();
+  });
+
+  it("does not render any tel: link", () => {
+    const { container } = render(<SupportSection />);
+    expect(container.querySelector('a[href^="tel:"]')).toBeNull();
+  });
+
+  it("uses semantic tokens instead of hardcoded brand colors", () => {
+    const { container } = render(<SupportSection />);
+    expect(container.innerHTML).not.toMatch(/#6FAFC4/i);
+    expect(container.innerHTML).not.toMatch(/#C53133/i);
+    expect(container.innerHTML).not.toContain("brand-sky");
+    expect(container.querySelector(".bg-surface")).not.toBeNull();
+  });
+});

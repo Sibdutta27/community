@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { montserrat, poppins } from "@/styles/fonts";
 import { cn } from "@/lib/utils";
 
-type SupportCardKind = "phone" | "email" | "chat";
+type SupportCardKind = "email" | "chat";
 
 type SupportCard = Readonly<{
   kind: SupportCardKind;
@@ -14,20 +14,9 @@ type SupportCard = Readonly<{
   description: string;
   contactLabel?: string;
   contactHref?: string;
-  contactTextColor?: string;
 }>;
 
 const supportCards: readonly SupportCard[] = [
-  {
-    kind: "phone",
-    iconSrc: "/icons/auth/phone-support.svg",
-    iconBgClassName: "bg-brand-sky",
-    title: "Phone Support",
-    description: "Speak with a support representative",
-    contactLabel: "(787) 555-0100",
-    contactHref: "tel:+17875550100",
-    contactTextColor: "#6FAFC4",
-  },
   {
     kind: "email",
     iconSrc: "/icons/auth/email-support..svg",
@@ -36,7 +25,6 @@ const supportCards: readonly SupportCard[] = [
     description: "Send us a detailed message",
     contactLabel: "support@tainonation.org",
     contactHref: "mailto:support@tainonation.org",
-    contactTextColor: "#C53133",
   },
   {
     kind: "chat",
@@ -96,10 +84,9 @@ function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
           <a
             className={cn(
               montserrat.className,
-              "block text-[0.9rem] font-semibold tracking-[-0.03em] sm:text-[0.96rem] lg:text-[1rem]",
+              "text-foreground block text-[0.9rem] font-semibold tracking-[-0.03em] underline underline-offset-4 sm:text-[0.96rem] lg:text-[1rem]",
             )}
             href={card.contactHref}
-            style={{ color: card.contactTextColor }}
           >
             {card.contactLabel}
           </a>
@@ -152,7 +139,7 @@ export function SupportSection() {
           </p>
         </div>
 
-        <div className="mt-6 grid gap-2.5 sm:mt-7 sm:gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mx-auto mt-6 grid max-w-3xl gap-2.5 sm:mt-7 sm:gap-3 md:grid-cols-2">
           {supportCards.map((card) => (
             <SupportCardItem key={card.kind} card={card} />
           ))}

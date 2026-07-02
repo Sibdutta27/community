@@ -11,46 +11,39 @@ import { HomeEnrollmentResourcesSection } from "@/features/home/components/home-
 import { HomeEnrollmentStepCard } from "@/features/home/components/home-enrollment-step-card";
 import sharedStyles from "../styles/home-shared.module.scss";
 
+const neutralStepTone = {
+  bubbleClassName: "bg-foreground",
+  numberClassName: "text-background",
+} as const;
+
 const enrollmentSteps = [
   {
     step: "1",
     title: "Create Account",
     description:
       "Sign up with your email and create a secure password to access the enrollment portal.",
-    tone: {
-      bubbleClassName: "bg-[linear-gradient(180deg,#26B9B0_0%,#1C9F97_100%)]",
-      numberClassName: "text-white",
-    },
+    tone: neutralStepTone,
   },
   {
     step: "2",
     title: "Personal Information",
     description:
       "Provide your basic details including name, date of birth, and contact information.",
-    tone: {
-      bubbleClassName: "bg-[linear-gradient(180deg,#C68179_0%,#B66A62_100%)]",
-      numberClassName: "text-white",
-    },
+    tone: neutralStepTone,
   },
   {
     step: "3",
     title: "Maternal Lineage",
     description:
       "Document your maternal ancestry with names, dates, and places of birth for your lineage.",
-    tone: {
-      bubbleClassName: "bg-[linear-gradient(180deg,#6787E4_0%,#5574D8_100%)]",
-      numberClassName: "text-white",
-    },
+    tone: neutralStepTone,
   },
   {
     step: "4",
     title: "Upload Documents",
     description:
       "Submit supporting documents such as birth certificates, family records, and lineage proof.",
-    tone: {
-      bubbleClassName: "bg-[linear-gradient(180deg,#2D8BAE_0%,#1D6F86_100%)]",
-      numberClassName: "text-white",
-    },
+    tone: neutralStepTone,
   },
 ] as const;
 
@@ -87,7 +80,7 @@ const tipItems = [
 export function HomeEnrollmentProcessSection() {
   return (
     <motion.section
-      className="overflow-hidden bg-[#FFFDEC]"
+      className="bg-background overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.12 }}
@@ -101,7 +94,7 @@ export function HomeEnrollmentProcessSection() {
             className={cn(
               sharedStyles.sectionBadge,
               poppins.className,
-              "bg-[#D7EFD3] px-5 py-2 text-[0.84rem] tracking-[-0.02em] text-[#1B5B4F] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]",
+              "border-border bg-surface-muted text-foreground border px-5 py-2 text-[0.84rem] tracking-[-0.02em]",
             )}
             variants={fadeInUpItem}
           >
@@ -111,7 +104,7 @@ export function HomeEnrollmentProcessSection() {
           <motion.h2
             className={cn(
               montserrat.className,
-              "mt-6 text-[clamp(1.7rem,3.2vw,3rem)] leading-[1.06] font-semibold tracking-[-0.05em] text-[#103F36]",
+              "text-foreground mt-6 text-[clamp(1.7rem,3.2vw,3rem)] leading-[1.06] font-semibold tracking-[-0.05em]",
             )}
             variants={fadeInUpItem}
           >
@@ -122,7 +115,7 @@ export function HomeEnrollmentProcessSection() {
           <motion.p
             className={cn(
               poppins.className,
-              "mx-auto mt-4 max-w-4xl text-[clamp(0.9rem,1.15vw,1rem)] leading-[1.5] tracking-[-0.02em] text-[#2A2927]",
+              "text-muted-foreground mx-auto mt-4 max-w-4xl text-[clamp(0.9rem,1.15vw,1rem)] leading-[1.5] tracking-[-0.02em]",
             )}
             variants={fadeInUpItem}
           >

@@ -28,7 +28,7 @@ export function HomeYucayekeRegionsSection() {
             className={cn(
               sharedStyles.sectionBadge,
               poppins.className,
-              "bg-[#DDF4EF] px-4.5 py-1.5 text-[0.8rem] tracking-[-0.02em] text-[#1B5B4F] shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]",
+              "border-border bg-surface-muted text-foreground border px-4.5 py-1.5 text-[0.8rem] tracking-[-0.02em]",
             )}
             variants={fadeInUpItem}
           >
@@ -38,7 +38,7 @@ export function HomeYucayekeRegionsSection() {
           <motion.h2
             className={cn(
               montserrat.className,
-              "mt-5 text-[clamp(1.65rem,2.8vw,2.7rem)] leading-[1.1] font-semibold tracking-[-0.04em] text-[#103F36]",
+              "text-foreground mt-5 text-[clamp(1.65rem,2.8vw,2.7rem)] leading-[1.1] font-semibold tracking-[-0.04em]",
             )}
             variants={fadeInUpItem}
           >
@@ -48,7 +48,7 @@ export function HomeYucayekeRegionsSection() {
           <motion.p
             className={cn(
               poppins.className,
-              "mx-auto mt-3.5 max-w-3xl text-[0.9rem] leading-6 tracking-[-0.02em] text-[#2A2927] sm:text-[0.94rem] sm:leading-7 lg:text-[0.96rem] lg:leading-7",
+              "text-muted-foreground mx-auto mt-3.5 max-w-3xl text-[0.9rem] leading-6 tracking-[-0.02em] sm:text-[0.94rem] sm:leading-7 lg:text-[0.96rem] lg:leading-7",
             )}
             variants={fadeInUpItem}
           >

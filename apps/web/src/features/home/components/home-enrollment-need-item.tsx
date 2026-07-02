@@ -16,7 +16,7 @@ export function HomeEnrollmentNeedItem({
 }: HomeEnrollmentNeedItemProps) {
   return (
     <li className="flex items-start gap-3.5 sm:gap-4">
-      <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DDF3F8] sm:size-13">
+      <div className="bg-surface flex size-12 shrink-0 items-center justify-center rounded-full sm:size-13">
         <Image
           alt=""
           aria-hidden="true"
@@ -31,7 +31,7 @@ export function HomeEnrollmentNeedItem({
         <h4
           className={cn(
             montserrat.className,
-            "text-[1rem] font-normal tracking-[-0.03em] text-[#fff4e8] sm:text-[1.18rem]",
+            "text-background text-[1rem] font-normal tracking-[-0.03em] sm:text-[1.18rem]",
           )}
         >
           {title}
@@ -39,7 +39,7 @@ export function HomeEnrollmentNeedItem({
         <p
           className={cn(
             montserrat.className,
-            "mt-1 text-[0.84rem] leading-[1.45] text-[#e7dacc] sm:text-[0.92rem]",
+            "text-background/70 mt-1 text-[0.84rem] leading-[1.45] sm:text-[0.92rem]",
           )}
         >
           {description}

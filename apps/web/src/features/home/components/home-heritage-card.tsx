@@ -9,10 +9,12 @@ import { fadeInUpItem } from "@/lib/motion";
 
 type HeritageCardTone = "mint" | "cream" | "lilac";
 
+// Minimal B&W design system: the legacy tones all resolve to the same
+// neutral surface so existing callers keep working without earthy tints.
 const toneClasses: Record<HeritageCardTone, string> = {
-  mint: "bg-[linear-gradient(180deg,#EAFFFD_0%,#FFFFFF_100%)]",
-  cream: "bg-[linear-gradient(180deg,#FFF8EA_0%,#FFFFFF_100%)]",
-  lilac: "bg-[linear-gradient(180deg,#EFEAFF_0%,#FFFFFF_100%)]",
+  mint: "bg-surface",
+  cream: "bg-surface",
+  lilac: "bg-surface",
 };
 
 type HeritageCardProps = {
@@ -31,7 +33,7 @@ export function HomeHeritageCard({
   return (
     <motion.article
       className={cn(
-        "border-border/70 rounded-2xl border p-5 shadow-[0_18px_40px_-34px_rgba(16,47,52,0.28)] sm:p-6",
+        "border-border rounded-2xl border p-5 shadow-[0_16px_32px_-30px_rgba(0,0,0,0.2)] sm:p-6",
         toneClasses[tone],
       )}
       variants={fadeInUpItem}
@@ -51,7 +53,7 @@ export function HomeHeritageCard({
         {title}
       </h3>
 
-      <p className="text-foreground/80 mt-3 text-sm leading-6 sm:text-[15px]">
+      <p className="text-muted-foreground mt-3 text-sm leading-6 sm:text-[15px]">
         {description}
       </p>
     </motion.article>

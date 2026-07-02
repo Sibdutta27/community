@@ -14,7 +14,7 @@ type PageHeroSectionProps = Readonly<{
 }>;
 
 const defaultBackgroundClassName =
-  "bg-[radial-gradient(circle_at_top,rgba(111,175,196,0.16),transparent_36%),radial-gradient(circle_at_18%_14%,rgba(179,138,90,0.1),transparent_24%)]";
+  "bg-[radial-gradient(circle_at_top,rgba(0,0,0,0.03),transparent_40%)]";
 
 export function PageHeroSection({
   backgroundClassName = defaultBackgroundClassName,

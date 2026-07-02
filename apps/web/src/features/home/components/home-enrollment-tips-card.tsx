@@ -18,7 +18,7 @@ type HomeEnrollmentTipsCardProps = Readonly<{
 export function HomeEnrollmentTipsCard({ tips }: HomeEnrollmentTipsCardProps) {
   return (
     <motion.article
-      className="rounded-[24px] border border-[#dcc7af] bg-[#f6ede1] px-4.5 py-5.5 text-[#201712] shadow-[0_14px_28px_-22px_rgba(0,0,0,0.28)] sm:px-5.5 sm:py-6.5"
+      className="border-border bg-surface text-foreground rounded-2xl border px-4.5 py-5.5 shadow-[0_14px_28px_-24px_rgba(0,0,0,0.2)] sm:px-5.5 sm:py-6.5"
       variants={fadeInUpItem}
     >
       <Image
@@ -46,7 +46,7 @@ export function HomeEnrollmentTipsCard({ tips }: HomeEnrollmentTipsCardProps) {
             <p
               className={cn(
                 poppins.className,
-                "text-[0.84rem] leading-[1.5] text-[#4f3d31] sm:text-[0.9rem]",
+                "text-muted-foreground text-[0.84rem] leading-[1.5] sm:text-[0.9rem]",
               )}
             >
               {tip}
@@ -58,7 +58,7 @@ export function HomeEnrollmentTipsCard({ tips }: HomeEnrollmentTipsCardProps) {
       <div className="mt-5.5">
         <Button
           asChild
-          className="bg-primary h-11 w-full rounded-full px-5 text-[0.9rem] text-white shadow-[0_16px_34px_-18px_rgba(197,49,51,0.42)] hover:bg-[#ae2b2d]"
+          className="bg-primary text-primary-foreground h-11 w-full rounded-full px-5 text-[0.9rem] hover:opacity-90"
           size="lg"
           variant="outline"
         >

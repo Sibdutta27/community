@@ -58,7 +58,7 @@ export function HomeHeritageSection() {
           <motion.span
             className={cn(
               sharedStyles.sectionBadge,
-              "bg-[#e8f8f3] px-5 py-2 text-[#2c7d6f]",
+              "border-border bg-surface-muted text-foreground border px-5 py-2",
             )}
             variants={fadeInUpItem}
           >
@@ -100,21 +100,16 @@ export function HomeHeritageSection() {
         </motion.div>
 
         <motion.article
-          className="relative mt-12 overflow-hidden rounded-4xl border border-[#d9c7af] bg-[#2d2018] px-5 py-8 text-[#fff9f2] shadow-[0_24px_56px_-34px_rgba(21,17,13,0.4)] sm:px-7 lg:px-9 lg:py-10"
+          className="bg-foreground text-background relative mt-12 overflow-hidden rounded-2xl px-5 py-8 shadow-[0_20px_44px_-32px_rgba(0,0,0,0.35)] sm:px-7 lg:px-9 lg:py-10"
           variants={fadeInUpItem}
         >
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(197,49,51,0.22),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(111,175,196,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0))]"
-          />
-
           <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
             <div className="max-w-105">
               <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">
                 Our Mission
               </h3>
 
-              <p className="mt-5 text-justify text-sm leading-6 text-[#f7efe5]/92">
+              <p className="text-background/80 mt-5 text-justify text-sm leading-6">
                 To create a secure, culturally grounded digital platform that
                 empowers Borikua Taíno descendants to reclaim their heritage,
                 document their lineage, and participate in a thriving Indigenous
