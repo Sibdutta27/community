@@ -115,7 +115,8 @@ export function HomeEnrollmentProcessSection() {
             )}
             variants={fadeInUpItem}
           >
-            How to Join the <span className="text-primary">Taíno</span> Nation
+            How to Enroll with the <span className="text-primary">Taíno</span>{" "}
+            Nation of Borikén
           </motion.h2>
 
           <motion.p

@@ -25,9 +25,10 @@ export function HomeHero() {
         className="text-foreground mt-3 max-w-4xl text-3xl font-semibold tracking-tight sm:mt-4 sm:text-4xl lg:mt-5 lg:text-5xl"
         variants={fadeInUpItem}
       >
-        Welcome to the{" "}
-        <span className={sharedStyles.gradientText}>Taíno Nation</span> Digital
-        Platform
+        Welcome to{" "}
+        <span className={sharedStyles.gradientText}>
+          Taíno Nation of Borikén
+        </span>
       </motion.h1>
 
       <motion.p
@@ -84,8 +85,9 @@ export function HomeHero() {
           className="text-muted-foreground text-xs leading-5 sm:text-sm"
           variants={fadeInUpItem}
         >
-          <span className="text-foreground font-semibold">5M+</span> Yucayeke
-          Member Joined
+          {/* TODO: verified count pending researcher */}
+          <span className="text-foreground font-semibold">500+</span> Tribal
+          Citizens
         </motion.div>
       </motion.div>
     </PageHeroSection>

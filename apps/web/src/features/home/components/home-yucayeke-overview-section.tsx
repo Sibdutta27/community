@@ -13,7 +13,8 @@ import { HomeYucayekeRegionCard } from "@/features/home/components/home-yucayeke
 const regionCards = [
   {
     iconSrc: "/icons/home/regions/yucayeke-regions.svg",
-    title: "12 Historical Yucayeke Regions",
+    // TODO: 18 pending researcher verification
+    title: "18 Historical Yucayeke Regions",
   },
   {
     iconSrc: "/icons/home/regions/yucayeke-connect.svg",

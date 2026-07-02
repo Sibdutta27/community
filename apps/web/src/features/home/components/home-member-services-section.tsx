@@ -73,12 +73,6 @@ const memberServices = [
 
 const supportActions = [
   {
-    label: "Call: 109 02001",
-    iconSrc: "/icons/home/support/call.svg",
-    className:
-      "bg-white text-[#5C9C8A] shadow-[0_18px_38px_-26px_rgba(0,0,0,0.45)]",
-  },
-  {
     label: "Email Support",
     iconSrc: "/icons/home/support/email.svg",
     className: "border border-white/85 bg-transparent text-white",
@@ -127,9 +121,13 @@ export function HomeMemberServicesSection() {
             )}
             variants={fadeInUpItem}
           >
-            As an enrolled member of the Taíno Nation, you gain access to a wide
-            range of services designed to support your health, wellbeing,
-            education, and cultural connection.
+            As an enrolled member of the Taíno Nation, you will be part of a
+            growing services hub created to support health, wellbeing,
+            education, cultural connection, and community care. This space will
+            be built collectively over time, guided by the needs of our members
+            and strengthened by community leaders, practitioners, educators, and
+            service providers who wish to offer their knowledge in service to
+            one another.
           </motion.p>
         </div>
 

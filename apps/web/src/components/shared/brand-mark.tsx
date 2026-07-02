@@ -35,7 +35,7 @@ type BrandMarkProps = Readonly<{
 
 export function BrandMark({
   className,
-  label = "Taíno Nation",
+  label = "Taíno Nation of Borikén",
   subtitle = "Of Borikén",
   showLabel = true,
   showSubtitle = true,

@@ -72,7 +72,7 @@ export function PublicNavbar() {
               </Link>
             </Button>
             <Button size="sm" asChild>
-              <Link href="/sign-up">Apply Now</Link>
+              <Link href="/sign-up">Enroll Today</Link>
             </Button>
           </div>
 
@@ -136,7 +136,7 @@ export function PublicNavbar() {
                     href="/sign-up"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Apply Now
+                    Enroll Today
                   </Link>
                 </Button>
               </div>

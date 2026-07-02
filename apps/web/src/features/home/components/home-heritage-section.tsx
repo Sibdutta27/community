@@ -14,7 +14,7 @@ const heritageCards = [
     iconSrc: "/icons/home/heritage/sovereignty-first.svg",
     title: "Sovereign Data",
     description:
-      "Your information belongs to the Taíno community. We maintain complete sovereignty over our data, ensuring it remains protected, private, and culturally respected.",
+      "Your data belongs to you. You maintain ownership and control over the personal information and files you upload to your account. You may also choose to contribute selected files to the tribally governed “Indigenous Archives of Puerto Rico” project, where they will become part of a communally held archive stewarded for cultural preservation, kinship research, and future learning by Borikua Taíno community members.",
     tone: "mint",
   },
   {
@@ -28,7 +28,7 @@ const heritageCards = [
     iconSrc: "/icons/home/heritage/community-hub.svg",
     title: "Community Help",
     description:
-      "Access health services, legal assistance, cultural events, and community resources designed specifically for Taíno Nation members.",
+      "Learn from and contribute to a growing community resource hub where members can share information related to health services, legal assistance, job searches, cultural events, and other support for Taíno Nation members.",
     tone: "lilac",
   },
 ] as const;
@@ -116,8 +116,8 @@ export function HomeHeritageSection() {
 
               <p className="mt-5 text-justify text-sm leading-6 text-[#f7efe5]/92">
                 To create a secure, culturally grounded digital platform that
-                empowers Taíno descendants to reclaim their heritage, document
-                their lineage, and participate in a thriving Indigenous
+                empowers Borikua Taíno descendants to reclaim their heritage,
+                document their lineage, and participate in a thriving Indigenous
                 community. We honor the wisdom of our ancestors while embracing
                 modern technology to ensure our culture, traditions, and
                 identity endure for generations to come.

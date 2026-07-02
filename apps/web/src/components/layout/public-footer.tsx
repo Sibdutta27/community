@@ -87,12 +87,6 @@ export function PublicFooter() {
             <div className="text-muted-foreground mt-3.5 space-y-2.5 text-[0.95rem] leading-6 sm:mt-4 sm:text-base">
               <a
                 className="hover:text-foreground block transition-colors"
-                href="tel:+17875550100"
-              >
-                (787) 555-0100
-              </a>
-              <a
-                className="hover:text-foreground block transition-colors"
                 href="mailto:info@tainonation.org"
               >
                 info@tainonation.org
@@ -117,9 +111,7 @@ export function PublicFooter() {
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 lg:justify-end">
             {footerBottomLinks.map((link, index) => (
               <span key={link.label} className="flex items-center">
-                {index > 0 ? (
-                  <span className="text-border mx-2">•</span>
-                ) : null}
+                {index > 0 ? <span className="text-border mx-2">•</span> : null}
                 <Link
                   className="hover:text-foreground transition-colors"
                   href={link.href}
