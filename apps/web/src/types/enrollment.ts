@@ -66,23 +66,26 @@ export type EnrollmentDocumentBucket = Readonly<{
   documents: EnrollmentDocumentRecord | EnrollmentDocumentRecord[] | null;
 }>;
 
+/**
+ * Trimmed personal info returned by the rebuilt enrollment backend
+ * (`ExtendedEnrollmentData.personalInfo`) — demographics only.
+ */
 export type EnrollmentPersonalInfoSummary = Readonly<{
   firstName: string | null;
-  middleName: string | null;
   lastName: string | null;
-  preferredName: string | null;
-  maternalLastName: string | null;
   dateOfBirth: string | null;
   cityOfBirth: string | null;
   municipalityOfBirth: string | null;
   countryOfBirth: string | null;
+  sex: string | null;
   gender: string | null;
-  pronouns: string | null;
   maritalStatus: string | null;
   occupation: string | null;
-  educationLevel: string | null;
-  languagesSpoken: string[];
-  specialSkills: string | null;
+  identity: string | null;
+  yucayeke: string | null;
+  yucayekeUnknown: boolean | null;
+  hasChildren: boolean | null;
+  hasMinorChildren: boolean | null;
 }>;
 
 export type EnrollmentContactSummary = Readonly<{
@@ -92,53 +95,22 @@ export type EnrollmentContactSummary = Readonly<{
   allowSMS: boolean | null;
 }>;
 
-export type EnrollmentAddressSummary = Readonly<{
-  type?: string | null;
-  street: string | null;
-  apartment: string | null;
-  city: string | null;
-  state: string | null;
-  zipCode: string | null;
-  country: string | null;
-  yearsLived: string | null;
-}>;
-
-export type EnrollmentEmergencyContactSummary = Readonly<{
-  fullName: string | null;
-  relationship: string | null;
-  phoneNumber: string | null;
-}>;
-
-export type EnrollmentMaternalLineageRelationValue =
+/** Kinship slots persisted by the rebuilt enrollment backend (Ancestry model). */
+export type EnrollmentAncestryRelation =
   | "MOTHER"
-  | "GRANDMOTHER"
-  | "GREAT_GRANDMOTHER"
-  | "GREAT_GREAT_GRANDMOTHER"
-  | "GREAT_GREAT_GREAT_GRANDMOTHER";
+  | "MATERNAL_GRANDMOTHER"
+  | "MATERNAL_GRANDFATHER"
+  | "FATHER"
+  | "PATERNAL_GRANDMOTHER"
+  | "PATERNAL_GRANDFATHER";
 
-export type EnrollmentMaternalLineageLivingStatusValue = "LIVING" | "DECEASED";
-
-export type EnrollmentMaternalLineageSummary = Readonly<{
-  id?: string | null;
-  relation: EnrollmentMaternalLineageRelationValue | null;
-  fullName: string | null;
-  maidenName: string | null;
-  dateOfBirth: string | null;
-  placeOfBirth: string | null;
-  // Backend payload currently may return "LivingStatus" (capital L) in /account/info.
-  LivingStatus?: EnrollmentMaternalLineageLivingStatusValue | null;
-  livingStatus: EnrollmentMaternalLineageLivingStatusValue | null;
-  approximateBirthYear: number | null;
-  regionOfOrigin: string | null;
-  familyOccupation: string | null;
-  additionalNotes: string | null;
-}>;
-
-export type EnrollmentCulturalConnectionSummary = Readonly<{
-  id?: string | null;
-  key: string | null;
-  description: string | null;
-}>;
+/**
+ * `ExtendedEnrollmentData.ancestry` — keyed by relation; a relation is absent
+ * (or null) until the member saves that kinship person.
+ */
+export type EnrollmentAncestryMap = Readonly<
+  Partial<Record<EnrollmentAncestryRelation, EnrollmentAncestrySummary | null>>
+>;
 
 export type AccountEnrollmentInfo = Readonly<{
   id: string;
@@ -148,10 +120,7 @@ export type AccountEnrollmentInfo = Readonly<{
   user: AccountInfoUser;
   personalInfo: EnrollmentPersonalInfoSummary | null;
   contact: EnrollmentContactSummary | null;
-  addresses: EnrollmentAddressSummary[];
-  emergencyContact: EnrollmentEmergencyContactSummary | null;
-  maternalLineages: EnrollmentMaternalLineageSummary[];
-  culturalConnections: EnrollmentCulturalConnectionSummary[];
+  ancestry: EnrollmentAncestryMap;
   consent: AccountEnrollmentConsent[];
   documents: EnrollmentDocumentBucket[];
   steps: EnrollmentStepState;

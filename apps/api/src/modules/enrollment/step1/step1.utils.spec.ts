@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Identity, MaritalStatus } from '@/generated/prisma/enums';
 import { mapIdentity, mapMaritalStatus } from './step1.utils';
 
@@ -21,11 +22,16 @@ describe('step1.utils marital status mapping', () => {
         expect(mapMaritalStatus('WIDOWED')).toBe(MaritalStatus.WIDOWED);
     });
 
-    it('defaults to SINGLE when no value is provided', () => {
-        expect(mapMaritalStatus(undefined)).toBe(MaritalStatus.SINGLE);
+    it('returns undefined for empty / nullish input (optional field)', () => {
+        expect(mapMaritalStatus(undefined)).toBeUndefined();
+        expect(mapMaritalStatus(null)).toBeUndefined();
+        expect(mapMaritalStatus('')).toBeUndefined();
     });
 
-    it('throws for an unknown marital status', () => {
+    it('throws a BadRequestException for an unknown marital status', () => {
+        expect(() => mapMaritalStatus('COMPLICATED')).toThrow(
+            BadRequestException,
+        );
         expect(() => mapMaritalStatus('COMPLICATED')).toThrow(
             'Invalid marital status value: COMPLICATED',
         );
@@ -50,7 +56,8 @@ describe('step1.utils identity mapping', () => {
         expect(mapIdentity('')).toBeUndefined();
     });
 
-    it('throws for an unknown identity', () => {
+    it('throws a BadRequestException for an unknown identity', () => {
+        expect(() => mapIdentity('MAYAN')).toThrow(BadRequestException);
         expect(() => mapIdentity('MAYAN')).toThrow('Invalid identity value: MAYAN');
     });
 });

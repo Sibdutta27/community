@@ -1,10 +1,12 @@
 import type { AuthUser } from "@/lib/auth";
 import type {
   ProfileResponse,
+  EnrollmentAncestryMap,
+  EnrollmentAncestryRelation,
+  EnrollmentAncestrySummary,
   EnrollmentDocumentBucket,
   EnrollmentDocumentRecord,
   EnrollmentDocumentType,
-  EnrollmentMaternalLineageSummary,
   RegionalMemberLocation,
   EnrollmentStepState,
 } from "@/types/enrollment";
@@ -15,9 +17,9 @@ import {
   type ProfileCopy,
   type ProfileDetail,
   type ProfileDocumentsData,
-  type ProfileLineageEntry,
-  type ProfileLineageStat,
-  type ProfileLineageTreeData,
+  type ProfileKinshipAncestor,
+  type ProfileKinshipData,
+  type ProfileKinshipFact,
   type ProfileOverviewData,
   type ProfileRegionalMember,
   type ProfileSettingsData,
@@ -35,45 +37,23 @@ export type ProfileViewData = Readonly<{
   activityData: ProfileActivityData;
   copy: ProfileCopy;
   details: readonly ProfileDetail[];
-  lineageEntries: readonly ProfileLineageEntry[];
-  lineageStats: readonly ProfileLineageStat[];
+  kinshipData: ProfileKinshipData;
   overviewData: ProfileOverviewData;
   yucayekeData: ProfileYucayekeData;
   documentsData: ProfileDocumentsData;
-  lineageTreeData: ProfileLineageTreeData;
   settingsData: ProfileSettingsData;
   regionalMembers: readonly ProfileRegionalMember[];
 }>;
 
 const fallbackCopy = profileConfig.copy;
 const fallbackDetails = profileConfig.details;
-const fallbackLineageStats = profileConfig.lineageStats;
+const fallbackKinship = profileConfig.kinship;
 const fallbackOverview = profileConfig.overview;
 const fallbackYucayeke = profileConfig.yucayeke;
 const fallbackDocuments = profileConfig.documents;
 const fallbackActivity = profileConfig.activity;
 const fallbackSettings = profileConfig.settings;
 const fallbackRegionalMembers = profileConfig.regionalMembers;
-
-const lineageRelationRank: Readonly<
-  Record<NonNullable<EnrollmentMaternalLineageSummary["relation"]>, number>
-> = {
-  MOTHER: 0,
-  GRANDMOTHER: 1,
-  GREAT_GRANDMOTHER: 2,
-  GREAT_GREAT_GRANDMOTHER: 3,
-  GREAT_GREAT_GREAT_GRANDMOTHER: 4,
-};
-
-const lineageRelationLabel: Readonly<
-  Record<NonNullable<EnrollmentMaternalLineageSummary["relation"]>, string>
-> = {
-  MOTHER: "Mother",
-  GRANDMOTHER: "Maternal Grandmother",
-  GREAT_GRANDMOTHER: "Great Grandmother",
-  GREAT_GREAT_GRANDMOTHER: "Great Great Grandmother",
-  GREAT_GREAT_GREAT_GRANDMOTHER: "Great Great Great Grandmother",
-};
 
 const documentTypeLabels: Readonly<Record<EnrollmentDocumentType, string>> = {
   PROFILE_PICTURE: "Profile Picture",
@@ -86,7 +66,40 @@ const documentTypeLabels: Readonly<Record<EnrollmentDocumentType, string>> = {
 
 const missingValueLabel = "Not provided";
 const notAvailableLabel = "Not available";
+const emptyValueDash = "—";
 const defaultEnrollmentStepCount = 4;
+
+/**
+ * Kinship groups in render order — mirrors the backend `AncestryRelation`
+ * slots written by enrollment steps 2 (maternal) and 3 (paternal).
+ */
+const kinshipGroupDefinitions: readonly Readonly<{
+  emptyMessage: string;
+  relations: readonly Readonly<{
+    label: string;
+    relation: EnrollmentAncestryRelation;
+  }>[];
+  title: string;
+}>[] = [
+  {
+    emptyMessage: "No maternal kinship recorded yet.",
+    relations: [
+      { label: "Mother", relation: "MOTHER" },
+      { label: "Maternal Grandmother", relation: "MATERNAL_GRANDMOTHER" },
+      { label: "Maternal Grandfather", relation: "MATERNAL_GRANDFATHER" },
+    ],
+    title: "Maternal Line",
+  },
+  {
+    emptyMessage: "No paternal kinship recorded yet.",
+    relations: [
+      { label: "Father", relation: "FATHER" },
+      { label: "Paternal Grandmother", relation: "PATERNAL_GRANDMOTHER" },
+      { label: "Paternal Grandfather", relation: "PATERNAL_GRANDFATHER" },
+    ],
+    title: "Paternal Line",
+  },
+];
 
 function readText(value: string | null | undefined) {
   if (!value) {
@@ -186,35 +199,7 @@ function formatPhoneLabel(value: string | null | undefined) {
   return normalizedValue;
 }
 
-function formatKeyToLabel(value: string | null | undefined) {
-  const normalizedValue = readText(value);
-
-  if (!normalizedValue) {
-    return "";
-  }
-
-  return normalizedValue
-    .split("_")
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
-}
-
 function resolveLocation(accountInfo?: AccountInfoResponse | null) {
-  const currentAddress =
-    accountInfo?.enrollment?.addresses.find(
-      (address) => address.type === "CURRENT",
-    ) ?? accountInfo?.enrollment?.addresses[0];
-  const parts = [
-    readText(currentAddress?.city),
-    readText(currentAddress?.state),
-    readText(currentAddress?.country),
-  ].filter(Boolean);
-
-  if (parts.length > 0) {
-    return parts.join(", ");
-  }
-
   const birthCity = readText(
     accountInfo?.enrollment?.personalInfo?.cityOfBirth,
   );
@@ -222,40 +207,7 @@ function resolveLocation(accountInfo?: AccountInfoResponse | null) {
     accountInfo?.enrollment?.personalInfo?.countryOfBirth,
   );
 
-  if (birthCity || birthCountry) {
-    return [birthCity, birthCountry].filter(Boolean).join(", ");
-  }
-
-  return "";
-}
-
-function resolveCurrentAddressLabel(accountInfo?: AccountInfoResponse | null) {
-  const currentAddress =
-    accountInfo?.enrollment?.addresses.find(
-      (address) => address.type === "CURRENT",
-    ) ?? accountInfo?.enrollment?.addresses[0];
-
-  if (!currentAddress) {
-    return "";
-  }
-
-  const parts = [
-    readText(currentAddress.street),
-    readText(currentAddress.city),
-    readText(currentAddress.state),
-    readText(currentAddress.country),
-  ].filter(Boolean);
-
-  return parts.join(", ");
-}
-
-function resolveAddressByType(
-  accountInfo: AccountInfoResponse | null | undefined,
-  type: "CURRENT" | "MAILING",
-) {
-  return accountInfo?.enrollment?.addresses.find(
-    (address) => address.type === type,
-  );
+  return [birthCity, birthCountry].filter(Boolean).join(", ");
 }
 
 function getResolvedStepState(accountInfo?: AccountInfoResponse | null) {
@@ -275,50 +227,127 @@ function getCompletedStepsLabel(stepState?: EnrollmentStepState) {
   return countCompletedSteps(stepState) ?? `0 / ${defaultEnrollmentStepCount}`;
 }
 
-function sortMaternalLineages(
-  maternalLineages: readonly EnrollmentMaternalLineageSummary[],
-) {
-  return [...maternalLineages]
-    .filter((lineage) =>
-      Boolean(
-        readText(lineage.fullName) ||
-        readText(lineage.placeOfBirth) ||
-        readText(lineage.regionOfOrigin),
-      ),
-    )
-    .sort((leftLineage, rightLineage) => {
-      const leftRank = leftLineage.relation
-        ? lineageRelationRank[leftLineage.relation]
-        : 99;
-      const rightRank = rightLineage.relation
-        ? lineageRelationRank[rightLineage.relation]
-        : 99;
+// -----------------------------
+// KINSHIP / ANCESTRY
+// -----------------------------
 
-      return leftRank - rightRank;
-    });
+function hasAncestorContent(
+  ancestor: EnrollmentAncestrySummary | null | undefined,
+): ancestor is EnrollmentAncestrySummary {
+  if (!ancestor) {
+    return false;
+  }
+
+  return Boolean(
+    readText(ancestor.name) ||
+      readText(ancestor.municipality) ||
+      readText(ancestor.yucayeke) ||
+      readText(ancestor.nationality) ||
+      readText(ancestor.dateOfBirth) ||
+      typeof ancestor.isBorikuaTaino === "boolean",
+  );
 }
 
-function getLineageBornLabel(lineage: EnrollmentMaternalLineageSummary) {
-  const birthDate = formatDateLabel(lineage.dateOfBirth);
+function formatBorikuaTainoLabel(value: boolean | null | undefined) {
+  if (value === true) {
+    return "Yes";
+  }
+
+  if (value === false) {
+    return "No";
+  }
+
+  return emptyValueDash;
+}
+
+function buildAncestorFacts(
+  ancestor: EnrollmentAncestrySummary,
+): ProfileKinshipFact[] {
+  const facts: ProfileKinshipFact[] = [];
+  const municipality = readText(ancestor.municipality);
+  const yucayeke = readText(ancestor.yucayeke);
+  const nationality = readText(ancestor.nationality);
+  const birthDate = formatDateLabel(ancestor.dateOfBirth);
+
+  if (municipality) {
+    facts.push({ label: "Municipality", value: municipality });
+  }
+
+  if (yucayeke) {
+    facts.push({ label: "Yucayeke", value: yucayeke });
+  }
+
+  if (nationality) {
+    facts.push({ label: "Nationality", value: nationality });
+  }
 
   if (birthDate) {
-    return birthDate;
+    facts.push({ label: "Date of Birth", value: birthDate });
   }
 
-  if (typeof lineage.approximateBirthYear === "number") {
-    return String(lineage.approximateBirthYear);
-  }
+  facts.push({
+    label: "Borikua Taíno",
+    value: formatBorikuaTainoLabel(ancestor.isBorikuaTaino),
+  });
 
-  return "Unknown";
+  return facts;
 }
 
-function getLineageStatusLabel(lineage: EnrollmentMaternalLineageSummary) {
-  const livingStatusLabel = toStatusLabel(
-    lineage.livingStatus ?? lineage.LivingStatus,
+function mapKinshipGroupAncestors(
+  ancestry: EnrollmentAncestryMap | undefined,
+  relations: readonly Readonly<{
+    label: string;
+    relation: EnrollmentAncestryRelation;
+  }>[],
+): ProfileKinshipAncestor[] {
+  const ancestors: ProfileKinshipAncestor[] = [];
+
+  for (const { label, relation } of relations) {
+    const ancestor = ancestry?.[relation];
+
+    if (!hasAncestorContent(ancestor)) {
+      continue;
+    }
+
+    ancestors.push({
+      facts: buildAncestorFacts(ancestor),
+      name: readText(ancestor.name) || emptyValueDash,
+      relation: label,
+    });
+  }
+
+  return ancestors;
+}
+
+function mapKinshipData(
+  accountInfo?: AccountInfoResponse | null,
+): ProfileKinshipData {
+  const ancestry = accountInfo?.enrollment?.ancestry;
+
+  return {
+    description: fallbackKinship.description,
+    groups: kinshipGroupDefinitions.map((group) => ({
+      ancestors: mapKinshipGroupAncestors(ancestry, group.relations),
+      emptyMessage: group.emptyMessage,
+      title: group.title,
+    })),
+    title: fallbackKinship.title,
+  };
+}
+
+function countRecordedAncestors(accountInfo?: AccountInfoResponse | null) {
+  const ancestry = accountInfo?.enrollment?.ancestry;
+
+  return kinshipGroupDefinitions.reduce(
+    (count, group) =>
+      count + mapKinshipGroupAncestors(ancestry, group.relations).length,
+    0,
   );
-
-  return livingStatusLabel || "Recorded";
 }
+
+// -----------------------------
+// DOCUMENTS
+// -----------------------------
 
 type DocumentMap = Record<EnrollmentDocumentType, EnrollmentDocumentRecord[]>;
 
@@ -428,148 +457,9 @@ function getPendingDocumentCount(
   }).length;
 }
 
-function getYearsTraced(entries: readonly ProfileLineageEntry[]) {
-  const years = entries
-    .map((entry) => {
-      const match = entry.born.match(/\b(18|19|20)\d{2}\b/);
-      return match ? Number(match[0]) : null;
-    })
-    .filter((year): year is number => typeof year === "number");
-
-  if (years.length === 0) {
-    return null;
-  }
-
-  const earliestYear = Math.min(...years);
-  const currentYear = new Date().getFullYear();
-
-  return String(Math.max(currentYear - earliestYear, 0));
-}
-
-function mapLineageEntries({
-  accountInfo,
-  authUser,
-}: Readonly<{
-  accountInfo?: AccountInfoResponse | null;
-  authUser: AuthUser;
-}>) {
-  const personalInfo = accountInfo?.enrollment?.personalInfo;
-  const selfName =
-    buildFullName([
-      personalInfo?.firstName,
-      personalInfo?.middleName,
-      personalInfo?.lastName,
-    ]) ||
-    readText(personalInfo?.preferredName) ||
-    readText(accountInfo?.user?.name) ||
-    readText(authUser.name) ||
-    "Member";
-  const selfBorn = formatDateLabel(personalInfo?.dateOfBirth) || "Unknown";
-  const selfPlace =
-    [
-      readText(personalInfo?.cityOfBirth),
-      readText(personalInfo?.countryOfBirth),
-    ]
-      .filter(Boolean)
-      .join(", ") || "Unknown";
-  const entries: ProfileLineageEntry[] = [
-    {
-      born: selfBorn,
-      generation: "1",
-      generationLabel: "You (Current Generation)",
-      name: selfName,
-      place: selfPlace,
-      status: "Current",
-      statusLabel: "Status",
-    },
-  ];
-
-  const maternalLineages = sortMaternalLineages(
-    accountInfo?.enrollment?.maternalLineages ?? [],
-  );
-
-  for (const [index, lineage] of maternalLineages.entries()) {
-    const generationIndex = index + 2;
-    const placeValue =
-      readText(lineage.placeOfBirth) || readText(lineage.regionOfOrigin);
-    const generationLabel =
-      (lineage.relation ? lineageRelationLabel[lineage.relation] : "") ||
-      `Generation ${generationIndex}`;
-
-    entries.push({
-      additionalNotes: readText(lineage.additionalNotes) || undefined,
-      born: getLineageBornLabel(lineage),
-      familyOccupation: readText(lineage.familyOccupation) || undefined,
-      generation: String(generationIndex),
-      generationLabel,
-      maidenName: readText(lineage.maidenName) || undefined,
-      name: readText(lineage.fullName) || "Unknown Ancestor",
-      place: placeValue || "Unknown",
-      status: getLineageStatusLabel(lineage),
-      statusLabel: "Status",
-    });
-  }
-
-  return entries;
-}
-
-function mapLineageTreeData({
-  accountInfo,
-  authUser,
-}: Readonly<{
-  accountInfo?: AccountInfoResponse | null;
-  authUser: AuthUser;
-}>): ProfileLineageTreeData {
-  const personalInfo = accountInfo?.enrollment?.personalInfo;
-  const selfNode = {
-    born: formatDateLabel(personalInfo?.dateOfBirth) || "Unknown",
-    id: "tree-self",
-    name:
-      buildFullName([
-        personalInfo?.firstName,
-        personalInfo?.middleName,
-        personalInfo?.lastName,
-      ]) ||
-      readText(personalInfo?.preferredName) ||
-      readText(accountInfo?.user?.name) ||
-      readText(authUser.name) ||
-      "Member",
-    relation: "You",
-    status:
-      toStatusLabel(
-        accountInfo?.enrollmentStatus ?? accountInfo?.enrollment?.status,
-      ) || "Current Member",
-  };
-
-  const maternalLineagesDescending = [
-    ...sortMaternalLineages(accountInfo?.enrollment?.maternalLineages ?? []),
-  ].reverse();
-
-  const rootNode = maternalLineagesDescending.reduce(
-    (childNode, lineage, index) => {
-      const relation =
-        (lineage.relation ? lineageRelationLabel[lineage.relation] : "") ||
-        `Generation ${maternalLineagesDescending.length - index + 1}`;
-
-      return {
-        born: getLineageBornLabel(lineage),
-        children: [childNode],
-        id: `${readText(lineage.id) || "tree-lineage"}-${index + 1}`,
-        name: readText(lineage.fullName) || "Unknown Ancestor",
-        relation,
-        status: getLineageStatusLabel(lineage),
-      };
-    },
-    selfNode,
-  );
-
-  return {
-    description:
-      "Linear maternal lineage generated from enrollment data in sequential order.",
-    roots: [rootNode],
-    title: profileConfig.lineageTree.title,
-  };
-}
+// -----------------------------
+// PANEL DATA MAPPERS
+// -----------------------------
 
 function mapOverviewData(
   accountInfo?: AccountInfoResponse | null,
@@ -580,35 +470,18 @@ function mapOverviewData(
   const stepState = getResolvedStepState(accountInfo);
   const completedSteps = getCompletedStepsLabel(stepState);
   const totalDocuments = getDocumentCount(enrollment?.documents);
-  const lineageRecordCount = sortMaternalLineages(
-    enrollment?.maternalLineages ?? [],
-  ).length;
+  const recordedAncestors = countRecordedAncestors(accountInfo);
 
   const enrollmentStatus =
     toStatusLabel(accountInfo?.enrollmentStatus ?? enrollment?.status) ||
     (accountInfo?.hasEnrollment ? "Enrollment In Progress" : "Not Started");
 
-  const preferredName =
-    readText(personalInfo?.preferredName) ||
-    buildFullName([
-      personalInfo?.firstName,
-      personalInfo?.middleName,
-      personalInfo?.lastName,
-    ]);
+  const fullName = buildFullName([
+    personalInfo?.firstName,
+    personalInfo?.lastName,
+  ]);
   const phoneTypeLabel = toStatusLabel(contact?.phoneType);
   const phoneLabel = formatPhoneLabel(contact?.phoneNumber);
-  const emergencyContact = readText(enrollment?.emergencyContact?.fullName);
-  const emergencyContactRelation = toStatusLabel(
-    enrollment?.emergencyContact?.relationship,
-  );
-  const currentAddress = resolveCurrentAddressLabel(accountInfo);
-  const specialSkills = readText(personalInfo?.specialSkills);
-  const fromApiCulturalConnections = (enrollment?.culturalConnections ?? [])
-    .map(
-      (connection) =>
-        readText(connection.description) || formatKeyToLabel(connection.key),
-    )
-    .filter(Boolean);
 
   return {
     checklist: fallbackOverview.checklist.map((item, index) => {
@@ -633,19 +506,7 @@ function mapOverviewData(
             ? `${phoneLabel} (${phoneTypeLabel})`
             : phoneLabel || missingValueLabel,
       },
-      {
-        ...fallbackOverview.contactFacts[2],
-        value: currentAddress || missingValueLabel,
-      },
-      {
-        ...fallbackOverview.contactFacts[3],
-        value:
-          emergencyContact && emergencyContactRelation
-            ? `${emergencyContact} (${emergencyContactRelation})`
-            : emergencyContact || missingValueLabel,
-      },
     ],
-    culturalConnections: fromApiCulturalConnections,
     description: fallbackOverview.description,
     metrics: [
       {
@@ -662,13 +523,13 @@ function mapOverviewData(
       },
       {
         ...fallbackOverview.metrics[3],
-        value: String(lineageRecordCount),
+        value: String(recordedAncestors),
       },
     ],
     personalFacts: [
       {
         ...fallbackOverview.personalFacts[0],
-        value: preferredName || missingValueLabel,
+        value: fullName || missingValueLabel,
       },
       {
         ...fallbackOverview.personalFacts[1],
@@ -676,11 +537,11 @@ function mapOverviewData(
       },
       {
         ...fallbackOverview.personalFacts[2],
-        value: readText(personalInfo?.educationLevel) || missingValueLabel,
+        value: toStatusLabel(personalInfo?.maritalStatus) || missingValueLabel,
       },
       {
         ...fallbackOverview.personalFacts[3],
-        value: specialSkills || missingValueLabel,
+        value: toStatusLabel(personalInfo?.identity) || missingValueLabel,
       },
     ],
     title: fallbackOverview.title,
@@ -695,35 +556,20 @@ function mapYucayekeData(
   const stepState = getResolvedStepState(accountInfo);
   const completedSteps = getCompletedStepsLabel(stepState);
   const totalDocuments = getDocumentCount(enrollment?.documents);
-  const maternalLineages = sortMaternalLineages(
-    enrollment?.maternalLineages ?? [],
+  const recordedAncestors = countRecordedAncestors(accountInfo);
+  const kinshipData = mapKinshipData(accountInfo);
+  const declaredYucayeke = readText(personalInfo?.yucayeke);
+  const communityName = declaredYucayeke
+    ? `Yucayeke ${declaredYucayeke}`
+    : personalInfo?.yucayekeUnknown
+      ? "Yucayeke Unknown"
+      : "Yucayeke";
+  const requiredConsents = (enrollment?.consent ?? []).filter(
+    (consent) => consent.required,
   );
-  const culturalConnections = (enrollment?.culturalConnections ?? [])
-    .map(
-      (connection) =>
-        readText(connection.description) || formatKeyToLabel(connection.key),
-    )
-    .filter(Boolean);
-  const currentAddress = resolveAddressByType(accountInfo, "CURRENT");
-  const currentTerritoryParts = [
-    readText(currentAddress?.city),
-    readText(currentAddress?.state),
-    readText(currentAddress?.country),
-  ].filter(Boolean);
-  const currentTerritory = currentTerritoryParts.join(", ");
-  const communityName = readText(currentAddress?.city)
-    ? `Yucayeke ${readText(currentAddress?.city)}`
-    : "Yucayeke";
-  const lineageRegions = Array.from(
-    new Set(
-      maternalLineages
-        .map((lineage) => readText(lineage.regionOfOrigin))
-        .filter(Boolean),
-    ),
-  );
-  const languages = (personalInfo?.languagesSpoken ?? [])
-    .map((language) => readText(language))
-    .filter(Boolean);
+  const acceptedRequiredConsentsCount = requiredConsents.filter(
+    (consent) => consent.accepted,
+  ).length;
   const contactMethod =
     formatPhoneLabel(enrollment?.contact?.phoneNumber) ||
     readText(enrollment?.contact?.email) ||
@@ -734,28 +580,24 @@ function mapYucayekeData(
 
   const circles = [
     {
-      detail: currentTerritory || missingValueLabel,
+      detail: resolveLocation(accountInfo) || missingValueLabel,
       name:
-        buildFullName([
-          personalInfo?.firstName,
-          personalInfo?.middleName,
-          personalInfo?.lastName,
-        ]) ||
-        readText(personalInfo?.preferredName) ||
+        buildFullName([personalInfo?.firstName, personalInfo?.lastName]) ||
         readText(accountInfo?.user?.name) ||
         "Member",
       role: "You",
     },
-    ...maternalLineages.map((lineage) => ({
-      detail:
-        readText(lineage.placeOfBirth) ||
-        readText(lineage.regionOfOrigin) ||
-        missingValueLabel,
-      name: readText(lineage.fullName) || "Unknown Ancestor",
-      role:
-        (lineage.relation ? lineageRelationLabel[lineage.relation] : "") ||
-        "Maternal Ancestor",
-    })),
+    ...kinshipData.groups.flatMap((group) =>
+      group.ancestors.map((ancestor) => ({
+        detail:
+          ancestor.facts.find((fact) => fact.label === "Municipality")
+            ?.value ??
+          ancestor.facts.find((fact) => fact.label === "Nationality")?.value ??
+          missingValueLabel,
+        name: ancestor.name,
+        role: ancestor.relation,
+      })),
+    ),
   ];
 
   return {
@@ -769,7 +611,7 @@ function mapYucayekeData(
       },
       {
         ...fallbackYucayeke.metrics[1],
-        value: String(maternalLineages.length),
+        value: String(recordedAncestors),
       },
       {
         ...fallbackYucayeke.metrics[2],
@@ -777,7 +619,7 @@ function mapYucayekeData(
       },
       {
         ...fallbackYucayeke.metrics[3],
-        value: String(culturalConnections.length),
+        value: `${acceptedRequiredConsentsCount} / ${requiredConsents.length}`,
       },
     ],
     rhythm: [
@@ -791,38 +633,35 @@ function mapYucayekeData(
       },
       {
         ...fallbackYucayeke.rhythm[2],
-        value:
-          culturalConnections[0] ||
-          readText(personalInfo?.specialSkills) ||
-          missingValueLabel,
+        value: toStatusLabel(personalInfo?.identity) || missingValueLabel,
       },
       {
         ...fallbackYucayeke.rhythm[3],
         value:
           formatDateLabel(accountInfo?.lastUpdatedAt) ||
           formatDateLabel(accountInfo?.user?.updatedAt) ||
-          fallbackYucayeke.rhythm[3].value,
+          missingValueLabel,
       },
     ],
     territoryFacts: [
       {
         ...fallbackYucayeke.territoryFacts[0],
-        value: currentTerritory || missingValueLabel,
+        value: readText(personalInfo?.cityOfBirth) || missingValueLabel,
       },
       {
         ...fallbackYucayeke.territoryFacts[1],
         value:
-          readText(personalInfo?.municipalityOfBirth) ||
-          readText(personalInfo?.cityOfBirth) ||
-          missingValueLabel,
+          readText(personalInfo?.municipalityOfBirth) || missingValueLabel,
       },
       {
         ...fallbackYucayeke.territoryFacts[2],
-        value: lineageRegions.join(", ") || missingValueLabel,
+        value: readText(personalInfo?.countryOfBirth) || missingValueLabel,
       },
       {
         ...fallbackYucayeke.territoryFacts[3],
-        value: languages.join(", ") || missingValueLabel,
+        value:
+          declaredYucayeke ||
+          (personalInfo?.yucayekeUnknown ? "Unknown" : missingValueLabel),
       },
     ],
     title: fallbackYucayeke.title,
@@ -993,7 +832,7 @@ function mapActivityData({
   const nextActions: string[] = [];
 
   if (stepState && !stepState["3"]) {
-    nextActions.push("Complete Cultural Connections in Step 3.");
+    nextActions.push("Complete Paternal Kinship in Step 3.");
   }
 
   if (missingRequiredDocuments.length > 0) {
@@ -1242,12 +1081,10 @@ export function buildProfileViewData({
   authUser,
 }: BuildProfileViewDataArgs): ProfileViewData {
   const userName = readText(accountInfo?.user?.name) || readText(authUser.name);
-  const enrollmentName =
-    buildFullName([
-      accountInfo?.enrollment?.personalInfo?.firstName,
-      accountInfo?.enrollment?.personalInfo?.middleName,
-      accountInfo?.enrollment?.personalInfo?.lastName,
-    ]) || readText(accountInfo?.enrollment?.personalInfo?.preferredName);
+  const enrollmentName = buildFullName([
+    accountInfo?.enrollment?.personalInfo?.firstName,
+    accountInfo?.enrollment?.personalInfo?.lastName,
+  ]);
   const name = enrollmentName || userName || "Member";
   const statusLabel =
     toStatusLabel(
@@ -1283,23 +1120,6 @@ export function buildProfileViewData({
         : `Born: ${notAvailableLabel}`,
     },
   ];
-  const lineageEntries = mapLineageEntries({ accountInfo, authUser });
-  const totalDocuments = getDocumentCount(accountInfo?.enrollment?.documents);
-  const yearsTraced = getYearsTraced(lineageEntries);
-  const lineageStats: ProfileLineageStat[] = [
-    {
-      ...fallbackLineageStats[0],
-      value: String(lineageEntries.length),
-    },
-    {
-      ...fallbackLineageStats[1],
-      value: String(totalDocuments),
-    },
-    {
-      ...fallbackLineageStats[2],
-      value: yearsTraced ?? "0",
-    },
-  ];
 
   return {
     activityData: mapActivityData({ accountInfo }),
@@ -1310,9 +1130,7 @@ export function buildProfileViewData({
       portraitSrc: resolvePortraitSrc(accountInfo),
     },
     details,
-    lineageTreeData: mapLineageTreeData({ accountInfo, authUser }),
-    lineageEntries,
-    lineageStats,
+    kinshipData: mapKinshipData(accountInfo),
     overviewData: mapOverviewData(accountInfo),
     yucayekeData: mapYucayekeData(accountInfo),
     documentsData: mapDocumentsData(accountInfo),

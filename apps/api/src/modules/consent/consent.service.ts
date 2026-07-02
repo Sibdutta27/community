@@ -1,5 +1,5 @@
 import { DatabaseService } from '@/database/database.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { EnrollmentService } from '../enrollment/enrollment.service';
 
 @Injectable()
@@ -167,7 +167,7 @@ export class ConsentService {
 
         // Validate if enrollment exists
         if ( !enrollment ) {
-            throw new Error('Enrollment not found for the user');
+            throw new NotFoundException('Enrollment not found for the user');
         }
         
         const enrollmentId = 'id' in enrollment ? enrollment.id : enrollment.enrollment.id;
@@ -192,7 +192,7 @@ export class ConsentService {
         const hasAcceptedAllRequiredConsents = requiredConsentIds.every(requiredConsentId => consentItemIdsToAccept.includes(requiredConsentId));
 
         if ( !hasAcceptedAllRequiredConsents ) {
-            throw new Error('User must accept all required consents');
+            throw new BadRequestException('User must accept all required consents');
         }
 
         // update the enrollment with the accepted consents

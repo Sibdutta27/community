@@ -1,3 +1,4 @@
+import { BadRequestException } from "@nestjs/common";
 import { Gender, Identity, MaritalStatus, Sex } from "@/generated/prisma/enums";
 
 /**
@@ -58,7 +59,7 @@ export function mapGender(genderStr: string | undefined | null): Gender | undefi
 
     const gender = GENDER_MAP[genderStr.toUpperCase()];
     if (!gender) {
-        throw new Error(`Invalid gender value: ${genderStr}`);
+        throw new BadRequestException(`Invalid gender value: ${genderStr}`);
     }
     return gender;
 }
@@ -75,24 +76,24 @@ export function mapSex(sexStr: string | undefined | null): Sex | undefined {
 
     const sex = SEX_MAP[sexStr.toUpperCase()];
     if (!sex) {
-        throw new Error(`Invalid sex value: ${sexStr}`);
+        throw new BadRequestException(`Invalid sex value: ${sexStr}`);
     }
     return sex;
 }
 
 /**
  * mapMaritalStatus: A utility function that takes a string input and returns the corresponding MaritalStatus enum value.
- * It defaults to SINGLE if the input is not provided, and throws an error if the input is invalid.
+ * The field is optional, so it returns undefined when no value is provided, and throws an error if the input is invalid.
  */
-export function mapMaritalStatus(maritalStatusStr: string | undefined): MaritalStatus {
+export function mapMaritalStatus(maritalStatusStr: string | undefined | null): MaritalStatus | undefined {
 
     if ( !maritalStatusStr ) {
-        return MARITAL_STATUS_MAP.SINGLE; // Default to SINGLE if not provided
+        return undefined; // Optional field — leave unset if not provided
     }
 
     const maritalStatus = MARITAL_STATUS_MAP[maritalStatusStr.toUpperCase()];
     if (!maritalStatus) {
-        throw new Error(`Invalid marital status value: ${maritalStatusStr}`);
+        throw new BadRequestException(`Invalid marital status value: ${maritalStatusStr}`);
     }
     return maritalStatus;
 }
@@ -109,7 +110,7 @@ export function mapIdentity(identityStr: string | undefined | null): Identity | 
 
     const identity = IDENTITY_MAP[identityStr.toUpperCase()];
     if (!identity) {
-        throw new Error(`Invalid identity value: ${identityStr}`);
+        throw new BadRequestException(`Invalid identity value: ${identityStr}`);
     }
     return identity;
 }

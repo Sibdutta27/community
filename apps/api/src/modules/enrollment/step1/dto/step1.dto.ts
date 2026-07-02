@@ -9,7 +9,7 @@ import {
 
 import { Type } from 'class-transformer';
 
-import { Identity } from '@/generated/prisma/enums';
+import { Gender, Identity, MaritalStatus, Sex } from '@/generated/prisma/enums';
 
 /**
  * Step 1 — Demographics (flat).
@@ -42,17 +42,17 @@ export class Step1Dto {
     @IsNotEmpty()
     countryOfBirth: string;
 
-    @IsString()
+    @IsEnum(Sex)
     @IsOptional()
-    sex?: string;
+    sex?: Sex;
 
-    @IsString()
+    @IsEnum(Gender)
     @IsOptional()
-    gender?: string;
+    gender?: Gender;
 
-    @IsString()
+    @IsEnum(MaritalStatus)
     @IsOptional()
-    maritalStatus?: string;
+    maritalStatus?: MaritalStatus;
 
     @IsString()
     @IsOptional()

@@ -62,9 +62,7 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
       <ProfileLineageSection
         activityData={profileViewData.activityData}
         documentsData={profileViewData.documentsData}
-        lineageEntries={profileViewData.lineageEntries}
-        lineageTreeData={profileViewData.lineageTreeData}
-        lineageStats={profileViewData.lineageStats}
+        kinshipData={profileViewData.kinshipData}
         overviewData={profileViewData.overviewData}
         settingsData={profileViewData.settingsData}
         yucayekeData={profileViewData.yucayekeData}

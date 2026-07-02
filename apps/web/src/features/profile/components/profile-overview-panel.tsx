@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 
-import sharedStyles from "../styles/profile-shared.module.scss";
 import type { ProfileOverviewData } from "../config/profile-config";
 
 export function ProfileOverviewPanel({
@@ -82,59 +81,33 @@ export function ProfileOverviewPanel({
         </article>
       </div>
 
-      <div className="grid gap-3 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-        <article className="rounded-[16px] border border-[#d7d1c3] bg-white p-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.4)] sm:p-5">
-          <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#245f6d] sm:text-[16px]">
-            Enrollment Checklist
-          </h3>
-          <ul className="mt-3 space-y-2.5">
-            {overviewData.checklist.map((item) => (
-              <li
-                key={item.label}
-                className="flex items-center justify-between gap-3 rounded-[10px] border border-[#e2dfd4] bg-[#fbfcfb] px-3 py-2.5"
+      <article className="rounded-[16px] border border-[#d7d1c3] bg-white p-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.4)] sm:p-5">
+        <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#245f6d] sm:text-[16px]">
+          Enrollment Checklist
+        </h3>
+        <ul className="mt-3 space-y-2.5">
+          {overviewData.checklist.map((item) => (
+            <li
+              key={item.label}
+              className="flex items-center justify-between gap-3 rounded-[10px] border border-[#e2dfd4] bg-[#fbfcfb] px-3 py-2.5"
+            >
+              <span className="text-[12px] font-medium text-[#2f4f56] sm:text-[13px]">
+                {item.label}
+              </span>
+              <span
+                className={cn(
+                  "inline-flex h-6 items-center rounded-full px-2.5 text-[11px] font-semibold",
+                  item.completed
+                    ? "bg-[#e6f5ef] text-[#1f6b55]"
+                    : "bg-[#f3e7d8] text-[#936728]",
+                )}
               >
-                <span className="text-[12px] font-medium text-[#2f4f56] sm:text-[13px]">
-                  {item.label}
-                </span>
-                <span
-                  className={cn(
-                    "inline-flex h-6 items-center rounded-full px-2.5 text-[11px] font-semibold",
-                    item.completed
-                      ? "bg-[#e6f5ef] text-[#1f6b55]"
-                      : "bg-[#f3e7d8] text-[#936728]",
-                  )}
-                >
-                  {item.completed ? "Completed" : "Pending"}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </article>
-
-        <article className="rounded-[16px] border border-[#d7d1c3] bg-white p-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.4)] sm:p-5">
-          <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#245f6d] sm:text-[16px]">
-            Cultural Connections
-          </h3>
-          {overviewData.culturalConnections.length > 0 ? (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {overviewData.culturalConnections.map((item, index) => (
-                <span
-                  key={`${item}-${index}`}
-                  className="inline-flex rounded-full border border-[#c8d7dc] bg-[#eef6f8] px-3 py-1.5 text-[12px] font-medium text-[#20535f] sm:text-[13px]"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <div className={cn(sharedStyles.emptyStatePlain, "mt-3 px-4 py-6")}>
-              <p className={cn(sharedStyles.emptyDescription, "text-[13px]")}>
-                No cultural connection details available.
-              </p>
-            </div>
-          )}
-        </article>
-      </div>
+                {item.completed ? "Completed" : "Pending"}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </article>
     </div>
   );
 }

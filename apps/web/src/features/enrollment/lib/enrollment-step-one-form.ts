@@ -298,9 +298,14 @@ export function mapEnrollmentStepOneFormToPayload(
     ? undefined
     : toOptionalString(values.yucayeke);
   const hasChildren = yesNoToBoolean(values.hasChildren);
-  const hasMinorChildren = hasChildren
-    ? yesNoToBoolean(values.hasMinorChildren)
-    : undefined;
+  // When the user answers "No" to having children, send an explicit false so a
+  // previously saved hasMinorChildren value is cleared instead of kept stale.
+  const hasMinorChildren =
+    hasChildren === undefined
+      ? undefined
+      : hasChildren
+        ? yesNoToBoolean(values.hasMinorChildren)
+        : false;
 
   return {
     firstName: trimValue(values.firstName),

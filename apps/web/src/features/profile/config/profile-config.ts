@@ -1,6 +1,6 @@
 export type ProfileLineageTabValue =
   | "overview"
-  | "lineage"
+  | "kinship"
   | "yucayeke"
   | "documents"
   | "activity"
@@ -18,38 +18,27 @@ export type ProfileDetail = Readonly<{
   value: string;
 }>;
 
-export type ProfileLineageEntry = Readonly<{
-  additionalNotes?: string;
-  born: string;
-  familyOccupation?: string;
-  generation: string;
-  generationLabel: string;
-  maidenName?: string;
-  name: string;
-  place: string;
-  status: string;
-  statusLabel: string;
+export type ProfileKinshipFact = Readonly<{
+  label: string;
+  value: string;
 }>;
 
-export type ProfileLineageTreeNode = Readonly<{
-  born: string;
-  id: string;
+export type ProfileKinshipAncestor = Readonly<{
+  facts: readonly ProfileKinshipFact[];
   name: string;
   relation: string;
-  status: string;
-  children?: readonly ProfileLineageTreeNode[];
 }>;
 
-export type ProfileLineageTreeData = Readonly<{
-  description: string;
-  roots: readonly ProfileLineageTreeNode[];
+export type ProfileKinshipGroup = Readonly<{
+  ancestors: readonly ProfileKinshipAncestor[];
+  emptyMessage: string;
   title: string;
 }>;
 
-export type ProfileLineageStat = Readonly<{
+export type ProfileKinshipData = Readonly<{
   description: string;
-  label: string;
-  value: string;
+  groups: readonly ProfileKinshipGroup[];
+  title: string;
 }>;
 
 export type ProfileLineageTab = Readonly<{
@@ -84,7 +73,6 @@ export type ProfileOverviewChecklistItem = Readonly<{
 export type ProfileOverviewData = Readonly<{
   checklist: readonly ProfileOverviewChecklistItem[];
   contactFacts: readonly ProfileOverviewFact[];
-  culturalConnections: readonly string[];
   description: string;
   metrics: readonly ProfileOverviewMetric[];
   personalFacts: readonly ProfileOverviewFact[];
@@ -223,116 +211,23 @@ export const profileConfig = {
       value: "Born: March 12, 1985",
     },
   ],
-  lineageEntries: [
-    {
-      born: "March 12, 1985",
-      generation: "1",
-      generationLabel: "You (Current Generation)",
-      name: "Carmen María Rodríguez Torres",
-      place: "Arecibo, PR",
-      status: "Verified",
-      statusLabel: "Status",
-    },
-    {
-      born: "March 12, 1985",
-      generation: "2",
-      generationLabel: "Mother",
-      name: "María Elena Torres Rivera",
-      place: "Arecibo, PR",
-      status: "Verified",
-      statusLabel: "Status",
-    },
-    {
-      born: "March 12, 1985",
-      generation: "3",
-      generationLabel: "Maternal Grandmother",
-      name: "Ana Isabel Rivera Colón",
-      place: "Arecibo, PR",
-      status: "Verified",
-      statusLabel: "Status",
-    },
-  ],
-  lineageTree: {
+  kinship: {
     description:
-      "This tree is structured to support future growth as more linked family members are connected from admin records.",
-    roots: [
+      "Your recorded maternal and paternal kinship from the enrollment form.",
+    groups: [
       {
-        born: "1904",
-        children: [
-          {
-            born: "1932",
-            children: [
-              {
-                born: "1958",
-                children: [
-                  {
-                    born: "1985",
-                    id: "tree-you",
-                    name: "Carmen María Rodríguez Torres",
-                    relation: "You",
-                    status: "Current Member",
-                  },
-                  {
-                    born: "1988",
-                    id: "tree-sibling",
-                    name: "Elena Rodríguez Torres",
-                    relation: "Maternal Sibling Branch",
-                    status: "Linked Relative",
-                  },
-                ],
-                id: "tree-mother",
-                name: "María Elena Torres Rivera",
-                relation: "Mother",
-                status: "Verified Ancestor",
-              },
-            ],
-            id: "tree-grandmother",
-            name: "Ana Isabel Rivera Colón",
-            relation: "Maternal Grandmother",
-            status: "Verified Ancestor",
-          },
-          {
-            born: "1938",
-            children: [
-              {
-                born: "1964",
-                id: "tree-great-aunt-branch",
-                name: "Luz Rivera Colón",
-                relation: "Great Aunt Branch",
-                status: "Linked Relative",
-              },
-            ],
-            id: "tree-grand-aunt",
-            name: "Rosa Isabel Rivera Colón",
-            relation: "Grandmother Sibling Branch",
-            status: "Linked Relative",
-          },
-        ],
-        id: "tree-great-grandmother",
-        name: "Micaela Colón de Rivera",
-        relation: "Maternal Great Grandmother",
-        status: "Documented Ancestor",
+        ancestors: [],
+        emptyMessage: "No maternal kinship recorded yet.",
+        title: "Maternal Line",
+      },
+      {
+        ancestors: [],
+        emptyMessage: "No paternal kinship recorded yet.",
+        title: "Paternal Line",
       },
     ],
-    title: "Family Tree View",
+    title: "Kinship & Ancestry",
   },
-  lineageStats: [
-    {
-      description: "Documented maternal line",
-      label: "Generations",
-      value: "6",
-    },
-    {
-      description: "Supporting records verified",
-      label: "Documents",
-      value: "17",
-    },
-    {
-      description: "Lineage traced back to 1847",
-      label: "Years",
-      value: "117",
-    },
-  ],
   lineageTabs: [
     {
       iconSrc: "/icons/profile/overview.svg",
@@ -341,8 +236,8 @@ export const profileConfig = {
     },
     {
       iconSrc: "/icons/profile/lineage.svg",
-      label: "Lineage",
-      value: "lineage",
+      label: "Kinship",
+      value: "kinship",
     },
     {
       iconSrc: "/icons/profile/yucayeke.svg",
@@ -369,15 +264,15 @@ export const profileConfig = {
     checklist: [
       {
         completed: true,
-        label: "Step 1: Personal Information",
+        label: "Step 1: Demographics",
       },
       {
         completed: true,
-        label: "Step 2: Lineage Information",
+        label: "Step 2: Maternal Kinship",
       },
       {
         completed: false,
-        label: "Step 3: Cultural Connections",
+        label: "Step 3: Paternal Kinship",
       },
       {
         completed: false,
@@ -393,22 +288,9 @@ export const profileConfig = {
         label: "Phone",
         value: "+1 (787) 555-0187",
       },
-      {
-        label: "Current Address",
-        value: "Arecibo, Puerto Rico",
-      },
-      {
-        label: "Emergency Contact",
-        value: "María Elena Torres",
-      },
-    ],
-    culturalConnections: [
-      "Traditional medicinal plant knowledge",
-      "Traditional songs and oral history",
-      "Ceremonial dances and crafts",
     ],
     description:
-      "A quick snapshot of your enrollment, profile details, and submitted lineage progress.",
+      "A quick snapshot of your enrollment, profile details, and recorded kinship progress.",
     metrics: [
       {
         helper: "Current profile stage",
@@ -426,27 +308,27 @@ export const profileConfig = {
         value: "4",
       },
       {
-        helper: "Maternal entries listed",
-        label: "Lineage Records",
+        helper: "Kinship entries recorded",
+        label: "Ancestors Recorded",
         value: "3",
       },
     ],
     personalFacts: [
       {
-        label: "Preferred Name",
-        value: "Carmen María",
+        label: "Full Name",
+        value: "Carmen María Rodríguez",
       },
       {
         label: "Occupation",
         value: "Community Educator",
       },
       {
-        label: "Education",
-        value: "Bachelor Degree",
+        label: "Marital Status",
+        value: "Single",
       },
       {
-        label: "Languages",
-        value: "English, Spanish",
+        label: "Identity",
+        value: "Taíno",
       },
     ],
     title: "Overview",
@@ -471,7 +353,7 @@ export const profileConfig = {
     ],
     communityName: "Yucayeke Guainía",
     description:
-      "Your Yucayeke profile connects your territory, family line, and cultural participation in one place.",
+      "Your Yucayeke profile connects your territory, family line, and enrollment progress in one place.",
     metrics: [
       {
         helper: "Enrollment tasks completed",
@@ -479,8 +361,8 @@ export const profileConfig = {
         value: "2 / 4",
       },
       {
-        helper: "Recorded maternal relatives",
-        label: "Lineage Relatives",
+        helper: "Recorded kinship entries",
+        label: "Ancestors Recorded",
         value: "2",
       },
       {
@@ -489,9 +371,9 @@ export const profileConfig = {
         value: "4",
       },
       {
-        helper: "Declared cultural practices",
-        label: "Cultural Links",
-        value: "3",
+        helper: "Required consents accepted",
+        label: "Consents",
+        value: "2 / 2",
       },
     ],
     rhythm: [
@@ -504,30 +386,30 @@ export const profileConfig = {
         value: "carmen.maria@example.com",
       },
       {
-        label: "Focus Practice",
-        value: "Traditional medicinal plant knowledge",
+        label: "Identity",
+        value: "Taíno",
       },
       {
-        label: "Next Gathering",
+        label: "Last Update",
         value: "Community circle planning in progress",
       },
     ],
     territoryFacts: [
       {
-        label: "Current Territory",
-        value: "Arecibo, Puerto Rico",
+        label: "Birth City",
+        value: "Arecibo",
       },
       {
         label: "Birth Municipality",
         value: "Arecibo",
       },
       {
-        label: "Lineage Region",
-        value: "West Bengal",
+        label: "Birth Country",
+        value: "Puerto Rico",
       },
       {
-        label: "Languages",
-        value: "English, Spanish",
+        label: "Declared Yucayeke",
+        value: "Yucayeke Guainía",
       },
     ],
     title: "Yucayeke",
@@ -680,8 +562,8 @@ export const profileConfig = {
       },
     ],
     nextActions: [
-      "Complete Cultural Connections in Step 3.",
-      "Upload all required lineage files in Step 4.",
+      "Complete Paternal Kinship in Step 3.",
+      "Upload all required files in Step 4.",
       "Check pending file statuses after admin review.",
     ],
     title: "Activity",
@@ -821,9 +703,7 @@ export const profileConfig = {
 } as const satisfies Readonly<{
   copy: ProfileCopy;
   details: readonly ProfileDetail[];
-  lineageEntries: readonly ProfileLineageEntry[];
-  lineageTree: ProfileLineageTreeData;
-  lineageStats: readonly ProfileLineageStat[];
+  kinship: ProfileKinshipData;
   lineageTabs: readonly ProfileLineageTab[];
   overview: ProfileOverviewData;
   yucayeke: ProfileYucayekeData;

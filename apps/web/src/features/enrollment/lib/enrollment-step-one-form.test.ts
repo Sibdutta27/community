@@ -255,7 +255,7 @@ describe("mapEnrollmentStepOneFormToPayload (flat backend contract)", () => {
     expect(payload.yucayekeUnknown).toBe(true);
   });
 
-  it("only sends hasMinorChildren when the user has children", () => {
+  it("explicitly clears hasMinorChildren when the user has no children", () => {
     const payload = mapEnrollmentStepOneFormToPayload({
       ...buildValidFormValues(),
       hasChildren: "NO",
@@ -263,6 +263,19 @@ describe("mapEnrollmentStepOneFormToPayload (flat backend contract)", () => {
     });
 
     expect(payload.hasChildren).toBe(false);
+    // Flipping YES -> NO must overwrite a previously saved value, so the
+    // payload sends an explicit false instead of omitting the field.
+    expect(payload.hasMinorChildren).toBe(false);
+  });
+
+  it("omits hasMinorChildren when the children question is unanswered", () => {
+    const payload = mapEnrollmentStepOneFormToPayload({
+      ...buildValidFormValues(),
+      hasChildren: "",
+      hasMinorChildren: "YES",
+    });
+
+    expect(payload.hasChildren).toBeUndefined();
     expect(payload.hasMinorChildren).toBeUndefined();
   });
 

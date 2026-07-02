@@ -6,11 +6,8 @@ import { cn } from "@/lib/utils";
 
 import sharedStyles from "../styles/profile-shared.module.scss";
 import { ProfileActivityPanel } from "./profile-activity-panel";
-import { ProfileLineageStatCards } from "./profile-lineage-stat-cards";
+import { ProfileKinshipPanel } from "./profile-kinship-panel";
 import { ProfileLineageTabs } from "./profile-lineage-tabs";
-import { ProfileLineageTable } from "./profile-lineage-table";
-import { ProfileLineageTree } from "./profile-lineage-tree";
-import { ProfileLineageViewToggle } from "./profile-lineage-view-toggle";
 import { ProfileDocumentsPanel } from "./profile-documents-panel";
 import { ProfileOverviewPanel } from "./profile-overview-panel";
 import { ProfileSettingsPanel } from "./profile-settings-panel";
@@ -19,21 +16,15 @@ import {
   type ProfileActivityData,
   profileConfig,
   type ProfileDocumentsData,
-  type ProfileLineageEntry,
-  type ProfileLineageStat,
+  type ProfileKinshipData,
   type ProfileLineageTabValue,
-  type ProfileLineageTreeData,
   type ProfileOverviewData,
   type ProfileSettingsData,
   type ProfileYucayekeData,
 } from "../config/profile-config";
 
-type ViewMode = "table" | "tree";
-
 export function ProfileLineageSection({
-  lineageEntries,
-  lineageTreeData,
-  lineageStats,
+  kinshipData,
   overviewData,
   yucayekeData,
   documentsData,
@@ -41,9 +32,7 @@ export function ProfileLineageSection({
   settingsData,
 }: Readonly<{
   activityData: ProfileActivityData;
-  lineageEntries: readonly ProfileLineageEntry[];
-  lineageTreeData: ProfileLineageTreeData;
-  lineageStats: readonly ProfileLineageStat[];
+  kinshipData: ProfileKinshipData;
   overviewData: ProfileOverviewData;
   yucayekeData: ProfileYucayekeData;
   documentsData: ProfileDocumentsData;
@@ -51,7 +40,6 @@ export function ProfileLineageSection({
 }>) {
   const [activeTab, setActiveTab] =
     useState<ProfileLineageTabValue>("overview");
-  const [viewMode, setViewMode] = useState<ViewMode>("table");
   const tabPanelBaseId = useId();
   const activeTabLabel =
     profileConfig.lineageTabs.find((tab) => tab.value === activeTab)?.label ??
@@ -76,6 +64,14 @@ export function ProfileLineageSection({
             role="tabpanel"
           >
             <ProfileOverviewPanel overviewData={overviewData} />
+          </div>
+        ) : activeTab === "kinship" ? (
+          <div
+            aria-labelledby={`${tabPanelBaseId}-kinship-tab`}
+            id={`${tabPanelBaseId}-kinship-panel`}
+            role="tabpanel"
+          >
+            <ProfileKinshipPanel kinshipData={kinshipData} />
           </div>
         ) : activeTab === "yucayeke" ? (
           <div
@@ -109,37 +105,6 @@ export function ProfileLineageSection({
           >
             <ProfileSettingsPanel settingsData={settingsData} />
           </div>
-        ) : activeTab === "lineage" ? (
-          <div
-            aria-labelledby={`${tabPanelBaseId}-lineage-tab`}
-            id={`${tabPanelBaseId}-lineage-panel`}
-            role="tabpanel"
-          >
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-5">
-              <div className="max-w-3xl">
-                <h2 className="text-[1.45rem] leading-[1.05] font-semibold tracking-[-0.04em] text-[#245f6d] sm:text-[1.7rem] lg:text-[2rem]">
-                  Maternal Lineage Summary
-                </h2>
-                <p className="mt-2 text-[0.88rem] leading-5 text-[#245f6d] sm:text-[0.93rem] lg:text-[0.98rem]">
-                  Your documented ancestral line connecting you to Indigenous
-                  Taíno heritage
-                </p>
-              </div>
-
-              <ProfileLineageViewToggle
-                value={viewMode}
-                onChange={setViewMode}
-              />
-            </div>
-
-            {viewMode === "table" ? (
-              <ProfileLineageTable entries={lineageEntries} />
-            ) : (
-              <ProfileLineageTree treeData={lineageTreeData} />
-            )}
-
-            <ProfileLineageStatCards stats={lineageStats} />
-          </div>
         ) : (
           <div
             aria-labelledby={`${tabPanelBaseId}-${activeTab}-tab`}
@@ -161,7 +126,7 @@ export function ProfileLineageSection({
                 "mt-2 text-[13px] sm:text-[14px]",
               )}
             >
-              This section is not implemented yet. Overview, Lineage, Yucayeke,
+              This section is not implemented yet. Overview, Kinship, Yucayeke,
               Documents, Activity, and Settings tabs are currently available.
             </p>
           </div>
