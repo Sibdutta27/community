@@ -54,7 +54,7 @@ export function BrandMark({
             className={variant.image}
             fill
             sizes={compact ? "44px" : "56px"}
-            src="/images/tanoNewLogo.jpg"
+            src="/images/logo.png"
           />
         </div>
       </div>

@@ -13,11 +13,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  icons: {
-    icon: "/images/tanoNewLogo.jpg",
-    apple: "/images/tanoNewLogo.jpg",
-    shortcut: "/images/tanoNewLogo.jpg",
-  },
 };
 
 type RootLayoutProps = Readonly<{
