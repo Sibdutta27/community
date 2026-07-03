@@ -20,11 +20,11 @@ import {
   buildEnrollmentStepFourDocumentMap,
   enrollmentStepFourEvidenceUploadSlots,
   enrollmentStepFourUserPhotoCard,
-  enrollmentStepFourUploadAccept,
   formatEnrollmentDocumentFileSize,
   formatEnrollmentDocumentStatus,
   getEnrollmentDocumentDisplayName,
   getEnrollmentStepFourFileValidationMessage,
+  getEnrollmentStepFourSlotPolicy,
   type EnrollmentStepFourUploadSlot,
   type EnrollmentStepFourUploadSlotId,
 } from "@/features/enrollment/lib/enrollment-step-four-form";
@@ -33,8 +33,6 @@ import type { EnrollmentDocumentRecord } from "@/types/enrollment";
 type UploadTarget = Readonly<{
   slot: EnrollmentStepFourUploadSlot;
 }>;
-
-const uploadFormatBadges = ["PDF", "JPG", "PNG", "WEBP", "10 MB Max"] as const;
 
 function UploadedDocumentRow({
   document,
@@ -72,6 +70,7 @@ function UploadedDocumentRow({
 
 function UploadDropArea({
   accept,
+  badges,
   disabled,
   multiple = false,
   onChange,
@@ -81,6 +80,7 @@ function UploadDropArea({
   uploading,
 }: Readonly<{
   accept: string;
+  badges: readonly string[];
   disabled: boolean;
   multiple?: boolean;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -119,7 +119,7 @@ function UploadDropArea({
       </button>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
-        {uploadFormatBadges.map((badge) => (
+        {badges.map((badge) => (
           <span
             className="bg-surface-muted text-muted-foreground rounded-md px-2 py-1 text-[0.62rem] font-semibold tracking-[0.04em] uppercase"
             key={`${slotId}-${badge}`}
@@ -169,7 +169,10 @@ export function EnrollmentStepFourForm() {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const validationError = getEnrollmentStepFourFileValidationMessage(file);
+    const validationError = getEnrollmentStepFourFileValidationMessage(
+      file,
+      slot.documentType,
+    );
 
     if (validationError) {
       setErrorMessage(validationError);
@@ -301,7 +304,16 @@ export function EnrollmentStepFourForm() {
             </p>
 
             <UploadDropArea
-              accept={enrollmentStepFourUploadAccept}
+              accept={
+                getEnrollmentStepFourSlotPolicy(
+                  enrollmentStepFourUserPhotoCard.documentType,
+                ).accept
+              }
+              badges={
+                getEnrollmentStepFourSlotPolicy(
+                  enrollmentStepFourUserPhotoCard.documentType,
+                ).badges
+              }
               disabled={uploadMutation.isPending}
               onChange={createInputChangeHandler({
                 slot: enrollmentStepFourUserPhotoCard,
@@ -337,6 +349,9 @@ export function EnrollmentStepFourForm() {
         <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-2">
           {enrollmentStepFourEvidenceUploadSlots.map((slot) => {
             const slotDocuments = documentMap[slot.documentType];
+            const slotPolicy = getEnrollmentStepFourSlotPolicy(
+              slot.documentType,
+            );
             const isUploading =
               uploadMutation.isPending && activeUploadSlotId === slot.id;
 
@@ -353,7 +368,8 @@ export function EnrollmentStepFourForm() {
                 </p>
 
                 <UploadDropArea
-                  accept={enrollmentStepFourUploadAccept}
+                  accept={slotPolicy.accept}
+                  badges={slotPolicy.badges}
                   disabled={uploadMutation.isPending}
                   multiple
                   onChange={createInputChangeHandler({ slot })}

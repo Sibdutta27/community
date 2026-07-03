@@ -310,3 +310,25 @@ export type EnrollmentDocumentUploadResponse = Readonly<{
   message: string;
   document: EnrollmentDocumentRecord;
 }>;
+
+export type EnrollmentDocumentPresignRequest = Readonly<{
+  documentType: EnrollmentDocumentType;
+  fileName: string;
+  mimeType: string;
+  fileSize: number;
+}>;
+
+export type EnrollmentDocumentPresignResponse = Readonly<{
+  uploadUrl: string;
+  key: string;
+  headers: Readonly<Record<string, string>>;
+  method: "PUT";
+}>;
+
+export type EnrollmentDocumentConfirmRequest = Readonly<{
+  documentType: EnrollmentDocumentType;
+  key: string;
+  fileName: string;
+  mimeType: string;
+  fileSize: number;
+}>;

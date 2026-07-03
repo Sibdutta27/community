@@ -8,7 +8,21 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { SINGLE_FILE_TYPES, MULTIPLE_FILE_TYPES, DOCUMENT_CONFIG } from './config';
+import {
+    SINGLE_FILE_TYPES,
+    MULTIPLE_FILE_TYPES,
+    getDocumentPolicy,
+    PRESIGNED_UPLOAD_EXPIRES_IN_SECONDS,
+} from './config';
+
+export type PresignUploadInput = Readonly<{
+    documentType: DocumentType;
+    fileName: string;
+    mimeType: string;
+    fileSize: number;
+}>;
+
+export type ConfirmUploadInput = PresignUploadInput & Readonly<{ key: string }>;
 
 @Injectable()
 export class DocumentService {
@@ -57,7 +71,7 @@ export class DocumentService {
 
         // Validate document type and file before proceeding with upload and database operations
         this.ensureSingleType(documentType);
-        this.validateFile(file);
+        this.validateFile(file, documentType);
 
         // Check if a document already exists for the given enrollment and document type
         const existingDocument = await this.database.document.findFirst({
@@ -137,7 +151,7 @@ export class DocumentService {
 
         // Validate document type and file before proceeding with upload and database operations
         this.ensureMultipleType(documentType);
-        this.validateFile(file);
+        this.validateFile(file, documentType);
 
         // Build a unique file name for the new file to be uploaded to S3
         const fileUname = this.buildMultipleFileUname(enrollmentId, documentType);
@@ -239,7 +253,7 @@ export class DocumentService {
 
         // Validate document type and file before proceeding with upload and database operations
         this.ensureSingleType(documentType);
-        this.validateFile(file);
+        this.validateFile(file, documentType);
 
         // Check if a document already exists for the given user and document type
         const existingDocument = await this.database.document.findFirst({
@@ -319,7 +333,7 @@ export class DocumentService {
 
         // Validate document type and file before proceeding with upload and database operations
         this.ensureMultipleType(documentType);
-        this.validateFile(file);
+        this.validateFile(file, documentType);
 
         // Build a unique file name for the new file to be uploaded to S3
         const fileUname = this.buildMultipleFileUname(userId, documentType);
@@ -381,28 +395,243 @@ export class DocumentService {
     }
 
     /**
-     *  Validate the file
+     *  Validate the file against the per-slot document policy.
      */
-    private validateFile(file: Express.Multer.File) {
+    private validateFile(file: Express.Multer.File, documentType: DocumentType) {
         if (!file) {
             throw new BadRequestException('No file provided for upload');
         }
 
-        if (! DOCUMENT_CONFIG.ALLOWED_MIME_TYPES.has(file.mimetype)) {
+        this.validateUploadMetadata(documentType, file.mimetype, file.size);
+    }
+
+    /**
+     * Validate upload metadata (mime type + size) against the per-slot document policy.
+     * Shared by the multipart fallback and the presign/confirm flow.
+     */
+    private validateUploadMetadata(
+        documentType: DocumentType,
+        mimeType: string,
+        fileSize: number,
+    ) {
+        const policy = getDocumentPolicy(documentType);
+
+        if (!policy.allowedMime.includes(mimeType)) {
             throw new BadRequestException(
-                `Invalid file type: ${file.mimetype}. Allowed: ${[
-                    ...DOCUMENT_CONFIG.ALLOWED_MIME_TYPES,
-                ].join(', ')}`,
+                `Invalid file type for ${documentType}: ${mimeType}. Allowed: ${policy.allowedMime.join(', ')}`,
             );
         }
 
-        if (typeof file.size !== 'number' || file.size <= 0) {
+        if (typeof fileSize !== 'number' || fileSize <= 0) {
             throw new BadRequestException('Uploaded file is empty');
         }
 
-        if (file.size > DOCUMENT_CONFIG.MAX_FILE_SIZE) {
-            throw new BadRequestException('File size exceeds the 10 MB limit');
+        if (fileSize > policy.maxSize) {
+            const maxMb = Math.round(policy.maxSize / (1024 * 1024));
+            throw new BadRequestException(
+                `File size exceeds the ${maxMb} MB limit for ${documentType}`,
+            );
         }
+    }
+
+    /**
+     * Ensure the document type is one of the known enrollment upload slots.
+     */
+    private ensureEnrollmentSlotType(documentType: DocumentType) {
+        if (
+            !SINGLE_FILE_TYPES.includes(documentType) &&
+            !MULTIPLE_FILE_TYPES.includes(documentType)
+        ) {
+            throw new BadRequestException(`Unsupported document type: ${documentType}`);
+        }
+    }
+
+    /**
+     * Build the private storage key for a direct (presigned) enrollment upload.
+     * Keys are namespaced per enrollment + document type so ownership can be
+     * verified on confirm with a simple prefix check.
+     */
+    private buildEnrollmentUploadKey(
+        enrollmentId: string,
+        documentType: DocumentType,
+        fileName: string,
+    ): string {
+        const safeFileName =
+            fileName
+                .trim()
+                .replace(/[^A-Za-z0-9._-]+/g, '_')
+                .replace(/^_+|_+$/g, '')
+                .slice(0, 100) || 'file';
+
+        return `${this.enrollmentUploadKeyPrefix(enrollmentId, documentType)}${randomUUID()}-${safeFileName}`;
+    }
+
+    /**
+     * The key prefix that every direct upload for this enrollment + slot must live under.
+     */
+    private enrollmentUploadKeyPrefix(
+        enrollmentId: string,
+        documentType: DocumentType,
+    ): string {
+        return `enrollment/${enrollmentId}/${documentType}/`;
+    }
+
+    /**
+     * Create a presigned PUT URL so the browser can upload the file directly to
+     * private storage, bypassing the API body-size limits. Validates the file
+     * metadata against the per-slot policy before signing.
+     */
+    public async createEnrollmentPresignedUpload(
+        enrollmentId: string,
+        input: PresignUploadInput,
+    ) {
+        const { documentType, fileName, mimeType, fileSize } = input;
+
+        this.ensureEnrollmentSlotType(documentType);
+        this.validateUploadMetadata(documentType, mimeType, fileSize);
+
+        const key = this.buildEnrollmentUploadKey(enrollmentId, documentType, fileName);
+
+        const uploadUrl = await this.s3Service.createPresignedPutUrl(
+            key,
+            mimeType,
+            PRESIGNED_UPLOAD_EXPIRES_IN_SECONDS,
+        );
+
+        return {
+            uploadUrl,
+            key,
+            headers: { 'Content-Type': mimeType },
+            method: 'PUT' as const,
+        };
+    }
+
+    /**
+     * Record a document that was uploaded directly to storage via a presigned PUT.
+     * Verifies the key belongs to this enrollment + slot (prefix check) and
+     * re-validates the per-slot policy before writing the Document record.
+     */
+    public async confirmEnrollmentDocument(
+        enrollmentId: string,
+        input: ConfirmUploadInput,
+    ) {
+        const { documentType, key, fileName, mimeType, fileSize } = input;
+
+        this.ensureEnrollmentSlotType(documentType);
+
+        const expectedPrefix = this.enrollmentUploadKeyPrefix(enrollmentId, documentType);
+        if (!key.startsWith(expectedPrefix) || key.length <= expectedPrefix.length) {
+            throw new BadRequestException(
+                'The uploaded file key does not belong to this enrollment document slot',
+            );
+        }
+
+        this.validateUploadMetadata(documentType, mimeType, fileSize);
+
+        // Single-file slots replace any previous document; multi-file slots append.
+        if (SINGLE_FILE_TYPES.includes(documentType)) {
+            return this.confirmSingleEnrollmentDocument(enrollmentId, input);
+        }
+
+        return this.confirmMultipleEnrollmentDocument(enrollmentId, input);
+    }
+
+    /**
+     * Upsert the Document record for a confirmed single-file direct upload.
+     * The previous storage object (if any) is deleted after the record is saved.
+     */
+    private async confirmSingleEnrollmentDocument(
+        enrollmentId: string,
+        { documentType, key, fileName, mimeType, fileSize }: ConfirmUploadInput,
+    ) {
+        const existingDocument = await this.database.document.findFirst({
+            where: {
+                enrollmentId,
+                type: documentType,
+            },
+        });
+
+        const data = {
+            fileName,
+            fileKey: key,
+            // The bucket is private — store the key and presign GET URLs on read.
+            fileUrl: key,
+            fileSize,
+            mimeType,
+        };
+
+        const savedDocument = await this.database.$transaction(async (tx) => {
+            if (existingDocument) {
+                return await tx.document.update({
+                    where: { id: existingDocument.id },
+                    data,
+                });
+            }
+
+            return await tx.document.create({
+                data: {
+                    enrollmentId,
+                    type: documentType,
+                    ...data,
+                },
+            });
+        });
+
+        // Delete the replaced storage object once the new record is saved.
+        if (existingDocument?.fileKey && existingDocument.fileKey !== key) {
+            void this.safeDeleteFile(existingDocument.fileKey);
+        }
+
+        return {
+            message: existingDocument
+                ? 'Document updated successfully'
+                : 'Document uploaded successfully',
+            document: {
+                id      : savedDocument.id,
+                type    : savedDocument.type,
+                fileName: savedDocument.fileName,
+                fileKey : savedDocument.fileKey,
+                fileSize: savedDocument.fileSize,
+                mimeType: savedDocument.mimeType,
+                url     : await this.s3Service.gets3SignedUrl(savedDocument.fileKey),
+            },
+        };
+    }
+
+    /**
+     * Insert the Document record for a confirmed multi-file direct upload.
+     */
+    private async confirmMultipleEnrollmentDocument(
+        enrollmentId: string,
+        { documentType, key, fileName, mimeType, fileSize }: ConfirmUploadInput,
+    ) {
+        const document = await this.database.$transaction(async (tx) => {
+            return await tx.document.create({
+                data: {
+                    enrollmentId,
+                    type: documentType,
+                    fileName,
+                    fileKey: key,
+                    // The bucket is private — store the key and presign GET URLs on read.
+                    fileUrl: key,
+                    fileSize,
+                    mimeType,
+                },
+            });
+        });
+
+        return {
+            message: 'Document uploaded successfully',
+            document: {
+                id      : document.id,
+                type    : document.type,
+                fileName: document.fileName,
+                fileKey : document.fileKey,
+                fileSize: document.fileSize,
+                mimeType: document.mimeType,
+                url     : await this.s3Service.gets3SignedUrl(document.fileKey),
+            },
+        };
     }
 
     /**

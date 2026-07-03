@@ -7,6 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentEnrollment } from '@/common/decorators/CurrentEnrollment.decoder';
 
 import { DocumentType } from '@/generated/prisma/enums';
+import { ConfirmUploadDto, PresignUploadDto } from './dto/presignUpload.dto';
 
 @Controller('document')
 @UseGuards(
@@ -37,6 +38,32 @@ export class DocumentController {
             documentType,
             file,
         );
+    }
+
+    // ---------------- PRESIGNED DIRECT UPLOAD ----------------
+
+    /**
+     * Step 1 of the direct-to-storage flow: validate the file metadata against
+     * the per-slot policy and hand the browser a presigned PUT URL.
+     */
+    @Post('presign-upload')
+    async presignUpload(
+        @CurrentEnrollment('id') enrollmentId: string,
+        @Body() body: PresignUploadDto,
+    ) {
+        return this.documentService.createEnrollmentPresignedUpload(enrollmentId, body);
+    }
+
+    /**
+     * Step 2 of the direct-to-storage flow: after the browser PUTs the file to
+     * storage, record the Document (ownership + policy re-validated).
+     */
+    @Post('confirm')
+    async confirmUpload(
+        @CurrentEnrollment('id') enrollmentId: string,
+        @Body() body: ConfirmUploadDto,
+    ) {
+        return this.documentService.confirmEnrollmentDocument(enrollmentId, body);
     }
 
     // ---------------- DELETE ----------------

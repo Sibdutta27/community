@@ -56,29 +56,45 @@ export class S3Service {
     }
 
     /**
-     * Generates a signed URL for accessing a file in S3, allowing temporary access to the file without exposing it publicly.
+     * Generates a presigned PUT URL so a client can upload a file directly to storage
+     * (browser -> S3/Supabase) without routing the bytes through the API.
      */
-    async gets3SignedUrl(key: string) {
+    async createPresignedPutUrl(key: string, contentType: string, expiresInSec = 900) {
+
+        const command = new PutObjectCommand({
+            Bucket     : this.configService.getOrThrow<string>('S3_BUCKET'),
+            Key        : key,
+            ContentType: contentType,
+        });
+
+        return await getSignedUrl(this.s3Client, command, { expiresIn: expiresInSec });
+    }
+
+    /**
+     * Generates a presigned GET URL for temporary read access to a private object.
+     */
+    async createPresignedGetUrl(key: string, expiresInSec = 3600) {
 
         const command = new GetObjectCommand({
             Bucket: this.configService.getOrThrow<string>('S3_BUCKET'),
             Key   : key,
         });
 
-        return await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
+        return await getSignedUrl(this.s3Client, command, { expiresIn: expiresInSec });
+    }
+
+    /**
+     * Generates a signed URL for accessing a file in S3, allowing temporary access to the file without exposing it publicly.
+     */
+    async gets3SignedUrl(key: string) {
+        return await this.createPresignedGetUrl(key, 3600);
     }
 
     /**
      * Generates a signed URL for accessing a file in S3, allowing temporary access to the file without exposing it publicly.
      */
     async gets3SignedPublicUrl(key: string) {
-
-        const command = new GetObjectCommand({
-            Bucket: this.configService.getOrThrow<string>('S3_BUCKET'),
-            Key   : key,
-        });
-
-        return await getSignedUrl(this.s3Client, command, { expiresIn: 604800 }); // 7 days
+        return await this.createPresignedGetUrl(key, 604800); // 7 days
     }
 
     /**

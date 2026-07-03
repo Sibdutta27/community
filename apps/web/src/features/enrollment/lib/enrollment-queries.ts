@@ -2,14 +2,17 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { requestJson, requestMultipart } from "@/services/http/fetcher";
+import { requestJson } from "@/services/http/fetcher";
 import type {
   AccountInfoResponse,
   ActiveConsent,
   ConsentAcceptRequest,
   EnrollmentCompleteRequest,
   EnrollmentCompleteResponse,
+  EnrollmentDocumentConfirmRequest,
   EnrollmentDocumentListResponse,
+  EnrollmentDocumentPresignRequest,
+  EnrollmentDocumentPresignResponse,
   EnrollmentDocumentType,
   EnrollmentDocumentUploadResponse,
   EnrollmentStepFourNextResponse,
@@ -193,21 +196,67 @@ type EnrollmentDocumentUploadPayload = Readonly<{
   file: File;
 }>;
 
+const documentStorageUploadErrorMessage =
+  "The file could not be uploaded to storage. Please try again.";
+
+/**
+ * Presigned direct-to-storage upload flow (bypasses the serverless body limit):
+ *   1. POST /api/document/presign-upload — validate against the per-slot
+ *      policy and receive a short-lived presigned PUT URL.
+ *   2. PUT the file straight from the browser to storage (never through the BFF).
+ *   3. POST /api/document/confirm — record the Document for this enrollment.
+ */
 export function useEnrollmentDocumentUploadMutation() {
   return useMutation({
-    mutationFn: ({ documentType, file }: EnrollmentDocumentUploadPayload) => {
-      const formData = new FormData();
-      formData.set("documentType", documentType);
-      formData.set("file", file, file.name);
-
-      return requestMultipart<EnrollmentDocumentUploadResponse>(
-        "/api/document/upload",
-        {
-          method: "POST",
-          body: formData,
-          fallbackMessage: "Unable to upload the selected document right now.",
+    mutationFn: async ({
+      documentType,
+      file,
+    }: EnrollmentDocumentUploadPayload) => {
+      const presign = await requestJson<
+        EnrollmentDocumentPresignResponse,
+        EnrollmentDocumentPresignRequest
+      >("/api/document/presign-upload", {
+        method: "POST",
+        body: {
+          documentType,
+          fileName: file.name,
+          mimeType: file.type,
+          fileSize: file.size,
         },
-      );
+        fallbackMessage: "Unable to prepare the document upload right now.",
+      });
+
+      let storageResponse: Response;
+
+      try {
+        storageResponse = await fetch(presign.uploadUrl, {
+          method: presign.method ?? "PUT",
+          headers: presign.headers,
+          body: file,
+        });
+      } catch {
+        throw new Error(documentStorageUploadErrorMessage);
+      }
+
+      if (!storageResponse.ok) {
+        throw new Error(documentStorageUploadErrorMessage);
+      }
+
+      return requestJson<
+        EnrollmentDocumentUploadResponse,
+        EnrollmentDocumentConfirmRequest
+      >("/api/document/confirm", {
+        method: "POST",
+        body: {
+          documentType,
+          key: presign.key,
+          fileName: file.name,
+          mimeType: file.type,
+          fileSize: file.size,
+        },
+        fallbackMessage:
+          "The file was uploaded but could not be recorded. Please try again.",
+      });
     },
   });
 }

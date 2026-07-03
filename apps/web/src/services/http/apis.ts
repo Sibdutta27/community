@@ -43,5 +43,7 @@ export const endpoints = {
   DOCUMENT: {
     LIST: normalizePath("/document/list"),
     UPLOAD: normalizePath("/document/upload"),
+    PRESIGN_UPLOAD: normalizePath("/document/presign-upload"),
+    CONFIRM: normalizePath("/document/confirm"),
   },
 } as const;

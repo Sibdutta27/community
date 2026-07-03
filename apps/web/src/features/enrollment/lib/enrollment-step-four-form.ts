@@ -4,15 +4,82 @@ import type {
   EnrollmentDocumentType,
 } from "@/types/enrollment";
 
-export const enrollmentStepFourUploadAccept = ".jpg,.jpeg,.png,.webp,.pdf";
-export const enrollmentStepFourMaxFileSizeBytes = 10 * 1024 * 1024;
+const MB = 1024 * 1024;
 
-const enrollmentStepFourAllowedMimeTypes = new Set([
-  "application/pdf",
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-]);
+/**
+ * Per-slot upload policy, mirroring the backend `getDocumentPolicy` map:
+ * which mime types each document slot accepts, the file-input `accept`
+ * attribute, the format badges shown under the drop area, and the size cap.
+ */
+export type EnrollmentStepFourSlotPolicy = Readonly<{
+  accept: string;
+  badges: readonly string[];
+  allowedMimeTypes: ReadonlySet<string>;
+  maxFileSizeBytes: number;
+  maxFileSizeLabel: string;
+  formatLabel: string;
+}>;
+
+const imageSlotPolicy: EnrollmentStepFourSlotPolicy = {
+  accept: ".jpg,.jpeg,.png,.webp",
+  badges: ["JPG", "PNG", "WEBP", "10 MB Max"],
+  allowedMimeTypes: new Set(["image/jpeg", "image/png", "image/webp"]),
+  maxFileSizeBytes: 10 * MB,
+  maxFileSizeLabel: "10 MB",
+  formatLabel: "JPG, PNG, or WEBP",
+};
+
+const documentSlotPolicy: EnrollmentStepFourSlotPolicy = {
+  accept: ".jpg,.jpeg,.png,.webp,.pdf",
+  badges: ["PDF", "JPG", "PNG", "WEBP", "10 MB Max"],
+  allowedMimeTypes: new Set([
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+  ]),
+  maxFileSizeBytes: 10 * MB,
+  maxFileSizeLabel: "10 MB",
+  formatLabel: "PDF, JPG, PNG, or WEBP",
+};
+
+const oralHistorySlotPolicy: EnrollmentStepFourSlotPolicy = {
+  accept: ".jpg,.jpeg,.png,.webp,.pdf,.mp3,.m4a,.wav,.mp4,.mov",
+  badges: ["PDF", "JPG", "PNG", "WEBP", "MP3", "MP4", "MOV", "100 MB Max"],
+  allowedMimeTypes: new Set([
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "audio/mpeg",
+    "audio/mp4",
+    "audio/wav",
+    "audio/x-wav",
+    "video/mp4",
+    "video/quicktime",
+  ]),
+  maxFileSizeBytes: 100 * MB,
+  maxFileSizeLabel: "100 MB",
+  formatLabel: "PDF, JPG, PNG, WEBP, MP3, MP4, or MOV",
+};
+
+const enrollmentStepFourSlotPolicies: Record<
+  EnrollmentDocumentType,
+  EnrollmentStepFourSlotPolicy
+> = {
+  PROFILE_PICTURE: imageSlotPolicy,
+  USER_PHOTO: imageSlotPolicy,
+  GENEALOGICAL_RECORDS: documentSlotPolicy,
+  KINSHIP_LETTERS: documentSlotPolicy,
+  ORAL_HISTORY: oralHistorySlotPolicy,
+  DNA_TESTING: documentSlotPolicy,
+};
+
+export function getEnrollmentStepFourSlotPolicy(
+  documentType: EnrollmentDocumentType,
+): EnrollmentStepFourSlotPolicy {
+  return enrollmentStepFourSlotPolicies[documentType] ?? documentSlotPolicy;
+}
 
 export type EnrollmentStepFourUploadSlot = Readonly<{
   id: string;
@@ -122,17 +189,26 @@ export function buildEnrollmentStepFourDocumentMap(
   return map;
 }
 
-export function getEnrollmentStepFourFileValidationMessage(file: File) {
-  if (!enrollmentStepFourAllowedMimeTypes.has(file.type)) {
-    return "Unsupported file type. Allowed types: JPG, PNG, WEBP, PDF.";
-  }
+/**
+ * Client-side guard run before any upload: checks the file's mime type and
+ * size against the per-slot policy and returns a friendly inline error, or
+ * `null` when the file is acceptable.
+ */
+export function getEnrollmentStepFourFileValidationMessage(
+  file: File,
+  documentType: EnrollmentDocumentType,
+) {
+  const policy = getEnrollmentStepFourSlotPolicy(documentType);
 
   if (file.size <= 0) {
     return "Please choose a non-empty file.";
   }
 
-  if (file.size > enrollmentStepFourMaxFileSizeBytes) {
-    return "File size exceeds the 10 MB limit.";
+  if (
+    !policy.allowedMimeTypes.has(file.type) ||
+    file.size > policy.maxFileSizeBytes
+  ) {
+    return `This slot accepts ${policy.formatLabel} files up to ${policy.maxFileSizeLabel}.`;
   }
 
   return null;
