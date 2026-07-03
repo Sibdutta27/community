@@ -14,8 +14,7 @@ export function AboutHero() {
         className="text-foreground mt-4 max-w-4xl text-[clamp(1.7rem,4.1vw,3.5rem)] leading-[0.98] font-semibold tracking-[-0.055em] sm:mt-5 lg:mt-6"
         variants={fadeInUpItem}
       >
-        About the <span className="text-primary">Taíno Nation</span> Digital
-        Platform
+        About the Taíno Nation Digital Platform
       </motion.h1>
 
       <motion.p

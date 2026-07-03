@@ -27,7 +27,7 @@ const authInfoCards = [
     title: "Your Privacy Matters",
     description:
       "All personal information is encrypted and stored securely on sovereign servers. We never share your data with third parties.",
-    className: "bg-[#F4FBF3]",
+    className: "bg-surface",
   },
   {
     iconSrc: "/icons/auth/community-users.svg",

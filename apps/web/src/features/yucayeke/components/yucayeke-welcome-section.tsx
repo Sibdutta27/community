@@ -9,7 +9,7 @@ export function YucayekeWelcomeSection() {
   const { map, paragraphs, title } = yucayekeWelcomeContent;
 
   return (
-    <section className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(255,235,182,0.42),transparent_36%),linear-gradient(180deg,#fffef7_0%,#fff8e7_100%)]">
+    <section className="overflow-hidden bg-surface">
       <div
         className={cn(sharedStyles.sectionContainer, "py-8 sm:py-10 lg:py-12")}
       >

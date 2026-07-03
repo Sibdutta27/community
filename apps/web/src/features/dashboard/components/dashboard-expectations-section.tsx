@@ -16,7 +16,7 @@ export function DashboardExpectationsSection({
   return (
     <section className="mx-auto w-full max-w-6xl px-1 text-center sm:px-2">
       <div className="mx-auto max-w-4xl">
-        <h2 className="text-[clamp(2rem,4vw,3rem)] leading-tight font-semibold tracking-[-0.05em] text-[#0c4037]">
+        <h2 className="text-[clamp(2rem,4vw,3rem)] leading-tight font-semibold tracking-[-0.05em] text-foreground">
           {title}
         </h2>
 

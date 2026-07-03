@@ -48,7 +48,7 @@ export function YucayekeHero({ stats }: YucayekeHeroProps) {
             className="px-2 py-2 text-center sm:px-3 sm:py-2.5"
             key={item.key}
           >
-            <p className="text-primary text-[1.05rem] leading-tight font-semibold tracking-tight sm:text-[1.35rem]">
+            <p className="text-foreground text-[1.05rem] leading-tight font-semibold tracking-tight sm:text-[1.35rem]">
               {numberFormatter.format(stats[item.key])}
             </p>
             <p className="text-foreground mt-0.5 text-[0.8rem] leading-5 font-normal whitespace-nowrap sm:text-[0.86rem] sm:leading-5">

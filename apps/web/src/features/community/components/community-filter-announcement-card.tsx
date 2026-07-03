@@ -38,7 +38,7 @@ export function CommunityFilterAnnouncementCard({
   tone,
 }: CommunityFilterAnnouncementCardProps) {
   const buttonClassName = isRegistered
-    ? "!bg-[#aa2628] hover:!bg-[#aa2628]"
+    ? "!bg-primary hover:!bg-primary"
     : "!bg-primary hover:!brightness-95";
 
   return (
@@ -61,7 +61,7 @@ export function CommunityFilterAnnouncementCard({
             </div>
 
             <div className="min-w-0 flex-1">
-              <h3 className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0 text-[1rem] leading-[1.16] font-semibold tracking-[-0.04em] text-[#0d4d49] sm:text-[1.28rem]">
+              <h3 className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0 text-[1rem] leading-[1.16] font-semibold tracking-[-0.04em] text-foreground sm:text-[1.28rem]">
                 <span>{title} -</span>
                 <span className="whitespace-nowrap">{dateLabel}</span>
               </h3>

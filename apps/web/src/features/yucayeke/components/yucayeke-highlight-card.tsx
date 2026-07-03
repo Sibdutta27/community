@@ -13,16 +13,12 @@ type YucayekeHighlightCardProps = Readonly<{
   tone: YucayekeHighlightTone;
 }>;
 
+// Governance restyle: one neutral charcoal tile for every highlight — the
+// white icons stay legible without multicolor tiles.
 const toneClasses: Record<YucayekeHighlightTone, { iconBox: string }> = {
-  teal: {
-    iconBox: "bg-[linear-gradient(135deg,#1e8fb4_0%,#2ab2cb_100%)]",
-  },
-  copper: {
-    iconBox: "bg-[linear-gradient(135deg,#9b4e1f_0%,#c96d35_100%)]",
-  },
-  green: {
-    iconBox: "bg-[linear-gradient(135deg,#156f59_0%,#24856c_100%)]",
-  },
+  teal: { iconBox: "bg-foreground" },
+  copper: { iconBox: "bg-foreground" },
+  green: { iconBox: "bg-foreground" },
 };
 
 export function YucayekeHighlightCard({
@@ -34,7 +30,7 @@ export function YucayekeHighlightCard({
   const toneClass = toneClasses[tone];
 
   return (
-    <article className="flex h-full flex-col rounded-[1.6rem] border border-[#d8d2bf] bg-white/88 px-4 py-4 shadow-[0_18px_42px_-38px_rgba(16,47,52,0.3)] backdrop-blur-sm sm:px-5 sm:py-5">
+    <article className="border-border flex h-full flex-col rounded-[1.6rem] border bg-white/88 px-4 py-4 shadow-[0_18px_42px_-38px_rgba(31,30,28,0.3)] backdrop-blur-sm sm:px-5 sm:py-5">
       <div
         className={cn(
           "flex h-12 w-12 items-center justify-center rounded-xl",
@@ -51,11 +47,11 @@ export function YucayekeHighlightCard({
         />
       </div>
 
-      <h3 className="mt-3 text-[1.45rem] leading-tight font-semibold tracking-tight text-[#083b34] sm:text-[1.55rem]">
+      <h3 className="text-foreground mt-3 text-[1.45rem] leading-tight font-semibold tracking-tight sm:text-[1.55rem]">
         {title}
       </h3>
 
-      <p className="mt-2 max-w-[18rem] text-[0.9rem] leading-6 text-[#263437]/78 sm:text-[0.95rem] sm:leading-6">
+      <p className="text-muted-foreground mt-2 max-w-[18rem] text-[0.9rem] leading-6 sm:text-[0.95rem] sm:leading-6">
         {description}
       </p>
     </article>

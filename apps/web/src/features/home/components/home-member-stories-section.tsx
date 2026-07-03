@@ -62,7 +62,7 @@ export function HomeMemberStoriesSection() {
             className={cn(
               sharedStyles.sectionBadge,
               poppins.className,
-              "bg-[#DDF4EF] px-4.5 py-1.5 text-[0.8rem] tracking-[-0.02em] text-[#163B35] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]",
+              "border-border bg-surface-muted border px-4.5 py-1.5 text-[0.8rem] tracking-[-0.02em] text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]",
             )}
             variants={fadeInUpItem}
           >

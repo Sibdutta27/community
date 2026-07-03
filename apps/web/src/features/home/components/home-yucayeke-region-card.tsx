@@ -19,7 +19,7 @@ export function HomeYucayekeRegionCard({
 }: HomeYucayekeRegionCardProps) {
   return (
     <motion.article
-      className="rounded-[0.8rem] border border-[#E8DFB8] bg-[#F1EED0] px-3 py-3.5 text-center shadow-[0_14px_30px_-30px_rgba(81,74,33,0.18)]"
+      className="rounded-[0.8rem] border-border bg-surface border px-3 py-3.5 text-center shadow-[0_14px_30px_-30px_rgba(31,30,28,0.14)]"
       variants={fadeInUpItem}
     >
       <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-[0.7rem] bg-white/55">
@@ -33,7 +33,7 @@ export function HomeYucayekeRegionCard({
         />
       </div>
 
-      <h3 className="mt-2 text-[0.8rem] leading-[1.22] font-semibold text-[#174F47]">
+      <h3 className="mt-2 text-[0.8rem] leading-[1.22] font-semibold text-foreground">
         {title}
       </h3>
 

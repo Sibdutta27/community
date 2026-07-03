@@ -20,7 +20,7 @@ const supportCards: readonly SupportCard[] = [
   {
     kind: "email",
     iconSrc: "/icons/auth/email-support..svg",
-    iconBgClassName: "bg-primary",
+    iconBgClassName: "bg-foreground",
     title: "Email Support",
     description: "Send us a detailed message",
     contactLabel: "support@tainonation.org",
@@ -29,7 +29,7 @@ const supportCards: readonly SupportCard[] = [
   {
     kind: "chat",
     iconSrc: "/icons/auth/chat-support..svg",
-    iconBgClassName: "bg-accent",
+    iconBgClassName: "bg-foreground",
     title: "Chat in Forums",
     description: "Post your concern in forums",
   },
@@ -118,7 +118,7 @@ export function SupportSection() {
             <p
               className={cn(
                 poppins.className,
-                "text-primary text-[0.76rem] font-semibold tracking-[-0.02em] sm:text-[0.8rem]",
+                "text-foreground text-[0.76rem] font-semibold tracking-[-0.02em] sm:text-[0.8rem]",
               )}
             >
               We&apos;re Here to Help

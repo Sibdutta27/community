@@ -39,7 +39,7 @@ export function ServiceListCard({
   return (
     <article className="flex h-full max-w-[31rem] flex-col rounded-[1.05rem] border border-[#eadfce] bg-[linear-gradient(180deg,#F5E7DB_0%,#FFFFFF_100%)] px-3 py-3 shadow-[0_14px_24px_-30px_rgba(16,47,52,0.15)] sm:px-3.5 sm:py-3.5">
       <div className="flex items-start gap-2">
-        <div className="flex size-[2.9rem] shrink-0 items-center justify-center rounded-[0.7rem] bg-[#0c6557]">
+        <div className="flex size-[2.9rem] shrink-0 items-center justify-center rounded-[0.7rem] bg-foreground">
           <Image
             alt=""
             aria-hidden="true"
@@ -51,10 +51,10 @@ export function ServiceListCard({
         </div>
 
         <div className="min-w-0">
-          <h3 className="text-[0.94rem] leading-tight font-semibold tracking-tight text-[#0b3b35] sm:text-[1rem]">
+          <h3 className="text-[0.94rem] leading-tight font-semibold tracking-tight text-foreground sm:text-[1rem]">
             {service.name}
           </h3>
-          <div className="mt-1 flex items-start gap-1.5 text-[0.76rem] leading-4 font-medium text-[#174e47]/82 sm:text-[0.8rem]">
+          <div className="mt-1 flex items-start gap-1.5 text-[0.76rem] leading-4 font-medium text-muted-foreground sm:text-[0.8rem]">
             <Image
               alt=""
               aria-hidden="true"
@@ -75,7 +75,7 @@ export function ServiceListCard({
         {service.description}
       </p>
 
-      <div className="mt-2.5 space-y-1 text-[0.75rem] font-medium text-[#0c6557] sm:text-[0.8rem]">
+      <div className="mt-2.5 space-y-1 text-[0.75rem] font-medium text-foreground sm:text-[0.8rem]">
         <div className="flex items-start gap-1.5">
           <Image
             alt=""

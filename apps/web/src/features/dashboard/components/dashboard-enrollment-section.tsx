@@ -182,7 +182,7 @@ export function DashboardEnrollmentSection({
   return (
     <>
       <section id="enrollment-dashboard" className={sharedStyles.sectionPanel}>
-        <div className="bg-primary text-primary-foreground flex flex-col gap-3 px-4 py-5 sm:gap-5 sm:px-8 sm:py-8 lg:flex-row lg:items-start lg:justify-between">
+        <div className="bg-foreground text-background flex flex-col gap-3 px-4 py-5 sm:gap-5 sm:px-8 sm:py-8 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p
               className={cn(
@@ -201,7 +201,7 @@ export function DashboardEnrollmentSection({
             <p className="text-[0.7rem] font-medium tracking-[0.12em] text-white/80 uppercase sm:text-xs sm:tracking-[0.08em]">
               {applicationStatusLabel}
             </p>
-            <p className="mt-1 text-[1.05rem] font-semibold text-[#f4cc4f] sm:text-sm">
+            <p className="mt-1 text-[1.05rem] font-semibold text-white sm:text-sm">
               {applicationStatusDisplay}
             </p>
           </div>

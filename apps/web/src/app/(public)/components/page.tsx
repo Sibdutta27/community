@@ -182,7 +182,7 @@ export default function ComponentsPage() {
                 description="Your date and place of birth help us verify your identity and trace your lineage."
                 fieldsPerRow={[2, 2, 1]}
                 icon={CalendarDays}
-                iconWrapperClassName="bg-[#c85d57] shadow-[0_14px_28px_-22px_rgba(200,93,87,0.52)]"
+                iconWrapperClassName="bg-foreground shadow-[0_14px_28px_-22px_rgba(31,30,28,0.4)]"
                 title="Birth Information"
               >
                 <ShowcaseField
@@ -212,7 +212,7 @@ export default function ComponentsPage() {
                 description="This example shows a denser row configuration for future sections with more compact groups."
                 fieldsPerRow={[3, 2]}
                 icon={MapPin}
-                iconWrapperClassName="bg-[#2e6d73] shadow-[0_14px_28px_-22px_rgba(46,109,115,0.5)]"
+                iconWrapperClassName="bg-foreground shadow-[0_14px_28px_-22px_rgba(31,30,28,0.4)]"
                 title="Layout Variation"
               >
                 <ShowcaseField label="City" placeholder="Enter city" />

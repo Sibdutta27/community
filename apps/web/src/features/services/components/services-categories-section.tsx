@@ -18,7 +18,7 @@ export function ServicesCategoriesSection({
     <section className="bg-[linear-gradient(180deg,#fff7ef_0%,#fffaf4_100%)] py-9 sm:py-10 lg:py-12">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-[1.5rem] leading-tight font-semibold tracking-tight text-[#083b34] sm:text-[1.8rem] lg:text-[2.2rem]">
+          <h2 className="text-[1.5rem] leading-tight font-semibold tracking-tight text-foreground sm:text-[1.8rem] lg:text-[2.2rem]">
             {title}
           </h2>
 

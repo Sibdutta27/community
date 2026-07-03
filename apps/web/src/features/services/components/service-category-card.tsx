@@ -10,19 +10,23 @@ type ServiceCategoryCardProps = Readonly<{
   category: ServiceCategory;
 }>;
 
+// Governance restyle: one neutral charcoal tile for every category — the
+// white icons stay legible without a rainbow of tile colors.
+const neutralTile = "bg-foreground";
+
 const toneClasses: Record<ServiceCategoryTone, string> = {
-  teal: "bg-[linear-gradient(135deg,#156c60_0%,#1e7a67_100%)]",
-  olive: "bg-[linear-gradient(135deg,#6f6750_0%,#8e7f57_100%)]",
-  slate: "bg-[linear-gradient(135deg,#4b4a5b_0%,#666176_100%)]",
-  forest: "bg-[linear-gradient(135deg,#547641_0%,#6a8b4e_100%)]",
-  sea: "bg-[linear-gradient(135deg,#1d5963_0%,#256d79_100%)]",
-  stone: "bg-[linear-gradient(135deg,#605756_0%,#756b69_100%)]",
-  indigo: "bg-[linear-gradient(135deg,#225b64_0%,#33447e_100%)]",
+  teal: neutralTile,
+  olive: neutralTile,
+  slate: neutralTile,
+  forest: neutralTile,
+  sea: neutralTile,
+  stone: neutralTile,
+  indigo: neutralTile,
 };
 
 export function ServiceCategoryCard({ category }: ServiceCategoryCardProps) {
   return (
-    <article className="flex h-full min-h-[9.5rem] flex-col rounded-[1.2rem] border border-[#eadfce] bg-white px-3.5 py-3.5 text-center shadow-[0_14px_28px_-32px_rgba(16,47,52,0.16)] sm:min-h-[10rem] sm:px-4 sm:py-4">
+    <article className="border-border bg-surface flex h-full min-h-[9.5rem] flex-col rounded-[1.2rem] border px-3.5 py-3.5 text-center shadow-[0_14px_28px_-32px_rgba(31,30,28,0.16)] sm:min-h-[10rem] sm:px-4 sm:py-4">
       <div
         className={cn(
           "mx-auto flex size-[3rem] items-center justify-center rounded-[0.75rem]",
@@ -39,11 +43,11 @@ export function ServiceCategoryCard({ category }: ServiceCategoryCardProps) {
         />
       </div>
 
-      <h3 className="mt-3 text-[1.02rem] leading-tight font-semibold tracking-tight text-[#0b3b35] sm:text-[1.12rem]">
+      <h3 className="text-foreground mt-3 text-[1.02rem] leading-tight font-semibold tracking-tight sm:text-[1.12rem]">
         {category.title}
       </h3>
 
-      <p className="mt-1.5 text-[0.8rem] leading-5 text-[#2b2d31]/82 sm:text-[0.84rem] sm:leading-6">
+      <p className="text-muted-foreground mt-1.5 text-[0.8rem] leading-5 sm:text-[0.84rem] sm:leading-6">
         {category.description}
       </p>
     </article>

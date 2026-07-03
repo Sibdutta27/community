@@ -54,7 +54,7 @@ export function HomeMemberServiceCard({
           <h3
             className={cn(
               montserrat.className,
-              "text-[1rem] leading-[1.08] font-semibold tracking-[-0.05em] text-[#4A1C1D] sm:text-[1.14rem]",
+              "text-[1rem] leading-[1.08] font-semibold tracking-[-0.05em] text-foreground sm:text-[1.14rem]",
             )}
           >
             {title}

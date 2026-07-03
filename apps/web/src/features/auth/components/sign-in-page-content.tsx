@@ -27,7 +27,7 @@ const benefitCards = [
 
 export function SignInPageContent() {
   return (
-    <main className="bg-[#f8f1dc] pt-20 pb-10 sm:pt-24 sm:pb-12 lg:pt-28 lg:pb-14">
+    <main className="bg-background pt-20 pb-10 sm:pt-24 sm:pb-12 lg:pt-28 lg:pb-14">
       <div className={sharedStyles.pageFrame}>
         <section className="grid gap-3 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)]">
           <div

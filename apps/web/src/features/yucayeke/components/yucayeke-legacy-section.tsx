@@ -14,7 +14,7 @@ export function YucayekeLegacySection() {
         className={cn(sharedStyles.sectionContainer, "space-y-7 sm:space-y-8")}
       >
         <div className="mx-auto max-w-4xl text-center">
-          <span className="inline-flex rounded-full bg-[#dff3ef] px-4 py-1.5 text-xs font-semibold tracking-tight text-[#113f3b] sm:px-5 sm:text-sm">
+          <span className="inline-flex rounded-full border-border bg-surface-muted border px-4 py-1.5 text-xs font-semibold tracking-tight text-foreground sm:px-5 sm:text-sm">
             {badge}
           </span>
 

@@ -1,30 +1,31 @@
 :root {
-  /* Warm & light design system — the original Indigenous-heritage warmth,
-     lightened: soft cream surfaces, warm taupe hairlines, red CTA accent,
-     teal + brown supporting brand hues. Variable NAMES are preserved for
-     existing callers — only the VALUES change. */
-  --brand-sky: #6fafc4;
-  --brand-red: #c53133;
-  --brand-brown: #b38a5a;
-  --brand-black: #1c1a17;
-  --brand-sand: #ede6dc;
-  --brand-sand-soft: #f7f2ec;
-  --background: #faf7f1;
-  --foreground: #1c1a17;
-  --surface: #fffdf9;
-  --surface-muted: #f4efe6;
-  --border: #e6dccc;
-  --muted-foreground: #6f6456;
-  --primary: #c53133;
+  /* Elegant governance design system — warm-neutral base, charcoal text, and a
+     single restrained deep-teal accent. Variable NAMES are preserved for
+     existing callers — only the VALUES change. The teal accent is reserved for
+     primary CTAs, the active enrollment step, and focus rings; everything else
+     is charcoal on warm off-white with subtle hairline borders. */
+  --brand-sky: #5c94a1;
+  --brand-red: #2d6e7e;
+  --brand-brown: #8a8378;
+  --brand-black: #1f1e1c;
+  --brand-sand: #efece6;
+  --brand-sand-soft: #f7f5f1;
+  --background: #f7f5f1;
+  --foreground: #1f1e1c;
+  --surface: #fffefb;
+  --surface-muted: #efece6;
+  --border: #e3ded4;
+  --muted-foreground: #6b665f;
+  --primary: #2d6e7e;
   --primary-foreground: #ffffff;
-  --secondary: #6fafc4;
-  --secondary-foreground: #1c1a17;
-  --accent: #b38a5a;
-  --accent-foreground: #1c1a17;
-  --ring: #c53133;
+  --secondary: #dbe7ea;
+  --secondary-foreground: #1f1e1c;
+  --accent: #efece6;
+  --accent-foreground: #1f1e1c;
+  --ring: #2d6e7e;
   --font-sans-base: var(--font-body), "Segoe UI", sans-serif;
   --font-ui-base: var(--font-body), "Segoe UI", sans-serif;
-  --font-display-base: var(--font-display), "Times New Roman", serif;
+  --font-display-base: var(--font-display), "Segoe UI", sans-serif;
 }
 
 @theme inline {

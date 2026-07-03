@@ -27,7 +27,7 @@ export function ProfileSummary({
           {name}
         </h1>
 
-        <div className="inline-flex h-[30px] shrink-0 items-center gap-1 rounded-full border border-[#1f8ca5] bg-[#e5f5fa] px-2.5 text-[11px] font-semibold text-[#0f4f5f] shadow-[0_10px_24px_-18px_rgba(31,140,165,0.55)] sm:h-8 sm:px-3 sm:text-[12px] lg:h-[30px] lg:px-2.5">
+        <div className="inline-flex h-[30px] shrink-0 items-center gap-1 rounded-full border-primary/40 bg-secondary text-foreground border px-2.5 text-[11px] font-semibold shadow-[0_10px_24px_-18px_rgba(31,30,28,0.3)] sm:h-8 sm:px-3 sm:text-[12px] lg:h-[30px] lg:px-2.5">
           <SvgIcon
             sizeClassName="size-2.5 sm:size-3"
             src="/icons/profile/verified.svg"
@@ -63,7 +63,7 @@ export function ProfileSummary({
         {canEditProfile ? (
           <Button
             variant="ghost"
-            className="h-[38px] shrink-0 rounded-[10px] bg-[#215A64] px-3 text-[12px] font-medium tracking-[-0.02em] whitespace-nowrap text-white shadow-[0_12px_24px_-20px_rgba(16,47,52,0.4)] hover:bg-[#1b4a52] hover:text-white sm:h-[40px] sm:px-3.5 sm:text-[13px] lg:h-[38px] lg:px-3"
+            className="h-[38px] shrink-0 rounded-[10px] bg-primary px-3 text-[12px] font-medium tracking-[-0.02em] whitespace-nowrap text-white shadow-[0_12px_24px_-20px_rgba(16,47,52,0.4)] hover:brightness-95 hover:text-white sm:h-[40px] sm:px-3.5 sm:text-[13px] lg:h-[38px] lg:px-3"
             leftIcon={
               <SvgIcon
                 sizeClassName="size-[0.95rem] sm:size-4"

@@ -56,7 +56,7 @@ describe("EnrollmentStepper", () => {
     ).toHaveAttribute("href", "/enrollment/step-4");
   });
 
-  it("marks the current step active: red circle, emphasized name, aria-current", () => {
+  it("marks the current step active: teal circle, emphasized name, aria-current", () => {
     render(<EnrollmentStepper currentStep={3} stepState={stepState()} />);
 
     const active = screen.getByRole("link", {
@@ -64,7 +64,7 @@ describe("EnrollmentStepper", () => {
     });
     expect(active).toHaveAttribute("aria-current", "step");
     expect(circleOf(active).className).toContain("bg-primary");
-    // Warm palette: the active circle uses the primary (red) token, never a blue.
+    // Governance palette: the active circle uses the primary (deep-teal) token.
     expect(active.className).not.toMatch(/blue/);
     expect(active).toHaveTextContent("Paternal Kinship");
 
@@ -74,7 +74,7 @@ describe("EnrollmentStepper", () => {
     expect(circleOf(upcoming).className).toContain("border-border");
   });
 
-  it("shows completed steps as teal circles with a check, keeping the name", () => {
+  it("shows completed steps as pale-teal circles with a check, keeping the name", () => {
     render(
       <EnrollmentStepper
         currentStep={3}

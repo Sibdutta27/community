@@ -16,7 +16,7 @@ export function ComingSoonPage({
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(47,207,195,0.14),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(43,116,216,0.12),transparent_30%)]" />
 
           <div className="relative">
-            <p className="text-sm font-semibold tracking-[0.28em] text-[#1f8ca5] uppercase">
+            <p className="text-sm font-semibold tracking-[0.28em] text-muted-foreground uppercase">
               Protected Area
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
@@ -27,7 +27,7 @@ export function ComingSoonPage({
               session is active.
             </p>
 
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#e8f6fb] px-3 py-1 text-xs font-semibold text-[#1f8ca5]">
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-surface-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
               <ShieldCheck className="size-3.5" />
               Member ID: {user.publicId ?? user.id}
             </div>

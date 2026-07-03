@@ -38,19 +38,19 @@ export function ProfileRegionalMembersSection({
 
           <input
             id="regional-members-search"
-            className="h-[42px] w-full rounded-[12px] border border-[#c8d7dc] bg-white px-4 text-center text-[13px] tracking-[-0.02em] text-[#384347] transition outline-none focus:border-[#215A64] focus:ring-2 focus:ring-[#215A64]/15 sm:flex-1 sm:text-[14px] lg:h-[40px] lg:max-w-[14rem] lg:px-3.5 lg:text-[13px] xl:h-[44px] xl:w-[18rem] xl:max-w-[18rem] xl:px-4 xl:text-[14px]"
+            className="h-[42px] w-full rounded-[12px] border border-[#c8d7dc] bg-white px-4 text-center text-[13px] tracking-[-0.02em] text-[#384347] transition outline-none focus:border-primary focus:ring-ring/15 focus:ring-2 sm:flex-1 sm:text-[14px] lg:h-[40px] lg:max-w-[14rem] lg:px-3.5 lg:text-[13px] xl:h-[44px] xl:w-[18rem] xl:max-w-[18rem] xl:px-4 xl:text-[14px]"
             placeholder="Search Members"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
 
           <Button
-            className="h-[42px] w-full rounded-[12px] border-2 border-[#215A64] bg-white px-4 text-[13px] font-semibold tracking-[-0.02em] text-[#215A64] shadow-none hover:bg-[#f4fbfc] hover:text-[#215A64] sm:w-[156px] sm:px-4 sm:text-[14px] lg:h-[40px] lg:w-[104px] lg:px-3 lg:text-[13px] xl:h-[44px] xl:w-[126px] xl:px-3.5 xl:text-[14px]"
+            className="h-[42px] w-full rounded-[12px] border-primary border-2 bg-white px-4 text-[13px] font-semibold tracking-[-0.02em] text-primary shadow-none hover:bg-[#f4fbfc] hover:text-primary sm:w-[156px] sm:px-4 sm:text-[14px] lg:h-[40px] lg:w-[104px] lg:px-3 lg:text-[13px] xl:h-[44px] xl:w-[126px] xl:px-3.5 xl:text-[14px]"
             leftIcon={
               <SvgIcon
                 sizeClassName="size-4"
                 src="/icons/profile/filter.svg"
-                toneColor="#215A64"
+                toneColor="#2d6e7e"
               />
             }
             variant="ghost"

@@ -53,7 +53,7 @@ export function HomeYucayekeOverviewSection() {
           <motion.h3
             className={cn(
               montserrat.className,
-              "text-center text-[1.5rem] leading-[1.08] font-semibold tracking-tight text-[#1A5B56] sm:text-[1.75rem] lg:text-left lg:text-[1.95rem]",
+              "text-center text-[1.5rem] leading-[1.08] font-semibold tracking-tight text-foreground sm:text-[1.75rem] lg:text-left lg:text-[1.95rem]",
             )}
             variants={fadeInUpItem}
           >

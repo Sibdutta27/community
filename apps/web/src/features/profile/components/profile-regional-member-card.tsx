@@ -38,7 +38,7 @@ export function ProfileRegionalMemberCard({
 
       <Button
         aria-label={`View ${name}`}
-        className="h-[32px] min-w-[64px] shrink-0 rounded-[10px] bg-[#215A64] px-3 text-[12px] font-semibold tracking-[-0.02em] text-white shadow-[0_12px_22px_-20px_rgba(16,47,52,0.32)] hover:bg-[#1b4a52] hover:text-white sm:h-[34px] sm:min-w-[68px] sm:px-3.5 sm:text-[12px] lg:h-[32px] lg:min-w-[60px] lg:px-3 lg:text-[11px] xl:h-[36px] xl:min-w-[70px] xl:text-[13px]"
+        className="h-[32px] min-w-[64px] shrink-0 rounded-[10px] bg-primary px-3 text-[12px] font-semibold tracking-[-0.02em] text-white shadow-[0_12px_22px_-20px_rgba(16,47,52,0.32)] hover:brightness-95 hover:text-white sm:h-[34px] sm:min-w-[68px] sm:px-3.5 sm:text-[12px] lg:h-[32px] lg:min-w-[60px] lg:px-3 lg:text-[11px] xl:h-[36px] xl:min-w-[70px] xl:text-[13px]"
         variant="ghost"
         size="xl"
         type="button"

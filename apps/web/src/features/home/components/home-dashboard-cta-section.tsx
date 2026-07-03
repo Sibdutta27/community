@@ -27,7 +27,7 @@ export function HomeDashboardCtaSection() {
         )}
       >
         <motion.article
-          className="rounded-[2rem] bg-[radial-gradient(circle_at_top_left,rgba(197,49,51,0.2),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(111,175,196,0.16),transparent_38%),linear-gradient(180deg,#2d2018_0%,#1f1712_100%)] px-5 py-12 text-center text-white shadow-[0_28px_64px_-38px_rgba(27,18,13,0.42)] sm:px-8 sm:py-14 lg:px-12 lg:py-18"
+          className="rounded-[2rem] bg-[linear-gradient(180deg,#2a2926_0%,#1f1e1c_100%)] px-5 py-12 text-center text-white shadow-[0_28px_64px_-38px_rgba(31,30,28,0.42)] sm:px-8 sm:py-14 lg:px-12 lg:py-18"
           variants={fadeInUpItem}
         >
           <div className="mx-auto max-w-5xl">
@@ -55,7 +55,7 @@ export function HomeDashboardCtaSection() {
               <Link
                 className={cn(
                   montserrat.className,
-                  "flex min-h-14 w-full max-w-[36rem] cursor-pointer items-center justify-center gap-3 rounded-full bg-white px-7 text-[0.9rem] font-semibold tracking-[-0.03em] text-[#125560] shadow-[0_18px_38px_-26px_rgba(7,39,47,0.35)] transition-transform duration-200 hover:-translate-y-0.5 sm:text-[0.94rem]",
+                  "text-primary flex min-h-14 w-full max-w-[36rem] cursor-pointer items-center justify-center gap-3 rounded-full bg-white px-7 text-[0.9rem] font-semibold tracking-[-0.03em] shadow-[0_18px_38px_-26px_rgba(31,30,28,0.35)] transition-transform duration-200 hover:-translate-y-0.5 sm:text-[0.94rem]",
                 )}
                 href="/dashboard"
               >
@@ -67,7 +67,7 @@ export function HomeDashboardCtaSection() {
                   src="/icons/home/begin-application.svg"
                   width={20}
                 />
-                <span className="text-[#125560]">Begin Your Application</span>
+                <span className="text-primary">Begin Your Application</span>
               </Link>
             </div>
           </div>

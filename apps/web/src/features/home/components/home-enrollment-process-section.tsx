@@ -11,9 +11,11 @@ import { HomeEnrollmentResourcesSection } from "@/features/home/components/home-
 import { HomeEnrollmentStepCard } from "@/features/home/components/home-enrollment-step-card";
 import sharedStyles from "../styles/home-shared.module.scss";
 
+// Governance restyle: marketing step numbers are neutral (charcoal on a warm
+// off-white bubble) — the teal accent stays reserved for CTAs and active state.
 const warmStepTone = {
-  bubbleClassName: "bg-primary",
-  numberClassName: "text-primary-foreground",
+  bubbleClassName: "border-border bg-surface-muted border",
+  numberClassName: "text-foreground",
 } as const;
 
 const enrollmentSteps = [
@@ -108,8 +110,7 @@ export function HomeEnrollmentProcessSection() {
             )}
             variants={fadeInUpItem}
           >
-            How to Enroll with the <span className="text-primary">Taíno</span>{" "}
-            Nation of Borikén
+            How to Enroll with the Taíno Nation of Borikén
           </motion.h2>
 
           <motion.p

@@ -17,7 +17,7 @@ const memberServices = [
     title: "Health & Wellness",
     description: "Holistic healthcare services for mind, body, and spirit",
     iconSrc: "/icons/home/support/health-wellness.svg",
-    toneClassName: "bg-[linear-gradient(135deg,#C34844_0%,#FF5B63_100%)]",
+    toneClassName: "bg-foreground",
     buttonLabel: "Explore Health Services",
     href: "/services?category=health#popular-services",
     bullets: [
@@ -31,7 +31,7 @@ const memberServices = [
     title: "Legal Assistance",
     description: "Expert guidance on Indigenous rights and legal matters",
     iconSrc: "/icons/home/support/legal-assistance.svg",
-    toneClassName: "bg-[linear-gradient(135deg,#4D628A_0%,#6DD3C4_100%)]",
+    toneClassName: "bg-foreground",
     buttonLabel: "Explore Legal Support",
     href: "/services?category=legal#popular-services",
     bullets: [
@@ -45,7 +45,7 @@ const memberServices = [
     title: "Education & Training",
     description: "Learning opportunities for all ages and skill levels",
     iconSrc: "/icons/home/support/education-training.svg",
-    toneClassName: "bg-[linear-gradient(135deg,#154A8F_0%,#1E81F6_100%)]",
+    toneClassName: "bg-foreground",
     buttonLabel: "Explore Education Programs",
     href: "/services?category=education_training#popular-services",
     bullets: [
@@ -59,7 +59,7 @@ const memberServices = [
     title: "Community Support",
     description: "Resources to help members thrive and succeed",
     iconSrc: "/icons/home/support/community-support.svg",
-    toneClassName: "bg-[linear-gradient(135deg,#C2573D_0%,#F79525_100%)]",
+    toneClassName: "bg-foreground",
     buttonLabel: "Explore Community Support",
     href: "/services?category=community_support#popular-services",
     bullets: [
@@ -82,7 +82,7 @@ const supportActions = [
 export function HomeMemberServicesSection() {
   return (
     <motion.section
-      className="overflow-hidden bg-[#ede6dc]"
+      className="bg-surface-muted overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
@@ -96,7 +96,7 @@ export function HomeMemberServicesSection() {
             className={cn(
               sharedStyles.sectionBadge,
               poppins.className,
-              "bg-[#DDF4EF] px-4.5 py-1.5 text-[0.8rem] tracking-[-0.02em] text-[#163B35] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]",
+              "border-border bg-surface-muted text-foreground border px-4.5 py-1.5 text-[0.8rem] tracking-[-0.02em]",
             )}
             variants={fadeInUpItem}
           >
@@ -106,12 +106,11 @@ export function HomeMemberServicesSection() {
           <motion.h2
             className={cn(
               montserrat.className,
-              "mx-auto mt-5 max-w-4xl text-[clamp(1.7rem,3.5vw,2.9rem)] leading-[1.06] font-semibold tracking-[-0.05em] text-[#0B3B33]",
+              "text-foreground mx-auto mt-5 max-w-4xl text-[clamp(1.7rem,3.5vw,2.9rem)] leading-[1.06] font-semibold tracking-[-0.05em]",
             )}
             variants={fadeInUpItem}
           >
-            Comprehensive <span className="text-primary">Support</span> for Our
-            Community
+            Comprehensive Support for Our Community
           </motion.h2>
 
           <motion.p
@@ -141,7 +140,7 @@ export function HomeMemberServicesSection() {
         </motion.div>
 
         <motion.article
-          className="mt-10 rounded-[1.45rem] bg-[radial-gradient(circle_at_top_left,rgba(197,49,51,0.2),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(111,175,196,0.16),transparent_38%),linear-gradient(135deg,#2d2018_0%,#1f1712_100%)] px-4 py-8 text-center text-white shadow-[0_28px_64px_-40px_rgba(27,18,13,0.42)] sm:px-6 sm:py-9 lg:px-8 lg:py-10"
+          className="mt-10 rounded-[1.45rem] bg-[linear-gradient(135deg,#2a2926_0%,#1f1e1c_100%)] px-4 py-8 text-center text-white shadow-[0_28px_64px_-40px_rgba(27,18,13,0.42)] sm:px-6 sm:py-9 lg:px-8 lg:py-10"
           variants={fadeInUpItem}
         >
           <div className="mx-auto max-w-3xl">

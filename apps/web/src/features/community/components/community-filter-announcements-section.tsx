@@ -147,10 +147,10 @@ export function CommunityFilterAnnouncementsSection({
   }
 
   return (
-    <section className="bg-[#fffef7] py-7 sm:py-8 lg:py-9">
+    <section className="bg-surface py-7 sm:py-8 lg:py-9">
       <div className={cn(sharedStyles.sectionContainer, "relative")}>
         <div className="max-w-xl">
-          <h2 className="text-[1.55rem] font-semibold tracking-tight text-[#0d4d49] sm:text-[1.72rem]">
+          <h2 className="text-[1.55rem] font-semibold tracking-tight text-foreground sm:text-[1.72rem]">
             Filter Announcements
           </h2>
           <p className="mt-1.5 text-[0.9rem] leading-6 text-[#171717]/66 sm:text-[0.94rem]">
@@ -165,7 +165,7 @@ export function CommunityFilterAnnouncementsSection({
                 "cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:px-4.5 sm:py-2.25 sm:text-[0.92rem]",
                 selectedCategoryKey === ALL_UPDATES_KEY
                   ? "border-primary bg-primary text-primary-foreground"
-                  : "border-primary/20 bg-primary/10 text-primary hover:bg-primary/14",
+                  : "border-border bg-surface text-foreground hover:bg-surface-muted",
               )}
               type="button"
               onClick={() => setSelectedCategoryKey(ALL_UPDATES_KEY)}
@@ -180,7 +180,7 @@ export function CommunityFilterAnnouncementsSection({
                   "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:px-4.5 sm:py-2.25 sm:text-[0.92rem]",
                   selectedCategoryKey === category.key
                     ? "border-primary bg-primary text-primary-foreground"
-                    : "border-primary/20 bg-primary/10 text-primary hover:bg-primary/14",
+                    : "border-border bg-surface text-foreground hover:bg-surface-muted",
                 )}
                 type="button"
                 onClick={() => setSelectedCategoryKey(category.key)}

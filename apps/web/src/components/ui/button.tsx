@@ -11,19 +11,19 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Solid brand-red pill — the primary CTA.
+        // Solid deep-teal pill — the ONE accent, reserved for primary CTAs.
         primary:
-          "bg-primary text-primary-foreground shadow-[0_12px_24px_-18px_rgba(197,49,51,0.45)] hover:brightness-[0.96]",
+          "bg-primary text-primary-foreground shadow-[0_12px_24px_-18px_rgba(45,110,126,0.45)] hover:brightness-[0.96]",
         // Prominent outline pill: warm hairline border, warm-white bg,
-        // near-black text; hover raises the muted cream surface.
+        // charcoal text; hover raises the muted warm surface.
         outline:
-          "border border-border bg-surface text-foreground shadow-[0_10px_22px_-18px_rgba(28,26,23,0.18)] hover:bg-surface-muted",
-        // Teal solid pill.
+          "border border-border bg-surface text-foreground shadow-[0_10px_22px_-18px_rgba(31,30,28,0.18)] hover:bg-surface-muted",
+        // Pale-teal solid pill with charcoal text.
         secondary:
-          "bg-secondary text-secondary-foreground shadow-[0_12px_24px_-18px_rgba(111,175,196,0.35)] hover:brightness-[0.98]",
-        // Warm-brown solid pill.
+          "bg-secondary text-secondary-foreground shadow-[0_12px_24px_-18px_rgba(31,30,28,0.22)] hover:brightness-[0.98]",
+        // Warm-neutral solid pill.
         accent:
-          "bg-accent text-accent-foreground shadow-[0_12px_24px_-18px_rgba(179,138,90,0.38)] hover:brightness-[0.97]",
+          "bg-accent text-accent-foreground shadow-[0_12px_24px_-18px_rgba(31,30,28,0.22)] hover:brightness-[0.97]",
         ghost:
           "bg-transparent text-foreground hover:bg-surface-muted",
       },

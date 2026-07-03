@@ -33,7 +33,7 @@ export function AboutStorySection() {
             <h2
               className={cn(
                 montserrat.className,
-                "mt-5 max-w-3xl text-[clamp(1.6rem,3.1vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em] text-[#0B3B33]",
+                "mt-5 max-w-3xl text-[clamp(1.6rem,3.1vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em] text-foreground",
               )}
             >
               Built to Protect Heritage, Identity, and Community Connection
@@ -68,7 +68,7 @@ export function AboutStorySection() {
                   <p
                     className={cn(
                       montserrat.className,
-                      "text-[1.2rem] font-semibold tracking-[-0.04em] text-[#0F625C]",
+                      "text-[1.2rem] font-semibold tracking-[-0.04em] text-foreground",
                     )}
                   >
                     {stat.value}

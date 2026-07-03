@@ -154,7 +154,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                 type="button"
                 onClick={() => setIsProfileMenuOpen((value) => !value)}
               >
-                <div className="text-secondary-foreground bg-secondary relative flex size-11 items-center justify-center rounded-full border border-[#d6c3ad] text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(111,175,196,0.3)] lg:size-10 lg:text-[0.82rem] xl:size-11 xl:text-sm">
+                <div className="text-secondary-foreground bg-secondary relative flex size-11 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(31,30,28,0.2)] lg:size-10 lg:text-[0.82rem] xl:size-11 xl:text-sm">
                   {getInitials(user.name)}
                   <span className="bg-primary absolute right-0 bottom-0 flex size-4 items-center justify-center rounded-full border-2 border-white text-[10px] text-white lg:size-3.5 xl:size-4">
                     <ShieldCheck className="size-2.5 lg:size-2 xl:size-2.5" />
@@ -221,7 +221,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
         {isMobileMenuOpen ? (
           <div className="border-border bg-surface mt-3 rounded-3xl border p-4 shadow-[0_18px_34px_-24px_rgba(21,17,13,0.22)] lg:hidden">
             <div className="border-border bg-surface-muted flex items-center gap-3 rounded-2xl border p-3">
-              <div className="text-secondary-foreground bg-secondary relative flex size-12 items-center justify-center rounded-full border border-[#d6c3ad] text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(111,175,196,0.3)]">
+              <div className="text-secondary-foreground bg-secondary relative flex size-12 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(31,30,28,0.2)]">
                 {getInitials(user.name)}
                 <span className="bg-primary absolute right-0 bottom-0 flex size-4 items-center justify-center rounded-full border-2 border-white text-[10px] text-white">
                   <ShieldCheck className="size-2.5" />

@@ -162,7 +162,7 @@ export function PopularServicesSection({
     <section id="popular-services" className="bg-white py-10 sm:py-12 lg:py-14">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-[1.6rem] leading-tight font-semibold tracking-tight text-[#083b34] sm:text-[1.95rem] lg:text-[2.4rem]">
+          <h2 className="text-[1.6rem] leading-tight font-semibold tracking-tight text-foreground sm:text-[1.95rem] lg:text-[2.4rem]">
             {popularServicesContent.title}
           </h2>
           <p className="mx-auto mt-3 max-w-3xl text-[0.92rem] leading-6 text-[#55585d] sm:text-[0.98rem] sm:leading-7">
@@ -175,8 +175,8 @@ export function PopularServicesSection({
             <button
               className={
                 selectedCategoryKey === ALL_SERVICES_KEY
-                  ? "cursor-pointer rounded-full border border-[#0c6557] bg-[#0c6557] px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap text-white transition-colors sm:text-[0.92rem]"
-                  : "cursor-pointer rounded-full border border-[#0c6557] bg-[rgba(12,101,87,0.08)] px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap text-[#174e47] transition-colors hover:bg-[rgba(12,101,87,0.12)] sm:text-[0.92rem]"
+                  ? "border-primary bg-primary cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap text-white transition-colors sm:text-[0.92rem]"
+                  : "border-border bg-surface text-foreground hover:bg-surface-muted cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:text-[0.92rem]"
               }
               type="button"
               onClick={() => setSelectedCategoryKey(ALL_SERVICES_KEY)}
@@ -192,8 +192,8 @@ export function PopularServicesSection({
                   key={category.id}
                   className={
                     selectedCategoryKey === category.key
-                      ? "cursor-pointer rounded-full border border-[#0c6557] bg-[#0c6557] px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap text-white transition-colors sm:text-[0.92rem]"
-                      : "cursor-pointer rounded-full border border-[#0c6557] bg-[rgba(12,101,87,0.08)] px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap text-[#174e47] transition-colors hover:bg-[rgba(12,101,87,0.12)] sm:text-[0.92rem]"
+                      ? "border-primary bg-primary cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap text-white transition-colors sm:text-[0.92rem]"
+                      : "border-border bg-surface text-foreground hover:bg-surface-muted cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:text-[0.92rem]"
                   }
                   type="button"
                   onClick={() => setSelectedCategoryKey(category.key)}

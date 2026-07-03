@@ -42,7 +42,7 @@ export function HomeEnrollmentTipsCard({ tips }: HomeEnrollmentTipsCardProps) {
       <ul className="mt-4.5 space-y-4">
         {tips.map((tip) => (
           <li key={tip} className="flex items-start gap-3">
-            <CircleCheckBig className="text-primary mt-0.5 size-5 shrink-0" />
+            <CircleCheckBig className="text-foreground mt-0.5 size-5 shrink-0" />
             <p
               className={cn(
                 poppins.className,

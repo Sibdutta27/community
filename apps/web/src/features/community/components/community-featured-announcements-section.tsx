@@ -51,10 +51,10 @@ export function CommunityFeaturedAnnouncementsSection({
   }
 
   return (
-    <section className="bg-[#fffdec] py-6 sm:py-8 lg:py-9">
+    <section className="bg-surface py-6 sm:py-8 lg:py-9">
       <div className={cn(sharedStyles.sectionContainer, "relative")}>
         <div className="max-w-xl">
-          <h2 className="text-[1.75rem] font-semibold tracking-tight text-[#0d4d49] sm:text-[1.95rem] lg:text-[2.05rem]">
+          <h2 className="text-[1.75rem] font-semibold tracking-tight text-foreground sm:text-[1.95rem] lg:text-[2.05rem]">
             Featured Announcements
           </h2>
           <p className="mt-1.5 text-[0.95rem] leading-6 text-[#171717]/66">

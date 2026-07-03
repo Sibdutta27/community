@@ -53,7 +53,8 @@
 }
 
 .gradientText {
-  color: var(--primary);
+  /* Governance restyle: heading highlights stay charcoal. */
+  color: var(--foreground);
 }
 
 .linkAccent {

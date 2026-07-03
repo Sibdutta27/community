@@ -56,7 +56,7 @@ const platformFeatures = [
 export function HomePlatformFeaturesSection() {
   return (
     <motion.section
-      className="overflow-hidden bg-[radial-gradient(circle_at_top_right,rgba(197,49,51,0.18),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(111,175,196,0.12),transparent_30%),linear-gradient(180deg,#2d2018_0%,#1f1712_100%)] text-white"
+      className="overflow-hidden bg-[linear-gradient(180deg,#2a2926_0%,#1f1e1c_100%)] text-white"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}

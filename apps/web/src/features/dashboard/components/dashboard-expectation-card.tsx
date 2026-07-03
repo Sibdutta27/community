@@ -2,10 +2,11 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
+// Governance restyle: one warm-neutral card tone instead of pastel multicolor.
 const expectationToneClasses = {
-  sand: "bg-[#FFF9DA]",
-  peach: "bg-[#FCDBCE]",
-  lavender: "bg-[#EDECFF]",
+  sand: "bg-surface-muted",
+  peach: "bg-surface-muted",
+  lavender: "bg-surface-muted",
 } as const;
 
 type DashboardExpectationCardProps = Readonly<{
@@ -35,7 +36,7 @@ export function DashboardExpectationCard({
         width={36}
       />
 
-      <h3 className="mt-5 text-[1.35rem] leading-tight font-semibold tracking-[-0.04em] text-[#3e3e45] sm:text-[1.5rem]">
+      <h3 className="text-foreground mt-5 text-[1.35rem] leading-tight font-semibold tracking-[-0.04em] sm:text-[1.5rem]">
         {title}
       </h3>
     </article>

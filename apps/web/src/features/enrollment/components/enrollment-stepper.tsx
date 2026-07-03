@@ -21,8 +21,8 @@ type EnrollmentStepperProps = Readonly<{
  * Number+name tab stepper. Each of the five tabs pairs a small numbered
  * circle with its section name, joined by thin connector lines so the row
  * fills the header width. Every tab is a link — members can jump to any
- * step at any time (free jump-nav). The active step has a filled brand-red
- * circle; completed steps a teal circle with a check; the rest stay
+ * step at any time (free jump-nav). The active step has a filled deep-teal
+ * circle; completed steps a pale-teal circle with a check; the rest stay
  * outlined and muted. On small screens only the active step keeps its
  * name; the other tabs collapse to their circles.
  */

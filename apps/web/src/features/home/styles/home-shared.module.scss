@@ -24,7 +24,9 @@
 }
 
 .gradientText {
-  color: var(--primary);
+  /* Governance restyle: heading highlights stay charcoal — the teal accent is
+     reserved for primary CTAs, the active step and focus rings. */
+  color: var(--foreground);
 }
 
 .glassPanel {
