@@ -88,21 +88,27 @@ One typeface: **Inter** (via `next/font/google`), applied as CSS variables on `<
   - `ghost` — transparent, hover muted warm surface.
   - Sizes `sm/md/lg/xl/icon`, plus `fullWidth`; built-in `loading` spinner state.
 - **Inputs** (`components/ui/input.tsx`, shared base reused by textarea & select trigger):
-  clean rectangle `rounded-md`, `border-border`, `bg-surface`, `text-[15px]`; focus =
-  `border-ring` + `ring-2 ring-ring/25` (teal). No drop shadow.
+  soft rectangle `rounded-lg`, `border-border`, `bg-surface`, `text-[15px]`; focus =
+  `border-ring` + `ring-2 ring-ring/25` (teal) plus a faint teal focus-elevation shadow
+  (`0_6px_16px_-10px rgba(45,110,126,0.4)`). No resting drop shadow.
 - **Checkbox / radio** (`ui/checkbox.tsx`, `ui/radio-group.tsx`): hairline border, warm-white
-  bg; checked state fills/dots teal (`data-[state=checked]:bg-primary`).
-- **Select** (`ui/select.tsx`): trigger reuses the input style; content `rounded-md` on
-  `bg-surface` with a subtle shadow; check indicator `text-primary`.
-- **Labels / form** (`ui/label.tsx`, `ui/form.tsx`): labels `text-[15px] font-medium
-  text-foreground`; descriptions `text-muted-foreground`; error text stays red (`text-red-600`)
-  — errors are the one non-teal signal color.
+  bg; checked state fills/dots teal (`data-[state=checked]:bg-primary`); teal focus ring with
+  a 1px offset. Checkbox is `size-[1.125rem]`, `rounded-[5px]`.
+- **Select** (`ui/select.tsx`): trigger reuses the input style; content `rounded-lg` on
+  `bg-surface` with a soft charcoal shadow; check indicator `text-primary`.
+- **Labels / form** (`ui/label.tsx`, `ui/form.tsx`): labels `text-sm font-medium
+  text-foreground` with slight negative tracking; descriptions `text-muted-foreground`; error
+  text stays red (`text-red-600`) — errors are the one non-teal signal color.
 - **Cards**: `bg-surface` (or `bg-surface-muted`) on the off-white page, hairline
   `border-border`, large radii (`rounded-2xl`, `rounded-[1.2rem]`+), soft long-negative-spread
   charcoal shadows.
-- **Steppers** (`features/enrollment/components/enrollment-stepper.tsx`): active & completed
-  circles fill teal (`bg-primary text-primary-foreground`); upcoming are outlined
-  `border-border` with muted text.
+- **Steppers** (`features/enrollment/components/enrollment-stepper.tsx`): **folder tabs**
+  attached to the elevated step card (`enrollment-step-layout.tsx`). The active tab shares the
+  card's `bg-surface` with a transparent bottom edge (it merges into the card, `-mb-px`
+  overlap), a teal top edge and a teal `bg-primary` number badge; completed tabs get a
+  pale-teal (`bg-secondary`) check badge; upcoming tabs sit recessed on `bg-surface-muted`.
+  The row is horizontally scrollable on mobile (hidden scrollbar); every tab stays a link
+  (free jump-nav).
 - **Dialog** (`ui/dialog.tsx`): charcoal scrim `bg-foreground/50` + blur; content on
   `bg-surface` with a large radius.
 - Always compose classes with `cn()` (`src/lib/utils.ts`); use `class-variance-authority` for
@@ -125,6 +131,13 @@ framer-motion presets, eased with `[0.22, 1, 0.36, 1]`. Signature is a **stagger
 container `fadeInUpContainer` (`staggerChildren: 0.14`) + items `fadeInUpItem`
 (`y: 22 → 0`, ~0.72s). Trigger on scroll with `whileInView` + `viewport={{ once: true }}`.
 Keep motion restrained — one orchestrated reveal, not scattered micro-interactions.
+
+Enrollment-flow motion is an **isolated block**: `enrollmentStepEnter` / `enrollmentFieldGroup`
+variants (clearly-marked section in `motion.ts`) consumed only by the wrappers in
+`features/enrollment/components/enrollment-motion.tsx` (`MotionConfig reducedMotion="user"`
+honors `prefers-reduced-motion`). Deleting that block + rendering the wrappers as plain divs
+removes all enrollment motion in one place. Buttons add a CSS-only hover lift
+(`hover:-translate-y-px`, `motion-reduce:transform-none`).
 
 ## Testing (`vitest` + Testing Library)
 
