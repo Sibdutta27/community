@@ -6,7 +6,7 @@ const brandMarkVariants = {
   compact: {
     container: "inline-flex items-center gap-3",
     frame:
-      "relative size-10 shrink-0 overflow-hidden rounded-full border border-black/10 bg-white p-1 sm:size-11",
+      "relative size-10 shrink-0 overflow-hidden rounded-full border border-border bg-surface p-1 sm:size-11",
     image: "rounded-full object-cover",
     title: "text-[1rem] leading-none font-semibold uppercase tracking-[0.12em]",
     subtitle:
@@ -15,7 +15,7 @@ const brandMarkVariants = {
   default: {
     container: "inline-flex items-center gap-3.5",
     frame:
-      "relative size-12 shrink-0 overflow-hidden rounded-full border border-black/10 bg-white p-1 sm:size-14",
+      "relative size-12 shrink-0 overflow-hidden rounded-full border border-border bg-surface p-1 sm:size-14",
     image: "rounded-full object-cover",
     title:
       "text-[1.14rem] leading-none font-semibold uppercase tracking-[0.14em] sm:text-[1.2rem]",

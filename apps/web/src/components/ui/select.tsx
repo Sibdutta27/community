@@ -129,7 +129,7 @@ function SelectItem({
     >
       <span className="absolute right-3 flex size-4 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="text-foreground size-4" />
+          <Check className="text-primary size-4" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

@@ -27,12 +27,12 @@ function ShowcaseField({
 }>) {
   return (
     <label className="block" htmlFor={label}>
-      <span className="mb-2 block text-[0.82rem] font-medium tracking-[-0.02em] text-[#5f666a]">
+      <span className="mb-2 block text-[0.82rem] font-medium tracking-[-0.02em] text-muted-foreground">
         {label}
-        {required ? <span className="text-[#d65a52]"> *</span> : null}
+        {required ? <span className="text-primary"> *</span> : null}
       </span>
       <input
-        className="text-foreground flex h-11 w-full rounded-xl border border-black/5 bg-[#F2F2F2] px-4 text-[14px] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none placeholder:text-[#9ca3a7] sm:h-12"
+        className="text-foreground flex h-11 w-full rounded-xl border-border bg-surface-muted border px-4 text-[14px] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none placeholder:text-muted-foreground sm:h-12"
         defaultValue=""
         id={label}
         placeholder={placeholder}

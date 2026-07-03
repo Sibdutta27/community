@@ -19,7 +19,7 @@ type EnrollmentStepperProps = Readonly<{
 
 /**
  * Numbered 1-5 circle stepper. Every circle is a link — members can jump to
- * any step at any time. The current step is a filled (monochrome foreground)
+ * any step at any time. The current step is a filled (brand-red primary)
  * circle; completed steps are filled with a check; the rest are outlined.
  */
 export function EnrollmentStepper({
@@ -44,8 +44,8 @@ export function EnrollmentStepper({
         const circleClassName = cn(
           "flex size-10 items-center justify-center rounded-full border text-sm font-semibold tracking-tight transition-colors",
           isActive || isCompleted
-            ? "border-foreground bg-foreground text-background"
-            : "border-border bg-transparent text-foreground hover:border-foreground",
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-border bg-transparent text-foreground hover:border-primary",
         );
 
         const circleContent = isCompleted ? (

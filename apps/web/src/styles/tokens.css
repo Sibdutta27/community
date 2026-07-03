@@ -1,29 +1,30 @@
 :root {
-  /* Minimal Inter / black-&-white design system (from the client Figma).
-     Variable NAMES are preserved for existing callers — only the VALUES changed
-     from the old earthy sand/red/brown palette to this near-monochrome set. */
-  --brand-sky: #434343;
-  --brand-red: #000000;
-  --brand-brown: #777777;
-  --brand-black: #000000;
-  --brand-sand: #f5f5f5;
-  --brand-sand-soft: #ffffff;
-  --background: #ffffff;
-  --foreground: #000000;
-  --surface: #ffffff;
-  --surface-muted: #f5f5f5;
-  --border: #d9d9d9;
-  --muted-foreground: #777777;
-  --primary: #000000;
+  /* Warm & light design system — the original Indigenous-heritage warmth,
+     lightened: soft cream surfaces, warm taupe hairlines, red CTA accent,
+     teal + brown supporting brand hues. Variable NAMES are preserved for
+     existing callers — only the VALUES change. */
+  --brand-sky: #6fafc4;
+  --brand-red: #c53133;
+  --brand-brown: #b38a5a;
+  --brand-black: #1c1a17;
+  --brand-sand: #ede6dc;
+  --brand-sand-soft: #f7f2ec;
+  --background: #faf7f1;
+  --foreground: #1c1a17;
+  --surface: #fffdf9;
+  --surface-muted: #f4efe6;
+  --border: #e6dccc;
+  --muted-foreground: #6f6456;
+  --primary: #c53133;
   --primary-foreground: #ffffff;
-  --secondary: #434343;
-  --secondary-foreground: #ffffff;
-  --accent: #777777;
-  --accent-foreground: #ffffff;
-  --ring: #000000;
-  --font-sans-base: var(--font-body), "Inter", "Segoe UI", sans-serif;
-  --font-ui-base: var(--font-body), "Inter", "Segoe UI", sans-serif;
-  --font-display-base: var(--font-display), "Inter", "Segoe UI", sans-serif;
+  --secondary: #6fafc4;
+  --secondary-foreground: #1c1a17;
+  --accent: #b38a5a;
+  --accent-foreground: #1c1a17;
+  --ring: #c53133;
+  --font-sans-base: var(--font-body), "Segoe UI", sans-serif;
+  --font-ui-base: var(--font-body), "Segoe UI", sans-serif;
+  --font-display-base: var(--font-display), "Times New Roman", serif;
 }
 
 @theme inline {

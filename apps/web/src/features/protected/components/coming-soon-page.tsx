@@ -22,7 +22,7 @@ export function ComingSoonPage({
             <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
               {title}
             </h1>
-            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-slate-600 sm:text-base">
+            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-muted-foreground sm:text-base">
               This page will be implemented soon. You are logged in and your
               session is active.
             </p>
@@ -39,7 +39,7 @@ export function ComingSoonPage({
         <p className="text-foreground text-lg font-semibold tracking-[-0.03em]">
           {title} placeholder
         </p>
-        <p className="mt-2 max-w-2xl text-[15px] leading-7 text-slate-600">
+        <p className="mt-2 max-w-2xl text-[15px] leading-7 text-muted-foreground">
           The signed-in user is visible here so you can verify the protected
           shell before the real feature set is added.
         </p>

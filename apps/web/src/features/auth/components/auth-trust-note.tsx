@@ -11,7 +11,7 @@ export function AuthTrustNote() {
         src="/icons/auth/shield.svg"
         width={28}
       />
-      <p className="mt-2 text-[0.92rem] leading-[1.45] font-medium text-black">
+      <p className="text-foreground mt-2 text-[0.92rem] leading-[1.45] font-medium">
         Your data is protected with bank-level encryption and stored on
         sovereign, community-owned servers.
       </p>

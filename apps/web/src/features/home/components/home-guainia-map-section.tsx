@@ -9,7 +9,7 @@ import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 export function HomeGuainiaMapSection() {
   return (
     <motion.section
-      className="overflow-hidden bg-white"
+      className="bg-surface overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}

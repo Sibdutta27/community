@@ -61,14 +61,14 @@ function ConsentLine({
   return (
     <div className="flex items-start gap-3">
       <input
-        className="text-primary accent-primary mt-1 size-4 rounded border-slate-300"
+        className="text-primary accent-primary mt-1 size-4 rounded border-border"
         id={name}
         aria-labelledby={`${name}-description`}
         type="checkbox"
         {...register(name)}
       />
       <div
-        className="text-[15px] leading-6 text-slate-700"
+        className="text-[15px] leading-6 text-foreground"
         id={`${name}-description`}
       >
         {children}
@@ -280,7 +280,7 @@ export function SignUpForm() {
         Join Now
       </Button>
 
-      <p className="mt-3.5 text-center text-sm text-slate-600">
+      <p className="mt-3.5 text-center text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link
           className={cn(sharedStyles.linkAccent, "font-semibold")}

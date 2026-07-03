@@ -142,10 +142,10 @@ export function SignInForm() {
       </div>
 
       <div className="mt-3.5 flex items-center justify-between gap-4">
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-foreground">
           <input
             {...register("rememberMe")}
-            className="text-primary accent-primary size-4 rounded border-slate-300"
+            className="text-primary accent-primary size-4 rounded border-border"
             type="checkbox"
           />
           <span>Remember me</span>
@@ -176,7 +176,7 @@ export function SignInForm() {
         Log in
       </Button>
 
-      <p className="mt-3.5 text-center text-sm text-slate-600">
+      <p className="mt-3.5 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}
         <Link
           className={cn(sharedStyles.linkAccent, "font-semibold")}

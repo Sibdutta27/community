@@ -20,7 +20,7 @@ export function CommunityQuickLinkCard({
 }: CommunityQuickLinkCardProps) {
   return (
     <Link
-      className="group flex h-full min-h-[11.5rem] flex-col rounded-[1.2rem] border border-black/12 bg-white px-4 py-4 shadow-[0_18px_38px_-34px_rgba(31,41,55,0.22)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-32px_rgba(31,41,55,0.24)] sm:min-h-[12rem] sm:px-4.5 sm:py-4.5"
+      className="group flex h-full min-h-[11.5rem] flex-col rounded-[1.2rem] border-border bg-surface border px-4 py-4 shadow-[0_18px_38px_-34px_rgba(31,41,55,0.22)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-32px_rgba(31,41,55,0.24)] sm:min-h-[12rem] sm:px-4.5 sm:py-4.5"
       href={href}
     >
       <div

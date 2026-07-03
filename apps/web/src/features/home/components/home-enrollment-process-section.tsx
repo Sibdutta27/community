@@ -11,9 +11,9 @@ import { HomeEnrollmentResourcesSection } from "@/features/home/components/home-
 import { HomeEnrollmentStepCard } from "@/features/home/components/home-enrollment-step-card";
 import sharedStyles from "../styles/home-shared.module.scss";
 
-const neutralStepTone = {
-  bubbleClassName: "bg-foreground",
-  numberClassName: "text-background",
+const warmStepTone = {
+  bubbleClassName: "bg-primary",
+  numberClassName: "text-primary-foreground",
 } as const;
 
 const enrollmentSteps = [
@@ -22,28 +22,28 @@ const enrollmentSteps = [
     title: "Create Account",
     description:
       "Sign up with your email and create a secure password to access the enrollment portal.",
-    tone: neutralStepTone,
+    tone: warmStepTone,
   },
   {
     step: "2",
     title: "Personal Information",
     description:
       "Provide your basic details including name, date of birth, and contact information.",
-    tone: neutralStepTone,
+    tone: warmStepTone,
   },
   {
     step: "3",
     title: "Maternal Lineage",
     description:
       "Document your maternal ancestry with names, dates, and places of birth for your lineage.",
-    tone: neutralStepTone,
+    tone: warmStepTone,
   },
   {
     step: "4",
     title: "Upload Documents",
     description:
       "Submit supporting documents such as birth certificates, family records, and lineage proof.",
-    tone: neutralStepTone,
+    tone: warmStepTone,
   },
 ] as const;
 

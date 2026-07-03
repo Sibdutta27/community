@@ -43,20 +43,20 @@ describe("EnrollmentStepper", () => {
     ).toHaveAttribute("href", "/enrollment/step-4");
   });
 
-  it("marks the current step as active with a filled monochrome circle", () => {
+  it("marks the current step as active with a filled brand-red circle", () => {
     render(<EnrollmentStepper currentStep={3} stepState={stepState()} />);
 
     const active = screen.getByRole("link", {
       name: /step 3: Paternal Kinship/i,
     });
     expect(active).toHaveAttribute("aria-current", "step");
-    expect(active.className).toContain("bg-foreground");
-    // Monochrome: the active circle uses the foreground token, never a blue.
+    expect(active.className).toContain("bg-primary");
+    // Warm palette: the active circle uses the primary (red) token, never a blue.
     expect(active.className).not.toMatch(/blue/);
 
     const upcoming = screen.getByRole("link", { name: /step 4: Documents/i });
     expect(upcoming).not.toHaveAttribute("aria-current");
-    expect(upcoming.className).not.toContain("bg-foreground");
+    expect(upcoming.className).not.toContain("bg-primary");
   });
 
   it("shows completed steps as filled and checked", () => {
@@ -70,7 +70,7 @@ describe("EnrollmentStepper", () => {
     const completed = screen.getByRole("link", {
       name: /step 1: Demographics/i,
     });
-    expect(completed.className).toContain("bg-foreground");
+    expect(completed.className).toContain("bg-primary");
     expect(completed.querySelector("svg")).not.toBeNull();
 
     const upcoming = screen.getByRole("link", { name: /step 5/i });

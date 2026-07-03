@@ -11,19 +11,19 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Solid black pill.
+        // Solid brand-red pill — the primary CTA.
         primary:
-          "bg-primary text-primary-foreground hover:opacity-90",
-        // Prominent outline pill — the Figma default: hairline border, transparent
-        // bg, dark text; fills to solid black on hover.
+          "bg-primary text-primary-foreground shadow-[0_12px_24px_-18px_rgba(197,49,51,0.45)] hover:brightness-[0.96]",
+        // Prominent outline pill: warm hairline border, warm-white bg,
+        // near-black text; hover raises the muted cream surface.
         outline:
-          "border border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background",
-        // Dark-grey solid pill.
+          "border border-border bg-surface text-foreground shadow-[0_10px_22px_-18px_rgba(28,26,23,0.18)] hover:bg-surface-muted",
+        // Teal solid pill.
         secondary:
-          "bg-secondary text-secondary-foreground hover:opacity-90",
-        // Mid-grey solid pill.
+          "bg-secondary text-secondary-foreground shadow-[0_12px_24px_-18px_rgba(111,175,196,0.35)] hover:brightness-[0.98]",
+        // Warm-brown solid pill.
         accent:
-          "bg-accent text-accent-foreground hover:opacity-90",
+          "bg-accent text-accent-foreground shadow-[0_12px_24px_-18px_rgba(179,138,90,0.38)] hover:brightness-[0.97]",
         ghost:
           "bg-transparent text-foreground hover:bg-surface-muted",
       },

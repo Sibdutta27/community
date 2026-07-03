@@ -53,7 +53,7 @@ function SocialIconButton({ href, label, iconSrc }: FooterSocialLink) {
 
 export function PublicFooter() {
   return (
-    <footer className="border-border text-foreground border-t bg-white">
+    <footer className="border-border text-foreground bg-surface border-t">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
         <div className="grid gap-8 sm:gap-10 lg:grid-cols-[1.35fr_0.78fr_0.78fr_0.88fr] lg:gap-12">
           <div>
