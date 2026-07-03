@@ -21,10 +21,12 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
-      <body
-        className={`${cinzel.variable} ${lato.variable} ${montserrat.variable}`}
-      >
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${cinzel.variable} ${lato.variable} ${montserrat.variable}`}
+    >
+      <body>
         <AppProviders>{children}</AppProviders>
       </body>
     </html>
