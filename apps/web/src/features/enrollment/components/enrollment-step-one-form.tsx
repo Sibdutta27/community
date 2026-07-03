@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sprout } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -241,6 +241,7 @@ export function EnrollmentStepOneForm() {
 
         <EnrollmentStepSection
           description="Share how you identify and your connection to your Yucayeke and family."
+          icon={Sprout}
           title="Your Yucayekeno Information"
         >
           <EnrollmentSelectField

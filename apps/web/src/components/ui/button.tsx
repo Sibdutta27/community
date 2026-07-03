@@ -7,13 +7,13 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-[200px] font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-200 select-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-[200px] font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-200 select-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 hover:-translate-y-px active:translate-y-px motion-reduce:transform-none motion-reduce:transition-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         // Solid deep-teal pill — the ONE accent, reserved for primary CTAs.
         primary:
-          "bg-primary text-primary-foreground shadow-[0_12px_24px_-18px_rgba(45,110,126,0.45)] hover:brightness-[0.96]",
+          "bg-primary text-primary-foreground shadow-[0_12px_24px_-18px_rgba(45,110,126,0.45)] hover:shadow-[0_16px_30px_-18px_rgba(45,110,126,0.55)] hover:brightness-[0.96]",
         // Prominent outline pill: warm hairline border, warm-white bg,
         // charcoal text; hover raises the muted warm surface.
         outline:

@@ -95,7 +95,7 @@ type EnrollmentCheckboxFieldProps<TFieldValues extends FieldValues> = Readonly<{
 
 const fieldContainerClassName = "w-full max-w-[34rem] justify-self-start";
 const fieldLabelClassName =
-  "text-foreground text-[0.82rem] font-medium tracking-tight";
+  "text-foreground text-[0.84rem] leading-snug font-medium tracking-tight";
 
 type RadioOption = {
   label: string;

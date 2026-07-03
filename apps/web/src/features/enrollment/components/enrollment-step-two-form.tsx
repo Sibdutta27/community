@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -149,6 +149,7 @@ export function EnrollmentStepTwoForm() {
           <EnrollmentStepSection
             key={ancestor.key}
             description={ancestor.description}
+            icon={UserRound}
             title={ancestor.title}
           >
             <EnrollmentInputField

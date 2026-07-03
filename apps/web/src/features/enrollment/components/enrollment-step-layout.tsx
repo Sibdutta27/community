@@ -6,8 +6,10 @@ import type { ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { EnrollmentStepEntrance } from "@/features/enrollment/components/enrollment-motion";
 import { EnrollmentStepper } from "@/features/enrollment/components/enrollment-stepper";
 import {
+  enrollmentTotalSteps,
   getEnrollmentStepDefinition,
   resolveEnrollmentStepState,
 } from "@/features/enrollment/config/enrollment-steps";
@@ -20,9 +22,13 @@ type EnrollmentStepLayoutProps = Readonly<{
 }>;
 
 /**
- * Shared shell for the five enrollment step pages: a light header row
- * (Back pill on the left, the clickable number+name tab stepper filling
- * the rest), the big "N. Title" heading, and the step's form as children.
+ * Shared shell for the five enrollment step pages, styled as a manila
+ * folder: a light utility row (Back pill + "Step N of 5"), then the
+ * folder-tab stepper attached to an elevated `bg-surface` card that holds
+ * the step heading, description, and form. The active tab and the card
+ * share the same surface and merge seamlessly (see EnrollmentStepper).
+ * The tab row + card animate in as one unit via EnrollmentStepEntrance —
+ * all motion is isolated there and in `lib/motion.ts`.
  */
 export function EnrollmentStepLayout({
   children,
@@ -35,30 +41,44 @@ export function EnrollmentStepLayout({
 
   return (
     <div className="mx-auto w-full max-w-5xl pt-24 pb-16 sm:pt-28 lg:pt-32">
-      <header>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-          <Button asChild size="sm" variant="outline">
-            <Link href={backHref}>
-              <ArrowLeft aria-hidden="true" className="size-4" />
-              <span>Back</span>
-            </Link>
-          </Button>
+      <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+        <Button asChild size="sm" variant="outline">
+          <Link href={backHref}>
+            <ArrowLeft aria-hidden="true" className="size-4" />
+            <span>Back</span>
+          </Link>
+        </Button>
 
-          <EnrollmentStepper
-            className="min-w-0 flex-1"
-            currentStep={step}
-            stepState={stepState}
-          />
-        </div>
-
-        {definition ? (
-          <h1 className="text-foreground mt-8 text-[2rem] leading-tight font-semibold tracking-tight sm:mt-10 sm:text-[2.5rem]">
-            {definition.step}. {definition.headingTitle}
-          </h1>
-        ) : null}
+        <p className="text-muted-foreground text-xs font-medium tracking-[0.08em] uppercase">
+          Step {step} of {enrollmentTotalSteps}
+        </p>
       </header>
 
-      <div className="mt-8 sm:mt-10">{children}</div>
+      <EnrollmentStepEntrance className="mt-6 sm:mt-8">
+        <EnrollmentStepper currentStep={step} stepState={stepState} />
+
+        {/* Elevated form card the active folder tab merges into. Top-left
+            corner stays square where the first tab attaches. */}
+        <div
+          className="border-border bg-surface relative rounded-b-2xl rounded-tr-2xl border p-6 shadow-[0_28px_56px_-40px_rgba(31,30,28,0.35),0_10px_24px_-20px_rgba(31,30,28,0.25)] sm:p-8 lg:p-10"
+          data-slot="enrollment-step-card"
+        >
+          {definition ? (
+            <div className="max-w-3xl">
+              <h1 className="text-foreground text-[1.55rem] leading-tight font-semibold tracking-tight sm:text-[1.9rem]">
+                {definition.step}. {definition.headingTitle}
+              </h1>
+              <p className="text-muted-foreground mt-2 text-[0.92rem] leading-6">
+                {definition.description}
+              </p>
+            </div>
+          ) : null}
+
+          <div className={definition ? "mt-7 sm:mt-9" : undefined}>
+            {children}
+          </div>
+        </div>
+      </EnrollmentStepEntrance>
     </div>
   );
 }
@@ -71,9 +91,10 @@ type EnrollmentStepFooterProps = Readonly<{
 }>;
 
 /**
- * Bottom navigation row for a step form: an outlined "Back" pill on the
- * left (when given a target) and the step's primary action(s) — passed as
- * children — on the right.
+ * Footer band for a step form: a full-bleed, softly tinted row pinned to the
+ * bottom of the elevated card (negative margins match the card padding),
+ * divided from the fields by a hairline border — outlined "Back" pill on the
+ * left (when given a target), the step's primary teal action(s) on the right.
  */
 export function EnrollmentStepFooter({
   backDisabled = false,
@@ -84,10 +105,13 @@ export function EnrollmentStepFooter({
   return (
     <div
       className={cn(
-        "border-border mt-10 flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:items-center",
+        "border-border bg-surface-muted/50 mt-10 flex flex-col-reverse gap-3 rounded-b-[calc(1rem-1px)] border-t px-6 py-5 sm:flex-row sm:items-center sm:px-8 sm:py-6 lg:px-10",
+        // Bleed to the card edges (mirrors the card's p-6 sm:p-8 lg:p-10).
+        "-mx-6 -mb-6 sm:-mx-8 sm:-mb-8 lg:-mx-10 lg:-mb-10",
         backHref ? "sm:justify-between" : "sm:justify-end",
         className,
       )}
+      data-slot="enrollment-step-footer"
     >
       {backHref ? (
         backDisabled ? (

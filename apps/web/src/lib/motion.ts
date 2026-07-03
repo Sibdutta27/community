@@ -47,6 +47,49 @@ export const fadeInScaleItem: Variants = {
   },
 };
 
+/* ─────────────────────────────────────────────────────────────────────────
+ * Enrollment step motion — ISOLATED BLOCK.
+ * All enrollment-flow animation lives in these variants plus the wrappers in
+ * `features/enrollment/components/enrollment-motion.tsx`. To remove the
+ * enrollment motion entirely, delete this block and have those wrappers
+ * render plain <div>s (one-file change). `prefers-reduced-motion` is
+ * respected by the wrappers via <MotionConfig reducedMotion="user">.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/** Step entrance: the folder-tab + card unit fades and slides up once. */
+export const enrollmentStepEnter: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 16,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.55,
+      ease: smoothEase,
+    },
+  },
+};
+
+/** Field-group reveal: a quieter fade-in-up as a section scrolls into view. */
+export const enrollmentFieldGroup: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 12,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: smoothEase,
+    },
+  },
+};
+
+/* ───────────────────────── end enrollment block ─────────────────────────── */
+
 export const mobileMenuVariants: Variants = {
   hidden: {
     opacity: 0,

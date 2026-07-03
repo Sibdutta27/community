@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, PenLine } from "lucide-react";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
 
@@ -103,6 +103,7 @@ export function EnrollmentConfirmationForm() {
 
         <EnrollmentStepSection
           description="Type your full legal name as your electronic signature and confirm the agreements below to submit your enrollment application."
+          icon={PenLine}
           title="E-Signature"
         >
           <EnrollmentInputField
