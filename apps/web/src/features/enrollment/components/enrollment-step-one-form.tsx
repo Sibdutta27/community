@@ -16,6 +16,7 @@ import {
   EnrollmentRadioGroupField,
   EnrollmentSelectField,
 } from "@/features/enrollment/components/enrollment-form-fields";
+import { useEnrollmentSaveDraft } from "@/features/enrollment/components/enrollment-save-draft-context";
 import { EnrollmentStepFooter } from "@/features/enrollment/components/enrollment-step-layout";
 import { EnrollmentStepSection } from "@/features/enrollment/components/enrollment-step-section";
 import {
@@ -174,6 +175,16 @@ export function EnrollmentStepOneForm() {
       });
     }
   };
+
+  // Mirror the footer action in the layout's top utility row — same handler,
+  // same pending/disabled gating (see EnrollmentSaveDraftContext).
+  useEnrollmentSaveDraft({
+    disabled: upsertMutation.isPending,
+    onSaveDraft: () => {
+      void handleSaveDraft();
+    },
+    pending: saveDraftMutation.isPending,
+  });
 
   return (
     <Form {...form}>

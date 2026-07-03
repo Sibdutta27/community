@@ -40,6 +40,7 @@ beforeEach(() => {
   saveDraftMutateAsync.mockReset().mockResolvedValue({ success: true });
 });
 
+import { EnrollmentStepLayout } from "@/features/enrollment/components/enrollment-step-layout";
 import { EnrollmentStepThreeForm } from "@/features/enrollment/components/enrollment-step-three-form";
 
 function renderForm() {
@@ -106,6 +107,31 @@ describe("EnrollmentStepThreeForm — paternal kinship", () => {
     );
 
     // Untouched ancestors are omitted entirely — nothing gets nulled out.
+    await waitFor(() => {
+      expect(saveDraftMutateAsync).toHaveBeenCalledWith({});
+    });
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
+    });
+  });
+
+  it("runs the same partial-draft save from the layout's TOP header action", async () => {
+    render(
+      <QueryClientProvider
+        client={
+          new QueryClient({ defaultOptions: { queries: { retry: false } } })
+        }
+      >
+        <EnrollmentStepLayout step={3}>
+          <EnrollmentStepThreeForm />
+        </EnrollmentStepLayout>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save and finish later/i }),
+    );
+
     await waitFor(() => {
       expect(saveDraftMutateAsync).toHaveBeenCalledWith({});
     });

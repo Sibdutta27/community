@@ -3,10 +3,14 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Bookmark } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { EnrollmentStepEntrance } from "@/features/enrollment/components/enrollment-motion";
+import {
+  EnrollmentSaveDraftProvider,
+  useEnrollmentSaveDraftRegistration,
+} from "@/features/enrollment/components/enrollment-save-draft-context";
 import { EnrollmentStepper } from "@/features/enrollment/components/enrollment-stepper";
 import {
   enrollmentTotalSteps,
@@ -29,8 +33,52 @@ type EnrollmentStepLayoutProps = Readonly<{
  * share the same surface and merge seamlessly (see EnrollmentStepper).
  * The tab row + card animate in as one unit via EnrollmentStepEntrance —
  * all motion is isolated there and in `lib/motion.ts`.
+ *
+ * The layout also provides EnrollmentSaveDraftContext: step forms register
+ * their "Save & finish later" handler through it, and the utility row mirrors
+ * that action at the top of the page (see EnrollmentSaveDraftHeaderAction).
  */
-export function EnrollmentStepLayout({
+export function EnrollmentStepLayout(props: EnrollmentStepLayoutProps) {
+  return (
+    <EnrollmentSaveDraftProvider>
+      <EnrollmentStepLayoutContent {...props} />
+    </EnrollmentSaveDraftProvider>
+  );
+}
+
+/**
+ * Top-row mirror of the step form's "Save & finish later" footer action —
+ * a subtle charcoal ghost control (never the teal accent) that invokes the
+ * handler the current step registered via EnrollmentSaveDraftContext, and
+ * hides entirely when the step registered none (documents/confirmation).
+ * Below `sm` it collapses to an icon-only button; the aria-label keeps the
+ * accessible name.
+ */
+function EnrollmentSaveDraftHeaderAction() {
+  const registration = useEnrollmentSaveDraftRegistration();
+
+  if (!registration) {
+    return null;
+  }
+
+  return (
+    <Button
+      aria-label="Save and finish later"
+      className="text-muted-foreground hover:text-foreground px-3 sm:px-4"
+      disabled={registration.disabled || registration.pending}
+      leftIcon={<Bookmark aria-hidden="true" />}
+      loading={registration.pending}
+      onClick={registration.onSaveDraft}
+      size="sm"
+      type="button"
+      variant="ghost"
+    >
+      <span className="hidden sm:inline">Save & finish later</span>
+    </Button>
+  );
+}
+
+function EnrollmentStepLayoutContent({
   children,
   step,
 }: EnrollmentStepLayoutProps) {
@@ -68,9 +116,15 @@ export function EnrollmentStepLayout({
           </div>
         </div>
 
-        <p className="text-muted-foreground shrink-0 text-xs font-medium tracking-[0.08em] uppercase">
-          Step {step} of {enrollmentTotalSteps}
-        </p>
+        {/* Right-side utility group: the step's "Save & finish later" mirror
+            (only when the step registered a handler) beside the progress
+            label. */}
+        <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+          <EnrollmentSaveDraftHeaderAction />
+          <p className="text-muted-foreground shrink-0 text-xs font-medium tracking-[0.08em] uppercase">
+            Step {step} of {enrollmentTotalSteps}
+          </p>
+        </div>
       </header>
 
       <EnrollmentStepEntrance className="mt-6 sm:mt-8">

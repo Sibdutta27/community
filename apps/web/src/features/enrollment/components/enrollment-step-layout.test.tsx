@@ -5,6 +5,7 @@ vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
   useAccountInfoQuery: () => ({ data: undefined, isPending: false }),
 }));
 
+import { useEnrollmentSaveDraft } from "@/features/enrollment/components/enrollment-save-draft-context";
 import {
   EnrollmentStepFooter,
   EnrollmentStepLayout,
@@ -15,6 +16,20 @@ function getStepCard() {
   const card = document.querySelector("[data-slot='enrollment-step-card']");
   expect(card).not.toBeNull();
   return card as HTMLElement;
+}
+
+/** Stand-in for a step form that registers a "Save & finish later" handler. */
+function RegisteringStepBody({
+  disabled = false,
+  onSaveDraft,
+  pending = false,
+}: Readonly<{
+  disabled?: boolean;
+  onSaveDraft: () => void;
+  pending?: boolean;
+}>) {
+  useEnrollmentSaveDraft({ disabled, onSaveDraft, pending });
+  return <p>Step body</p>;
 }
 
 describe("EnrollmentStepLayout — folder tabs + elevated card", () => {
@@ -100,6 +115,89 @@ describe("EnrollmentStepLayout — folder tabs + elevated card", () => {
       "href",
       "/enrollment/step-2",
     );
+  });
+});
+
+describe("EnrollmentStepLayout — top 'Save & finish later' (context bridge)", () => {
+  it("renders the action in the utility row when the step registers a handler, and clicking it invokes that handler", () => {
+    const onSaveDraft = vi.fn();
+
+    render(
+      <EnrollmentStepLayout step={1}>
+        <RegisteringStepBody onSaveDraft={onSaveDraft} />
+      </EnrollmentStepLayout>,
+    );
+
+    const button = screen.getByRole("button", {
+      name: /save and finish later/i,
+    });
+    // Icon-only collapse on small screens keeps an accessible name.
+    expect(button).toHaveAttribute("aria-label", "Save and finish later");
+    // It sits in the top utility row, not inside the elevated card.
+    expect(getStepCard()).not.toContainElement(button);
+    // Subtle secondary action in the governance palette — never the teal fill.
+    expect(button.className).not.toContain("bg-primary");
+
+    fireEvent.click(button);
+    expect(onSaveDraft).toHaveBeenCalledTimes(1);
+  });
+
+  it("hides the action entirely when no handler is registered for the step", () => {
+    render(
+      <EnrollmentStepLayout step={4}>
+        <p>Step body</p>
+      </EnrollmentStepLayout>,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /save and finish later/i }),
+    ).toBeNull();
+  });
+
+  it("disables the action while the draft save is pending", () => {
+    render(
+      <EnrollmentStepLayout step={2}>
+        <RegisteringStepBody onSaveDraft={vi.fn()} pending />
+      </EnrollmentStepLayout>,
+    );
+
+    expect(
+      screen.getByRole("button", { name: /save and finish later/i }),
+    ).toBeDisabled();
+  });
+
+  it("disables the action when the step marks it disabled (e.g. submit in flight)", () => {
+    render(
+      <EnrollmentStepLayout step={3}>
+        <RegisteringStepBody disabled onSaveDraft={vi.fn()} />
+      </EnrollmentStepLayout>,
+    );
+
+    expect(
+      screen.getByRole("button", { name: /save and finish later/i }),
+    ).toBeDisabled();
+  });
+
+  it("removes the action when the registering step unmounts", () => {
+    const { rerender } = render(
+      <EnrollmentStepLayout step={1}>
+        <RegisteringStepBody onSaveDraft={vi.fn()} />
+      </EnrollmentStepLayout>,
+    );
+
+    expect(
+      screen.getByRole("button", { name: /save and finish later/i }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <EnrollmentStepLayout step={1}>
+        <p>Step body</p>
+      </EnrollmentStepLayout>,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /save and finish later/i }),
+    ).toBeNull();
   });
 });
 

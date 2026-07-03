@@ -40,6 +40,7 @@ beforeEach(() => {
   saveDraftMutateAsync.mockReset().mockResolvedValue({ success: true });
 });
 
+import { EnrollmentStepLayout } from "@/features/enrollment/components/enrollment-step-layout";
 import { EnrollmentStepTwoForm } from "@/features/enrollment/components/enrollment-step-two-form";
 
 function renderForm() {
@@ -110,6 +111,37 @@ describe("EnrollmentStepTwoForm — maternal kinship", () => {
 
     fireEvent.click(
       screen.getByRole("button", { name: /save & finish later/i }),
+    );
+
+    await waitFor(() => {
+      expect(saveDraftMutateAsync).toHaveBeenCalledWith({
+        mother: { name: "Anacaona" },
+      });
+    });
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
+    });
+  });
+
+  it("runs the same partial-draft save from the layout's TOP header action", async () => {
+    render(
+      <QueryClientProvider
+        client={
+          new QueryClient({ defaultOptions: { queries: { retry: false } } })
+        }
+      >
+        <EnrollmentStepLayout step={2}>
+          <EnrollmentStepTwoForm />
+        </EnrollmentStepLayout>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.change(screen.getAllByPlaceholderText("Enter full name")[0], {
+      target: { value: "Anacaona" },
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save and finish later/i }),
     );
 
     await waitFor(() => {

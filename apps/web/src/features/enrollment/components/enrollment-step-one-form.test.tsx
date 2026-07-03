@@ -44,6 +44,7 @@ beforeEach(() => {
   upsertMutateAsync.mockReset().mockResolvedValue({ success: true });
 });
 
+import { EnrollmentStepLayout } from "@/features/enrollment/components/enrollment-step-layout";
 import { EnrollmentStepOneForm } from "@/features/enrollment/components/enrollment-step-one-form";
 
 function renderForm() {
@@ -54,6 +55,20 @@ function renderForm() {
   return render(
     <QueryClientProvider client={queryClient}>
       <EnrollmentStepOneForm />
+    </QueryClientProvider>,
+  );
+}
+
+function renderFormInLayout() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <EnrollmentStepLayout step={1}>
+        <EnrollmentStepOneForm />
+      </EnrollmentStepLayout>
     </QueryClientProvider>,
   );
 }
@@ -156,6 +171,33 @@ describe("EnrollmentStepOneForm — Save & finish later (partial draft)", () => 
     expect(upsertMutateAsync).not.toHaveBeenCalled();
     // …and no required-field errors are surfaced.
     expect(screen.queryByText(/last name is required/i)).toBeNull();
+
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
+    });
+  });
+
+  it("runs the same partial-draft save from the layout's TOP header action", async () => {
+    renderFormInLayout();
+
+    fireEvent.change(screen.getByPlaceholderText("Enter your first name"), {
+      target: { value: "Anani" },
+    });
+
+    // The header control (icon-only on mobile) carries an aria-label —
+    // distinct from the footer button's visible "Save & finish later" text.
+    fireEvent.click(
+      screen.getByRole("button", { name: /save and finish later/i }),
+    );
+
+    await waitFor(() => {
+      expect(saveDraftMutateAsync).toHaveBeenCalledTimes(1);
+    });
+    expect(saveDraftMutateAsync).toHaveBeenCalledWith({
+      firstName: "Anani",
+      yucayekeUnknown: false,
+    });
+    expect(upsertMutateAsync).not.toHaveBeenCalled();
 
     await waitFor(() => {
       expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
