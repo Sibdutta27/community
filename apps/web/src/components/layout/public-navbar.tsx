@@ -13,6 +13,7 @@ import { mobileMenuVariants } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 import { BrandMark } from "@/components/shared/brand-mark";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 
 function isActivePath(pathname: string, href: string) {
   if (href === "/") {
@@ -37,10 +38,22 @@ export function PublicNavbar() {
       <div className="border-border bg-background/95 supports-backdrop-filter:bg-background/85 border-b backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="shrink-0">
-            <BrandMark showSubtitle={false} />
+            {/* Full wordmark is wide — at lg (1024–1280) show a shortened
+                mark so the row never overflows; the full wordmark returns
+                at xl. */}
+            <BrandMark
+              className="lg:hidden xl:inline-flex"
+              showSubtitle={false}
+            />
+            <BrandMark
+              compact
+              className="hidden lg:inline-flex xl:hidden"
+              label="Taíno Nation"
+              showSubtitle={false}
+            />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav className="hidden items-center gap-0.5 lg:flex xl:gap-1">
             {publicNavigation.map((item) => {
               const isActive = isActivePath(pathname, item.href);
 
@@ -50,7 +63,7 @@ export function PublicNavbar() {
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "px-4 py-2 text-[15px] transition-colors",
+                    "px-2.5 py-2 text-sm whitespace-nowrap transition-colors xl:px-3",
                     isActive
                       ? "text-foreground font-medium"
                       : "text-muted-foreground hover:text-foreground",
@@ -62,14 +75,8 @@ export function PublicNavbar() {
             })}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
-            {/* Placeholder language toggle — label only, no translation yet. */}
-            <a
-              className="text-muted-foreground hover:text-foreground px-2 text-sm font-medium transition-colors"
-              href="?lang=es"
-            >
-              En Español
-            </a>
+          <div className="hidden shrink-0 items-center gap-1.5 lg:flex xl:gap-2">
+            <LanguageSwitcher />
             <Button variant="ghost" size="sm" asChild>
               <Link
                 className={cn(isSignInPage && "text-foreground")}
@@ -128,14 +135,7 @@ export function PublicNavbar() {
                 })}
               </nav>
 
-              {/* Placeholder language toggle — label only, no translation yet. */}
-              <a
-                className="text-muted-foreground hover:text-foreground mt-2 block rounded-md px-4 py-3 text-[15px] transition-colors"
-                href="?lang=es"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                En Español
-              </a>
+              <LanguageSwitcher className="mt-2" variant="row" />
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <Button variant="outline" asChild>

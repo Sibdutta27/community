@@ -27,12 +27,11 @@ describe("PublicNavbar", () => {
     expect(screen.queryByText("Apply Now")).not.toBeInTheDocument();
   });
 
-  it("renders the placeholder 'En Español' language link", () => {
+  it("renders the globe language switcher instead of the old 'En Español' link", () => {
     render(<PublicNavbar />);
-    const links = screen.getAllByRole("link", { name: /En Español/i });
-    expect(links.length).toBeGreaterThan(0);
-    for (const link of links) {
-      expect(link).toHaveAttribute("href", "?lang=es");
-    }
+    expect(
+      screen.getByRole("button", { name: "Change language" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("En Español")).not.toBeInTheDocument();
   });
 });

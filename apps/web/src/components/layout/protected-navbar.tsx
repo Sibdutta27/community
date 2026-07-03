@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { BrandMark } from "@/components/shared/brand-mark";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { Button } from "@/components/ui/button";
 import { useLogoutMutation } from "@/features/auth/lib/auth-mutations";
 import type { AuthUser } from "@/lib/auth";
@@ -139,13 +140,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
           </nav>
 
           <div className="hidden items-center gap-3 lg:flex lg:gap-2.5 xl:gap-3">
-            {/* Placeholder language toggle — label only, no translation yet. */}
-            <a
-              className="text-muted-foreground hover:text-foreground shrink-0 rounded-full px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors lg:text-[0.92rem] xl:text-sm"
-              href="?lang=es"
-            >
-              En Español
-            </a>
+            <LanguageSwitcher />
             <div className="relative" ref={profileMenuRef}>
               <button
                 aria-expanded={isProfileMenuOpen}
@@ -260,14 +255,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                 );
               })}
 
-              {/* Placeholder language toggle — label only, no translation yet. */}
-              <a
-                className="text-muted-foreground hover:bg-surface-muted hover:text-foreground rounded-2xl px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors"
-                href="?lang=es"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                En Español
-              </a>
+              <LanguageSwitcher variant="row" />
             </nav>
 
             <button
