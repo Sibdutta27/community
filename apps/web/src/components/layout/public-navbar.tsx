@@ -63,6 +63,13 @@ export function PublicNavbar() {
           </nav>
 
           <div className="hidden items-center gap-2 lg:flex">
+            {/* Placeholder language toggle — label only, no translation yet. */}
+            <a
+              className="text-muted-foreground hover:text-foreground px-2 text-sm font-medium transition-colors"
+              href="?lang=es"
+            >
+              En Español
+            </a>
             <Button variant="ghost" size="sm" asChild>
               <Link
                 className={cn(isSignInPage && "text-foreground")}
@@ -120,6 +127,15 @@ export function PublicNavbar() {
                   );
                 })}
               </nav>
+
+              {/* Placeholder language toggle — label only, no translation yet. */}
+              <a
+                className="text-muted-foreground hover:text-foreground mt-2 block rounded-md px-4 py-3 text-[15px] transition-colors"
+                href="?lang=es"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                En Español
+              </a>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <Button variant="outline" asChild>

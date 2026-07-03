@@ -21,8 +21,8 @@ type EnrollmentStepLayoutProps = Readonly<{
 
 /**
  * Shared shell for the five enrollment step pages: a light header row
- * (Back pill on the left, clickable 1-5 stepper + "En Español" on the
- * right), the big "N. Title" heading, and the step's form as children.
+ * (Back pill on the left, the clickable number+name tab stepper filling
+ * the rest), the big "N. Title" heading, and the step's form as children.
  */
 export function EnrollmentStepLayout({
   children,
@@ -36,7 +36,7 @@ export function EnrollmentStepLayout({
   return (
     <div className="mx-auto w-full max-w-5xl pt-24 pb-16 sm:pt-28 lg:pt-32">
       <header>
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
           <Button asChild size="sm" variant="outline">
             <Link href={backHref}>
               <ArrowLeft aria-hidden="true" className="size-4" />
@@ -44,16 +44,11 @@ export function EnrollmentStepLayout({
             </Link>
           </Button>
 
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-            <EnrollmentStepper currentStep={step} stepState={stepState} />
-            {/* Placeholder language toggle — label only, no translation yet. */}
-            <a
-              className="text-muted-foreground hover:text-foreground text-sm font-medium underline underline-offset-4 transition-colors"
-              href="?lang=es"
-            >
-              En Español
-            </a>
-          </div>
+          <EnrollmentStepper
+            className="min-w-0 flex-1"
+            currentStep={step}
+            stepState={stepState}
+          />
         </div>
 
         {definition ? (

@@ -26,4 +26,13 @@ describe("PublicNavbar", () => {
     render(<PublicNavbar />);
     expect(screen.queryByText("Apply Now")).not.toBeInTheDocument();
   });
+
+  it("renders the placeholder 'En Español' language link", () => {
+    render(<PublicNavbar />);
+    const links = screen.getAllByRole("link", { name: /En Español/i });
+    expect(links.length).toBeGreaterThan(0);
+    for (const link of links) {
+      expect(link).toHaveAttribute("href", "?lang=es");
+    }
+  });
 });
