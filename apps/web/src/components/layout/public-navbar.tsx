@@ -12,6 +12,14 @@ import { publicNavigation } from "@/constants/navigation";
 import { mobileMenuVariants } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
+import {
+  desktopNavLinkClass,
+  mobileNavLinkClass,
+  navbarFrameClass,
+  navbarHeaderClass,
+  navbarMobilePanelClass,
+  navbarPillClass,
+} from "@/components/layout/navbar-chrome";
 import { BrandMark } from "@/components/shared/brand-mark";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 
@@ -30,30 +38,30 @@ export function PublicNavbar() {
 
   return (
     <motion.header
-      className="width-before-scroll-bar fixed inset-x-0 top-0 z-50"
+      className={navbarHeaderClass}
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.84, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="border-border bg-background/95 supports-backdrop-filter:bg-background/85 border-b backdrop-blur-md">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className={navbarFrameClass}>
+        <div className={navbarPillClass}>
           <Link href="/" className="shrink-0">
-            {/* Full wordmark is wide — at lg (1024–1280) show a shortened
-                mark so the row never overflows; the full wordmark returns
-                at xl. */}
+            {/* Full wordmark from `sm` up; shortened on the smallest widths
+                so the pill never overflows. */}
             <BrandMark
-              className="lg:hidden xl:inline-flex"
+              compact
+              className="sm:hidden"
+              label="Taíno Nation"
               showSubtitle={false}
             />
             <BrandMark
               compact
-              className="hidden lg:inline-flex xl:hidden"
-              label="Taíno Nation"
+              className="hidden sm:inline-flex"
               showSubtitle={false}
             />
           </Link>
 
-          <nav className="hidden items-center gap-0.5 lg:flex xl:gap-1">
+          <nav className="hidden items-center gap-1 lg:flex">
             {publicNavigation.map((item) => {
               const isActive = isActivePath(pathname, item.href);
 
@@ -62,12 +70,7 @@ export function PublicNavbar() {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "px-2.5 py-2 text-sm whitespace-nowrap transition-colors xl:px-3",
-                    isActive
-                      ? "text-foreground font-medium"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
+                  className={desktopNavLinkClass(isActive)}
                 >
                   {item.label}
                 </Link>
@@ -93,7 +96,7 @@ export function PublicNavbar() {
           <Button
             aria-expanded={isMobileMenuOpen}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            className="lg:hidden"
+            className="size-10 lg:hidden"
             size="icon"
             variant="ghost"
             onClick={() => setIsMobileMenuOpen((open) => !open)}
@@ -106,7 +109,7 @@ export function PublicNavbar() {
           {isMobileMenuOpen ? (
             <motion.div
               key="mobile-menu"
-              className="border-border bg-background border-t p-4 lg:hidden"
+              className={navbarMobilePanelClass}
               initial="hidden"
               animate="visible"
               exit="exit"
@@ -122,20 +125,15 @@ export function PublicNavbar() {
                       href={item.href}
                       aria-current={isActive ? "page" : undefined}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        "rounded-md px-4 py-3 text-[15px] transition-colors",
-                        isActive
-                          ? "bg-surface-muted text-foreground font-medium"
-                          : "text-muted-foreground hover:bg-surface-muted hover:text-foreground",
-                      )}
+                      className={mobileNavLinkClass(isActive)}
                     >
                       {item.label}
                     </Link>
                   );
                 })}
-              </nav>
 
-              <LanguageSwitcher className="mt-2" variant="row" />
+                <LanguageSwitcher variant="row" />
+              </nav>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <Button variant="outline" asChild>

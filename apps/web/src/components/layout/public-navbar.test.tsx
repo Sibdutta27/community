@@ -15,6 +15,24 @@ vi.mock("next/image", () => ({
 }));
 
 describe("PublicNavbar", () => {
+  it("renders only the trimmed signed-out links (About Us + Enrollment)", () => {
+    render(<PublicNavbar />);
+
+    // Desktop + mobile menus both render the nav list.
+    expect(
+      screen.getAllByRole("link", { name: "About Us" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Enrollment" }).length,
+    ).toBeGreaterThan(0);
+
+    for (const removed of ["Home", "Yucayeke", "Community", "Services"]) {
+      expect(
+        screen.queryByRole("link", { name: removed }),
+      ).not.toBeInTheDocument();
+    }
+  });
+
   it("renders the primary CTA as 'Enroll Today'", () => {
     render(<PublicNavbar />);
     expect(

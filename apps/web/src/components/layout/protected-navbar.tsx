@@ -15,6 +15,14 @@ import {
   X,
 } from "lucide-react";
 
+import {
+  desktopNavLinkClass,
+  mobileNavLinkClass,
+  navbarFrameClass,
+  navbarHeaderClass,
+  navbarMobilePanelClass,
+  navbarPillClass,
+} from "@/components/layout/navbar-chrome";
 import { BrandMark } from "@/components/shared/brand-mark";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { Button } from "@/components/ui/button";
@@ -110,11 +118,20 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
     "text-foreground hover:bg-surface-muted flex w-full cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold no-underline transition-colors";
 
   return (
-    <header className="width-before-scroll-bar fixed inset-x-0 top-0 z-50">
-      <div className="mx-auto max-w-7xl px-4 pt-3 sm:px-6 sm:pt-4 lg:px-8 lg:pt-3">
-        <div className="border-border/90 bg-surface/95 supports-backdrop-filter:bg-surface/92 flex items-center justify-between gap-3 rounded-full border px-3.5 py-2.5 shadow-[0_16px_32px_-24px_rgba(21,17,13,0.18)] backdrop-blur-md sm:gap-4 sm:px-4 sm:py-3 lg:gap-3 lg:px-3.5 lg:py-2 xl:px-4 xl:py-2.5">
+    <header className={navbarHeaderClass}>
+      <div className={navbarFrameClass}>
+        <div className={navbarPillClass}>
           <Link href="/" className="shrink-0">
-            <BrandMark compact showLabel={false} />
+            {/* Small wordmark so the brand fits next to the app nav + avatar;
+                logo-only on the very smallest widths to avoid overflow. */}
+            <BrandMark compact showLabel={false} className="min-[420px]:hidden" />
+            <BrandMark
+              compact
+              className="hidden min-[420px]:inline-flex"
+              label="Taíno Nation"
+              showSubtitle={false}
+              wordmarkSize="sm"
+            />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
@@ -126,12 +143,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "shrink-0 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors lg:px-3 lg:py-1.5 lg:text-[0.92rem] xl:px-4 xl:py-2 xl:text-sm",
-                    isActive
-                      ? "bg-surface-muted text-primary"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
+                  className={desktopNavLinkClass(isActive)}
                 >
                   {item.label}
                 </Link>
@@ -156,11 +168,13 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                   </span>
                 </div>
 
-                <div className="text-left leading-tight">
-                  <p className="text-foreground text-sm font-semibold lg:text-[0.92rem] xl:text-sm">
+                {/* Name/ID text needs more room than the lg pill has once the
+                    wordmark shows — avatar-only at lg, text from xl. */}
+                <div className="hidden text-left leading-tight xl:block">
+                  <p className="text-foreground max-w-[12rem] truncate text-sm font-semibold whitespace-nowrap">
                     {user.name}
                   </p>
-                  <p className="text-muted-foreground text-xs lg:text-[11px] xl:text-xs">
+                  <p className="text-muted-foreground max-w-[12rem] truncate text-xs whitespace-nowrap">
                     Member ID: {user.publicId ?? user.id}
                   </p>
                 </div>
@@ -214,7 +228,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
         </div>
 
         {isMobileMenuOpen ? (
-          <div className="border-border bg-surface mt-3 rounded-3xl border p-4 shadow-[0_18px_34px_-24px_rgba(21,17,13,0.22)] lg:hidden">
+          <div className={navbarMobilePanelClass}>
             <div className="border-border bg-surface-muted flex items-center gap-3 rounded-2xl border p-3">
               <div className="text-secondary-foreground bg-secondary relative flex size-12 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(31,30,28,0.2)]">
                 {getInitials(user.name)}
@@ -243,12 +257,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={cn(
-                      "rounded-2xl px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors",
-                      isActive
-                        ? "bg-surface-muted text-primary"
-                        : "text-muted-foreground hover:bg-surface-muted hover:text-foreground",
-                    )}
+                    className={mobileNavLinkClass(isActive)}
                   >
                     {item.label}
                   </Link>

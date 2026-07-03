@@ -24,6 +24,13 @@ const brandMarkVariants = {
   },
 } as const;
 
+/**
+ * `sm` renders a tighter wordmark so the brand fits next to a dense app nav
+ * (e.g. the signed-in navbar); `md` is the variant's standard wordmark.
+ */
+const smallWordmarkTitle =
+  "text-[0.85rem] leading-none font-semibold uppercase tracking-[0.1em]";
+
 type BrandMarkProps = Readonly<{
   className?: string;
   label?: string;
@@ -31,6 +38,7 @@ type BrandMarkProps = Readonly<{
   showLabel?: boolean;
   showSubtitle?: boolean;
   compact?: boolean;
+  wordmarkSize?: "sm" | "md";
 }>;
 
 export function BrandMark({
@@ -40,10 +48,12 @@ export function BrandMark({
   showLabel = true,
   showSubtitle = true,
   compact = false,
+  wordmarkSize = "md",
 }: BrandMarkProps) {
   const variant = compact
     ? brandMarkVariants.compact
     : brandMarkVariants.default;
+  const titleClass = wordmarkSize === "sm" ? smallWordmarkTitle : variant.title;
 
   return (
     <div className={cn(variant.container, className)}>
@@ -60,7 +70,7 @@ export function BrandMark({
       </div>
       {showLabel ? (
         <div className="min-w-0">
-          <span className={cn("text-foreground block", variant.title)}>
+          <span className={cn("text-foreground block", titleClass)}>
             {label}
           </span>
           {showSubtitle ? (
