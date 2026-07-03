@@ -231,7 +231,7 @@ export function DashboardEnrollmentSection({
             </div>
           ) : null}
 
-          <div className="mt-5 grid gap-3.5 sm:mt-8 sm:gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-5 grid gap-3.5 sm:mt-8 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {enrollmentSteps.map((step) => (
               <EnrollmentStepCard
                 key={step.step}
