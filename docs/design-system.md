@@ -6,91 +6,108 @@ independent: do not copy `apps/web` tokens into the admin panel or vice-versa.
 
 Source of truth: `apps/web/src/styles/tokens.css`, `src/styles/fonts.ts`,
 `src/app/globals.css`, `src/components/ui/*`, `src/lib/motion.ts`. When you change those, run
-`community-kb refresh frontend` to update this doc.
+`/style-guide refresh web` to update this doc.
 
 ## Aesthetic direction
 
-**Warm & light.** Soft cream backgrounds, warm-white cards, warm-taupe hairline borders, warm
-near-black text, generous whitespace. The Indigenous-heritage warmth is back — but lightened and
-airy, not heavy. A single strong accent: **brand red `#c53133`** for primary CTAs, active states
-and focus rings; teal and warm brown are quiet supporting hues. Display headings in **Cinzel**
-(serif), body/UI in **Montserrat**. Pill-shaped buttons with soft, low-opacity hue shadows.
+**Elegant governance.** Calm, institutional, trustworthy — a civic-registry feel rather than a
+marketing site. Warm off-white surfaces, charcoal text, hairline borders, generous whitespace,
+and exactly **one** accent: **deep teal `#2d6e7e`**, reserved for primary CTAs, the active
+enrollment step, and focus rings. Everything else is charcoal-on-warm-neutral. **Inter** is the
+single typeface for display and body. Icon tiles are uniform **charcoal with white glyphs** —
+no multicolor tiles. All text/background pairings target **WCAG AA** contrast.
 
-> Historical note: the app briefly used a minimal Inter / black-&-white system, which replaced the
-> original heavy sand/red/brown palette. This warm-light system restores the original flavor at a
-> lighter weight. The CSS variable **names** were preserved throughout (only their **values**
-> changed) so existing callers keep working.
+> Historical note: the app previously used a Cinzel/Montserrat warm sand-red-brown system (and
+> briefly a pure black-&-white Inter system). The CSS variable **names** and font **exports**
+> were preserved through each restyle (only their **values** changed) so existing callers keep
+> working — e.g. `--brand-red` now holds the deep teal, and the `cinzel`/`montserrat` font
+> exports resolve to Inter.
 
 ## Color tokens (`src/styles/tokens.css`)
 
 Defined on `:root` and exposed to Tailwind v4 via `@theme inline` (use as `bg-primary`,
-`text-foreground`, `border-border`, etc.). Warm-light palette:
+`text-foreground`, `border-border`, etc.):
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `--background` | `#faf7f1` | page background (soft cream) |
-| `--foreground` | `#1c1a17` | primary text (warm near-black) |
-| `--surface` | `#fffdf9` | cards / panels (warm white) |
-| `--surface-muted` | `#f4efe6` | muted surfaces / hover |
-| `--border` | `#e6dccc` | warm taupe hairline borders |
-| `--muted-foreground` | `#6f6456` | secondary / muted text |
-| `--primary` / `--primary-foreground` | `#c53133` / `#ffffff` | brand-red CTA + white text |
-| `--secondary` / `--secondary-foreground` | `#6fafc4` / `#1c1a17` | teal supporting hue |
-| `--accent` / `--accent-foreground` | `#b38a5a` / `#1c1a17` | warm brown supporting hue |
-| `--ring` | `#c53133` | focus ring (red) |
+| `--background` | `#f7f5f1` | page background (warm off-white) |
+| `--foreground` | `#1f1e1c` | primary text (charcoal); also the neutral icon-tile fill (`bg-foreground`) |
+| `--surface` | `#fffefb` | cards / panels (warm white) |
+| `--surface-muted` | `#efece6` | muted surfaces / hover / badges |
+| `--border` | `#e3ded4` | warm hairline borders |
+| `--muted-foreground` | `#6b665f` | secondary / muted text (AA on off-white) |
+| `--primary` / `--primary-foreground` | `#2d6e7e` / `#ffffff` | **the one accent** — deep-teal CTA + white text |
+| `--secondary` / `--secondary-foreground` | `#dbe7ea` / `#1f1e1c` | pale-teal supporting surface, charcoal text |
+| `--accent` / `--accent-foreground` | `#efece6` / `#1f1e1c` | warm-neutral supporting surface (NOT a hue) |
+| `--ring` | `#2d6e7e` | focus ring (teal) |
 
-Brand tokens: `--brand-red` `#c53133`, `--brand-sky` `#6fafc4`, `--brand-brown` `#b38a5a`,
-`--brand-sand` `#ede6dc`, `--brand-sand-soft` `#f7f2ec`, `--brand-black` `#1c1a17`. Prefer the
-semantic tokens above; reach for `brand-*` only for decorative warm fills.
+Brand tokens (legacy names, current values): `--brand-red` `#2d6e7e` (the teal accent),
+`--brand-sky` `#5c94a1`, `--brand-brown` `#8a8378`, `--brand-sand` `#efece6`,
+`--brand-sand-soft` `#f7f5f1`, `--brand-black` `#1f1e1c`. Prefer the semantic tokens; the
+`brand-*` names survive only for existing callers.
 
-Shadows stay minimal — soft, low-opacity, often hue-tinted (e.g. the primary button's
-`rgba(197,49,51,0.45)` at long negative spread). Airy, never heavy.
+Shadows stay minimal: soft, low-opacity, long negative spread — charcoal-tinted for neutral
+surfaces (e.g. `rgba(31,30,28,0.18)`), teal-tinted only on the primary button
+(`rgba(45,110,126,0.45)`). Never heavy or saturated.
+
+## Iconography
+
+Restrained and neutral. Decorative icon tiles are **uniform charcoal squares/circles with
+white glyphs** — either a CSS `bg-foreground` container around a white SVG glyph (service
+categories, yucayeke highlights, member services, community quick links) or a self-contained
+SVG whose background rect is flat `#1f1e1c` with white artwork (`public/icons/home/heritage/*`).
+Small inline glyphs on light surfaces use charcoal or dark desaturated strokes. **Do not
+introduce colored tiles or multicolor icon sets.**
 
 ## Typography (`src/styles/fonts.ts`)
 
-Real Google fonts via `next/font/google`, applied as CSS variables on `<body>` in
+One typeface: **Inter** (via `next/font/google`), applied as CSS variables on `<body>` in
 `app/layout.tsx` and consumed through the `--font-*-base` tokens.
 
 | Role | Font | Variable |
 |------|------|----------|
-| Display / headings | **Cinzel** (400/600/700) | `--font-display` |
-| Body / UI | **Montserrat** (400/500/600/700) | `--font-body` |
-| Alt body | **Lato** (400/700) | `--font-body-alt` |
+| Display / headings | **Inter** | `--font-display` |
+| Body / UI | **Inter** | `--font-body` |
+| Alt body | **Inter** | `--font-body-alt` |
 
-- Compatibility exports: `poppins` → Lato, `inter` → Montserrat. Existing imports keep working.
-- `--font-sans-base` / `--font-ui-base` resolve to Montserrat; `--font-display-base` to Cinzel.
-- `globals.css`: `h1, h2` use `--font-display-base` (Cinzel), weight 700; body uses
-  `--font-sans-base` (Montserrat) with `optimizeLegibility` + antialiasing.
+- Compatibility exports: `cinzel`, `montserrat`, `lato`, `poppins`, `inter` **all resolve to
+  Inter** — existing imports keep working; don't add new Google fonts.
+- `globals.css`: `h1, h2` use `--font-display-base` at weight 700 with `-0.03em` tracking;
+  body uses `--font-sans-base` with `optimizeLegibility` + antialiasing. Headings across
+  features typically add tight negative tracking (`tracking-[-0.04em]`–`[-0.05em]`).
 
 ## Component patterns
 
 - **Buttons** (`components/ui/button.tsx`, CVA): pill shape `rounded-[200px]`, `font-medium`,
-  200ms transition, soft hue shadows. Variants:
-  - `primary` — solid brand-red pill, white text (the default; the CTA).
-  - `outline` — warm hairline border (`border-border`), warm-white bg, near-black text;
-    hover raises `bg-surface-muted`.
-  - `secondary` / `accent` — teal / warm-brown solid pills with matching soft shadows.
-  - `ghost` — transparent, hover muted cream surface.
-  - Sizes `sm/md/lg/xl/icon`, plus `fullWidth`. All existing variant names still exist.
-- **Inputs** (`components/ui/input.tsx`, shared `inputBaseClassName` reused by textarea & select
-  trigger): clean rectangle `rounded-md`, `border-border`, warm-white bg, `text-[15px]`, red focus
-  (`focus-visible:border-ring` + `ring-ring/25`). No drop shadow.
-- **Checkbox / radio** (`ui/checkbox.tsx`, `ui/radio-group.tsx`): warm hairline border, warm-white
-  bg; checked state fills / dots brand red (`data-[state=checked]:bg-primary`, `text-primary`).
-- **Select** (`ui/select.tsx`): trigger reuses the input style; content is `rounded-md` on
-  `bg-surface` with a subtle soft shadow; check indicator is red (`text-primary`).
-- **Labels / form** (`ui/label.tsx`, `ui/form.tsx`): labels `text-[15px] font-medium text-foreground`;
-  descriptions `text-muted-foreground`; error text stays red (`text-red-600`).
-- **Dialog** (`ui/dialog.tsx`): warm scrim `bg-foreground/50` + blur; content on `bg-surface` with
-  a large radius.
-- **Nav / footer** (`layout/public-navbar.tsx`, `public-footer.tsx`): 80px top nav on
-  `bg-background/95` blur with hairline bottom border; red pill CTA. Footer is light
-  (`bg-surface`, hairline top border, warm near-black/muted text).
-- **Steppers / step indicators** (`features/enrollment/components/enrollment-stepper.tsx`):
-  active & completed circles fill brand red (`bg-primary text-primary-foreground`); upcoming are
-  outlined with `border-border`.
+  200ms transition, `active:translate-y-px`, teal focus ring with offset. Variants:
+  - `primary` — solid deep-teal pill, white text (the default; **the only place the accent
+    appears as a fill** besides active steps/focus).
+  - `outline` — hairline `border-border`, `bg-surface`, charcoal text; hover `bg-surface-muted`.
+  - `secondary` — pale-teal (`#dbe7ea`) solid pill, charcoal text.
+  - `accent` — warm-neutral solid pill, charcoal text.
+  - `ghost` — transparent, hover muted warm surface.
+  - Sizes `sm/md/lg/xl/icon`, plus `fullWidth`; built-in `loading` spinner state.
+- **Inputs** (`components/ui/input.tsx`, shared base reused by textarea & select trigger):
+  clean rectangle `rounded-md`, `border-border`, `bg-surface`, `text-[15px]`; focus =
+  `border-ring` + `ring-2 ring-ring/25` (teal). No drop shadow.
+- **Checkbox / radio** (`ui/checkbox.tsx`, `ui/radio-group.tsx`): hairline border, warm-white
+  bg; checked state fills/dots teal (`data-[state=checked]:bg-primary`).
+- **Select** (`ui/select.tsx`): trigger reuses the input style; content `rounded-md` on
+  `bg-surface` with a subtle shadow; check indicator `text-primary`.
+- **Labels / form** (`ui/label.tsx`, `ui/form.tsx`): labels `text-[15px] font-medium
+  text-foreground`; descriptions `text-muted-foreground`; error text stays red (`text-red-600`)
+  — errors are the one non-teal signal color.
+- **Cards**: `bg-surface` (or `bg-surface-muted`) on the off-white page, hairline
+  `border-border`, large radii (`rounded-2xl`, `rounded-[1.2rem]`+), soft long-negative-spread
+  charcoal shadows.
+- **Steppers** (`features/enrollment/components/enrollment-stepper.tsx`): active & completed
+  circles fill teal (`bg-primary text-primary-foreground`); upcoming are outlined
+  `border-border` with muted text.
+- **Dialog** (`ui/dialog.tsx`): charcoal scrim `bg-foreground/50` + blur; content on
+  `bg-surface` with a large radius.
 - Always compose classes with `cn()` (`src/lib/utils.ts`); use `class-variance-authority` for
-  variants. shadcn config: **"new-york"** style, base color zinc, lucide icons (`components.json`).
+  variants. shadcn config: **"new-york"** style, base color zinc, lucide icons
+  (`components.json`).
 
 ## SCSS modules
 
@@ -119,11 +136,16 @@ component (see `src/components/ui/{button,input,form}.test.tsx`).
 ## When building new frontend UI
 
 1. Reuse `components/ui/*` and the semantic tokens above — don't hardcode hex values.
-2. Cinzel headings, Montserrat body; warm near-black text on cream, hairline `border-border`
-   borders, lots of whitespace.
-3. Red (`bg-primary`) only for the primary CTA / active / focus; teal & brown accents sparingly.
-4. Keep it light and airy: soft low-opacity shadows, `bg-surface` cards on the cream page —
-   never heavy saturated panels.
-5. Reach for the shared motion variants before inventing new animations.
-6. Never pull in the admin panel's dark purple theme, and don't drift back to pure black-&-white
-   neutrals — repoint any `#000`/grey literals to the semantic tokens.
+2. Inter everywhere (via the existing font exports); charcoal text on warm off-white; hairline
+   `border-border` borders; generous whitespace.
+3. Teal (`bg-primary` / `ring-ring`) **only** for the primary CTA, the active step, and focus —
+   never as decoration. One accent, used sparingly, is the brand.
+4. Icons stay neutral: white glyphs on charcoal `bg-foreground` tiles, or charcoal glyphs
+   inline on light surfaces. No colored or gradient tiles.
+5. Keep contrast **WCAG AA**: `foreground`/`muted-foreground` on `background`/`surface*` pass;
+   don't lighten text below `--muted-foreground`.
+6. Keep it calm: soft low-opacity shadows, `bg-surface` cards on the off-white page — never
+   heavy saturated panels.
+7. Reach for the shared motion variants before inventing new animations.
+8. Never pull in the admin panel's dark purple theme, and don't reintroduce the old
+   Cinzel/red/sand palette — repoint stray warm/red literals to the semantic tokens.
