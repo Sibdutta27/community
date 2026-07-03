@@ -23,6 +23,7 @@ import {
   enrollmentQueryKeys,
   useAccountInfoQuery,
   useEnrollmentStepOneQuery,
+  useEnrollmentStepOneSaveDraftMutation,
   useEnrollmentStepOneUpsertMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
@@ -33,6 +34,7 @@ import {
   enrollmentStepOneSexOptions,
   enrollmentStepOneYesNoOptions,
   getEnrollmentStepOneDefaultValues,
+  mapEnrollmentStepOneFormToDraftPayload,
   mapEnrollmentStepOneFormToPayload,
   type EnrollmentStepOneFormValues,
 } from "@/features/enrollment/lib/enrollment-step-one-form";
@@ -49,12 +51,14 @@ export function EnrollmentStepOneForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const accountInfoQuery = useAccountInfoQuery();
+  // Fetch the prefill whenever an enrollment exists — partial drafts
+  // ("Save & finish later") must hydrate even before the step is complete.
   const shouldFetchStepOnePrefill = Boolean(
-    accountInfoQuery.data?.enrollment?.steps?.["1"] ??
-    accountInfoQuery.data?.enrollmentStep?.["1"],
+    accountInfoQuery.data?.enrollment ?? accountInfoQuery.data?.hasEnrollment,
   );
   const stepOneQuery = useEnrollmentStepOneQuery(shouldFetchStepOnePrefill);
   const upsertMutation = useEnrollmentStepOneUpsertMutation();
+  const saveDraftMutation = useEnrollmentStepOneSaveDraftMutation();
   const lastHydratedDefaultsRef = useRef<string | null>(null);
   const maxBirthDate = formatDateInputValue(new Date());
 
@@ -139,6 +143,34 @@ export function EnrollmentStepOneForm() {
           error instanceof Error
             ? error.message
             : "Unable to save your step 1 demographics right now.",
+      });
+    }
+  };
+
+  // "Save & finish later": persist whatever is currently entered as a
+  // partial draft — getValues() deliberately skips validation — then return
+  // to the dashboard, which confirms the save.
+  const handleSaveDraft = async () => {
+    clearErrors("root");
+
+    try {
+      await saveDraftMutation.mutateAsync(
+        mapEnrollmentStepOneFormToDraftPayload(form.getValues()),
+      );
+      await queryClient.invalidateQueries({
+        queryKey: accountQueryKeys.info,
+      });
+      await queryClient.invalidateQueries({
+        queryKey: enrollmentQueryKeys.stepOneDemographics,
+      });
+      router.push("/dashboard?draftSaved=1");
+    } catch (error) {
+      setError("root", {
+        type: "server",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to save your step 1 progress right now.",
       });
     }
   };
@@ -281,7 +313,13 @@ export function EnrollmentStepOneForm() {
           ) : null}
         </EnrollmentStepSection>
 
-        <EnrollmentStepFooter>
+        <EnrollmentStepFooter
+          onSaveDraft={() => {
+            void handleSaveDraft();
+          }}
+          saveDraftDisabled={upsertMutation.isPending}
+          saveDraftPending={saveDraftMutation.isPending}
+        >
           <Button
             className="min-w-[10rem]"
             loading={upsertMutation.isPending}

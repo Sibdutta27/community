@@ -113,3 +113,102 @@ describe('Step2Service.upsert (maternal kinship → Ancestry rows)', () => {
         expect(result).toEqual({ success: true });
     });
 });
+
+describe('Step2Service.saveDraft (partial draft — saves without completing)', () => {
+    const userId = 'user-1';
+    const enrollmentId = 'enrollment-1';
+
+    function buildService() {
+        const ancestry = { upsert: jest.fn().mockResolvedValue({}) };
+        const tx = {
+            enrollment: {
+                findFirst: jest.fn().mockResolvedValue({
+                    id: enrollmentId,
+                    userId,
+                    status: EnrollmentStatus.DRAFT,
+                }),
+            },
+            ancestry,
+        };
+        const database = {
+            $transaction: jest.fn(async (cb: (t: unknown) => unknown) => cb(tx)),
+        };
+        const enrollmentStepService = { markStepComplete: jest.fn() };
+        const service = new Step2Service(
+            database as never,
+            enrollmentStepService as never,
+        );
+        return { service, ancestry, enrollmentStepService };
+    }
+
+    it('upserts only the ancestors present in the payload', async () => {
+        const { service, ancestry } = buildService();
+
+        const result = await service.saveDraft(userId, {
+            mother: { name: 'Anacaona' },
+        } as never);
+
+        expect(ancestry.upsert).toHaveBeenCalledTimes(1);
+        const call = ancestry.upsert.mock.calls[0][0];
+        expect(call.where.enrollmentId_relation.relation).toBe(
+            AncestryRelation.MOTHER,
+        );
+        expect(call.update.name).toBe('Anacaona');
+        expect(result).toEqual({ success: true });
+    });
+
+    it('writes nothing when the payload has no ancestors', async () => {
+        const { service, ancestry } = buildService();
+
+        await service.saveDraft(userId, {} as never);
+
+        expect(ancestry.upsert).not.toHaveBeenCalled();
+    });
+
+    it('never marks step 2 complete', async () => {
+        const { service, enrollmentStepService } = buildService();
+
+        await service.saveDraft(userId, {
+            mother: { name: 'Anacaona' },
+        } as never);
+
+        expect(enrollmentStepService.markStepComplete).not.toHaveBeenCalled();
+    });
+});
+
+describe('Step2Service.getMaternalKinship (draft prefill — not gated on completion)', () => {
+    it('returns the saved Ancestry rows even when step 2 is not completed', async () => {
+        const database = {
+            enrollment: {
+                findFirst: jest.fn().mockResolvedValue({
+                    id: 'enrollment-1',
+                    userId: 'user-1',
+                    steps: [{ stepNumber: 2, isCompleted: false }],
+                }),
+            },
+            ancestry: {
+                findMany: jest.fn().mockResolvedValue([
+                    {
+                        relation: AncestryRelation.MOTHER,
+                        name: 'Anacaona',
+                        dateOfBirth: null,
+                        nationality: null,
+                        municipality: null,
+                        yucayeke: null,
+                        isBorikuaTaino: null,
+                    },
+                ]),
+            },
+        };
+        const service = new Step2Service(
+            database as never,
+            { markStepComplete: jest.fn() } as never,
+        );
+
+        const result = await service.getMaternalKinship('user-1');
+
+        expect(result.mother?.name).toBe('Anacaona');
+        expect(result.maternalGrandmother).toBeNull();
+        expect(result.maternalGrandfather).toBeNull();
+    });
+});

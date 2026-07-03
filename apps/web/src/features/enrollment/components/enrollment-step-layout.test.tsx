@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
@@ -52,6 +52,33 @@ describe("EnrollmentStepLayout — folder tabs + elevated card", () => {
     expect(screen.getByText(/step 1 of 5/i)).toBeInTheDocument();
   });
 
+  it("renders the persistent 'Enrollment Application' title in the utility row on every step", () => {
+    const { unmount } = render(
+      <EnrollmentStepLayout step={1}>
+        <p>Body</p>
+      </EnrollmentStepLayout>,
+    );
+
+    // Governance-styled flow title: kicker + refined heading, charcoal (no teal).
+    const title = screen.getByText("Enrollment Application");
+    expect(title).toBeInTheDocument();
+    expect(title.className).toContain("text-foreground");
+    const kicker = screen.getByText(/tribal citizenship/i);
+    expect(kicker.className).toContain("text-muted-foreground");
+    expect(kicker.className).toContain("uppercase");
+    // It sits in the utility row (with Back + "Step N of 5"), not inside the card.
+    expect(getStepCard()).not.toHaveTextContent("Enrollment Application");
+    expect(screen.getByText(/step 1 of 5/i)).toBeInTheDocument();
+    unmount();
+
+    render(
+      <EnrollmentStepLayout step={4}>
+        <p>Body</p>
+      </EnrollmentStepLayout>,
+    );
+    expect(screen.getByText("Enrollment Application")).toBeInTheDocument();
+  });
+
   it("routes Back to the dashboard on step 1 and to the previous step afterwards", () => {
     const { unmount } = render(
       <EnrollmentStepLayout step={1}>
@@ -95,6 +122,55 @@ describe("EnrollmentStepFooter", () => {
     ) as HTMLElement;
     expect(band).not.toBeNull();
     expect(band.className).toContain("border-t");
+  });
+
+  it("renders a secondary 'Save & finish later' action when onSaveDraft is provided", () => {
+    const onSaveDraft = vi.fn();
+
+    render(
+      <EnrollmentStepFooter
+        backHref="/enrollment/step-1"
+        onSaveDraft={onSaveDraft}
+      >
+        <button type="submit">Next</button>
+      </EnrollmentStepFooter>,
+    );
+
+    const draftButton = screen.getByRole("button", {
+      name: /save & finish later/i,
+    });
+    expect(draftButton).toHaveAttribute("type", "button");
+
+    fireEvent.click(draftButton);
+    expect(onSaveDraft).toHaveBeenCalledTimes(1);
+  });
+
+  it("omits the 'Save & finish later' action when onSaveDraft is not provided", () => {
+    render(
+      <EnrollmentStepFooter backHref="/enrollment/step-1">
+        <button type="submit">Next</button>
+      </EnrollmentStepFooter>,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /save & finish later/i }),
+    ).toBeNull();
+  });
+
+  it("disables the 'Save & finish later' action while the draft save is pending", () => {
+    render(
+      <EnrollmentStepFooter
+        backHref="/enrollment/step-1"
+        onSaveDraft={vi.fn()}
+        saveDraftPending
+      >
+        <button type="submit">Next</button>
+      </EnrollmentStepFooter>,
+    );
+
+    expect(
+      screen.getByRole("button", { name: /saving|finish later/i }),
+    ).toBeDisabled();
   });
 
   it("disables Back while a mutation is in flight", () => {

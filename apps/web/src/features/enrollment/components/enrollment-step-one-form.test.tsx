@@ -1,9 +1,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const { pushMock, saveDraftMutateAsync, upsertMutateAsync } = vi.hoisted(
+  () => ({
+    pushMock: vi.fn(),
+    saveDraftMutateAsync: vi.fn(),
+    upsertMutateAsync: vi.fn(),
+  }),
+);
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: pushMock }),
 }));
 
 vi.mock("next/image", () => ({
@@ -21,10 +29,20 @@ vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
   useAccountInfoQuery: () => ({ data: undefined }),
   useEnrollmentStepOneQuery: () => ({ data: undefined, error: null }),
   useEnrollmentStepOneUpsertMutation: () => ({
-    mutateAsync: vi.fn(),
+    mutateAsync: upsertMutateAsync,
+    isPending: false,
+  }),
+  useEnrollmentStepOneSaveDraftMutation: () => ({
+    mutateAsync: saveDraftMutateAsync,
     isPending: false,
   }),
 }));
+
+beforeEach(() => {
+  pushMock.mockReset();
+  saveDraftMutateAsync.mockReset().mockResolvedValue({ success: true });
+  upsertMutateAsync.mockReset().mockResolvedValue({ success: true });
+});
 
 import { EnrollmentStepOneForm } from "@/features/enrollment/components/enrollment-step-one-form";
 
@@ -109,5 +127,56 @@ describe("EnrollmentStepOneForm — demographics only", () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByText("Middle Name")).not.toBeInTheDocument();
     expect(screen.queryByText("Pronouns")).not.toBeInTheDocument();
+  });
+});
+
+describe("EnrollmentStepOneForm — Save & finish later (partial draft)", () => {
+  it("saves the current values without validation and returns to the dashboard", async () => {
+    renderForm();
+
+    // Fill only ONE field — the required fields stay empty on purpose.
+    fireEvent.change(screen.getByPlaceholderText("Enter your first name"), {
+      target: { value: "Anani" },
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save & finish later/i }),
+    );
+
+    await waitFor(() => {
+      expect(saveDraftMutateAsync).toHaveBeenCalledTimes(1);
+    });
+
+    // Partial payload: only the provided field (+ the definite checkbox state).
+    expect(saveDraftMutateAsync).toHaveBeenCalledWith({
+      firstName: "Anani",
+      yucayekeUnknown: false,
+    });
+    // The full upsert (with required-field validation) is never triggered…
+    expect(upsertMutateAsync).not.toHaveBeenCalled();
+    // …and no required-field errors are surfaced.
+    expect(screen.queryByText(/last name is required/i)).toBeNull();
+
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
+    });
+  });
+
+  it("surfaces a server error instead of navigating when the draft save fails", async () => {
+    saveDraftMutateAsync.mockRejectedValueOnce(
+      new Error("Enrollment is not in draft status"),
+    );
+    renderForm();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save & finish later/i }),
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Enrollment is not in draft status"),
+      ).toBeInTheDocument();
+    });
+    expect(pushMock).not.toHaveBeenCalled();
   });
 });

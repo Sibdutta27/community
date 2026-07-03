@@ -7,6 +7,7 @@ import type {
   EnrollmentMaritalStatusValue,
   EnrollmentSexValue,
   EnrollmentStepOnePrefillResponse,
+  EnrollmentStepOneSaveDraftRequest,
   EnrollmentStepOneUpsertRequest,
 } from "@/types/enrollment";
 
@@ -273,9 +274,14 @@ export function getEnrollmentStepOneDefaultValues(
   };
 }
 
-export function mapEnrollmentStepOneFormToPayload(
+/**
+ * The always-optional slice of the step 1 payload (shared by the full upsert
+ * and the partial draft): selections, occupation and the Yucayekeno answers,
+ * with empties omitted.
+ */
+function buildStepOneOptionalPayloadFields(
   values: EnrollmentStepOneFormValues,
-): EnrollmentStepOneUpsertRequest {
+) {
   const sex = resolveOptionalSelection(
     values.sex,
     enrollmentStepOneSexValues,
@@ -308,12 +314,6 @@ export function mapEnrollmentStepOneFormToPayload(
         : false;
 
   return {
-    firstName: trimValue(values.firstName),
-    lastName: trimValue(values.lastName),
-    dateOfBirth: toIsoDateString(values.dateOfBirth),
-    cityOfBirth: trimValue(values.cityOfBirth),
-    municipalityOfBirth: trimValue(values.municipalityOfBirth),
-    countryOfBirth: trimValue(values.countryOfBirth),
     ...(sex ? { sex } : {}),
     ...(gender ? { gender } : {}),
     ...(maritalStatus ? { maritalStatus } : {}),
@@ -323,5 +323,45 @@ export function mapEnrollmentStepOneFormToPayload(
     yucayekeUnknown,
     ...(hasChildren !== undefined ? { hasChildren } : {}),
     ...(hasMinorChildren !== undefined ? { hasMinorChildren } : {}),
+  };
+}
+
+export function mapEnrollmentStepOneFormToPayload(
+  values: EnrollmentStepOneFormValues,
+): EnrollmentStepOneUpsertRequest {
+  return {
+    firstName: trimValue(values.firstName),
+    lastName: trimValue(values.lastName),
+    dateOfBirth: toIsoDateString(values.dateOfBirth),
+    cityOfBirth: trimValue(values.cityOfBirth),
+    municipalityOfBirth: trimValue(values.municipalityOfBirth),
+    countryOfBirth: trimValue(values.countryOfBirth),
+    ...buildStepOneOptionalPayloadFields(values),
+  };
+}
+
+/**
+ * Partial draft payload for "Save & finish later": identical mapping to the
+ * full payload, except the required fields are simply OMITTED when empty
+ * (never validated) so any subset of the form can be saved.
+ */
+export function mapEnrollmentStepOneFormToDraftPayload(
+  values: EnrollmentStepOneFormValues,
+): EnrollmentStepOneSaveDraftRequest {
+  const firstName = toOptionalString(values.firstName);
+  const lastName = toOptionalString(values.lastName);
+  const dateOfBirth = normalizeDateInputValue(values.dateOfBirth);
+  const cityOfBirth = toOptionalString(values.cityOfBirth);
+  const municipalityOfBirth = toOptionalString(values.municipalityOfBirth);
+  const countryOfBirth = toOptionalString(values.countryOfBirth);
+
+  return {
+    ...(firstName ? { firstName } : {}),
+    ...(lastName ? { lastName } : {}),
+    ...(dateOfBirth ? { dateOfBirth: toIsoDateString(dateOfBirth) } : {}),
+    ...(cityOfBirth ? { cityOfBirth } : {}),
+    ...(municipalityOfBirth ? { municipalityOfBirth } : {}),
+    ...(countryOfBirth ? { countryOfBirth } : {}),
+    ...buildStepOneOptionalPayloadFields(values),
   };
 }

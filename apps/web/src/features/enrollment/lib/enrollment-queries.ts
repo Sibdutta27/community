@@ -15,14 +15,18 @@ import type {
   EnrollmentDocumentPresignResponse,
   EnrollmentDocumentType,
   EnrollmentDocumentUploadResponse,
+  EnrollmentSaveDraftResponse,
   EnrollmentStepFourNextResponse,
   EnrollmentStepOnePrefillResponse,
+  EnrollmentStepOneSaveDraftRequest,
   EnrollmentStepOneUpsertRequest,
   EnrollmentStepOneUpsertResponse,
   EnrollmentStepThreePrefillResponse,
+  EnrollmentStepThreeSaveDraftRequest,
   EnrollmentStepThreeUpsertRequest,
   EnrollmentStepThreeUpsertResponse,
   EnrollmentStepTwoPrefillResponse,
+  EnrollmentStepTwoSaveDraftRequest,
   EnrollmentStepTwoUpsertRequest,
   EnrollmentStepTwoUpsertResponse,
 } from "@/types/enrollment";
@@ -111,6 +115,25 @@ export function useEnrollmentStepOneUpsertMutation() {
   });
 }
 
+/**
+ * Partial Step 1 draft save ("Save & finish later") — sends only the
+ * provided fields; the backend skips required-field validation and never
+ * marks the step complete.
+ */
+export function useEnrollmentStepOneSaveDraftMutation() {
+  return useMutation({
+    mutationFn: (payload: EnrollmentStepOneSaveDraftRequest) =>
+      requestJson<EnrollmentSaveDraftResponse, EnrollmentStepOneSaveDraftRequest>(
+        "/api/enrollment/step1/save-draft",
+        {
+          method: "POST",
+          body: payload,
+          fallbackMessage: "Unable to save your step 1 progress right now.",
+        },
+      ),
+  });
+}
+
 export function useEnrollmentStepOneQuery(enabled = true) {
   return useQuery({
     queryKey: enrollmentQueryKeys.stepOneDemographics,
@@ -136,6 +159,21 @@ export function useEnrollmentStepTwoUpsertMutation() {
         fallbackMessage:
           "Unable to save your step 2 maternal kinship information right now.",
       }),
+  });
+}
+
+/** Partial Step 2 draft save ("Save & finish later") — see step 1 note. */
+export function useEnrollmentStepTwoSaveDraftMutation() {
+  return useMutation({
+    mutationFn: (payload: EnrollmentStepTwoSaveDraftRequest) =>
+      requestJson<EnrollmentSaveDraftResponse, EnrollmentStepTwoSaveDraftRequest>(
+        "/api/enrollment/step2/save-draft",
+        {
+          method: "POST",
+          body: payload,
+          fallbackMessage: "Unable to save your step 2 progress right now.",
+        },
+      ),
   });
 }
 
@@ -176,6 +214,21 @@ export function useEnrollmentStepThreeUpsertMutation() {
         body: payload,
         fallbackMessage:
           "Unable to save your step 3 paternal kinship information right now.",
+      }),
+  });
+}
+
+/** Partial Step 3 draft save ("Save & finish later") — see step 1 note. */
+export function useEnrollmentStepThreeSaveDraftMutation() {
+  return useMutation({
+    mutationFn: (payload: EnrollmentStepThreeSaveDraftRequest) =>
+      requestJson<
+        EnrollmentSaveDraftResponse,
+        EnrollmentStepThreeSaveDraftRequest
+      >("/api/enrollment/step3/save-draft", {
+        method: "POST",
+        body: payload,
+        fallbackMessage: "Unable to save your step 3 progress right now.",
       }),
   });
 }

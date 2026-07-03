@@ -4,7 +4,7 @@ import { AncestryRelation } from '@/generated/prisma/enums';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EnrollmentStepService } from '@/modules/enrollment/common/services/enrollmentStep.service';
 import { mapAncestryOut, upsertAncestry } from '@/modules/enrollment/common/utils/ancestry.util';
-import { Step3 } from './interfaces/step3.interface';
+import { Step3, Step3SaveDraft } from './interfaces/step3.interface';
 
 @Injectable()
 export class Step3Service {
@@ -46,27 +46,60 @@ export class Step3Service {
     }
 
     /**
+     * saveDraft: Persists a PARTIAL Step 3 (Paternal Kinship) draft — only
+     * the ancestors present in the payload are upserted and the step is NOT
+     * marked complete ("Save & finish later").
+     */
+    public async saveDraft(userId: string, draftInput: Step3SaveDraft) {
+
+        return await this.database.$transaction(async (tx) => {
+
+            const enrollment = await tx.enrollment.findFirst({
+                where: { userId },
+            });
+
+            if (!enrollment) {
+                throw new BadRequestException('Enrollment not started');
+            }
+
+            if (enrollment.status !== EnrollmentStatus.DRAFT) {
+                throw new BadRequestException('Enrollment is not in draft status');
+            }
+
+            if (draftInput.father !== undefined) {
+                await upsertAncestry(tx, enrollment.id, AncestryRelation.FATHER, draftInput.father);
+            }
+            if (draftInput.paternalGrandmother !== undefined) {
+                await upsertAncestry(tx, enrollment.id, AncestryRelation.PATERNAL_GRANDMOTHER, draftInput.paternalGrandmother);
+            }
+            if (draftInput.paternalGrandfather !== undefined) {
+                await upsertAncestry(tx, enrollment.id, AncestryRelation.PATERNAL_GRANDFATHER, draftInput.paternalGrandfather);
+            }
+
+            // NOTE: markStepComplete is intentionally NOT called — a draft
+            // save must never advance the enrollment.steps completion map.
+            return {
+                success: true,
+            };
+        });
+    }
+
+    /**
      * getPaternalKinship: prefill — returns the three paternal Ancestry rows.
      */
     public async getPaternalKinship(userId: string) {
 
         const enrollment = await this.database.enrollment.findFirst({
             where: { userId },
-            include: { steps: true },
         });
 
         if (!enrollment) {
             throw new BadRequestException('Enrollment not found');
         }
 
-        if (enrollment.steps.length === 0) {
-            throw new BadRequestException('Enrollment steps not found');
-        }
-
-        if (!enrollment.steps.find(step => step.stepNumber == 3)?.isCompleted) {
-            throw new BadRequestException('Step 3 not completed yet');
-        }
-
+        // NOTE: intentionally NOT gated on step completion — partial drafts
+        // ("Save & finish later") must prefill when the member returns. The
+        // completion map (enrollment.steps) is read independently elsewhere.
         const rows = await this.database.ancestry.findMany({
             where: {
                 enrollmentId: enrollment.id,

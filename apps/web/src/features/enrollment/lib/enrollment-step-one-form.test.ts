@@ -7,6 +7,7 @@ import {
   enrollmentStepOneSexOptions,
   enrollmentStepOneSchema,
   getEnrollmentStepOneDefaultValues,
+  mapEnrollmentStepOneFormToDraftPayload,
   mapEnrollmentStepOneFormToPayload,
   type EnrollmentStepOneFormValues,
 } from "@/features/enrollment/lib/enrollment-step-one-form";
@@ -296,5 +297,40 @@ describe("mapEnrollmentStepOneFormToPayload (flat backend contract)", () => {
     ]) {
       expect(payload[removedKey]).toBeUndefined();
     }
+  });
+});
+
+describe("mapEnrollmentStepOneFormToDraftPayload — partial draft (omit empty)", () => {
+  it("omits empty required fields instead of failing", () => {
+    const values = {
+      ...buildValidFormValues(),
+      firstName: "Ana",
+      lastName: "",
+      dateOfBirth: "",
+      cityOfBirth: "   ",
+      municipalityOfBirth: "",
+      countryOfBirth: "",
+      sex: "",
+      gender: "",
+      maritalStatus: "",
+      occupation: "",
+      identity: "",
+      yucayeke: "",
+      yucayekeUnknown: false,
+      hasChildren: "",
+      hasMinorChildren: "",
+    } as EnrollmentStepOneFormValues;
+
+    const payload = mapEnrollmentStepOneFormToDraftPayload(values);
+
+    expect(payload).toEqual({ firstName: "Ana", yucayekeUnknown: false });
+  });
+
+  it("keeps every provided field, mapped like the full payload", () => {
+    const payload = mapEnrollmentStepOneFormToDraftPayload(
+      buildValidFormValues(),
+    );
+
+    expect(payload).toEqual(mapEnrollmentStepOneFormToPayload(buildValidFormValues()));
   });
 });

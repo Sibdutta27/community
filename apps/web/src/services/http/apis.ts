@@ -34,10 +34,13 @@ export const endpoints = {
     COMPLETE: normalizePath("/enrollment/complete"),
     STEP_1_DEMOGRAPHICS: normalizePath("/enrollment/step1"),
     STEP_1_DEMOGRAPHICS_UPSERT: normalizePath("/enrollment/step1/upsert"),
+    STEP_1_DEMOGRAPHICS_SAVE_DRAFT: normalizePath("/enrollment/step1/save-draft"),
     STEP_2_MATERNAL_KINSHIP: normalizePath("/enrollment/step2"),
     STEP_2_MATERNAL_KINSHIP_UPSERT: normalizePath("/enrollment/step2/upsert"),
+    STEP_2_MATERNAL_KINSHIP_SAVE_DRAFT: normalizePath("/enrollment/step2/save-draft"),
     STEP_3_PATERNAL_KINSHIP: normalizePath("/enrollment/step3"),
     STEP_3_PATERNAL_KINSHIP_UPSERT: normalizePath("/enrollment/step3/upsert"),
+    STEP_3_PATERNAL_KINSHIP_SAVE_DRAFT: normalizePath("/enrollment/step3/save-draft"),
     STEP_4_DOCUMENTS_NEXT: normalizePath("/enrollment/step4/next"),
   },
   DOCUMENT: {

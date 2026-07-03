@@ -8,7 +8,7 @@ import {
 import { Type } from 'class-transformer';
 
 // A grandparent kinship person (no date of birth captured).
-class KinshipPersonDto {
+export class KinshipPersonDto {
     @IsString()
     @IsOptional()
     name?: string;
@@ -31,7 +31,7 @@ class KinshipPersonDto {
 }
 
 // The mother — same shape as a grandparent, plus an optional date of birth.
-class MotherDto extends KinshipPersonDto {
+export class MotherDto extends KinshipPersonDto {
     @Type(() => Date)
     @IsDate()
     @IsOptional()

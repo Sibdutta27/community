@@ -410,6 +410,12 @@ export function EnrollmentStepFourForm() {
       <EnrollmentStepFooter
         backDisabled={uploadMutation.isPending}
         backHref="/enrollment/step-3"
+        // Documents are already persisted per upload, so "Save & finish
+        // later" only needs to return to the dashboard.
+        onSaveDraft={() => {
+          router.push("/dashboard?draftSaved=1");
+        }}
+        saveDraftDisabled={uploadMutation.isPending}
       >
         <Button
           disabled={isListLoading || uploadMutation.isPending}

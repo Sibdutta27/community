@@ -114,3 +114,43 @@ export function mapIdentity(identityStr: string | undefined | null): Identity | 
     }
     return identity;
 }
+/**
+ * buildStep1DraftData: builds the partial Enrollment update payload for a
+ * Step 1 draft save — only the fields present on the input are included, so
+ * an omitted field never overwrites a previously saved value.
+ */
+export function buildStep1DraftData(input: {
+    firstName?: string;
+    lastName?: string;
+    dateOfBirth?: Date;
+    cityOfBirth?: string;
+    municipalityOfBirth?: string;
+    countryOfBirth?: string;
+    sex?: string;
+    gender?: string;
+    maritalStatus?: string;
+    occupation?: string;
+    identity?: string;
+    yucayeke?: string;
+    yucayekeUnknown?: boolean;
+    hasChildren?: boolean;
+    hasMinorChildren?: boolean;
+}) {
+    return {
+        ...(input.firstName           !== undefined ? { firstName          : input.firstName } : {}),
+        ...(input.lastName            !== undefined ? { lastName           : input.lastName } : {}),
+        ...(input.dateOfBirth         !== undefined ? { dateOfBirth        : input.dateOfBirth } : {}),
+        ...(input.cityOfBirth         !== undefined ? { cityOfBirth        : input.cityOfBirth } : {}),
+        ...(input.municipalityOfBirth !== undefined ? { municipalityOfBirth: input.municipalityOfBirth } : {}),
+        ...(input.countryOfBirth      !== undefined ? { countryOfBirth     : input.countryOfBirth } : {}),
+        ...(input.sex                 !== undefined ? { sex                : mapSex(input.sex) } : {}),
+        ...(input.gender              !== undefined ? { gender             : mapGender(input.gender) } : {}),
+        ...(input.maritalStatus       !== undefined ? { maritalStatus      : mapMaritalStatus(input.maritalStatus) } : {}),
+        ...(input.occupation          !== undefined ? { occupation         : input.occupation } : {}),
+        ...(input.identity            !== undefined ? { identity           : mapIdentity(input.identity) } : {}),
+        ...(input.yucayeke            !== undefined ? { yucayeke           : input.yucayeke } : {}),
+        ...(input.yucayekeUnknown     !== undefined ? { yucayekeUnknown    : input.yucayekeUnknown } : {}),
+        ...(input.hasChildren         !== undefined ? { hasChildren        : input.hasChildren } : {}),
+        ...(input.hasMinorChildren    !== undefined ? { hasMinorChildren   : input.hasMinorChildren } : {}),
+    };
+}

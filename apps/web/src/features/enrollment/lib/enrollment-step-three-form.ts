@@ -9,7 +9,9 @@ import {
   mapKinshipPersonToPayload,
 } from "@/features/enrollment/lib/enrollment-kinship-form";
 import type {
+  EnrollmentAncestryInput,
   EnrollmentStepThreePrefillResponse,
+  EnrollmentStepThreeSaveDraftRequest,
   EnrollmentStepThreeUpsertRequest,
 } from "@/types/enrollment";
 
@@ -81,5 +83,33 @@ export function mapEnrollmentStepThreeFormToPayload(
     father: mapKinshipParentToPayload(values.father),
     paternalGrandmother: mapKinshipPersonToPayload(values.paternalGrandmother),
     paternalGrandfather: mapKinshipPersonToPayload(values.paternalGrandfather),
+  };
+}
+
+/** An ancestor belongs in a draft only when at least one field is provided. */
+function toDraftAncestor(payload: EnrollmentAncestryInput) {
+  return Object.keys(payload).length > 0 ? payload : undefined;
+}
+
+/**
+ * Partial draft payload for "Save & finish later": untouched (fully empty)
+ * ancestors are omitted entirely so the backend leaves their saved rows
+ * alone; no required-field validation applies.
+ */
+export function mapEnrollmentStepThreeFormToDraftPayload(
+  values: EnrollmentStepThreeFormValues,
+): EnrollmentStepThreeSaveDraftRequest {
+  const father = toDraftAncestor(mapKinshipParentToPayload(values.father));
+  const paternalGrandmother = toDraftAncestor(
+    mapKinshipPersonToPayload(values.paternalGrandmother),
+  );
+  const paternalGrandfather = toDraftAncestor(
+    mapKinshipPersonToPayload(values.paternalGrandfather),
+  );
+
+  return {
+    ...(father ? { father } : {}),
+    ...(paternalGrandmother ? { paternalGrandmother } : {}),
+    ...(paternalGrandfather ? { paternalGrandfather } : {}),
   };
 }

@@ -91,3 +91,106 @@ describe('Step1Service.upsert (demographics only — no contact/address/emergenc
         expect(written).not.toHaveProperty('specialSkills');
     });
 });
+
+describe('Step1Service.saveDraft (partial draft — saves without completing)', () => {
+    const userId = 'user-1';
+    const enrollmentId = 'enrollment-1';
+
+    function buildService() {
+        const update = jest.fn().mockResolvedValue({});
+        const tx = {
+            enrollment: {
+                findFirst: jest.fn().mockResolvedValue({
+                    id: enrollmentId,
+                    userId,
+                    status: EnrollmentStatus.DRAFT,
+                }),
+                update,
+            },
+        };
+        const database = {
+            $transaction: jest.fn(async (cb: (t: unknown) => unknown) => cb(tx)),
+        };
+        const enrollmentStepService = { markStepComplete: jest.fn() };
+        const service = new Step1Service(
+            database as never,
+            enrollmentStepService as never,
+        );
+        return { service, update, enrollmentStepService };
+    }
+
+    it('persists only the provided fields', async () => {
+        const { service, update } = buildService();
+
+        const result = await service.saveDraft(userId, {
+            firstName: 'Anani',
+            occupation: 'Teacher',
+            sex: 'FEMALE',
+        } as never);
+
+        expect(update).toHaveBeenCalledTimes(1);
+        expect(update.mock.calls[0][0].data).toEqual({
+            firstName: 'Anani',
+            occupation: 'Teacher',
+            sex: Sex.FEMALE,
+        });
+        expect(result).toEqual({ success: true });
+    });
+
+    it('does not write anything when the payload is empty', async () => {
+        const { service, update } = buildService();
+
+        const result = await service.saveDraft(userId, {} as never);
+
+        expect(update).not.toHaveBeenCalled();
+        expect(result).toEqual({ success: true });
+    });
+
+    it('never marks step 1 complete', async () => {
+        const { service, enrollmentStepService } = buildService();
+
+        await service.saveDraft(userId, { firstName: 'Anani' } as never);
+
+        expect(enrollmentStepService.markStepComplete).not.toHaveBeenCalled();
+    });
+});
+
+describe('Step1Service.getStep1 (draft prefill — not gated on completion)', () => {
+    it('returns the saved fields even when step 1 is not completed', async () => {
+        const database = {
+            enrollment: {
+                findFirst: jest.fn().mockResolvedValue({
+                    id: 'enrollment-1',
+                    userId: 'user-1',
+                    status: EnrollmentStatus.DRAFT,
+                    firstName: 'Anani',
+                    lastName: null,
+                    dateOfBirth: null,
+                    cityOfBirth: null,
+                    municipalityOfBirth: null,
+                    countryOfBirth: null,
+                    sex: null,
+                    gender: null,
+                    maritalStatus: null,
+                    occupation: 'Teacher',
+                    identity: null,
+                    yucayeke: null,
+                    yucayekeUnknown: null,
+                    hasChildren: null,
+                    hasMinorChildren: null,
+                    steps: [{ stepNumber: 1, isCompleted: false }],
+                }),
+            },
+        };
+        const service = new Step1Service(
+            database as never,
+            { markStepComplete: jest.fn() } as never,
+        );
+
+        const result = await service.getStep1('user-1');
+
+        expect(result.firstName).toBe('Anani');
+        expect(result.occupation).toBe('Teacher');
+        expect(result.lastName).toBeNull();
+    });
+});

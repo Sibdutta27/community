@@ -71,7 +71,7 @@ describe("EnrollmentConfirmationForm", () => {
     expect(
       screen.getByRole("button", { name: /submit application/i }),
     ).toBeEnabled();
-    expect(screen.queryByText(/finish/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/almost there/i)).not.toBeInTheDocument();
   });
 
   it("disables Submit and lists the unfinished steps, linked, when steps are missing", () => {
@@ -82,7 +82,7 @@ describe("EnrollmentConfirmationForm", () => {
       screen.getByRole("button", { name: /submit application/i }),
     ).toBeDisabled();
 
-    const notice = screen.getByText(/finish/i);
+    const notice = screen.getByText(/almost there/i);
     expect(notice).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Demographics" })).toHaveAttribute(
       "href",
@@ -159,5 +159,20 @@ describe("EnrollmentConfirmationForm", () => {
     await waitFor(() => {
       expect(pushMock).toHaveBeenCalledWith("/enrollment/success");
     });
+  });
+
+  it("'Save & finish later' returns to the dashboard without submitting or validating", async () => {
+    const user = userEvent.setup();
+    renderForm();
+
+    await user.click(
+      screen.getByRole("button", { name: /save & finish later/i }),
+    );
+
+    expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
+    expect(mutateAsyncMock).not.toHaveBeenCalled();
+    expect(
+      screen.queryByText("Please sign with your full legal name."),
+    ).not.toBeInTheDocument();
   });
 });

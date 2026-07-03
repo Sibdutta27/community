@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '@/modules/auth/guards/auth.guard';
 import { ActivityGuard } from '@/modules/user/guard/activity.guard';
 import { CurrentUser } from '@/common/decorators/currentUser.decorator';
 import { Step2Dto } from './dto/step2.dto';
+import { Step2SaveDraftDto } from './dto/step2SaveDraft.dto';
 import { Step2Service } from './step2.service';
 
 
@@ -28,5 +29,16 @@ export class Step2Controller {
         @Body() dto: Step2Dto,
     ) {
         return this.step2Service.upsert(userId, dto);
+    }
+
+    // Partial draft save ("Save & finish later") — no required-field
+    // validation, never marks the step complete.
+    @Post('save-draft')
+    @UseGuards(ConsentAcceptedGuard)
+    step2SaveDraft(
+        @CurrentUser('id') userId: string,
+        @Body() dto: Step2SaveDraftDto,
+    ) {
+        return this.step2Service.saveDraft(userId, dto);
     }
 }

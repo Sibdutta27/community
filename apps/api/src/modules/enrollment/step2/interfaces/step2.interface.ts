@@ -6,3 +6,6 @@ export interface Step2 {
   maternalGrandmother: AncestryInput;
   maternalGrandfather: AncestryInput;
 }
+
+// Partial draft ("Save & finish later") — every ancestor optional.
+export type Step2SaveDraft = Partial<Step2>;

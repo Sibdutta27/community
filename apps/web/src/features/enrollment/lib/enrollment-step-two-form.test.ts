@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   enrollmentStepTwoSchema,
   getEnrollmentStepTwoDefaultValues,
+  mapEnrollmentStepTwoFormToDraftPayload,
   mapEnrollmentStepTwoFormToPayload,
   maternalKinshipDefinitions,
   type EnrollmentStepTwoFormValues,
@@ -193,5 +194,46 @@ describe("mapEnrollmentStepTwoFormToPayload", () => {
 
     expect(payload.maternalGrandmother).not.toHaveProperty("dateOfBirth");
     expect(payload.maternalGrandfather).not.toHaveProperty("dateOfBirth");
+  });
+});
+
+describe("mapEnrollmentStepTwoFormToDraftPayload — partial draft (omit untouched ancestors)", () => {
+  it("includes only the ancestors that have at least one provided field", () => {
+    const values: EnrollmentStepTwoFormValues = {
+      mother: {
+        name: "Carmen Rivera",
+        dateOfBirth: "",
+        nationality: "",
+        municipality: "",
+        yucayeke: "",
+        isBorikuaTaino: "",
+      },
+      maternalGrandmother: {
+        name: "",
+        nationality: "",
+        municipality: "",
+        yucayeke: "",
+        isBorikuaTaino: "",
+      },
+      maternalGrandfather: {
+        name: "",
+        nationality: "",
+        municipality: "",
+        yucayeke: "",
+        isBorikuaTaino: "",
+      },
+    };
+
+    const payload = mapEnrollmentStepTwoFormToDraftPayload(values);
+
+    expect(payload).toEqual({ mother: { name: "Carmen Rivera" } });
+  });
+
+  it("returns an empty payload when every field is empty", () => {
+    const payload = mapEnrollmentStepTwoFormToDraftPayload(
+      getEnrollmentStepTwoDefaultValues(),
+    );
+
+    expect(payload).toEqual({});
   });
 });

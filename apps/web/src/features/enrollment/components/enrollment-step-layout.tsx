@@ -41,15 +41,34 @@ export function EnrollmentStepLayout({
 
   return (
     <div className="mx-auto w-full max-w-5xl pt-24 pb-16 sm:pt-28 lg:pt-32">
-      <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <Button asChild size="sm" variant="outline">
-          <Link href={backHref}>
-            <ArrowLeft aria-hidden="true" className="size-4" />
-            <span>Back</span>
-          </Link>
-        </Button>
+      <header className="flex items-center justify-between gap-x-4 sm:gap-x-6">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-5">
+          <Button asChild size="sm" variant="outline">
+            <Link href={backHref}>
+              <ArrowLeft aria-hidden="true" className="size-4" />
+              <span>Back</span>
+            </Link>
+          </Button>
 
-        <p className="text-muted-foreground text-xs font-medium tracking-[0.08em] uppercase">
+          {/* Persistent flow title — governance styling: a thin hairline
+              divider, a muted uppercase kicker and a charcoal heading. The
+              kicker + divider bow out below `sm` and the heading truncates,
+              so the utility row never overflows. */}
+          <span
+            aria-hidden="true"
+            className="bg-border hidden h-7 w-px shrink-0 sm:block"
+          />
+          <div className="min-w-0">
+            <p className="text-muted-foreground hidden text-[0.6rem] font-semibold tracking-[0.3em] uppercase sm:block">
+              Tribal Citizenship
+            </p>
+            <p className="text-foreground truncate text-[0.95rem] font-semibold tracking-[-0.01em] sm:mt-0.5 sm:text-[1.05rem]">
+              Enrollment Application
+            </p>
+          </div>
+        </div>
+
+        <p className="text-muted-foreground shrink-0 text-xs font-medium tracking-[0.08em] uppercase">
           Step {step} of {enrollmentTotalSteps}
         </p>
       </header>
@@ -88,6 +107,9 @@ type EnrollmentStepFooterProps = Readonly<{
   backHref?: string;
   children: ReactNode;
   className?: string;
+  onSaveDraft?: () => void;
+  saveDraftDisabled?: boolean;
+  saveDraftPending?: boolean;
 }>;
 
 /**
@@ -95,44 +117,75 @@ type EnrollmentStepFooterProps = Readonly<{
  * bottom of the elevated card (negative margins match the card padding),
  * divided from the fields by a hairline border — outlined "Back" pill on the
  * left (when given a target), the step's primary teal action(s) on the right.
+ * When `onSaveDraft` is provided, a secondary ghost "Save & finish later"
+ * action renders beside Back: it saves the current values as a partial draft
+ * (no validation) and returns the member to the dashboard.
  */
 export function EnrollmentStepFooter({
   backDisabled = false,
   backHref,
   children,
   className,
+  onSaveDraft,
+  saveDraftDisabled = false,
+  saveDraftPending = false,
 }: EnrollmentStepFooterProps) {
+  const hasLeadingActions = Boolean(backHref) || Boolean(onSaveDraft);
+
   return (
     <div
       className={cn(
         "border-border bg-surface-muted/50 mt-10 flex flex-col-reverse gap-3 rounded-b-[calc(1rem-1px)] border-t px-6 py-5 sm:flex-row sm:items-center sm:px-8 sm:py-6 lg:px-10",
         // Bleed to the card edges (mirrors the card's p-6 sm:p-8 lg:p-10).
         "-mx-6 -mb-6 sm:-mx-8 sm:-mb-8 lg:-mx-10 lg:-mb-10",
-        backHref ? "sm:justify-between" : "sm:justify-end",
+        hasLeadingActions ? "sm:justify-between" : "sm:justify-end",
         className,
       )}
       data-slot="enrollment-step-footer"
     >
-      {backHref ? (
-        backDisabled ? (
-          <Button
-            className="min-w-[8rem]"
-            disabled
-            leftIcon={<ArrowLeft />}
-            size="lg"
-            type="button"
-            variant="outline"
-          >
-            Back
-          </Button>
-        ) : (
-          <Button asChild className="min-w-[8rem]" size="lg" variant="outline">
-            <Link href={backHref}>
-              <ArrowLeft aria-hidden="true" className="size-5" />
-              <span>Back</span>
-            </Link>
-          </Button>
-        )
+      {hasLeadingActions ? (
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+          {backHref ? (
+            backDisabled ? (
+              <Button
+                className="min-w-[8rem]"
+                disabled
+                leftIcon={<ArrowLeft />}
+                size="lg"
+                type="button"
+                variant="outline"
+              >
+                Back
+              </Button>
+            ) : (
+              <Button
+                asChild
+                className="min-w-[8rem]"
+                size="lg"
+                variant="outline"
+              >
+                <Link href={backHref}>
+                  <ArrowLeft aria-hidden="true" className="size-5" />
+                  <span>Back</span>
+                </Link>
+              </Button>
+            )
+          ) : null}
+
+          {onSaveDraft ? (
+            <Button
+              disabled={saveDraftDisabled || saveDraftPending}
+              loading={saveDraftPending}
+              loadingText="Saving..."
+              onClick={onSaveDraft}
+              size="lg"
+              type="button"
+              variant="ghost"
+            >
+              Save & finish later
+            </Button>
+          ) : null}
+        </div>
       ) : null}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">

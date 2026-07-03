@@ -2,8 +2,8 @@ import { EnrollmentStatus } from '@/generated/prisma/enums';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '@/database/database.service';
 import { EnrollmentStepService } from '@/modules/enrollment/common/services/enrollmentStep.service';
-import { mapGender, mapIdentity, mapMaritalStatus, mapSex } from './step1.utils';
-import { Step1 } from './interface/step1.interface';
+import { buildStep1DraftData, mapGender, mapIdentity, mapMaritalStatus, mapSex } from './step1.utils';
+import { Step1, Step1SaveDraft } from './interface/step1.interface';
 
 @Injectable()
 export class Step1Service {
@@ -74,6 +74,45 @@ export class Step1Service {
     }
 
     /**
+     * saveDraft: Persists a PARTIAL Step 1 (Demographics) draft — only the
+     * provided fields are written, no required-field validation applies and
+     * the step is NOT marked complete ("Save & finish later").
+     */
+    public async saveDraft(userId: string, draftInput: Step1SaveDraft) {
+
+        return await this.database.$transaction(async (tx) => {
+
+            const enrollment = await tx.enrollment.findFirst({
+                where: { userId },
+            });
+
+            if (!enrollment) {
+                throw new BadRequestException('Enrollment not started');
+            }
+
+            if (enrollment.status !== EnrollmentStatus.DRAFT) {
+                throw new BadRequestException('Enrollment is not in draft status');
+            }
+
+            // Persist only the fields that are present in the payload.
+            const data = buildStep1DraftData(draftInput);
+
+            if (Object.keys(data).length > 0) {
+                await tx.enrollment.update({
+                    where: { id: enrollment.id },
+                    data,
+                });
+            }
+
+            // NOTE: markStepComplete is intentionally NOT called — a draft
+            // save must never advance the enrollment.steps completion map.
+            return {
+                success: true,
+            };
+        });
+    }
+
+    /**
      * Get all step 1 (Demographics) data for the user's enrollment.
      */
     public async getStep1(userId: string) {
@@ -81,23 +120,15 @@ export class Step1Service {
         // Get the enrollment
         const enrollment = await this.database.enrollment.findFirst({
             where: { userId },
-            include: {
-                steps: true,
-            },
         });
 
         if (!enrollment) {
             throw new BadRequestException('Enrollment not found');
         }
 
-        if ( enrollment.steps.length === 0 ) {
-            throw new BadRequestException('Enrollment steps not found');
-        }
-
-        if ( ! enrollment.steps.find(step => step.stepNumber == 1 )?.isCompleted ) {
-            throw new BadRequestException('Step 1 not completed yet');
-        }
-
+        // NOTE: intentionally NOT gated on step completion — partial drafts
+        // ("Save & finish later") must prefill when the member returns. The
+        // completion map (enrollment.steps) is read independently elsewhere.
         return {
             firstName          : enrollment.firstName,
             lastName           : enrollment.lastName,

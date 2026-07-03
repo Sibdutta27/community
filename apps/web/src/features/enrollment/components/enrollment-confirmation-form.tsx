@@ -156,6 +156,13 @@ export function EnrollmentConfirmationForm() {
         <EnrollmentStepFooter
           backDisabled={completeEnrollmentMutation.isPending}
           backHref="/enrollment/step-4"
+          // Steps 1-4 are already saved server-side; the e-signature is only
+          // meaningful at submission, so "Save & finish later" just returns
+          // to the dashboard without submitting or validating.
+          onSaveDraft={() => {
+            router.push("/dashboard?draftSaved=1");
+          }}
+          saveDraftDisabled={completeEnrollmentMutation.isPending}
         >
           <Button
             className="min-w-[12rem]"

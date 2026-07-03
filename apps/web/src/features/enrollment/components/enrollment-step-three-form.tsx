@@ -22,12 +22,14 @@ import {
   enrollmentQueryKeys,
   useAccountInfoQuery,
   useEnrollmentStepThreeQuery,
+  useEnrollmentStepThreeSaveDraftMutation,
   useEnrollmentStepThreeUpsertMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
   enrollmentKinshipYesNoOptions,
   enrollmentStepThreeSchema,
   getEnrollmentStepThreeDefaultValues,
+  mapEnrollmentStepThreeFormToDraftPayload,
   mapEnrollmentStepThreeFormToPayload,
   paternalKinshipDefinitions,
   type EnrollmentStepThreeFormValues,
@@ -45,14 +47,16 @@ export function EnrollmentStepThreeForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const accountInfoQuery = useAccountInfoQuery();
+  // Fetch the prefill whenever an enrollment exists — partial drafts
+  // ("Save & finish later") must hydrate even before the step is complete.
   const shouldFetchStepThreePrefill = Boolean(
-    accountInfoQuery.data?.enrollment?.steps?.["3"] ??
-    accountInfoQuery.data?.enrollmentStep?.["3"],
+    accountInfoQuery.data?.enrollment ?? accountInfoQuery.data?.hasEnrollment,
   );
   const stepThreeQuery = useEnrollmentStepThreeQuery(
     shouldFetchStepThreePrefill,
   );
   const upsertMutation = useEnrollmentStepThreeUpsertMutation();
+  const saveDraftMutation = useEnrollmentStepThreeSaveDraftMutation();
   const lastHydratedDefaultsRef = useRef<string | null>(null);
   const maxBirthDate = formatDateInputValue(new Date());
 
@@ -117,6 +121,34 @@ export function EnrollmentStepThreeForm() {
           error instanceof Error
             ? error.message
             : "Unable to save your step 3 paternal kinship information right now.",
+      });
+    }
+  };
+
+  // "Save & finish later": persist whatever is currently entered as a
+  // partial draft — getValues() deliberately skips validation — then return
+  // to the dashboard, which confirms the save.
+  const handleSaveDraft = async () => {
+    clearErrors("root");
+
+    try {
+      await saveDraftMutation.mutateAsync(
+        mapEnrollmentStepThreeFormToDraftPayload(form.getValues()),
+      );
+      await queryClient.invalidateQueries({
+        queryKey: accountQueryKeys.info,
+      });
+      await queryClient.invalidateQueries({
+        queryKey: enrollmentQueryKeys.stepThreePaternalKinship,
+      });
+      router.push("/dashboard?draftSaved=1");
+    } catch (error) {
+      setError("root", {
+        type: "server",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to save your step 3 progress right now.",
       });
     }
   };
@@ -200,6 +232,11 @@ export function EnrollmentStepThreeForm() {
         <EnrollmentStepFooter
           backDisabled={upsertMutation.isPending}
           backHref="/enrollment/step-2"
+          onSaveDraft={() => {
+            void handleSaveDraft();
+          }}
+          saveDraftDisabled={upsertMutation.isPending}
+          saveDraftPending={saveDraftMutation.isPending}
         >
           <Button
             className="min-w-[10rem]"

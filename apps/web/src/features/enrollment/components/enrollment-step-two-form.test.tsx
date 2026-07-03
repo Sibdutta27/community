@@ -1,9 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const { pushMock, saveDraftMutateAsync } = vi.hoisted(() => ({
+  pushMock: vi.fn(),
+  saveDraftMutateAsync: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: pushMock }),
 }));
 
 vi.mock("next/image", () => ({
@@ -24,7 +29,16 @@ vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
     mutateAsync: vi.fn(),
     isPending: false,
   }),
+  useEnrollmentStepTwoSaveDraftMutation: () => ({
+    mutateAsync: saveDraftMutateAsync,
+    isPending: false,
+  }),
 }));
+
+beforeEach(() => {
+  pushMock.mockReset();
+  saveDraftMutateAsync.mockReset().mockResolvedValue({ success: true });
+});
 
 import { EnrollmentStepTwoForm } from "@/features/enrollment/components/enrollment-step-two-form";
 
@@ -84,5 +98,27 @@ describe("EnrollmentStepTwoForm — maternal kinship", () => {
     expect(
       screen.queryByRole("heading", { name: "Great-Grandmother" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("saves a partial maternal draft (only touched ancestors) and returns to the dashboard", async () => {
+    renderForm();
+
+    // Only the mother's name is filled — grandparents stay untouched.
+    fireEvent.change(screen.getAllByPlaceholderText("Enter full name")[0], {
+      target: { value: "Anacaona" },
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save & finish later/i }),
+    );
+
+    await waitFor(() => {
+      expect(saveDraftMutateAsync).toHaveBeenCalledWith({
+        mother: { name: "Anacaona" },
+      });
+    });
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
+    });
   });
 });

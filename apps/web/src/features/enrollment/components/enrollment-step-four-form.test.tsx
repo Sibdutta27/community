@@ -1,10 +1,16 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const { pushMock } = vi.hoisted(() => ({ pushMock: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: pushMock }),
 }));
+
+beforeEach(() => {
+  pushMock.mockReset();
+});
 
 vi.mock("next/image", () => ({
   default: ({ alt, src }: { alt?: string; src?: unknown }) => (
@@ -92,5 +98,15 @@ describe("EnrollmentStepFourForm — document evidence slots", () => {
 
     expect(screen.getByRole("button", { name: /^Next$/ })).toBeDisabled();
     expect(screen.getByText(/Your Photo/i, { selector: "p" })).toBeTruthy();
+  });
+
+  it("'Save & finish later' just returns to the dashboard (files already saved per upload)", () => {
+    renderForm();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save & finish later/i }),
+    );
+
+    expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
   });
 });

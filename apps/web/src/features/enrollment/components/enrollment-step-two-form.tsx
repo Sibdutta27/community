@@ -22,12 +22,14 @@ import {
   enrollmentQueryKeys,
   useAccountInfoQuery,
   useEnrollmentStepTwoQuery,
+  useEnrollmentStepTwoSaveDraftMutation,
   useEnrollmentStepTwoUpsertMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
   enrollmentKinshipYesNoOptions,
   enrollmentStepTwoSchema,
   getEnrollmentStepTwoDefaultValues,
+  mapEnrollmentStepTwoFormToDraftPayload,
   mapEnrollmentStepTwoFormToPayload,
   maternalKinshipDefinitions,
   type EnrollmentStepTwoFormValues,
@@ -45,12 +47,14 @@ export function EnrollmentStepTwoForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const accountInfoQuery = useAccountInfoQuery();
+  // Fetch the prefill whenever an enrollment exists — partial drafts
+  // ("Save & finish later") must hydrate even before the step is complete.
   const shouldFetchStepTwoPrefill = Boolean(
-    accountInfoQuery.data?.enrollment?.steps?.["2"] ??
-    accountInfoQuery.data?.enrollmentStep?.["2"],
+    accountInfoQuery.data?.enrollment ?? accountInfoQuery.data?.hasEnrollment,
   );
   const stepTwoQuery = useEnrollmentStepTwoQuery(shouldFetchStepTwoPrefill);
   const upsertMutation = useEnrollmentStepTwoUpsertMutation();
+  const saveDraftMutation = useEnrollmentStepTwoSaveDraftMutation();
   const lastHydratedDefaultsRef = useRef<string | null>(null);
   const maxBirthDate = formatDateInputValue(new Date());
 
@@ -115,6 +119,34 @@ export function EnrollmentStepTwoForm() {
           error instanceof Error
             ? error.message
             : "Unable to save your step 2 maternal kinship information right now.",
+      });
+    }
+  };
+
+  // "Save & finish later": persist whatever is currently entered as a
+  // partial draft — getValues() deliberately skips validation — then return
+  // to the dashboard, which confirms the save.
+  const handleSaveDraft = async () => {
+    clearErrors("root");
+
+    try {
+      await saveDraftMutation.mutateAsync(
+        mapEnrollmentStepTwoFormToDraftPayload(form.getValues()),
+      );
+      await queryClient.invalidateQueries({
+        queryKey: accountQueryKeys.info,
+      });
+      await queryClient.invalidateQueries({
+        queryKey: enrollmentQueryKeys.stepTwoMaternalKinship,
+      });
+      router.push("/dashboard?draftSaved=1");
+    } catch (error) {
+      setError("root", {
+        type: "server",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to save your step 2 progress right now.",
       });
     }
   };
@@ -198,6 +230,11 @@ export function EnrollmentStepTwoForm() {
         <EnrollmentStepFooter
           backDisabled={upsertMutation.isPending}
           backHref="/enrollment/step-1"
+          onSaveDraft={() => {
+            void handleSaveDraft();
+          }}
+          saveDraftDisabled={upsertMutation.isPending}
+          saveDraftPending={saveDraftMutation.isPending}
         >
           <Button
             className="min-w-[10rem]"

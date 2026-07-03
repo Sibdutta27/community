@@ -164,3 +164,52 @@ describe("useEnrollmentDocumentUploadMutation — presigned direct-to-storage fl
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("save-draft mutations — Save & finish later", () => {
+  it.each([
+    ["step1", "/api/enrollment/step1/save-draft", { firstName: "Ana" }],
+    [
+      "step2",
+      "/api/enrollment/step2/save-draft",
+      { mother: { name: "Carmen" } },
+    ],
+    [
+      "step3",
+      "/api/enrollment/step3/save-draft",
+      { father: { name: "Luis" } },
+    ],
+  ] as const)(
+    "POSTs the partial %s payload to its BFF save-draft route",
+    async (step, expectedUrl, payload) => {
+      const fetchMock = vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(jsonResponse({ success: true }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      const {
+        useEnrollmentStepOneSaveDraftMutation,
+        useEnrollmentStepTwoSaveDraftMutation,
+        useEnrollmentStepThreeSaveDraftMutation,
+      } = await import("@/features/enrollment/lib/enrollment-queries");
+      const hook =
+        step === "step1"
+          ? useEnrollmentStepOneSaveDraftMutation
+          : step === "step2"
+            ? useEnrollmentStepTwoSaveDraftMutation
+            : useEnrollmentStepThreeSaveDraftMutation;
+
+      const { result } = renderHook(() => hook(), {
+        wrapper: createWrapper(),
+      });
+
+      const response = await result.current.mutateAsync(payload as never);
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const [url, init] = fetchMock.mock.calls[0];
+      expect(String(url)).toBe(expectedUrl);
+      expect(init?.method).toBe("POST");
+      expect(JSON.parse(String(init?.body))).toEqual(payload);
+      expect(response).toEqual({ success: true });
+    },
+  );
+});

@@ -1,9 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const { pushMock, saveDraftMutateAsync } = vi.hoisted(() => ({
+  pushMock: vi.fn(),
+  saveDraftMutateAsync: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: pushMock }),
 }));
 
 vi.mock("next/image", () => ({
@@ -24,7 +29,16 @@ vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
     mutateAsync: vi.fn(),
     isPending: false,
   }),
+  useEnrollmentStepThreeSaveDraftMutation: () => ({
+    mutateAsync: saveDraftMutateAsync,
+    isPending: false,
+  }),
 }));
+
+beforeEach(() => {
+  pushMock.mockReset();
+  saveDraftMutateAsync.mockReset().mockResolvedValue({ success: true });
+});
 
 import { EnrollmentStepThreeForm } from "@/features/enrollment/components/enrollment-step-three-form";
 
@@ -82,5 +96,21 @@ describe("EnrollmentStepThreeForm — paternal kinship", () => {
     expect(
       screen.queryByText("Loading cultural connection options..."),
     ).not.toBeInTheDocument();
+  });
+
+  it("saves an empty draft as an empty payload and returns to the dashboard", async () => {
+    renderForm();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save & finish later/i }),
+    );
+
+    // Untouched ancestors are omitted entirely — nothing gets nulled out.
+    await waitFor(() => {
+      expect(saveDraftMutateAsync).toHaveBeenCalledWith({});
+    });
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/dashboard?draftSaved=1");
+    });
   });
 });

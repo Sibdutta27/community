@@ -229,6 +229,19 @@ export type EnrollmentStepOneUpsertResponse = Readonly<{
 }>;
 
 /**
+ * Step 1 partial draft (`POST /enrollment/step1/save-draft`) — every field
+ * optional; only the provided fields are persisted and the step is NOT
+ * marked complete ("Save & finish later").
+ */
+export type EnrollmentStepOneSaveDraftRequest = Readonly<
+  Partial<EnrollmentStepOneUpsertRequest>
+>;
+
+export type EnrollmentSaveDraftResponse = Readonly<{
+  success: boolean;
+}>;
+
+/**
  * One kinship person captured in the maternal (step 2) or paternal (step 3)
  * form. `dateOfBirth` is only sent for the parent (mother / father) slot.
  */
@@ -269,6 +282,16 @@ export type EnrollmentStepTwoUpsertResponse = Readonly<{
   success: boolean;
 }>;
 
+/**
+ * Step 2 partial draft (`POST /enrollment/step2/save-draft`) — only the
+ * ancestors present are upserted; the step is NOT marked complete.
+ */
+export type EnrollmentStepTwoSaveDraftRequest = Readonly<{
+  mother?: EnrollmentAncestryInput;
+  maternalGrandmother?: EnrollmentAncestryInput;
+  maternalGrandfather?: EnrollmentAncestryInput;
+}>;
+
 /** Step 3 — Paternal Kinship (`POST /enrollment/step3/upsert`). */
 export type EnrollmentStepThreeUpsertRequest = Readonly<{
   father: EnrollmentAncestryInput;
@@ -285,6 +308,16 @@ export type EnrollmentStepThreePrefillResponse = Readonly<{
 
 export type EnrollmentStepThreeUpsertResponse = Readonly<{
   success: boolean;
+}>;
+
+/**
+ * Step 3 partial draft (`POST /enrollment/step3/save-draft`) — only the
+ * ancestors present are upserted; the step is NOT marked complete.
+ */
+export type EnrollmentStepThreeSaveDraftRequest = Readonly<{
+  father?: EnrollmentAncestryInput;
+  paternalGrandmother?: EnrollmentAncestryInput;
+  paternalGrandfather?: EnrollmentAncestryInput;
 }>;
 
 export type EnrollmentStepFourNextResponse = Readonly<{
