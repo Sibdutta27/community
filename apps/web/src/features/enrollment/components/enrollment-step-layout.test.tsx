@@ -74,7 +74,7 @@ describe("EnrollmentStepLayout — folder tabs + elevated card", () => {
       </EnrollmentStepLayout>,
     );
 
-    // Governance-styled flow title: kicker + refined heading, charcoal (no teal).
+    // Governance-styled flow title: kicker + refined heading, ink (no azul fill).
     const title = screen.getByText("Enrollment Application");
     expect(title).toBeInTheDocument();
     expect(title.className).toContain("text-foreground");
@@ -135,7 +135,7 @@ describe("EnrollmentStepLayout — top 'Save & finish later' (context bridge)", 
     expect(button).toHaveAttribute("aria-label", "Save and finish later");
     // It sits in the top utility row, not inside the elevated card.
     expect(getStepCard()).not.toContainElement(button);
-    // Subtle secondary action in the governance palette — never the teal fill.
+    // Subtle secondary action in the governance palette — never the azul fill.
     expect(button.className).not.toContain("bg-primary");
 
     fireEvent.click(button);

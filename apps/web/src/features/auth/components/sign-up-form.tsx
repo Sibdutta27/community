@@ -251,7 +251,7 @@ export function SignUpForm() {
           </ConsentLine>
 
           {errors.agreeToTerms?.message ? (
-            <p className="mt-2 text-sm font-medium text-red-600">
+            <p className="mt-2 text-sm font-medium text-destructive">
               {errors.agreeToTerms.message}
             </p>
           ) : null}

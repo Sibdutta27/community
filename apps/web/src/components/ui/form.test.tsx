@@ -60,4 +60,12 @@ describe("Form field", () => {
     render(<TestForm error="Email is required" />);
     expect(screen.getByText("Email is required")).toBeInTheDocument();
   });
+
+  it("styles the validation message and label with the destructive token", () => {
+    render(<TestForm error="Email is required" />);
+    expect(screen.getByText("Email is required")).toHaveClass(
+      "text-destructive",
+    );
+    expect(screen.getByText("Email address")).toHaveClass("text-destructive");
+  });
 });

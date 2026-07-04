@@ -176,7 +176,7 @@ export function LanguageSwitcher({
           aria-label="Language"
           role="menu"
           className={cn(
-            "border-border bg-surface absolute top-[calc(100%+0.5rem)] z-50 rounded-2xl border p-1.5 shadow-[0_18px_34px_-24px_rgba(31,30,28,0.22)]",
+            "border-border bg-surface absolute top-[calc(100%+0.5rem)] z-50 rounded-2xl border p-1.5 shadow-[0_18px_34px_-24px_rgba(20,26,34,0.22)]",
             isRow ? "inset-x-0" : "right-0 w-40",
           )}
           onKeyDown={handleMenuKeyDown}

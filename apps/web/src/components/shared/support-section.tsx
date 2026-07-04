@@ -37,7 +37,7 @@ const supportCards: readonly SupportCard[] = [
 
 function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
   return (
-    <article className="border-border bg-surface flex h-full flex-col rounded-[18px] border px-3.5 py-4.5 text-center shadow-[0_16px_30px_-26px_rgba(21,17,13,0.14)] sm:px-4 sm:py-5 lg:px-5">
+    <article className="border-border bg-surface flex h-full flex-col rounded-[18px] border px-3.5 py-4.5 text-center shadow-[0_16px_30px_-26px_rgba(20,26,34,0.14)] sm:px-4 sm:py-5 lg:px-5">
       <div
         className={cn(
           "mx-auto flex size-10 items-center justify-center rounded-[0.95rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] sm:size-11 lg:size-12",

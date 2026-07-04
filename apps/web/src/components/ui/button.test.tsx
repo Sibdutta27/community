@@ -13,6 +13,7 @@ describe("Button", () => {
   it("renders each variant with the pill radius base class", () => {
     const variants = [
       "primary",
+      "emphasis",
       "outline",
       "secondary",
       "accent",
@@ -25,6 +26,20 @@ describe("Button", () => {
       expect(button).toHaveClass("rounded-[200px]");
       unmount();
     }
+  });
+
+  it("renders the emphasis variant with the flag-red fill", () => {
+    render(<Button variant="emphasis">Enroll Today</Button>);
+    const button = screen.getByRole("button", { name: "Enroll Today" });
+    expect(button).toHaveClass("bg-emphasis", "text-emphasis-foreground");
+  });
+
+  it("uses the azul hue shadow (not legacy teal) on the primary variant", () => {
+    render(<Button>Primary</Button>);
+    const className = screen.getByRole("button", { name: "Primary" })
+      .className;
+    expect(className).toContain("rgba(10,86,168");
+    expect(className).not.toContain("rgba(45,110,126");
   });
 
   it("renders the outline variant with a border", () => {

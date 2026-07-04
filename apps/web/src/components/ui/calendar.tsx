@@ -32,7 +32,7 @@ function Calendar({
         day_button:
           "text-foreground hover:bg-surface-muted flex size-9 items-center justify-center rounded-full font-medium transition-colors",
         dropdown:
-          "text-foreground h-9 cursor-pointer appearance-none rounded-lg border border-border bg-surface px-3 pr-8 text-sm font-medium shadow-[0_8px_16px_-16px_rgba(21,17,13,0.2)] outline-none transition-colors focus-visible:border-primary/45 focus-visible:ring-2 focus-visible:ring-primary/15",
+          "text-foreground h-9 cursor-pointer appearance-none rounded-lg border border-border bg-surface px-3 pr-8 text-sm font-medium shadow-[0_8px_16px_-16px_rgba(20,26,34,0.2)] outline-none transition-colors focus-visible:border-primary/45 focus-visible:ring-2 focus-visible:ring-primary/15",
         dropdown_root: "relative",
         dropdowns: "flex items-center justify-center gap-2",
         disabled: "text-muted-foreground opacity-50",

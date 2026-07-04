@@ -37,7 +37,7 @@ export function ServiceListCard({
         : "Currently Unavailable";
 
   return (
-    <article className="flex h-full max-w-[31rem] flex-col rounded-[1.05rem] border border-[#eadfce] bg-[linear-gradient(180deg,#F5E7DB_0%,#FFFFFF_100%)] px-3 py-3 shadow-[0_14px_24px_-30px_rgba(16,47,52,0.15)] sm:px-3.5 sm:py-3.5">
+    <article className="flex h-full max-w-[31rem] flex-col rounded-[1.05rem] border border-[#eadfce] bg-[linear-gradient(180deg,#F5E7DB_0%,#FFFFFF_100%)] px-3 py-3 shadow-[0_14px_24px_-30px_rgba(11,32,51,0.15)] sm:px-3.5 sm:py-3.5">
       <div className="flex items-start gap-2">
         <div className="flex size-[2.9rem] shrink-0 items-center justify-center rounded-[0.7rem] bg-foreground">
           <Image

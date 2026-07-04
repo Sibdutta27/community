@@ -71,7 +71,7 @@ describe("EnrollmentStepper — folder tabs", () => {
     expect(active.className).not.toContain("bg-surface-muted");
     // …and no visible bottom border so the tab flows into the card.
     expect(active.className).toContain("border-b-transparent");
-    // The one accent: the active number badge fills deep teal.
+    // The one accent: the active number badge fills deep azul.
     expect(badgeOf(active).className).toContain("bg-primary");
   });
 
@@ -87,7 +87,7 @@ describe("EnrollmentStepper — folder tabs", () => {
     expect(badgeOf(upcoming).className).not.toContain("bg-primary");
   });
 
-  it("marks completed steps with a pale-teal check badge, keeping the name", () => {
+  it("marks completed steps with a pale-celeste check badge, keeping the name", () => {
     render(
       <EnrollmentStepper
         currentStep={3}
@@ -118,7 +118,7 @@ describe("EnrollmentStepper — folder tabs", () => {
     expect(firstTab.className).toContain("whitespace-nowrap");
   });
 
-  it("is keyboard operable: tabs focus in order with a visible teal focus ring", async () => {
+  it("is keyboard operable: tabs focus in order with a visible azul focus ring", async () => {
     const user = userEvent.setup();
     render(<EnrollmentStepper currentStep={1} stepState={stepState()} />);
 

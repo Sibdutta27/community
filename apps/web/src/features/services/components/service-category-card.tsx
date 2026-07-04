@@ -26,7 +26,7 @@ const toneClasses: Record<ServiceCategoryTone, string> = {
 
 export function ServiceCategoryCard({ category }: ServiceCategoryCardProps) {
   return (
-    <article className="border-border bg-surface flex h-full min-h-[9.5rem] flex-col rounded-[1.2rem] border px-3.5 py-3.5 text-center shadow-[0_14px_28px_-32px_rgba(31,30,28,0.16)] sm:min-h-[10rem] sm:px-4 sm:py-4">
+    <article className="border-border bg-surface flex h-full min-h-[9.5rem] flex-col rounded-[1.2rem] border px-3.5 py-3.5 text-center shadow-[0_14px_28px_-32px_rgba(20,26,34,0.16)] sm:min-h-[10rem] sm:px-4 sm:py-4">
       <div
         className={cn(
           "mx-auto flex size-[3rem] items-center justify-center rounded-[0.75rem]",

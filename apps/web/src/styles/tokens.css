@@ -1,28 +1,35 @@
 :root {
-  /* Elegant governance design system — warm-neutral base, charcoal text, and a
-     single restrained deep-teal accent. Variable NAMES are preserved for
-     existing callers — only the VALUES change. The teal accent is reserved for
-     primary CTAs, the active enrollment step, and focus rings; everything else
-     is charcoal on warm off-white with subtle hairline borders. */
-  --brand-sky: #5c94a1;
-  --brand-red: #2d6e7e;
-  --brand-brown: #8a8378;
-  --brand-black: #1f1e1c;
-  --brand-sand: #efece6;
-  --brand-sand-soft: #f7f5f1;
-  --background: #f7f5f1;
-  --foreground: #1f1e1c;
-  --surface: #fffefb;
-  --surface-muted: #efece6;
-  --border: #e3ded4;
-  --muted-foreground: #6b665f;
-  --primary: #2d6e7e;
+  /* Azul-led Puerto-Rican-flag palette — color-science 60-30-10, WCAG AA.
+     60: cool clean base (near-white blue-grey surfaces, ink foreground).
+     30: deep azul primary + azul-celeste highlights (secondary/accent/ring).
+     10: flag red, reserved for the emphasis CTAs (--emphasis) and errors
+     (--destructive). Variable NAMES are preserved for existing callers —
+     legacy --brand-* now point at the flag hues so nothing renders teal.
+     The flag's star yellow is NOT a UI token (logo artwork only). */
+  --brand-sky: #4ea6dc;
+  --brand-red: #c42032;
+  --brand-brown: #5a6472;
+  --brand-black: #141a22;
+  --brand-sand: #eef2f6;
+  --brand-sand-soft: #f6f8fa;
+  --background: #f6f8fa;
+  --foreground: #141a22;
+  --surface: #ffffff;
+  --surface-muted: #eef2f6;
+  --border: #e2e6eb;
+  --muted-foreground: #5a6472;
+  --primary: #0a56a8;
   --primary-foreground: #ffffff;
-  --secondary: #dbe7ea;
-  --secondary-foreground: #1f1e1c;
-  --accent: #efece6;
-  --accent-foreground: #1f1e1c;
-  --ring: #2d6e7e;
+  --secondary: #e7f2fb;
+  --secondary-foreground: #123b5e;
+  --accent: #4ea6dc;
+  --accent-foreground: #0b2033;
+  --emphasis: #c42032;
+  --emphasis-foreground: #ffffff;
+  --destructive: #b3261e;
+  --destructive-foreground: #ffffff;
+  --celeste: #4ea6dc;
+  --ring: #0a56a8;
   --font-sans-base: var(--font-body), "Segoe UI", sans-serif;
   --font-ui-base: var(--font-body), "Segoe UI", sans-serif;
   --font-display-base: var(--font-display), "Segoe UI", sans-serif;
@@ -41,6 +48,11 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-emphasis: var(--emphasis);
+  --color-emphasis-foreground: var(--emphasis-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-celeste: var(--celeste);
   --color-brand-sky: var(--brand-sky);
   --color-brand-red: var(--brand-red);
   --color-brand-brown: var(--brand-brown);

@@ -21,7 +21,7 @@ export function YucayekeLegacyTimelineItem({
         ) : null}
       </div>
 
-      <div className="rounded-[1.3rem] border border-[#a8cbc8] bg-white px-3.5 py-3.5 shadow-[0_14px_30px_-30px_rgba(16,47,52,0.22)] sm:px-4 sm:py-4 lg:px-5">
+      <div className="rounded-[1.3rem] border border-[#a9cde9] bg-white px-3.5 py-3.5 shadow-[0_14px_30px_-30px_rgba(11,32,51,0.22)] sm:px-4 sm:py-4 lg:px-5">
         <div className="mb-2.5 flex items-center gap-3 md:hidden">
           <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-foreground/40 bg-white text-[0.95rem] font-semibold tracking-tight text-foreground">
             {period.yearLabel}

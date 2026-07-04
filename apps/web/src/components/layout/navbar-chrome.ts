@@ -17,13 +17,13 @@ export const navbarFrameClass =
 
 /** The floating rounded-pill bar itself. */
 export const navbarPillClass =
-  "border-border/90 bg-surface/95 supports-backdrop-filter:bg-surface/92 flex items-center justify-between gap-3 rounded-full border px-3.5 py-2.5 shadow-[0_16px_32px_-24px_rgba(21,17,13,0.18)] backdrop-blur-md sm:gap-4 sm:px-4 sm:py-3 lg:gap-3 lg:px-3.5 lg:py-2 xl:px-4 xl:py-2.5";
+  "border-border/90 bg-surface/95 supports-backdrop-filter:bg-surface/92 flex items-center justify-between gap-3 rounded-full border px-3.5 py-2.5 shadow-[0_16px_32px_-24px_rgba(20,26,34,0.18)] backdrop-blur-md sm:gap-4 sm:px-4 sm:py-3 lg:gap-3 lg:px-3.5 lg:py-2 xl:px-4 xl:py-2.5";
 
 /** Floating dropdown panel for the mobile menu (below the pill). */
 export const navbarMobilePanelClass =
-  "border-border bg-surface mt-3 rounded-3xl border p-4 shadow-[0_18px_34px_-24px_rgba(21,17,13,0.22)] lg:hidden";
+  "border-border bg-surface mt-3 rounded-3xl border p-4 shadow-[0_18px_34px_-24px_rgba(20,26,34,0.22)] lg:hidden";
 
-/** Desktop nav link — teal (`text-primary`) only on the active item. */
+/** Desktop nav link — azul (`text-primary`) only on the active item. */
 export function desktopNavLinkClass(isActive: boolean) {
   return cn(
     "shrink-0 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors lg:px-3 lg:py-1.5 lg:text-[0.92rem] xl:px-4 xl:py-2 xl:text-sm",

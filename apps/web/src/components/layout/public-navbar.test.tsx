@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { PublicNavbar } from "@/components/layout/public-navbar";
@@ -38,6 +38,19 @@ describe("PublicNavbar", () => {
     expect(
       screen.getByRole("link", { name: "Enroll Today" }),
     ).toBeInTheDocument();
+  });
+
+  it("renders every 'Enroll Today' CTA with the flag-red emphasis variant", () => {
+    render(<PublicNavbar />);
+
+    // Open the mobile menu so both the desktop and mobile CTAs render.
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+
+    const ctas = screen.getAllByRole("link", { name: "Enroll Today" });
+    expect(ctas.length).toBeGreaterThanOrEqual(2);
+    for (const cta of ctas) {
+      expect(cta).toHaveClass("bg-emphasis", "text-emphasis-foreground");
+    }
   });
 
   it("does not render the old 'Apply Now' CTA", () => {

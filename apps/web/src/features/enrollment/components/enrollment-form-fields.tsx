@@ -140,7 +140,7 @@ function FieldLegend({
 
   return (
     <legend
-      className={cn(fieldLabelClassName, error && "text-red-600")}
+      className={cn(fieldLabelClassName, error && "text-destructive")}
       id={`${formItemId}-legend`}
     >
       {label}
@@ -204,7 +204,7 @@ function EnrollmentRadioGroupControl<TFieldValues extends FieldValues>({
                   className={cn(
                     "border-border bg-surface flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 transition-colors",
                     isSelected && "border-foreground bg-surface-muted",
-                    fieldState.error && "border-red-300",
+                    fieldState.error && "border-destructive/50",
                     optionClassName,
                   )}
                   htmlFor={optionId}
@@ -251,7 +251,7 @@ export function EnrollmentInputField<TFieldValues extends FieldValues>({
                 readOnly &&
                   "bg-surface-muted text-muted-foreground cursor-default",
                 fieldState.error &&
-                  "border-red-300 focus-visible:border-red-400/50 focus-visible:ring-red-200/50",
+                  "border-destructive/50 focus-visible:border-destructive/60 focus-visible:ring-destructive/20",
               )}
               inputMode={inputMode}
               placeholder={placeholder}
@@ -291,7 +291,7 @@ export function EnrollmentDateField<TFieldValues extends FieldValues>({
                 className={cn(
                   "cursor-pointer",
                   fieldState.error &&
-                    "border-red-300 focus-visible:border-red-400/50 focus-visible:ring-red-200/50",
+                    "border-destructive/50 focus-visible:border-destructive/60 focus-visible:ring-destructive/20",
                 )}
                 max={max}
                 min={min}
@@ -340,7 +340,7 @@ export function EnrollmentSelectField<TFieldValues extends FieldValues>({
               <SelectTrigger
                 className={cn(
                   fieldState.error &&
-                    "border-red-300 focus-visible:border-red-400/50 focus-visible:ring-red-200/50",
+                    "border-destructive/50 focus-visible:border-destructive/60 focus-visible:ring-destructive/20",
                 )}
                 onBlur={field.onBlur}
                 ref={field.ref}
@@ -417,7 +417,7 @@ export function EnrollmentTextareaField<TFieldValues extends FieldValues>({
             <Textarea
               className={cn(
                 fieldState.error &&
-                  "border-red-300 focus-visible:border-red-400/50 focus-visible:ring-red-200/50",
+                  "border-destructive/50 focus-visible:border-destructive/60 focus-visible:ring-destructive/20",
               )}
               placeholder={placeholder}
               rows={rows}

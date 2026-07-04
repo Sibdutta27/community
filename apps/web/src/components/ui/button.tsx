@@ -11,19 +11,22 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Solid deep-teal pill — the ONE accent, reserved for primary CTAs.
+        // Solid deep-azul pill — the workhorse for primary CTAs.
         primary:
-          "bg-primary text-primary-foreground shadow-[0_12px_24px_-18px_rgba(45,110,126,0.45)] hover:shadow-[0_16px_30px_-18px_rgba(45,110,126,0.55)] hover:brightness-[0.96]",
-        // Prominent outline pill: warm hairline border, warm-white bg,
-        // charcoal text; hover raises the muted warm surface.
+          "bg-primary text-primary-foreground shadow-[0_12px_24px_-18px_rgba(10,86,168,0.45)] hover:shadow-[0_16px_30px_-18px_rgba(10,86,168,0.55)] hover:brightness-[0.96]",
+        // Flag-red pill — RESTRAINED: only the Enroll/hero emphasis CTAs.
+        emphasis:
+          "bg-emphasis text-emphasis-foreground shadow-[0_12px_24px_-18px_rgba(196,32,50,0.5)] hover:shadow-[0_16px_30px_-18px_rgba(196,32,50,0.6)] hover:brightness-[0.96]",
+        // Prominent outline pill: cool hairline border, white bg,
+        // ink text; hover raises the muted cool surface.
         outline:
-          "border border-border bg-surface text-foreground shadow-[0_10px_22px_-18px_rgba(31,30,28,0.18)] hover:bg-surface-muted",
-        // Pale-teal solid pill with charcoal text.
+          "border border-border bg-surface text-foreground shadow-[0_10px_22px_-18px_rgba(20,26,34,0.18)] hover:bg-surface-muted",
+        // Celeste-tint solid pill with deep-azul text.
         secondary:
-          "bg-secondary text-secondary-foreground shadow-[0_12px_24px_-18px_rgba(31,30,28,0.22)] hover:brightness-[0.98]",
-        // Warm-neutral solid pill.
+          "bg-secondary text-secondary-foreground shadow-[0_12px_24px_-18px_rgba(20,26,34,0.22)] hover:brightness-[0.98]",
+        // Azul-celeste solid pill (highlight fill) with dark azul text.
         accent:
-          "bg-accent text-accent-foreground shadow-[0_12px_24px_-18px_rgba(31,30,28,0.22)] hover:brightness-[0.97]",
+          "bg-accent text-accent-foreground shadow-[0_12px_24px_-18px_rgba(20,26,34,0.22)] hover:brightness-[0.97]",
         ghost:
           "bg-transparent text-foreground hover:bg-surface-muted",
       },

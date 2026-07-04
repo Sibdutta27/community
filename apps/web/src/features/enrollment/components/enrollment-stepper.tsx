@@ -25,7 +25,7 @@ type EnrollmentTabState = "active" | "completed" | "upcoming";
  * card below (see EnrollmentStepLayout). The ACTIVE tab shares the card's
  * `bg-surface`, keeps top+side borders but a transparent bottom edge, and
  * overlaps the card's top border by 1px (`-mb-px` on the row) so it merges
- * seamlessly into the card — with a deep-teal top edge and number badge as
+ * seamlessly into the card — with a deep-azul top edge and number badge as
  * the accent. Inactive tabs are shorter and recessed on `bg-surface-muted`;
  * their own bottom border continues the card's top divider line beneath them.
  *

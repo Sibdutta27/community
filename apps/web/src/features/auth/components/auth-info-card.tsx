@@ -18,7 +18,7 @@ export function AuthInfoCard({
   return (
     <article
       className={cn(
-        "border-border bg-surface rounded-[1.65rem] border px-4 py-4 shadow-[0_18px_34px_-28px_rgba(21,17,13,0.14)] sm:px-5 sm:py-5",
+        "border-border bg-surface rounded-[1.65rem] border px-4 py-4 shadow-[0_18px_34px_-28px_rgba(20,26,34,0.14)] sm:px-5 sm:py-5",
         className,
       )}
     >

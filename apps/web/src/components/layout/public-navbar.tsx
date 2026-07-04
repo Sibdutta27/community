@@ -88,7 +88,7 @@ export function PublicNavbar() {
                 Sign In
               </Link>
             </Button>
-            <Button size="sm" asChild>
+            <Button size="sm" variant="emphasis" asChild>
               <Link href="/sign-up">Enroll Today</Link>
             </Button>
           </div>
@@ -145,7 +145,7 @@ export function PublicNavbar() {
                     Sign In
                   </Link>
                 </Button>
-                <Button asChild>
+                <Button variant="emphasis" asChild>
                   <Link
                     href="/sign-up"
                     onClick={() => setIsMobileMenuOpen(false)}

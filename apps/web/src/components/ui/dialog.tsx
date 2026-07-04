@@ -56,7 +56,7 @@ function DialogContent({
       <DialogOverlay />
       <DialogPrimitive.Content
         className={cn(
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border bg-surface fixed top-[50%] left-[50%] z-50 flex w-[calc(100%-2rem)] max-w-4xl translate-x-[-50%] translate-y-[-50%] flex-col rounded-[28px] border shadow-[0_28px_56px_-34px_rgba(21,17,13,0.35)] duration-200 sm:w-full",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-border bg-surface fixed top-[50%] left-[50%] z-50 flex w-[calc(100%-2rem)] max-w-4xl translate-x-[-50%] translate-y-[-50%] flex-col rounded-[28px] border shadow-[0_28px_56px_-34px_rgba(20,26,34,0.35)] duration-200 sm:w-full",
           className,
         )}
         data-slot="dialog-content"

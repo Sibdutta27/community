@@ -43,9 +43,9 @@ export function EnrollmentStepCard({
   return (
     <article
       className={cn(
-        "flex min-h-[15rem] flex-col rounded-[20px] border bg-white px-4 py-5 text-center shadow-[0_16px_34px_-28px_rgba(16,47,52,0.28)] transition-transform duration-200 sm:min-h-[17rem] sm:rounded-[22px] sm:px-4 sm:py-6",
+        "flex min-h-[15rem] flex-col rounded-[20px] border bg-white px-4 py-5 text-center shadow-[0_16px_34px_-28px_rgba(11,32,51,0.28)] transition-transform duration-200 sm:min-h-[17rem] sm:rounded-[22px] sm:px-4 sm:py-6",
         isEnabled
-          ? "border-border shadow-[0_20px_44px_-32px_rgba(31,30,28,0.28)]"
+          ? "border-border shadow-[0_20px_44px_-32px_rgba(20,26,34,0.28)]"
           : "border-border",
       )}
     >

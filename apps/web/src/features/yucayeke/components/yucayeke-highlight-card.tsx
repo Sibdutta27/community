@@ -30,7 +30,7 @@ export function YucayekeHighlightCard({
   const toneClass = toneClasses[tone];
 
   return (
-    <article className="border-border flex h-full flex-col rounded-[1.6rem] border bg-white/88 px-4 py-4 shadow-[0_18px_42px_-38px_rgba(31,30,28,0.3)] backdrop-blur-sm sm:px-5 sm:py-5">
+    <article className="border-border flex h-full flex-col rounded-[1.6rem] border bg-white/88 px-4 py-4 shadow-[0_18px_42px_-38px_rgba(20,26,34,0.3)] backdrop-blur-sm sm:px-5 sm:py-5">
       <div
         className={cn(
           "flex h-12 w-12 items-center justify-center rounded-xl",

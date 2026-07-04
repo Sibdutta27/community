@@ -48,7 +48,7 @@ export function EnrollmentStepLayout(props: EnrollmentStepLayoutProps) {
 
 /**
  * Top-row mirror of the step form's "Save & finish later" footer action —
- * a subtle charcoal ghost control (never the teal accent) that invokes the
+ * a subtle charcoal ghost control (never the azul accent) that invokes the
  * handler the current step registered via EnrollmentSaveDraftContext, and
  * hides entirely when the step registered none (documents/confirmation).
  * Below `sm` it collapses to an icon-only button; the aria-label keeps the
@@ -133,7 +133,7 @@ function EnrollmentStepLayoutContent({
         {/* Elevated form card the active folder tab merges into. Top-left
             corner stays square where the first tab attaches. */}
         <div
-          className="border-border bg-surface relative rounded-b-2xl rounded-tr-2xl border p-6 shadow-[0_28px_56px_-40px_rgba(31,30,28,0.35),0_10px_24px_-20px_rgba(31,30,28,0.25)] sm:p-8 lg:p-10"
+          className="border-border bg-surface relative rounded-b-2xl rounded-tr-2xl border p-6 shadow-[0_28px_56px_-40px_rgba(20,26,34,0.35),0_10px_24px_-20px_rgba(20,26,34,0.25)] sm:p-8 lg:p-10"
           data-slot="enrollment-step-card"
         >
           {definition ? (
@@ -170,7 +170,7 @@ type EnrollmentStepFooterProps = Readonly<{
  * Footer band for a step form: a full-bleed, softly tinted row pinned to the
  * bottom of the elevated card (negative margins match the card padding),
  * divided from the fields by a hairline border — outlined "Back" pill on the
- * left (when given a target), the step's primary teal action(s) on the right.
+ * left (when given a target), the step's primary azul action(s) on the right.
  * When `onSaveDraft` is provided, a secondary ghost "Save & finish later"
  * action renders beside Back: it saves the current values as a partial draft
  * (no validation) and returns the member to the dashboard.

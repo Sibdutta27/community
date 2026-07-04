@@ -12,7 +12,7 @@ import { HomeEnrollmentStepCard } from "@/features/home/components/home-enrollme
 import sharedStyles from "../styles/home-shared.module.scss";
 
 // Governance restyle: marketing step numbers are neutral (charcoal on a warm
-// off-white bubble) — the teal accent stays reserved for CTAs and active state.
+// off-white bubble) — the azul accent stays reserved for CTAs and active state.
 const warmStepTone = {
   bubbleClassName: "border-border bg-surface-muted border",
   numberClassName: "text-foreground",

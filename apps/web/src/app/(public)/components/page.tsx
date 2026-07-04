@@ -60,16 +60,17 @@ export default function ComponentsPage() {
           </p>
         </div>
 
-        <section className="border-border bg-surface space-y-6 rounded-[2rem] border p-6 shadow-[0_28px_70px_-50px_rgba(16,47,52,0.45)] sm:p-8">
+        <section className="border-border bg-surface space-y-6 rounded-[2rem] border p-6 shadow-[0_28px_70px_-50px_rgba(11,32,51,0.45)] sm:p-8">
           <div className="space-y-1">
             <h2 className="text-foreground text-2xl font-semibold">Variants</h2>
             <p className="text-muted-foreground text-sm">
-              Primary, outline, secondary, accent, and ghost styles.
+              Primary, emphasis, outline, secondary, accent, and ghost styles.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-4">
             <Button>Primary</Button>
+            <Button variant="emphasis">Emphasis</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="secondary">Secondary</Button>
             <Button variant="accent">Accent</Button>
@@ -77,7 +78,7 @@ export default function ComponentsPage() {
           </div>
         </section>
 
-        <section className="border-border bg-surface space-y-6 rounded-[2rem] border p-6 shadow-[0_28px_70px_-50px_rgba(16,47,52,0.45)] sm:p-8">
+        <section className="border-border bg-surface space-y-6 rounded-[2rem] border p-6 shadow-[0_28px_70px_-50px_rgba(11,32,51,0.45)] sm:p-8">
           <div className="space-y-1">
             <h2 className="text-foreground text-2xl font-semibold">Sizes</h2>
             <p className="text-muted-foreground text-sm">
@@ -96,7 +97,7 @@ export default function ComponentsPage() {
           </div>
         </section>
 
-        <section className="border-border bg-surface space-y-6 rounded-[2rem] border p-6 shadow-[0_28px_70px_-50px_rgba(16,47,52,0.45)] sm:p-8">
+        <section className="border-border bg-surface space-y-6 rounded-[2rem] border p-6 shadow-[0_28px_70px_-50px_rgba(11,32,51,0.45)] sm:p-8">
           <div className="space-y-1">
             <h2 className="text-foreground text-2xl font-semibold">
               Icon support
@@ -145,7 +146,7 @@ export default function ComponentsPage() {
             </p>
           </div>
 
-          <div className="rounded-[2rem] border border-[#e8e2c8] bg-[#fff9e8] p-4 shadow-[0_28px_70px_-50px_rgba(16,47,52,0.32)] sm:p-6 lg:p-8">
+          <div className="rounded-[2rem] border border-[#e8e2c8] bg-[#fff9e8] p-4 shadow-[0_28px_70px_-50px_rgba(11,32,51,0.32)] sm:p-6 lg:p-8">
             <div className="space-y-5 sm:space-y-6">
               <EnrollmentFormSection
                 description="Please provide your legal name as it appears on your government-issued identification."
@@ -182,7 +183,7 @@ export default function ComponentsPage() {
                 description="Your date and place of birth help us verify your identity and trace your lineage."
                 fieldsPerRow={[2, 2, 1]}
                 icon={CalendarDays}
-                iconWrapperClassName="bg-foreground shadow-[0_14px_28px_-22px_rgba(31,30,28,0.4)]"
+                iconWrapperClassName="bg-foreground shadow-[0_14px_28px_-22px_rgba(20,26,34,0.4)]"
                 title="Birth Information"
               >
                 <ShowcaseField
@@ -212,7 +213,7 @@ export default function ComponentsPage() {
                 description="This example shows a denser row configuration for future sections with more compact groups."
                 fieldsPerRow={[3, 2]}
                 icon={MapPin}
-                iconWrapperClassName="bg-foreground shadow-[0_14px_28px_-22px_rgba(31,30,28,0.4)]"
+                iconWrapperClassName="bg-foreground shadow-[0_14px_28px_-22px_rgba(20,26,34,0.4)]"
                 title="Layout Variation"
               >
                 <ShowcaseField label="City" placeholder="Enter city" />

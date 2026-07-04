@@ -23,7 +23,7 @@ export function DashboardExpectationCard({
   return (
     <article
       className={cn(
-        "flex min-h-[8.5rem] flex-col items-center justify-center rounded-[22px] px-6 py-7 text-center shadow-[0_18px_40px_-34px_rgba(16,47,52,0.18)] sm:min-h-[9rem] sm:px-8 sm:py-8",
+        "flex min-h-[8.5rem] flex-col items-center justify-center rounded-[22px] px-6 py-7 text-center shadow-[0_18px_40px_-34px_rgba(11,32,51,0.18)] sm:min-h-[9rem] sm:px-8 sm:py-8",
         expectationToneClasses[tone],
       )}
     >

@@ -11,7 +11,7 @@ export function ComingSoonPage({
 }>) {
   return (
     <section className="mx-auto flex w-full max-w-5xl flex-col gap-6">
-      <div className="border-border bg-surface overflow-hidden rounded-[32px] border shadow-[0_28px_60px_-40px_rgba(16,47,52,0.28)]">
+      <div className="border-border bg-surface overflow-hidden rounded-[32px] border shadow-[0_28px_60px_-40px_rgba(11,32,51,0.28)]">
         <div className="relative overflow-hidden px-6 py-8 sm:px-8 sm:py-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(47,207,195,0.14),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(43,116,216,0.12),transparent_30%)]" />
 
@@ -35,7 +35,7 @@ export function ComingSoonPage({
         </div>
       </div>
 
-      <div className="border-border bg-surface rounded-[32px] border p-6 shadow-[0_18px_34px_-26px_rgba(16,47,52,0.24)] sm:p-8">
+      <div className="border-border bg-surface rounded-[32px] border p-6 shadow-[0_18px_34px_-26px_rgba(11,32,51,0.24)] sm:p-8">
         <p className="text-foreground text-lg font-semibold tracking-[-0.03em]">
           {title} placeholder
         </p>

@@ -10,10 +10,10 @@ export function ProfileOverviewPanel({
   return (
     <div className="space-y-5">
       <header className="max-w-3xl">
-        <h2 className="text-[1.45rem] leading-[1.05] font-semibold tracking-[-0.04em] text-[#245f6d] sm:text-[1.7rem] lg:text-[2rem]">
+        <h2 className="text-[1.45rem] leading-[1.05] font-semibold tracking-[-0.04em] text-[#123b5e] sm:text-[1.7rem] lg:text-[2rem]">
           {overviewData.title}
         </h2>
-        <p className="mt-2 text-[0.88rem] leading-5 text-[#245f6d] sm:text-[0.93rem] lg:text-[0.98rem]">
+        <p className="mt-2 text-[0.88rem] leading-5 text-[#123b5e] sm:text-[0.93rem] lg:text-[0.98rem]">
           {overviewData.description}
         </p>
       </header>
@@ -30,7 +30,7 @@ export function ProfileOverviewPanel({
             <p className="mt-1.5 text-[1.42rem] leading-none font-semibold tracking-[-0.04em] text-[#1f5968] sm:text-[1.56rem]">
               {metric.value}
             </p>
-            <p className="mt-2 text-[12px] leading-[1.15rem] text-[#5f7174]">
+            <p className="mt-2 text-[12px] leading-[1.15rem] text-[#5a6472]">
               {metric.helper}
             </p>
           </article>
@@ -39,7 +39,7 @@ export function ProfileOverviewPanel({
 
       <div className="grid gap-3 lg:grid-cols-2">
         <article className="rounded-[16px] border border-[#d7d1c3] bg-white p-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.4)] sm:p-5">
-          <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#245f6d] sm:text-[16px]">
+          <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#123b5e] sm:text-[16px]">
             Personal Snapshot
           </h3>
           <dl className="mt-3 space-y-2.5">
@@ -48,10 +48,10 @@ export function ProfileOverviewPanel({
                 key={fact.label}
                 className="flex items-start justify-between gap-3 rounded-[10px] bg-[#f6f8f6] px-3 py-2.5"
               >
-                <dt className="text-[12px] font-medium text-[#5f7174] sm:text-[13px]">
+                <dt className="text-[12px] font-medium text-[#5a6472] sm:text-[13px]">
                   {fact.label}
                 </dt>
-                <dd className="text-right text-[12px] font-semibold text-[#184551] sm:text-[13px]">
+                <dd className="text-right text-[12px] font-semibold text-[#0b2033] sm:text-[13px]">
                   {fact.value}
                 </dd>
               </div>
@@ -60,7 +60,7 @@ export function ProfileOverviewPanel({
         </article>
 
         <article className="rounded-[16px] border border-[#d7d1c3] bg-white p-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.4)] sm:p-5">
-          <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#245f6d] sm:text-[16px]">
+          <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#123b5e] sm:text-[16px]">
             Contact Snapshot
           </h3>
           <dl className="mt-3 space-y-2.5">
@@ -69,10 +69,10 @@ export function ProfileOverviewPanel({
                 key={fact.label}
                 className="flex items-start justify-between gap-3 rounded-[10px] bg-[#f6f8f6] px-3 py-2.5"
               >
-                <dt className="text-[12px] font-medium text-[#5f7174] sm:text-[13px]">
+                <dt className="text-[12px] font-medium text-[#5a6472] sm:text-[13px]">
                   {fact.label}
                 </dt>
-                <dd className="text-right text-[12px] font-semibold text-[#184551] sm:text-[13px]">
+                <dd className="text-right text-[12px] font-semibold text-[#0b2033] sm:text-[13px]">
                   {fact.value}
                 </dd>
               </div>
@@ -82,7 +82,7 @@ export function ProfileOverviewPanel({
       </div>
 
       <article className="rounded-[16px] border border-[#d7d1c3] bg-white p-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.4)] sm:p-5">
-        <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#245f6d] sm:text-[16px]">
+        <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#123b5e] sm:text-[16px]">
           Enrollment Checklist
         </h3>
         <ul className="mt-3 space-y-2.5">

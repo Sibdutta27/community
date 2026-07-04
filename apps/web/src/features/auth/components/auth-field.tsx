@@ -29,16 +29,16 @@ export function AuthField<TFieldValues extends FieldValues>({
 
   return (
     <label className="block" htmlFor={String(name)}>
-      <span className="mb-1.5 block text-sm font-medium text-[#42362c]">
-        {label} <span className="text-red-500">*</span>
+      <span className="mb-1.5 block text-sm font-medium text-foreground">
+        {label} <span className="text-destructive">*</span>
       </span>
 
       <input
         autoComplete={autoComplete}
         className={cn(
-          "text-foreground border-border bg-surface placeholder:text-muted-foreground focus:border-primary/45 focus:ring-primary/15 flex h-11 w-full rounded-xl border px-4 text-[15px] shadow-[0_8px_18px_-18px_rgba(21,17,13,0.2)] transition-colors outline-none focus:ring-2 sm:h-12",
+          "text-foreground border-border bg-surface placeholder:text-muted-foreground focus:border-primary/45 focus:ring-primary/15 flex h-11 w-full rounded-xl border px-4 text-[15px] shadow-[0_8px_18px_-18px_rgba(20,26,34,0.2)] transition-colors outline-none focus:ring-2 sm:h-12",
           errorMessage &&
-            "border-red-300 focus:border-red-400/50 focus:ring-red-200/50",
+            "border-destructive/50 focus:border-destructive/60 focus:ring-destructive/20",
         )}
         id={String(name)}
         placeholder={placeholder}
@@ -50,7 +50,7 @@ export function AuthField<TFieldValues extends FieldValues>({
 
       {errorMessage ? (
         <p
-          className="mt-1.5 text-sm font-medium text-red-600"
+          className="mt-1.5 text-sm font-medium text-destructive"
           id={fieldErrorId}
         >
           {errorMessage}

@@ -29,7 +29,7 @@ export function ProfileAvatar({
 
   return (
     <div className="relative shrink-0">
-      <div className="relative size-[7.75rem] overflow-hidden rounded-full border-[4px] border-[#17879d] bg-[#e9f1ef] shadow-[0_18px_36px_-28px_rgba(16,47,52,0.28)] sm:size-[8.75rem] sm:border-[5px] lg:size-[10rem] lg:border-[6px] xl:size-[10.75rem]">
+      <div className="relative size-[7.75rem] overflow-hidden rounded-full border-[4px] border-[#17879d] bg-[#e9f1ef] shadow-[0_18px_36px_-28px_rgba(11,32,51,0.28)] sm:size-[8.75rem] sm:border-[5px] lg:size-[10rem] lg:border-[6px] xl:size-[10.75rem]">
         {hasPortrait ? (
           <Image
             fill

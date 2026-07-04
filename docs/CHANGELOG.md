@@ -24,6 +24,11 @@ All notable changes to the Community monorepo are recorded here, categorized by
 - [repo/tooling] 6.031 principled-code-review skill (global) — used as the quality gate
 
 ### Changed
+- [web/marketing-content] Azul-led Puerto-Rican-flag palette (60-30-10, WCAG AA): cool clean
+  base, deep azul `#0a56a8` primary/ring, celeste `#4ea6dc` highlights, flag-red `#c42032`
+  `--emphasis` (new Button `emphasis` variant on the "Enroll Today" + hero CTAs) and
+  `--destructive` error token; swept all teal/`red-*` hardcodes — apps/web tokens.css,
+  globals.css, ui/*, navbars, hero, auth/profile/enrollment styles
 - [repo/tooling] Restructured into a pnpm + Turborepo monorepo: CommunityBackend→apps/api,
   CommunityFrontend→apps/web, communityAdminPanel→apps/admin; added root package.json,
   pnpm-workspace.yaml, turbo.json, tsconfig.base.json; single root pnpm-lock.yaml

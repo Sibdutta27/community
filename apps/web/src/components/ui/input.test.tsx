@@ -20,4 +20,12 @@ describe("Input", () => {
     render(<Input aria-label="styled" />);
     expect(screen.getByLabelText("styled")).toHaveClass("border-border");
   });
+
+  it("uses the azul focus glow, not the legacy teal", () => {
+    render(<Input aria-label="glow" />);
+    const className = (screen.getByLabelText("glow") as HTMLInputElement)
+      .className;
+    expect(className).toContain("rgba(10,86,168");
+    expect(className).not.toContain("rgba(45,110,126");
+  });
 });

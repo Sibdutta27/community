@@ -161,7 +161,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                 type="button"
                 onClick={() => setIsProfileMenuOpen((value) => !value)}
               >
-                <div className="text-secondary-foreground bg-secondary relative flex size-11 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(31,30,28,0.2)] lg:size-10 lg:text-[0.82rem] xl:size-11 xl:text-sm">
+                <div className="text-secondary-foreground bg-secondary relative flex size-11 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(20,26,34,0.2)] lg:size-10 lg:text-[0.82rem] xl:size-11 xl:text-sm">
                   {getInitials(user.name)}
                   <span className="bg-primary absolute right-0 bottom-0 flex size-4 items-center justify-center rounded-full border-2 border-white text-[10px] text-white lg:size-3.5 xl:size-4">
                     <ShieldCheck className="size-2.5 lg:size-2 xl:size-2.5" />
@@ -188,7 +188,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
               </button>
 
               {isProfileMenuOpen ? (
-                <div className="border-border bg-surface absolute top-[calc(100%+0.75rem)] right-0 w-56 rounded-2xl border p-2 shadow-[0_18px_34px_-24px_rgba(21,17,13,0.22)]">
+                <div className="border-border bg-surface absolute top-[calc(100%+0.75rem)] right-0 w-56 rounded-2xl border p-2 shadow-[0_18px_34px_-24px_rgba(20,26,34,0.22)]">
                   <Link
                     className={dropdownItemClass}
                     href="/profile"
@@ -206,7 +206,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                     {isLoggingOut ? "Signing out..." : "Sign out"}
                   </button>
                   {logoutError ? (
-                    <p className="px-3 py-2 text-xs leading-5 text-red-600">
+                    <p className="px-3 py-2 text-xs leading-5 text-destructive">
                       {logoutError}
                     </p>
                   ) : null}
@@ -230,7 +230,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
         {isMobileMenuOpen ? (
           <div className={navbarMobilePanelClass}>
             <div className="border-border bg-surface-muted flex items-center gap-3 rounded-2xl border p-3">
-              <div className="text-secondary-foreground bg-secondary relative flex size-12 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(31,30,28,0.2)]">
+              <div className="text-secondary-foreground bg-secondary relative flex size-12 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(20,26,34,0.2)]">
                 {getInitials(user.name)}
                 <span className="bg-primary absolute right-0 bottom-0 flex size-4 items-center justify-center rounded-full border-2 border-white text-[10px] text-white">
                   <ShieldCheck className="size-2.5" />
@@ -268,7 +268,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
             </nav>
 
             <button
-              className="border-border bg-surface text-foreground hover:bg-surface-muted focus-visible:ring-ring focus-visible:ring-offset-background mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border px-4 py-3 text-sm font-semibold whitespace-nowrap shadow-[0_12px_24px_-18px_rgba(21,17,13,0.18)] transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+              className="border-border bg-surface text-foreground hover:bg-surface-muted focus-visible:ring-ring focus-visible:ring-offset-background mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border px-4 py-3 text-sm font-semibold whitespace-nowrap shadow-[0_12px_24px_-18px_rgba(20,26,34,0.18)] transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
               onClick={handleLogout}
               type="button"
             >
@@ -285,7 +285,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
               </span>
             </button>
             {logoutError ? (
-              <p className="mt-3 text-sm leading-6 text-red-600">
+              <p className="mt-3 text-sm leading-6 text-destructive">
                 {logoutError}
               </p>
             ) : null}
