@@ -18,7 +18,13 @@ const brandMarkVariants = {
       brandFrameDepthClass,
     ),
     image: "rounded-full object-cover",
-    title: "text-[1rem] leading-none font-semibold uppercase tracking-[0.12em]",
+    // The navbars render this compact mark and must always show the full
+    // "Taíno Nation of Borikén" wordmark on one line. Font-size + tracking
+    // scale with the pill's room: comfortable below `lg` (brand + hamburger
+    // only), tightest at `lg` (full nav + actions appear), easing back up at
+    // `xl`. Never shortened, never wrapped.
+    title:
+      "whitespace-nowrap text-[0.98rem] leading-none font-semibold uppercase tracking-[0.11em] lg:text-[0.8rem] lg:tracking-[0.05em] xl:text-[0.92rem] xl:tracking-[0.08em]",
     subtitle:
       "mt-1 block text-[0.62rem] font-medium uppercase tracking-[0.26em]",
   },
@@ -36,13 +42,6 @@ const brandMarkVariants = {
   },
 } as const;
 
-/**
- * `sm` renders a tighter wordmark so the brand fits next to a dense app nav
- * (e.g. the signed-in navbar); `md` is the variant's standard wordmark.
- */
-const smallWordmarkTitle =
-  "text-[0.85rem] leading-none font-semibold uppercase tracking-[0.1em]";
-
 type BrandMarkProps = Readonly<{
   className?: string;
   label?: string;
@@ -50,7 +49,6 @@ type BrandMarkProps = Readonly<{
   showLabel?: boolean;
   showSubtitle?: boolean;
   compact?: boolean;
-  wordmarkSize?: "sm" | "md";
 }>;
 
 export function BrandMark({
@@ -60,12 +58,11 @@ export function BrandMark({
   showLabel = true,
   showSubtitle = true,
   compact = false,
-  wordmarkSize = "md",
 }: BrandMarkProps) {
   const variant = compact
     ? brandMarkVariants.compact
     : brandMarkVariants.default;
-  const titleClass = wordmarkSize === "sm" ? smallWordmarkTitle : variant.title;
+  const titleClass = variant.title;
 
   return (
     <div className={cn(variant.container, className)}>

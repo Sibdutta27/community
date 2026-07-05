@@ -140,16 +140,10 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
             href="/"
             className="focus-visible:ring-ring focus-visible:ring-offset-surface shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
           >
-            {/* Small wordmark so the brand fits next to the app nav + avatar;
-                logo-only on the very smallest widths to avoid overflow. */}
-            <BrandMark compact showLabel={false} className="min-[420px]:hidden" />
-            <BrandMark
-              compact
-              className="hidden min-[420px]:inline-flex"
-              label="Taíno Nation"
-              showSubtitle={false}
-              wordmarkSize="sm"
-            />
+            {/* Always the full "Taíno Nation of Borikén" wordmark — the mark
+                scales its own type to fit next to the app nav + avatar (see
+                brand-mark.tsx). */}
+            <BrandMark compact showSubtitle={false} />
           </Link>
 
           <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
@@ -248,7 +242,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                     {isLoggingOut ? "Signing out..." : "Sign out"}
                   </button>
                   {logoutError ? (
-                    <p className="px-3 py-2 text-xs leading-5 text-destructive">
+                    <p className="text-destructive px-3 py-2 text-xs leading-5">
                       {logoutError}
                     </p>
                   ) : null}
@@ -332,7 +326,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
               </span>
             </button>
             {logoutError ? (
-              <p className="mt-3 text-sm leading-6 text-destructive">
+              <p className="text-destructive mt-3 text-sm leading-6">
                 {logoutError}
               </p>
             ) : null}

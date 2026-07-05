@@ -40,7 +40,7 @@ export const navbarMobilePanelClass =
  */
 export function desktopNavLinkClass(isActive: boolean) {
   return cn(
-    "shrink-0 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-[color,background-color,transform] duration-200 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface motion-reduce:transition-none motion-reduce:transform-none lg:px-3 lg:py-1.5 lg:text-[0.92rem] xl:px-4 xl:py-2 xl:text-sm",
+    "shrink-0 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-[color,background-color,transform] duration-200 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface motion-reduce:transition-none motion-reduce:transform-none lg:px-2.5 lg:py-1.5 lg:text-[0.85rem] xl:px-3.5 xl:py-2 xl:text-[0.95rem]",
     isActive
       ? "bg-primary/8 text-primary"
       : "text-muted-foreground hover:bg-surface-muted/70 hover:text-foreground hover:-translate-y-px active:translate-y-0",

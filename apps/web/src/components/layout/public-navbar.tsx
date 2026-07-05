@@ -51,19 +51,9 @@ export function PublicNavbar() {
             href="/"
             className="focus-visible:ring-ring focus-visible:ring-offset-surface shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
           >
-            {/* Full wordmark from `sm` up; shortened on the smallest widths
-                so the pill never overflows. */}
-            <BrandMark
-              compact
-              className="sm:hidden"
-              label="Taíno Nation"
-              showSubtitle={false}
-            />
-            <BrandMark
-              compact
-              className="hidden sm:inline-flex"
-              showSubtitle={false}
-            />
+            {/* Always the full "Taíno Nation of Borikén" wordmark — the mark
+                scales its own type to fit every width (see brand-mark.tsx). */}
+            <BrandMark compact showSubtitle={false} />
           </Link>
 
           <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
