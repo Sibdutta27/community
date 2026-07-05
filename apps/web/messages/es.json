@@ -1128,5 +1128,80 @@
       "title": "Centro de Ayuda y Apoyo",
       "subtitle": "Obtenga ayuda con preguntas sobre la inscripción, acceso a su cuenta, carga de documentos y problemas técnicos. Nuestro equipo está aquí para guiarle al canal de apoyo indicado."
     }
+  },
+  "yucayeke": {
+    "hero": {
+      "subtitle": "Región costera del noroeste conocida por sus ricas tradiciones de pesca, su herencia marítima y sus fuertes lazos comunitarios. Tu linaje materno te conecta con este territorio ancestral.",
+      "stats": {
+        "totalMembers": "Miembros Totales",
+        "activeMembers": "Miembros Activos",
+        "upcomingEvents": "Próximos Eventos"
+      }
+    },
+    "welcome": {
+      "title": "Bienvenido a Guainía",
+      "paragraphs": [
+        "Guainía fue una de las regiones Yucayeke costeras más prominentes del Borikén precolonial, ubicada estratégicamente a lo largo de las costas del noroeste. Esta región era conocida por sus hábiles pescadores, sus expertos constructores de canoas y sus prósperas redes de comercio marítimo que conectaban comunidades por todo el Caribe.",
+        "La gente de Guainía desarrolló técnicas de pesca sofisticadas y prácticas sostenibles de manejo costero, y mantuvo fuertes conexiones espirituales con el océano. Hoy, los descendientes de esta región continúan honrando estas tradiciones mientras construyen lazos comunitarios modernos."
+      ],
+      "mapAlt": "Mapa topográfico ilustrado de la región costera de Guainía"
+    },
+    "highlights": {
+      "srHeading": "Aspectos destacados de la región",
+      "maritime": {
+        "title": "Herencia Marítima",
+        "description": "Conexión profunda con las tradiciones del océano, las prácticas de pesca y el cuidado de la costa."
+      },
+      "trade": {
+        "title": "Redes de Comercio",
+        "description": "Centro histórico del comercio entre islas y del intercambio cultural por todo el Caribe."
+      },
+      "community": {
+        "title": "Comunidad Fuerte",
+        "description": "Red activa de miembros con encuentros regulares, eventos culturales y apoyo compartido."
+      }
+    },
+    "legacy": {
+      "badge": "Contexto Histórico",
+      "titlePrefix": "El Legado de",
+      "titleHighlight": "Guainía",
+      "description": "Comprende la rica historia y el significado cultural de tu territorio ancestral.",
+      "periods": {
+        "preColonial": {
+          "title": "Era Precolonial (Antes de 1493)",
+          "description": "Guainía se estableció como una de las principales regiones Yucayeke bajo el liderazgo de caciques respetados. La comunidad prosperó gracias a prácticas de pesca sostenibles, técnicas agrícolas avanzadas en los valles costeros y extensas redes de comercio con las islas vecinas. La evidencia arqueológica muestra patrones de asentamiento sofisticados, plazas ceremoniales y señales de una compleja organización social."
+        },
+        "colonial": {
+          "title": "Período Colonial (1493-1898)",
+          "description": "Durante la colonización española, la región de Guainía vivió una gran agitación. Muchos taínos fueron forzados a los sistemas de trabajo de la encomienda, pero las comunidades mantuvieron sus prácticas culturales mediante la resistencia y la adaptación. Los asentamientos costeros se convirtieron en lugares estratégicos para las actividades marítimas, y el conocimiento indígena de las aguas locales resultó invaluable. A pesar de los intentos de borrar su cultura, los linajes maternos preservaron en secreto sus tradiciones, fragmentos del idioma y prácticas espirituales."
+        },
+        "modern": {
+          "title": "Renacimiento Moderno (1900-Presente)",
+          "description": "Los siglos XX y XXI han visto un poderoso resurgir de la identidad taína en la región de Guainía. Los descendientes se han reconectado a través de la investigación genealógica, los programas de educación cultural y la organización comunitaria. Hoy, los miembros de Guainía participan activamente en esfuerzos de revitalización del idioma, talleres de artesanía tradicional, encuentros ceremoniales y la defensa de los derechos indígenas. La plataforma digital ha permitido una conexión sin precedentes entre los miembros de la región."
+        }
+      }
+    },
+    "connect": {
+      "badge": "Participa",
+      "title": "Conéctate con tu Comunidad Yucayeke",
+      "description": "Ya sea que quieras asistir a eventos, ser voluntario o simplemente conectar con otros miembros, estamos aquí para ayudarte a involucrarte con tu comunidad ancestral.",
+      "links": {
+        "events": {
+          "title": "Eventos Comunitarios",
+          "description": "Explora los próximos eventos comunitarios, ceremonias y anuncios.",
+          "ctaLabel": "Explorar Eventos"
+        },
+        "services": {
+          "title": "Directorio de Servicios",
+          "description": "Encuentra servicios de apoyo, recursos y asistencia para miembros disponibles.",
+          "ctaLabel": "Servicios"
+        },
+        "help": {
+          "title": "Centro de Ayuda",
+          "description": "Obtén orientación, respuestas y apoyo para preguntas relacionadas con la comunidad.",
+          "ctaLabel": "Contacto"
+        }
+      }
+    }
   }
 }
