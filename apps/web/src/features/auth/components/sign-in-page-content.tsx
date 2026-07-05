@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { useTranslations } from "next-intl";
+
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { cn } from "@/lib/utils";
 import { SignInBenefitCard } from "@/features/auth/components/sign-in-benefit-card";
@@ -7,26 +9,14 @@ import { SignInForm } from "@/features/auth/components/sign-in-form";
 import sharedStyles from "@/features/auth/styles/auth-shared.module.scss";
 
 const benefitCards = [
-  {
-    iconSrc: "/icons/auth/idcard.svg",
-    title: "View Your Tribal ID",
-    description:
-      "Access your official member identification and verification details.",
-  },
-  {
-    iconSrc: "/icons/auth/clipboard.svg",
-    title: "Track Application Status",
-    description:
-      "Monitor your enrollment progress and review application feedback.",
-  },
-  {
-    iconSrc: "/icons/auth/explore.svg",
-    title: "Explore Your Lineage",
-    description: "View your documented maternal ancestry and family tree.",
-  },
+  { key: "tribalId", iconSrc: "/icons/auth/idcard.svg" },
+  { key: "applicationStatus", iconSrc: "/icons/auth/clipboard.svg" },
+  { key: "lineage", iconSrc: "/icons/auth/explore.svg" },
 ] as const;
 
 export function SignInPageContent() {
+  const t = useTranslations("auth.signIn.panel");
+
   return (
     <main className="bg-background pt-20 pb-10 sm:pt-24 sm:pb-12 lg:pt-28 lg:pb-14">
       <div className={sharedStyles.pageFrame}>
@@ -53,21 +43,20 @@ export function SignInPageContent() {
 
               <div className="mt-5 max-w-md">
                 <h2 className="text-[2.05rem] font-semibold tracking-[-0.04em] sm:text-[2.2rem]">
-                  Access Your Tribal Portal
+                  {t("heading")}
                 </h2>
                 <p className="mt-3 text-[0.98rem] leading-6 text-white/90 sm:text-[1.02rem]">
-                  Sign in to manage your enrollment application, view your
-                  tribal profile, and connect with the Taíno community.
+                  {t("description")}
                 </p>
               </div>
 
               <div className="mt-6 space-y-3">
                 {benefitCards.map((card) => (
                   <SignInBenefitCard
-                    key={card.title}
+                    key={card.key}
                     iconSrc={card.iconSrc}
-                    title={card.title}
-                    description={card.description}
+                    title={t(`benefits.${card.key}.title`)}
+                    description={t(`benefits.${card.key}.description`)}
                   />
                 ))}
               </div>

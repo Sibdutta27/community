@@ -1,9 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useForm } from "react-hook-form";
 import { describe, expect, it } from "vitest";
 
 import { AuthField } from "@/features/auth/components/auth-field";
+import { renderWithIntl } from "@/test/i18n";
 
 type HarnessValues = Readonly<{ email: string; password: string }>;
 
@@ -42,12 +43,12 @@ function EmailFieldHarness() {
 
 describe("AuthField", () => {
   it("associates the label with the input", () => {
-    render(<PasswordFieldHarness />);
+    renderWithIntl(<PasswordFieldHarness />);
     expect(screen.getByLabelText(/^password/i)).toBeInTheDocument();
   });
 
   it("announces errors via aria-describedby + aria-invalid", () => {
-    render(
+    renderWithIntl(
       <PasswordFieldHarness errorMessage="Password must be at least 8 characters" />,
     );
 
@@ -63,7 +64,7 @@ describe("AuthField", () => {
 
   it("provides an accessible show/hide password toggle", async () => {
     const user = userEvent.setup();
-    render(<PasswordFieldHarness />);
+    renderWithIntl(<PasswordFieldHarness />);
 
     const input = screen.getByLabelText(/^password/i);
     expect(input).toHaveAttribute("type", "password");
@@ -79,8 +80,16 @@ describe("AuthField", () => {
     ).toHaveAttribute("aria-pressed", "true");
   });
 
+  it("renders the password toggle in Spanish when the es catalog is active", () => {
+    renderWithIntl(<PasswordFieldHarness />, "es");
+
+    expect(
+      screen.getByRole("button", { name: "Mostrar contraseña" }),
+    ).toBeInTheDocument();
+  });
+
   it("does not render a visibility toggle for non-password fields", () => {
-    render(<EmailFieldHarness />);
+    renderWithIntl(<EmailFieldHarness />);
     expect(
       screen.queryByRole("button", { name: /password/i }),
     ).not.toBeInTheDocument();

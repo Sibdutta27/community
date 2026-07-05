@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useForm, type UseFormRegister } from "react-hook-form";
 import { z } from "zod";
 
@@ -23,31 +24,47 @@ import {
 import { cn } from "@/lib/utils";
 import sharedStyles from "@/features/auth/styles/auth-shared.module.scss";
 
-const signUpSchema = z
-  .object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    email: z
-      .string()
-      .min(1, "Email is required")
-      .pipe(z.email("Enter a valid email address")),
-    phoneNumber: z
-      .string()
-      .min(1, "Phone number is required")
-      .regex(/^[+()0-9\s-]{7,20}$/, "Enter a valid phone number"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(8, "Confirm your password"),
-    agreeToTerms: z.boolean().refine(Boolean, {
-      message: "You must agree to the terms before continuing",
-    }),
-    receiveUpdates: z.boolean(),
-  })
-  .refine((values) => values.password === values.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+type SignUpValidationTranslator = (
+  key:
+    | "firstNameRequired"
+    | "lastNameRequired"
+    | "emailRequired"
+    | "emailInvalid"
+    | "phoneRequired"
+    | "phoneInvalid"
+    | "passwordMin"
+    | "confirmPasswordMin"
+    | "passwordsMismatch"
+    | "agreeToTermsRequired",
+) => string;
 
-type SignUpFormValues = z.infer<typeof signUpSchema>;
+function createSignUpSchema(t: SignUpValidationTranslator) {
+  return z
+    .object({
+      firstName: z.string().min(1, t("firstNameRequired")),
+      lastName: z.string().min(1, t("lastNameRequired")),
+      email: z
+        .string()
+        .min(1, t("emailRequired"))
+        .pipe(z.email(t("emailInvalid"))),
+      phoneNumber: z
+        .string()
+        .min(1, t("phoneRequired"))
+        .regex(/^[+()0-9\s-]{7,20}$/, t("phoneInvalid")),
+      password: z.string().min(8, t("passwordMin")),
+      confirmPassword: z.string().min(8, t("confirmPasswordMin")),
+      agreeToTerms: z.boolean().refine(Boolean, {
+        message: t("agreeToTermsRequired"),
+      }),
+      receiveUpdates: z.boolean(),
+    })
+    .refine((values) => values.password === values.confirmPassword, {
+      message: t("passwordsMismatch"),
+      path: ["confirmPassword"],
+    });
+}
+
+type SignUpFormValues = z.infer<ReturnType<typeof createSignUpSchema>>;
 
 function ConsentLine({
   name,
@@ -92,9 +109,15 @@ function ConsentLine({
 }
 
 export function SignUpForm() {
+  const t = useTranslations("auth.signUp");
+  const tValidation = useTranslations("auth.signUp.validation");
   const router = useRouter();
   const searchParams = useSearchParams();
   const signUpMutation = useSignUpMutation();
+  const schema = useMemo(
+    () => createSignUpSchema((key) => tValidation(key)),
+    [tValidation],
+  );
   const {
     register,
     handleSubmit,
@@ -102,7 +125,7 @@ export function SignUpForm() {
     setError,
     formState: { errors },
   } = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -126,7 +149,7 @@ export function SignUpForm() {
     if (!name) {
       setError("root", {
         type: "server",
-        message: "Please enter a valid first and last name.",
+        message: t("errors.invalidName"),
       });
       return;
     }
@@ -145,9 +168,7 @@ export function SignUpForm() {
       setError("root", {
         type: "server",
         message:
-          error instanceof Error
-            ? error.message
-            : "Unable to reach the registration service. Please try again in a moment.",
+          error instanceof Error ? error.message : t("errors.fallback"),
       });
     }
   };
@@ -162,11 +183,14 @@ export function SignUpForm() {
     >
       <div className="text-center">
         <p className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase">
-          Tribal Citizenship
+          {t("eyebrow")}
         </p>
         <h1 className="text-foreground mt-2 text-[2.05rem] font-semibold tracking-tight sm:text-[2.2rem]">
-          New to <span className={sharedStyles.gradientText}>Taíno Nation</span>
-          ?
+          {t.rich("title", {
+            brand: (chunks) => (
+              <span className={sharedStyles.gradientText}>{chunks}</span>
+            ),
+          })}
         </h1>
       </div>
 
@@ -180,20 +204,20 @@ export function SignUpForm() {
         <AuthField
           autoComplete="given-name"
           name="firstName"
-          label="First Name"
+          label={t("firstName.label")}
           errorMessage={errors.firstName?.message}
           register={register}
-          placeholder="First Name"
+          placeholder={t("firstName.placeholder")}
           type="text"
         />
 
         <AuthField
           autoComplete="family-name"
           name="lastName"
-          label="Last Name"
+          label={t("lastName.label")}
           errorMessage={errors.lastName?.message}
           register={register}
-          placeholder="Last Name"
+          placeholder={t("lastName.placeholder")}
           type="text"
         />
       </div>
@@ -202,40 +226,40 @@ export function SignUpForm() {
         <AuthField
           autoComplete="email"
           name="email"
-          label="Email Id"
+          label={t("email.label")}
           errorMessage={errors.email?.message}
           register={register}
-          placeholder="Email Id"
+          placeholder={t("email.placeholder")}
           type="email"
         />
 
         <AuthField
           autoComplete="tel"
           name="phoneNumber"
-          label="Phone No."
+          label={t("phoneNumber.label")}
           errorMessage={errors.phoneNumber?.message}
           register={register}
-          placeholder="Phone No."
+          placeholder={t("phoneNumber.placeholder")}
           type="tel"
         />
 
         <AuthField
           autoComplete="new-password"
           name="password"
-          label="Create Password"
+          label={t("password.label")}
           errorMessage={errors.password?.message}
           register={register}
-          placeholder="Minimum 8 Character"
+          placeholder={t("password.placeholder")}
           type="password"
         />
 
         <AuthField
           autoComplete="new-password"
           name="confirmPassword"
-          label="Confirm Password"
+          label={t("confirmPassword.label")}
           errorMessage={errors.confirmPassword?.message}
           register={register}
-          placeholder="Match the Password"
+          placeholder={t("confirmPassword.placeholder")}
           type="password"
         />
       </div>
@@ -246,33 +270,34 @@ export function SignUpForm() {
           errorMessage={errors.agreeToTerms?.message}
           register={register}
         >
-          I agree to the{" "}
-          <Link
-            className={cn(
-              sharedStyles.linkAccent,
-              "focus-visible:ring-ring rounded-sm underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
-            )}
-            href="/terms-of-service"
-          >
-            Terms of Service
-          </Link>{" "}
-          and{" "}
-          <Link
-            className={cn(
-              sharedStyles.linkAccent,
-              "focus-visible:ring-ring rounded-sm underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
-            )}
-            href="/privacy-policy"
-          >
-            Privacy Policy
-          </Link>
-          , and acknowledge that my data will be stored on sovereign Taíno
-          Nation servers.
+          {t.rich("agreeToTerms", {
+            terms: (chunks) => (
+              <Link
+                className={cn(
+                  sharedStyles.linkAccent,
+                  "focus-visible:ring-ring rounded-sm underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+                )}
+                href="/terms-of-service"
+              >
+                {chunks}
+              </Link>
+            ),
+            privacy: (chunks) => (
+              <Link
+                className={cn(
+                  sharedStyles.linkAccent,
+                  "focus-visible:ring-ring rounded-sm underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+                )}
+                href="/privacy-policy"
+              >
+                {chunks}
+              </Link>
+            ),
+          })}
         </ConsentLine>
 
         <ConsentLine name="receiveUpdates" register={register}>
-          Send me updates about enrollment status, community events, and
-          important announcements
+          {t("receiveUpdates")}
         </ConsentLine>
       </div>
 
@@ -282,14 +307,14 @@ export function SignUpForm() {
         size="lg"
         disabled={isSubmitting}
         loading={isSubmitting}
-        loadingText="Creating account..."
+        loadingText={t("submitting")}
         type="submit"
       >
-        Join Now
+        {t("submit")}
       </Button>
 
       <p className="text-muted-foreground mt-3.5 text-center text-sm">
-        Already have an account?{" "}
+        {t("haveAccount")}{" "}
         <Link
           className={cn(
             sharedStyles.linkAccent,
@@ -297,7 +322,7 @@ export function SignUpForm() {
           )}
           href={appendNextQuery("/sign-in", searchParams.get("next"))}
         >
-          Sign In
+          {t("signInLink")}
         </Link>
       </p>
 

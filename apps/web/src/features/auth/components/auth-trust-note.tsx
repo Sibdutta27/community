@@ -1,6 +1,10 @@
 import Image from "next/image";
 
+import { useTranslations } from "next-intl";
+
 export function AuthTrustNote() {
+  const t = useTranslations("auth.trustNote");
+
   return (
     <div className="mt-6 text-center">
       <Image
@@ -12,8 +16,7 @@ export function AuthTrustNote() {
         width={28}
       />
       <p className="text-foreground mt-2 text-[0.92rem] leading-[1.45] font-medium">
-        Your data is protected with bank-level encryption and stored on
-        sovereign, community-owned servers.
+        {t("message")}
       </p>
     </div>
   );

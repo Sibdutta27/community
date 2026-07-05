@@ -300,6 +300,135 @@
       }
     }
   },
+  "auth": {
+    "field": {
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña"
+    },
+    "trustNote": {
+      "message": "Sus datos están protegidos con cifrado de nivel bancario y almacenados en servidores soberanos, propiedad de la comunidad."
+    },
+    "signIn": {
+      "eyebrow": "Portal de Miembros",
+      "title": "¿Iniciar sesión en la <brand>Nación Taíno</brand>?",
+      "email": {
+        "label": "Correo electrónico",
+        "placeholder": "Correo electrónico"
+      },
+      "password": {
+        "label": "Contraseña",
+        "placeholder": "Mínimo 8 caracteres"
+      },
+      "rememberMe": "Recordarme",
+      "forgotPassword": "¿Olvidó su contraseña?",
+      "submit": "Iniciar Sesión",
+      "submitting": "Iniciando sesión...",
+      "noAccount": "¿No tiene una cuenta?",
+      "signUpLink": "Regístrese",
+      "errors": {
+        "fallback": "No se pudo conectar con el servicio de inicio de sesión. Por favor, intente de nuevo en un momento.",
+        "accountInfo": "No se pudo cargar la información de inscripción de la cuenta en este momento."
+      },
+      "validation": {
+        "emailRequired": "El correo electrónico es obligatorio",
+        "emailInvalid": "Ingrese un correo electrónico válido",
+        "passwordMin": "La contraseña debe tener al menos 8 caracteres"
+      },
+      "panel": {
+        "heading": "Acceda a su Portal Tribal",
+        "description": "Inicie sesión para gestionar su solicitud de inscripción, ver su perfil tribal y conectarse con la comunidad taína.",
+        "benefits": {
+          "tribalId": {
+            "title": "Vea su Identificación Tribal",
+            "description": "Acceda a su identificación oficial de miembro y a sus detalles de verificación."
+          },
+          "applicationStatus": {
+            "title": "Siga el Estado de su Solicitud",
+            "description": "Supervise el progreso de su inscripción y revise los comentarios sobre su solicitud."
+          },
+          "lineage": {
+            "title": "Explore su Linaje",
+            "description": "Vea su ascendencia materna documentada y su árbol genealógico."
+          }
+        }
+      }
+    },
+    "signUp": {
+      "metaTitle": "Regístrese",
+      "eyebrow": "Ciudadanía Tribal",
+      "title": "¿Nuevo en la <brand>Nación Taíno</brand>?",
+      "firstName": {
+        "label": "Nombre",
+        "placeholder": "Nombre"
+      },
+      "lastName": {
+        "label": "Apellido",
+        "placeholder": "Apellido"
+      },
+      "email": {
+        "label": "Correo electrónico",
+        "placeholder": "Correo electrónico"
+      },
+      "phoneNumber": {
+        "label": "Número de teléfono",
+        "placeholder": "Número de teléfono"
+      },
+      "password": {
+        "label": "Cree una Contraseña",
+        "placeholder": "Mínimo 8 caracteres"
+      },
+      "confirmPassword": {
+        "label": "Confirme la Contraseña",
+        "placeholder": "Debe coincidir con la contraseña"
+      },
+      "agreeToTerms": "Acepto los <terms>Términos de Servicio</terms> y la <privacy>Política de Privacidad</privacy>, y reconozco que mis datos se almacenarán en servidores soberanos de la Nación Taíno.",
+      "receiveUpdates": "Envíenme actualizaciones sobre el estado de mi inscripción, eventos comunitarios y anuncios importantes",
+      "submit": "Únase Ahora",
+      "submitting": "Creando la cuenta...",
+      "haveAccount": "¿Ya tiene una cuenta?",
+      "signInLink": "Iniciar Sesión",
+      "errors": {
+        "fallback": "No se pudo conectar con el servicio de registro. Por favor, intente de nuevo en un momento.",
+        "invalidName": "Por favor, ingrese un nombre y un apellido válidos."
+      },
+      "validation": {
+        "firstNameRequired": "El nombre es obligatorio",
+        "lastNameRequired": "El apellido es obligatorio",
+        "emailRequired": "El correo electrónico es obligatorio",
+        "emailInvalid": "Ingrese un correo electrónico válido",
+        "phoneRequired": "El número de teléfono es obligatorio",
+        "phoneInvalid": "Ingrese un número de teléfono válido",
+        "passwordMin": "La contraseña debe tener al menos 8 caracteres",
+        "confirmPasswordMin": "Confirme su contraseña",
+        "passwordsMismatch": "Las contraseñas no coinciden",
+        "agreeToTermsRequired": "Debe aceptar los términos antes de continuar"
+      },
+      "panel": {
+        "heading": "¿Qué Sucede Después?",
+        "steps": {
+          "createAccount": "Cree su cuenta y verifique su correo electrónico",
+          "completeApplication": "Complete su solicitud de inscripción con su información personal y de linaje",
+          "uploadDocuments": "Suba los documentos de apoyo para verificar su linaje materno",
+          "review": "Nuestro equipo de revisión examinará cuidadosamente su solicitud",
+          "receiveId": "Reciba su Identificación Tribal y su asignación de Yukayeke al ser aprobada"
+        },
+        "cards": {
+          "timeline": {
+            "title": "Tiempo Estimado",
+            "description": "El proceso completo de inscripción normalmente toma de 4 a 6 semanas desde el envío de la solicitud hasta la aprobación"
+          },
+          "privacy": {
+            "title": "Su Privacidad Importa",
+            "description": "Toda la información personal está cifrada y almacenada de forma segura en servidores soberanos. Nunca compartimos sus datos con terceros."
+          },
+          "community": {
+            "title": "Únase a Nuestra Comunidad",
+            "description": "2,847 miembros ya se han reconectado con su herencia. Usted será parte de una comunidad indígena en crecimiento."
+          }
+        }
+      }
+    }
+  },
   "enrollment": {
     "layout": {
       "kicker": "Ciudadanía Tribal",

@@ -3,6 +3,7 @@
 import { useState, type HTMLInputTypeAttribute } from "react";
 
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { FieldValues, Path, UseFormRegister } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ export function AuthField<TFieldValues extends FieldValues>({
   errorMessage,
   register,
 }: AuthFieldProps<TFieldValues>) {
+  const t = useTranslations("auth.field");
   const fieldErrorId = `${String(name)}-error`;
   const isPasswordField = type === "password";
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -64,7 +66,9 @@ export function AuthField<TFieldValues extends FieldValues>({
 
         {isPasswordField ? (
           <button
-            aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+            aria-label={
+              isPasswordVisible ? t("hidePassword") : t("showPassword")
+            }
             aria-pressed={isPasswordVisible}
             className="text-muted-foreground hover:text-foreground focus-visible:ring-ring absolute inset-y-0 right-1 my-auto flex size-10 cursor-pointer items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             onClick={() => setIsPasswordVisible((visible) => !visible)}

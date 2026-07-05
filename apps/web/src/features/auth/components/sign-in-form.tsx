@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -19,16 +21,22 @@ import { cn } from "@/lib/utils";
 import { appendNextQuery } from "@/lib/auth";
 import sharedStyles from "@/features/auth/styles/auth-shared.module.scss";
 
-const signInSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .pipe(z.email("Enter a valid email address")),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  rememberMe: z.boolean(),
-});
+type SignInValidationTranslator = (
+  key: "emailRequired" | "emailInvalid" | "passwordMin",
+) => string;
 
-type SignInFormValues = z.infer<typeof signInSchema>;
+function createSignInSchema(t: SignInValidationTranslator) {
+  return z.object({
+    email: z
+      .string()
+      .min(1, t("emailRequired"))
+      .pipe(z.email(t("emailInvalid"))),
+    password: z.string().min(8, t("passwordMin")),
+    rememberMe: z.boolean(),
+  });
+}
+
+type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>;
 
 function resolvePostLoginPath(accountInfo: AccountInfoResponse) {
   if (!accountInfo.hasEnrollment) {
@@ -46,10 +54,16 @@ function resolvePostLoginPath(accountInfo: AccountInfoResponse) {
 }
 
 export function SignInForm() {
+  const t = useTranslations("auth.signIn");
+  const tValidation = useTranslations("auth.signIn.validation");
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const signInMutation = useSignInMutation();
+  const schema = useMemo(
+    () => createSignInSchema((key) => tValidation(key)),
+    [tValidation],
+  );
   const {
     register,
     handleSubmit,
@@ -57,7 +71,7 @@ export function SignInForm() {
     setError,
     formState: { errors },
   } = useForm<SignInFormValues>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       email: "",
       password: "",
@@ -77,8 +91,7 @@ export function SignInForm() {
         const accountInfo = await requestJson<AccountInfoResponse>(
           "/api/account/info",
           {
-            fallbackMessage:
-              "Unable to load account enrollment information right now.",
+            fallbackMessage: t("errors.accountInfo"),
           },
         );
         queryClient.setQueryData(accountQueryKeys.info, accountInfo);
@@ -93,9 +106,7 @@ export function SignInForm() {
       setError("root", {
         type: "server",
         message:
-          error instanceof Error
-            ? error.message
-            : "Unable to reach the sign-in service. Please try again in a moment.",
+          error instanceof Error ? error.message : t("errors.fallback"),
       });
     }
   };
@@ -110,11 +121,14 @@ export function SignInForm() {
     >
       <div className="text-center">
         <p className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase">
-          Member Portal
+          {t("eyebrow")}
         </p>
         <h1 className="text-foreground mt-2 text-[2.1rem] font-semibold tracking-tight sm:text-[2.3rem]">
-          Login to{" "}
-          <span className={sharedStyles.gradientText}>Taíno Nation</span>?
+          {t.rich("title", {
+            brand: (chunks) => (
+              <span className={sharedStyles.gradientText}>{chunks}</span>
+            ),
+          })}
         </h1>
       </div>
 
@@ -128,20 +142,20 @@ export function SignInForm() {
         <AuthField
           autoComplete="email"
           name="email"
-          label="Email id"
+          label={t("email.label")}
           errorMessage={errors.email?.message}
           register={register}
-          placeholder="Email id"
+          placeholder={t("email.placeholder")}
           type="email"
         />
 
         <AuthField
           autoComplete="current-password"
           name="password"
-          label="Password"
+          label={t("password.label")}
           errorMessage={errors.password?.message}
           register={register}
-          placeholder="Minimum 8 Character"
+          placeholder={t("password.placeholder")}
           type="password"
         />
       </div>
@@ -153,7 +167,7 @@ export function SignInForm() {
             className="accent-primary border-border focus-visible:ring-ring size-4 rounded focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             type="checkbox"
           />
-          <span>Remember me</span>
+          <span>{t("rememberMe")}</span>
         </label>
 
         <button
@@ -163,7 +177,7 @@ export function SignInForm() {
           )}
           type="button"
         >
-          Forgot Password?
+          {t("forgotPassword")}
         </button>
       </div>
 
@@ -172,14 +186,14 @@ export function SignInForm() {
         fullWidth
         size="lg"
         loading={isSubmitting}
-        loadingText="Logging in..."
+        loadingText={t("submitting")}
         type="submit"
       >
-        Log in
+        {t("submit")}
       </Button>
 
       <p className="text-muted-foreground mt-3.5 text-center text-sm">
-        Don&apos;t have an account?{" "}
+        {t("noAccount")}{" "}
         <Link
           className={cn(
             sharedStyles.linkAccent,
@@ -187,7 +201,7 @@ export function SignInForm() {
           )}
           href={appendNextQuery("/sign-up", searchParams.get("next"))}
         >
-          Sign up
+          {t("signUpLink")}
         </Link>
       </p>
 

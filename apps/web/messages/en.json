@@ -300,6 +300,135 @@
       }
     }
   },
+  "auth": {
+    "field": {
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "trustNote": {
+      "message": "Your data is protected with bank-level encryption and stored on sovereign, community-owned servers."
+    },
+    "signIn": {
+      "eyebrow": "Member Portal",
+      "title": "Login to <brand>Taíno Nation</brand>?",
+      "email": {
+        "label": "Email id",
+        "placeholder": "Email id"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Minimum 8 Character"
+      },
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot Password?",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "errors": {
+        "fallback": "Unable to reach the sign-in service. Please try again in a moment.",
+        "accountInfo": "Unable to load account enrollment information right now."
+      },
+      "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Enter a valid email address",
+        "passwordMin": "Password must be at least 8 characters"
+      },
+      "panel": {
+        "heading": "Access Your Tribal Portal",
+        "description": "Sign in to manage your enrollment application, view your tribal profile, and connect with the Taíno community.",
+        "benefits": {
+          "tribalId": {
+            "title": "View Your Tribal ID",
+            "description": "Access your official member identification and verification details."
+          },
+          "applicationStatus": {
+            "title": "Track Application Status",
+            "description": "Monitor your enrollment progress and review application feedback."
+          },
+          "lineage": {
+            "title": "Explore Your Lineage",
+            "description": "View your documented maternal ancestry and family tree."
+          }
+        }
+      }
+    },
+    "signUp": {
+      "metaTitle": "Sign Up",
+      "eyebrow": "Tribal Citizenship",
+      "title": "New to <brand>Taíno Nation</brand>?",
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "First Name"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "Last Name"
+      },
+      "email": {
+        "label": "Email Id",
+        "placeholder": "Email Id"
+      },
+      "phoneNumber": {
+        "label": "Phone No.",
+        "placeholder": "Phone No."
+      },
+      "password": {
+        "label": "Create Password",
+        "placeholder": "Minimum 8 Character"
+      },
+      "confirmPassword": {
+        "label": "Confirm Password",
+        "placeholder": "Match the Password"
+      },
+      "agreeToTerms": "I agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>, and acknowledge that my data will be stored on sovereign Taíno Nation servers.",
+      "receiveUpdates": "Send me updates about enrollment status, community events, and important announcements",
+      "submit": "Join Now",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "signInLink": "Sign In",
+      "errors": {
+        "fallback": "Unable to reach the registration service. Please try again in a moment.",
+        "invalidName": "Please enter a valid first and last name."
+      },
+      "validation": {
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Enter a valid email address",
+        "phoneRequired": "Phone number is required",
+        "phoneInvalid": "Enter a valid phone number",
+        "passwordMin": "Password must be at least 8 characters",
+        "confirmPasswordMin": "Confirm your password",
+        "passwordsMismatch": "Passwords do not match",
+        "agreeToTermsRequired": "You must agree to the terms before continuing"
+      },
+      "panel": {
+        "heading": "What Happens Next?",
+        "steps": {
+          "createAccount": "Create your account and verify your email address",
+          "completeApplication": "Complete your enrollment application with personal and lineage information",
+          "uploadDocuments": "Upload supporting documents to verify your maternal lineage",
+          "review": "Our review team will carefully examine your application",
+          "receiveId": "Receive your Tribal ID and Yukayeke assignment upon approval"
+        },
+        "cards": {
+          "timeline": {
+            "title": "Estimated Timeline",
+            "description": "Complete enrollment process typically takes 4-6 weeks from application submission to approval"
+          },
+          "privacy": {
+            "title": "Your Privacy Matters",
+            "description": "All personal information is encrypted and stored securely on sovereign servers. We never share your data with third parties."
+          },
+          "community": {
+            "title": "Join Our Community",
+            "description": "2,847 members have already reconnected with their heritage. You'll be part of a growing Indigenous community."
+          }
+        }
+      }
+    }
+  },
   "enrollment": {
     "layout": {
       "kicker": "Tribal Citizenship",
