@@ -8,6 +8,14 @@ Source of truth: `apps/web/src/styles/tokens.css`, `src/styles/fonts.ts`,
 `src/app/globals.css`, `src/components/ui/*`, `src/lib/motion.ts`. When you change those, run
 `/style-guide refresh web` to update this doc.
 
+> **Living brand kit:** the system is rendered live at **`/brand-kit`** (public;
+> the old `/components` showcase redirects there). Source:
+> `src/features/brand-kit/` — palette swatches with *measured* WCAG contrast
+> (`lib/contrast.ts` + `lib/palette.ts`, unit-tested against the AA claims below),
+> the Inter scale, radius/shadow/spacing, the full `components/ui/*` catalog, the
+> signature patterns and the motion presets. When tokens change, update the mirrored
+> hex values in `features/brand-kit/lib/palette.ts` — its tests re-verify every ratio.
+
 ## Aesthetic direction
 
 **Elegant governance, azul-led Puerto-Rican-flag palette (60-30-10).** Calm, institutional,
@@ -35,19 +43,19 @@ Defined on `:root` and exposed to Tailwind v4 via `@theme inline` (use as `bg-pr
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `--background` | `#f6f8fa` | page background (cool near-white) |
+| `--background` | `#f6f8fa` | page background (cool near-white; ink text on it = 16.4:1) |
 | `--foreground` | `#141a22` | primary text (ink); also the neutral icon-tile fill (`bg-foreground`) |
-| `--surface` | `#ffffff` | cards / panels (white) |
-| `--surface-muted` | `#eef2f6` | muted surfaces / hover / badges |
-| `--border` | `#e2e6eb` | cool hairline borders |
+| `--surface` | `#ffffff` | cards / panels (white; ink text on it = 17.5:1) |
+| `--surface-muted` | `#eef2f6` | muted surfaces / hover / badges (ink text on it = 15.6:1) |
+| `--border` | `#e2e6eb` | cool hairline borders (decorative — no contrast target) |
 | `--muted-foreground` | `#5a6472` | secondary / muted text (5.6:1 on background) |
 | `--primary` / `--primary-foreground` | `#0a56a8` / `#ffffff` | deep azul — primary CTAs, active step, links (7.2:1) |
 | `--secondary` / `--secondary-foreground` | `#e7f2fb` / `#123b5e` | celeste tint supporting surface, deep-azul text (10.2:1) |
-| `--accent` / `--accent-foreground` | `#4ea6dc` / `#0b2033` | azul celeste highlight fill — dark text only (6.2:1), or white for large display type; never small text on it |
+| `--accent` / `--accent-foreground` | `#4ea6dc` / `#0b2033` | azul celeste highlight fill — **dark text only** (6.2:1); white on celeste is 2.7:1 and fails AA even for large type — never put light or small text on it |
 | `--emphasis` / `--emphasis-foreground` | `#c42032` / `#ffffff` | flag red — ONLY the Enroll/hero emphasis CTAs (5.8:1) |
 | `--destructive` / `--destructive-foreground` | `#b3261e` / `#ffffff` | errors / destructive actions (6.5:1; 6.5:1 as text on white) |
 | `--celeste` | `#4ea6dc` | alias of the celeste highlight hue |
-| `--ring` | `#0a56a8` | focus ring (azul); `::selection` is also azul |
+| `--ring` | `#0a56a8` | focus ring (azul); `::selection` is also azul (6.8:1 vs background — clears the 3:1 non-text AA target) |
 
 Brand tokens (legacy names, current values): `--brand-red` `#c42032` (the flag red),
 `--brand-sky` `#4ea6dc` (celeste), `--brand-brown` `#5a6472`, `--brand-sand` `#eef2f6`,
@@ -113,6 +121,16 @@ One typeface: **Inter** (via `next/font/google`), applied as CSS variables on `<
 - **Cards**: `bg-surface` (or `bg-surface-muted`) on the off-white page, hairline
   `border-border`, large radii (`rounded-2xl`, `rounded-[1.2rem]`+), soft long-negative-spread
   ink shadows.
+- **SurfaceCard + SectionHeader** (`components/shared/surface-card.tsx`): the elevated card
+  promoted to a shared primitive — `tone="soft"` (`shadow-card-soft`) for grid/list cards,
+  `tone="elevated"` (`shadow-card`) for hero panels; `padding` `none|compact|roomy`.
+  `SectionHeader` pairs a neutral `bg-surface-muted` icon tile with title + muted description
+  (+ optional `action`); pass `headingAs="h3"` to keep the document outline logical. Reach for
+  these before hand-rolling a card.
+- **Navbar pill** (`components/layout/navbar-chrome.ts`): both navbars share the floating
+  frosted-glass pill — translucent `bg-surface/95` (`/80` with backdrop-filter) + `backdrop-blur-xl`,
+  hairline `border-border/70`, inner top highlight and layered ink shadow. Active links are quiet
+  azul pills (`bg-primary/8 text-primary`); the red Enroll CTA is the only loud element.
 - **Steppers** (`features/enrollment/components/enrollment-stepper.tsx`): **folder tabs**
   attached to the elevated step card (`enrollment-step-layout.tsx`). The active tab shares the
   card's `bg-surface` with a transparent bottom edge (it merges into the card, `-mb-px`
@@ -156,6 +174,20 @@ Component tests run on **Vitest** (jsdom, globals) with **@testing-library/react
 `vitest.config.ts` (+ `vitest.setup.ts` importing `@testing-library/jest-dom`); `@/*` resolves to
 `./src`. Run with `pnpm --filter community-frontend-web test`. Co-locate `*.test.tsx` next to the
 component (see `src/components/ui/{button,input,form}.test.tsx`).
+
+## Do / Don't (the brand rules, at a glance)
+
+Rendered live in the `/brand-kit` Do & Don't section — keep the two in sync.
+
+| Do | Don't |
+|----|-------|
+| Deep azul (`bg-primary`, `ring-ring`) for every action, active state, link and focus | Hardcode hex/rgb — every color comes from a semantic token |
+| Flag red `bg-emphasis` ONLY for the Enroll/hero CTA; `destructive` ONLY for errors | Scatter red beyond one emphasis moment per view (60-30-10) |
+| Celeste (`bg-secondary` / `bg-accent`) for tasteful highlight fills with dark ink-azul text | Put small/body or light text on celeste or bright red — fills/accents only |
+| Neutral ink icon tiles (`bg-foreground` + white glyphs) | Colored/gradient tiles, heavy shadows, saturated panels |
+| Meet WCAG AA on every pairing; visible azul focus ring on all interactives | Use star yellow in UI — it's logo artwork only |
+| Respect `prefers-reduced-motion` (shared wrappers + `motion-reduce:` utilities) | Invent one-off animations — reuse the `lib/motion.ts` presets |
+| Inter everywhere, via the existing font exports; compose with `cn()` + CVA | Add new fonts, or mix in the admin panel's dark MUI theme |
 
 ## When building new frontend UI
 
