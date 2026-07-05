@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,8 @@ import { HomeYucayekeOverviewSection } from "@/features/home/components/home-yuc
 import sharedStyles from "../styles/home-shared.module.scss";
 
 export function HomeYucayekeRegionsSection() {
+  const t = useTranslations("home.yucayeke");
+
   return (
     <motion.section
       className="bg-background overflow-hidden"
@@ -27,23 +30,21 @@ export function HomeYucayekeRegionsSection() {
             className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
-            Yucayeke Regions
+            {t("label")}
           </motion.p>
 
           <motion.h2
             className="text-foreground mt-3 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
-            Connect to Your Ancestral Land
+            {t("title")}
           </motion.h2>
 
           <motion.p
             className="text-muted-foreground mx-auto mt-4 max-w-3xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
-            Each enrolled member is assigned to a Yucayeke, a traditional
-            land-based community that connects you to your ancestral territory
-            and fellow descendants from your region.
+            {t("subtitle")}
           </motion.p>
         </div>
         <HomeYucayekeOverviewSection />

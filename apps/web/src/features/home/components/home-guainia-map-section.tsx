@@ -3,10 +3,13 @@
 import Image from "next/image";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 
 export function HomeGuainiaMapSection() {
+  const t = useTranslations("home.yucayeke");
+
   return (
     <motion.section
       className="bg-background overflow-hidden"
@@ -20,7 +23,7 @@ export function HomeGuainiaMapSection() {
         variants={fadeInUpItem}
       >
         <Image
-          alt="Illustrated Guainia regional map"
+          alt={t("guainiaMapAlt")}
           className="h-auto w-full"
           height={871}
           priority={false}

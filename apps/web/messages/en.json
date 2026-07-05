@@ -12,12 +12,292 @@
   "footer": {
     "tagline": "Preserving Indigenous heritage through land, lineage, and community connection."
   },
+  "metadata": {
+    "title": "Taíno Nation of Borikén",
+    "description": "Frontend platform for community enrollment, identity tracking, and local service discovery."
+  },
   "home": {
     "hero": {
       "title": "Welcome to <highlight>Taíno Nation of Borikén</highlight>",
       "subtitle": "Reconnect with your ancestral roots, preserve your lineage, and join a sovereign community dedicated to honoring our Indigenous heritage and cultural identity.",
       "ctaEnroll": "Start Your Enrollment",
-      "ctaExplore": "Explore Community"
+      "ctaExplore": "Explore Community",
+      "memberAvatarAlt": "Community member portrait {index}",
+      "tribalCitizens": "<count>500+</count> Tribal Citizens"
+    },
+    "heritage": {
+      "label": "About Our Platform",
+      "title": "Preserving <highlight>Heritage</highlight> Through Technology",
+      "subtitle": "The Taíno Nation Digital Platform is a sovereign, community-owned system designed to honor our ancestors, preserve our lineage, and strengthen our bonds as Indigenous descendants of Borikén.",
+      "cards": {
+        "sovereignData": {
+          "title": "Sovereign Data",
+          "description": "Your data belongs to you. You maintain ownership and control over the personal information and files you upload to your account. You may also choose to contribute selected files to the tribally governed “Indigenous Archives of Puerto Rico” project, where they will become part of a communally held archive stewarded for cultural preservation, kinship research, and future learning by Borikua Taíno community members."
+        },
+        "culturalIdentity": {
+          "title": "Cultural Identity",
+          "description": "Receive your official Tribal ID, trace your maternal lineage, and connect with your ancestral Yucayeke to strengthen your Indigenous identity."
+        },
+        "communityHelp": {
+          "title": "Community Help",
+          "description": "Learn from and contribute to a growing community resource hub where members can share information related to health services, legal assistance, job searches, cultural events, and other support for Taíno Nation members."
+        }
+      },
+      "mission": {
+        "title": "Our Mission",
+        "body": "To create a secure, culturally grounded digital platform that empowers Borikua Taíno descendants to reclaim their heritage, document their lineage, and participate in a thriving Indigenous community. We honor the wisdom of our ancestors while embracing modern technology to ensure our culture, traditions, and identity endure for generations to come.",
+        "items": {
+          "respectfulDesign": "Culturally Respectful Design",
+          "securePrivate": "Secure & Private",
+          "mobileWeb": "Mobile & Web Access"
+        }
+      }
+    },
+    "process": {
+      "label": "Enrollment Process",
+      "title": "How to Enroll with the Taíno Nation of Borikén",
+      "subtitle": "Our enrollment process is designed to be simple, respectful, and thorough. Follow these steps to begin your journey toward official tribal membership.",
+      "stepLabel": "Step",
+      "steps": {
+        "account": {
+          "title": "Create Account",
+          "description": "Sign up with your email and create a secure password to access the enrollment portal."
+        },
+        "personalInfo": {
+          "title": "Personal Information",
+          "description": "Provide your basic details including name, date of birth, and contact information."
+        },
+        "maternalLineage": {
+          "title": "Maternal Lineage",
+          "description": "Document your maternal ancestry with names, dates, and places of birth for your lineage."
+        },
+        "documents": {
+          "title": "Upload Documents",
+          "description": "Submit supporting documents such as birth certificates, family records, and lineage proof."
+        }
+      },
+      "needs": {
+        "title": "What You'll Need?",
+        "items": {
+          "governmentId": {
+            "title": "Government-Issued ID",
+            "description": "Driver's license, passport, or state ID"
+          },
+          "birthCertificate": {
+            "title": "Birth Certificate",
+            "description": "Your official birth certificate (certified copy)"
+          },
+          "lineageRecords": {
+            "title": "Maternal Lineage Records",
+            "description": "Birth certificates for mother, grandmother, great-grandmother (if available)"
+          },
+          "supportingDocs": {
+            "title": "Supporting Documentation",
+            "description": "Family trees, historical records, or tribal documentation"
+          }
+        }
+      },
+      "tips": {
+        "title": "Helpful Tips",
+        "items": {
+          "saveProgress": "Save your progress at any time and return later to complete your application",
+          "scanQuality": "Scan documents in high quality (PDF or JPG format, under 10MB each)",
+          "review": "Review all information carefully before submitting your application"
+        },
+        "supportCta": "Get Enrollment Support"
+      },
+      "cta": {
+        "button": "Begin Your Application",
+        "help": "Questions? <faqLink>Read our enrollment FAQ</faqLink> or <contactLink>contact us</contactLink>"
+      }
+    },
+    "yucayeke": {
+      "label": "Yucayeke Regions",
+      "title": "Connect to Your Ancestral Land",
+      "subtitle": "Each enrolled member is assigned to a Yucayeke, a traditional land-based community that connects you to your ancestral territory and fellow descendants from your region.",
+      "overview": {
+        "mapAlt": "Illustrated map of Boriken representing Yucayeke regions",
+        "title": "What is a Yucayeke?",
+        "paragraph1": "In Taíno culture, a Yucayeke was a village or settlement led by a cacique. These communities were organized around territories throughout Borikén, each with its own identity, traditions, and leadership.",
+        "paragraph2": "Today, we honor this tradition by assigning members to historical Yucayeke regions based on their maternal lineage and ancestral connections. This helps preserve our territorial heritage and strengthens bonds within regional communities.",
+        "cards": {
+          "regions": "18 Historical Yucayeke Regions",
+          "connect": "Connect with Regional Community Members",
+          "events": "Access Regional Events & Gatherings"
+        }
+      },
+      "guainiaMapAlt": "Illustrated Guainia regional map"
+    },
+    "platform": {
+      "label": "Platform Features",
+      "title": "Everything You Need in One Place",
+      "subtitle": "Our comprehensive platform provides all the tools and resources you need to connect with your heritage, access services, and participate in community life.",
+      "features": {
+        "tribalId": "Receive your official Taíno Nation identification card with a unique member number, photo, and verification details.",
+        "lineageTree": "Document and visualize your maternal lineage with an interactive family tree showing your ancestral connections.",
+        "documentVault": "Store and access your enrollment documents, certificates, and lineage records securely in your personal vault.",
+        "announcements": "Stay informed with announcements, news, and important updates from tribal leadership and community organizers.",
+        "events": "Discover and register for cultural ceremonies, educational workshops, regional gatherings, and community celebrations.",
+        "services": "Access health services, legal assistance, educational resources, and community support programs exclusively for members.",
+        "regionalCommunity": "Connect with other members from your assigned Yucayeke region and participate in regional community activities.",
+        "mobileApps": "Download our iOS and Android apps to access your profile, documents, and community features on the go.",
+        "culturalResources": "Access educational resources, language lessons, historical archives, and cultural preservation materials."
+      }
+    },
+    "services": {
+      "label": "Member Services",
+      "title": "Comprehensive Support for Our Community",
+      "subtitle": "As an enrolled member of the Taíno Nation, you will be part of a growing services hub created to support health, wellbeing, education, cultural connection, and community care. This space will be built collectively over time, guided by the needs of our members and strengthened by community leaders, practitioners, educators, and service providers who wish to offer their knowledge in service to one another.",
+      "cards": {
+        "health": {
+          "title": "Health & Wellness",
+          "description": "Holistic healthcare services for mind, body, and spirit",
+          "button": "Explore Health Services",
+          "bullets": {
+            "healing": "Traditional healing practices and herbal medicine consultations",
+            "mentalHealth": "Mental health counseling and wellness programs",
+            "navigation": "Healthcare navigation and insurance assistance",
+            "workshops": "Community health workshops and preventive care education"
+          }
+        },
+        "legal": {
+          "title": "Legal Assistance",
+          "description": "Expert guidance on Indigenous rights and legal matters",
+          "button": "Explore Legal Support",
+          "bullets": {
+            "advocacy": "Tribal sovereignty and Indigenous rights advocacy",
+            "landClaims": "Land claims and ancestral territory documentation support",
+            "referrals": "Legal referrals and consultation services",
+            "documents": "Document preparation and notary services"
+          }
+        },
+        "education": {
+          "title": "Education & Training",
+          "description": "Learning opportunities for all ages and skill levels",
+          "button": "Explore Education Programs",
+          "bullets": {
+            "language": "Taíno language preservation and instruction programs",
+            "workshops": "Cultural workshops on traditional crafts, music, and ceremonies",
+            "scholarships": "Scholarship opportunities for higher education",
+            "vocational": "Vocational training and career development programs"
+          }
+        },
+        "community": {
+          "title": "Community Support",
+          "description": "Resources to help members thrive and succeed",
+          "button": "Explore Community Support",
+          "bullets": {
+            "emergency": "Emergency assistance and crisis intervention services",
+            "housing": "Housing support and homelessness prevention programs",
+            "food": "Food security initiatives and community gardens",
+            "elders": "Elder care and youth mentorship programs"
+          }
+        }
+      },
+      "help": {
+        "title": "Need Help Accessing Services?",
+        "body": "Our Member Services team is here to help you navigate available resources and connect you with the support you need.",
+        "emailSupport": "Email Support"
+      }
+    },
+    "stories": {
+      "label": "Community Voices",
+      "title": "Stories from Our Members",
+      "subtitle": "Hear from Taíno descendants who have reconnected with their heritage through our platform and found belonging in our community.",
+      "members": {
+        "isabela": "Joining the platform helped me organize my maternal lineage, reconnect with family stories, and feel a real sense of belonging within the Taíno community.",
+        "daniel": "I had always known pieces of my ancestry, but this space gave me the confidence to explore it fully and connect with descendants who share that same journey.",
+        "mariana": "Through the platform, I found cultural resources, regional connections, and a stronger relationship with my heritage than I had ever experienced before."
+      },
+      "portraitAlt": "{name} portrait",
+      "showStory": "Show story from {name}"
+    },
+    "dashboardCta": {
+      "title": "Join 2,847 Enrolled Members",
+      "body": "Become part of a growing community of Taíno descendants reconnecting with their heritage and building a stronger future together.",
+      "button": "Begin Your Application"
+    },
+    "faq": {
+      "label": "Frequently Asked Questions",
+      "title": "Questions About Enrollment?",
+      "subtitle": "Find answers to common questions about the enrollment process, membership benefits, and platform features.",
+      "imageAlt": "Taíno coastal landscape",
+      "items": {
+        "eligibility": {
+          "question": "Who is eligible to enroll in the Taíno Nation?",
+          "answer": "Taíno descendants who can provide personal identification and documentation supporting their maternal lineage are eligible to begin the enrollment process. If you are still gathering records, you can review the requirements first and prepare your materials before submitting."
+        },
+        "timeline": {
+          "question": "How long does the enrollment process take?",
+          "answer": "The enrollment application typically takes 20 to 30 minutes to complete. After submission, our review team carefully examines your application and supporting documents. The full review process usually takes 4 to 6 weeks, and you will receive status updates along the way."
+        },
+        "security": {
+          "question": "Is my personal information secure?",
+          "answer": "Yes. Personal information is encrypted and stored on secure sovereign servers. Access is limited to authorized reviewers involved in the enrollment process, and your data is not shared with third parties."
+        },
+        "benefits": {
+          "question": "What benefits do enrolled members receive?",
+          "answer": "Enrolled members can access their Tribal ID, document maternal lineage, connect with their assigned Yucayeke, use the secure document vault, and explore member services such as health, legal, educational, and community support resources."
+        },
+        "fee": {
+          "question": "Is there a fee to enroll?",
+          "answer": "No. There is no fee to begin the enrollment application. What you will need most is time to complete the form accurately and supporting documents to help verify your lineage."
+        }
+      }
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "About the Taíno Nation Digital Platform",
+      "subtitle": "A sovereign, community-centered platform designed to preserve lineage, strengthen cultural identity, and connect Taíno descendants through respectful technology."
+    },
+    "story": {
+      "title": "Built to Protect Heritage, Identity, and Community Connection",
+      "paragraph1": "The Taíno Nation Digital Platform was created to give descendants a respectful way to document lineage, reconnect with ancestral heritage, and participate in a living Indigenous community.",
+      "paragraph2": "It is more than a records system. It is a sovereign digital home where identity, family history, and community participation are centered around Taíno values rather than generic administrative tools.",
+      "stats": {
+        "members": {
+          "value": "2,847",
+          "label": "Enrolled Members"
+        },
+        "regions": {
+          "value": "8 Regions",
+          "label": "Yucayeke Connections"
+        },
+        "access": {
+          "value": "24/7",
+          "label": "Secure Community Access"
+        }
+      },
+      "imageAlt": "Taíno landscape"
+    },
+    "values": {
+      "badge": "What Guides Us",
+      "title": "Principles Behind the Platform",
+      "subtitle": "Every feature is shaped around cultural respect, secure stewardship, and meaningful connection for Taíno descendants.",
+      "cards": {
+        "sovereignData": {
+          "title": "Sovereign Data",
+          "description": "Community information is treated with care, privacy, and Indigenous sovereignty at the center of the platform’s design."
+        },
+        "identityLineage": {
+          "title": "Identity & Lineage",
+          "description": "Members can preserve maternal lineage, strengthen cultural identity, and maintain records that honor family history."
+        },
+        "communityAccess": {
+          "title": "Community Access",
+          "description": "The platform connects descendants to services, resources, regional belonging, and opportunities to participate in community life."
+        }
+      }
+    },
+    "mission": {
+      "title": "Our Mission",
+      "body": "We aim to create a secure, culturally grounded digital platform that empowers Taíno descendants to preserve lineage, reclaim heritage, and participate in a thriving community. The goal is not only access, but continuity across generations.",
+      "items": {
+        "honorAncestors": "Honor Ancestors Through Technology",
+        "protectPrivacy": "Protect Community Privacy",
+        "supportEnrollment": "Support Enrollment and Participation"
+      }
     }
   }
 }

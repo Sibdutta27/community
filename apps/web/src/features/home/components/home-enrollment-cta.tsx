@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { fadeInUpItem } from "@/lib/motion";
@@ -12,6 +13,8 @@ const supportLinkClassName =
   "text-primary rounded-sm font-semibold underline underline-offset-4 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
 export function HomeEnrollmentCta() {
+  const t = useTranslations("home.process.cta");
+
   return (
     <motion.div className="mt-8 text-center" variants={fadeInUpItem}>
       {/* Ink chip keeps the white application glyph legible (neutral
@@ -37,19 +40,23 @@ export function HomeEnrollmentCta() {
             width={18}
             height={18}
           />
-          <span>Begin Your Application</span>
+          <span>{t("button")}</span>
         </Link>
       </Button>
 
       <p className="text-muted-foreground mt-2.5 text-[0.88rem] leading-[1.5]">
-        Questions?{" "}
-        <Link className={supportLinkClassName} href="#enrollment-faq">
-          Read our enrollment FAQ
-        </Link>{" "}
-        or{" "}
-        <Link className={supportLinkClassName} href="/contact">
-          contact us
-        </Link>
+        {t.rich("help", {
+          faqLink: (chunks) => (
+            <Link className={supportLinkClassName} href="#enrollment-faq">
+              {chunks}
+            </Link>
+          ),
+          contactLink: (chunks) => (
+            <Link className={supportLinkClassName} href="/contact">
+              {chunks}
+            </Link>
+          ),
+        })}
       </p>
     </motion.div>
   );

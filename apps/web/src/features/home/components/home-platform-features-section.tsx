@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { HomePlatformFeatureCard } from "@/features/home/components/home-platform-feature-card";
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
@@ -15,45 +16,20 @@ const platformFeatureIcons = {
 } as const;
 
 const platformFeatures = [
-  {
-    iconType: "identification",
-    text: "Receive your official Taíno Nation identification card with a unique member number, photo, and verification details.",
-  },
-  {
-    iconType: "lineage",
-    text: "Document and visualize your maternal lineage with an interactive family tree showing your ancestral connections.",
-  },
-  {
-    iconType: "documents",
-    text: "Store and access your enrollment documents, certificates, and lineage records securely in your personal vault.",
-  },
-  {
-    iconType: "identification",
-    text: "Stay informed with announcements, news, and important updates from tribal leadership and community organizers.",
-  },
-  {
-    iconType: "lineage",
-    text: "Discover and register for cultural ceremonies, educational workshops, regional gatherings, and community celebrations.",
-  },
-  {
-    iconType: "documents",
-    text: "Access health services, legal assistance, educational resources, and community support programs exclusively for members.",
-  },
-  {
-    iconType: "identification",
-    text: "Connect with other members from your assigned Yucayeke region and participate in regional community activities.",
-  },
-  {
-    iconType: "lineage",
-    text: "Download our iOS and Android apps to access your profile, documents, and community features on the go.",
-  },
-  {
-    iconType: "documents",
-    text: "Access educational resources, language lessons, historical archives, and cultural preservation materials.",
-  },
+  { id: "tribalId", iconType: "identification" },
+  { id: "lineageTree", iconType: "lineage" },
+  { id: "documentVault", iconType: "documents" },
+  { id: "announcements", iconType: "identification" },
+  { id: "events", iconType: "lineage" },
+  { id: "services", iconType: "documents" },
+  { id: "regionalCommunity", iconType: "identification" },
+  { id: "mobileApps", iconType: "lineage" },
+  { id: "culturalResources", iconType: "documents" },
 ] as const;
 
 export function HomePlatformFeaturesSection() {
+  const t = useTranslations("home.platform");
+
   return (
     <motion.section
       className="bg-background overflow-hidden"
@@ -70,23 +46,21 @@ export function HomePlatformFeaturesSection() {
             className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
-            Platform Features
+            {t("label")}
           </motion.p>
 
           <motion.h2
             className="text-foreground mt-3 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
-            Everything You Need in One Place
+            {t("title")}
           </motion.h2>
 
           <motion.p
             className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
-            Our comprehensive platform provides all the tools and resources you
-            need to connect with your heritage, access services, and participate
-            in community life.
+            {t("subtitle")}
           </motion.p>
         </div>
 
@@ -96,9 +70,9 @@ export function HomePlatformFeaturesSection() {
         >
           {platformFeatures.map((feature) => (
             <HomePlatformFeatureCard
-              key={feature.text}
+              key={feature.id}
               iconSrc={platformFeatureIcons[feature.iconType]}
-              text={feature.text}
+              text={t(`features.${feature.id}`)}
             />
           ))}
         </motion.div>

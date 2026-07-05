@@ -13,10 +13,10 @@ import { fadeInScaleItem, fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 
 import sharedStyles from "../styles/home-shared.module.scss";
 
-const memberAvatars = [
-  { src: "/images/member1.png", alt: "Community member portrait 1" },
-  { src: "/images/member2.png", alt: "Community member portrait 2" },
-  { src: "/images/member3.png", alt: "Community member portrait 3" },
+const memberAvatarSrcs = [
+  "/images/member1.png",
+  "/images/member2.png",
+  "/images/member3.png",
 ] as const;
 
 export function HomeHero() {
@@ -65,18 +65,18 @@ export function HomeHero() {
           className="flex items-center -space-x-3"
           variants={fadeInUpContainer}
         >
-          {memberAvatars.map((member) => (
+          {memberAvatarSrcs.map((src, index) => (
             <motion.div
-              key={member.src}
+              key={src}
               className="border-surface bg-surface overflow-hidden rounded-full border-2"
               variants={fadeInScaleItem}
             >
               <Image
-                alt={member.alt}
+                alt={t("memberAvatarAlt", { index: index + 1 })}
                 className="h-10 w-10 object-cover"
                 height={40}
                 priority={false}
-                src={member.src}
+                src={src}
                 width={40}
               />
             </motion.div>
@@ -88,8 +88,11 @@ export function HomeHero() {
           variants={fadeInUpItem}
         >
           {/* TODO: verified count pending researcher */}
-          <span className="text-foreground font-semibold">500+</span> Tribal
-          Citizens
+          {t.rich("tribalCitizens", {
+            count: (chunks) => (
+              <span className="text-foreground font-semibold">{chunks}</span>
+            ),
+          })}
         </motion.div>
       </motion.div>
     </PageHeroSection>

@@ -4,34 +4,23 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInScaleItem, fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 import sharedStyles from "../styles/home-shared.module.scss";
 
+// Member names are proper nouns and stay untranslated; the quotes live in the
+// message catalogs under `home.stories.members.*`.
 const memberStories = [
-  {
-    name: "Isabela Rivera",
-    imageSrc: "/images/member1.png",
-    story:
-      "Joining the platform helped me organize my maternal lineage, reconnect with family stories, and feel a real sense of belonging within the Taíno community.",
-  },
-  {
-    name: "Daniel Morales",
-    imageSrc: "/images/member2.png",
-    story:
-      "I had always known pieces of my ancestry, but this space gave me the confidence to explore it fully and connect with descendants who share that same journey.",
-  },
-  {
-    name: "Mariana Santos",
-    imageSrc: "/images/member3.png",
-    story:
-      "Through the platform, I found cultural resources, regional connections, and a stronger relationship with my heritage than I had ever experienced before.",
-  },
+  { id: "isabela", name: "Isabela Rivera", imageSrc: "/images/member1.png" },
+  { id: "daniel", name: "Daniel Morales", imageSrc: "/images/member2.png" },
+  { id: "mariana", name: "Mariana Santos", imageSrc: "/images/member3.png" },
 ] as const;
 
 export function HomeMemberStoriesSection() {
+  const t = useTranslations("home.stories");
   const [activeStoryIndex, setActiveStoryIndex] = useState(1);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const prefersReducedMotion = useReducedMotion();
@@ -69,22 +58,21 @@ export function HomeMemberStoriesSection() {
             className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
-            Community Voices
+            {t("label")}
           </motion.p>
 
           <motion.h2
             className="text-foreground mx-auto mt-3 max-w-4xl text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
-            Stories from Our Members
+            {t("title")}
           </motion.h2>
 
           <motion.p
             className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
-            Hear from Taíno descendants who have reconnected with their heritage
-            through our platform and found belonging in our community.
+            {t("subtitle")}
           </motion.p>
         </div>
 
@@ -110,7 +98,7 @@ export function HomeMemberStoriesSection() {
             className="text-foreground mx-auto mt-4.5 max-w-3xl text-base leading-7 sm:text-lg"
             variants={fadeInUpItem}
           >
-            {activeStory.story}
+            {t(`members.${activeStory.id}`)}
           </motion.blockquote>
 
           <motion.p
@@ -126,7 +114,7 @@ export function HomeMemberStoriesSection() {
           >
             <div className="shadow-card-soft overflow-hidden rounded-full">
               <Image
-                alt={`${activeStory.name} portrait`}
+                alt={t("portraitAlt", { name: activeStory.name })}
                 className="h-14 w-14 object-cover sm:h-16 sm:w-16"
                 height={64}
                 src={activeStory.imageSrc}
@@ -144,8 +132,8 @@ export function HomeMemberStoriesSection() {
 
               return (
                 <button
-                  key={story.name}
-                  aria-label={`Show story from ${story.name}`}
+                  key={story.id}
+                  aria-label={t("showStory", { name: story.name })}
                   aria-pressed={isActive}
                   className="group focus-visible:ring-ring focus-visible:ring-offset-background flex h-10 w-10 cursor-pointer items-center justify-center rounded-full focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                   type="button"

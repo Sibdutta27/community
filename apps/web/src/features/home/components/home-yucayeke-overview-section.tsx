@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 
@@ -10,21 +11,23 @@ import { HomeYucayekeRegionCard } from "@/features/home/components/home-yucayeke
 
 const regionCards = [
   {
+    // TODO: 18 pending researcher verification (copy lives in messages/*.json)
+    id: "regions",
     iconSrc: "/icons/home/regions/yucayeke-regions.svg",
-    // TODO: 18 pending researcher verification
-    title: "18 Historical Yucayeke Regions",
   },
   {
+    id: "connect",
     iconSrc: "/icons/home/regions/yucayeke-connect.svg",
-    title: "Connect with Regional Community Members",
   },
   {
+    id: "events",
     iconSrc: "/icons/home/regions/yucake-events-gathering.svg",
-    title: "Access Regional Events & Gatherings",
   },
 ] as const;
 
 export function HomeYucayekeOverviewSection() {
+  const t = useTranslations("home.yucayeke.overview");
+
   return (
     <motion.article
       className="border-border bg-surface shadow-card mt-8 w-full rounded-2xl border p-5 sm:p-6"
@@ -37,7 +40,7 @@ export function HomeYucayekeOverviewSection() {
         >
           <div className="relative aspect-[1/0.9] w-full lg:max-h-[26rem]">
             <Image
-              alt="Illustrated map of Boriken representing Yucayeke regions"
+              alt={t("mapAlt")}
               className="object-cover"
               fill
               priority={false}
@@ -52,26 +55,16 @@ export function HomeYucayekeOverviewSection() {
             className="text-foreground text-center text-xl leading-tight font-semibold tracking-tight sm:text-2xl lg:text-left lg:text-[1.75rem]"
             variants={fadeInUpItem}
           >
-            What is a Yucayeke?
+            {t("title")}
           </motion.h3>
 
           <motion.div
             className="text-muted-foreground mt-3 space-y-2.5 text-[0.82rem] leading-5 sm:text-[0.86rem] sm:leading-6 lg:text-[0.9rem]"
             variants={fadeInUpItem}
           >
-            <p>
-              In Taíno culture, a Yucayeke was a village or settlement led by a
-              cacique. These communities were organized around territories
-              throughout Borikén, each with its own identity, traditions, and
-              leadership.
-            </p>
+            <p>{t("paragraph1")}</p>
 
-            <p>
-              Today, we honor this tradition by assigning members to historical
-              Yucayeke regions based on their maternal lineage and ancestral
-              connections. This helps preserve our territorial heritage and
-              strengthens bonds within regional communities.
-            </p>
+            <p>{t("paragraph2")}</p>
           </motion.div>
 
           <motion.div
@@ -79,7 +72,11 @@ export function HomeYucayekeOverviewSection() {
             variants={fadeInUpContainer}
           >
             {regionCards.map((card) => (
-              <HomeYucayekeRegionCard key={card.title} {...card} />
+              <HomeYucayekeRegionCard
+                key={card.id}
+                iconSrc={card.iconSrc}
+                title={t(`cards.${card.id}`)}
+              />
             ))}
           </motion.div>
         </div>

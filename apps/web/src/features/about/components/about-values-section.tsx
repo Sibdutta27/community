@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
@@ -12,26 +13,22 @@ import sharedStyles from "@/features/home/styles/home-shared.module.scss";
 
 const values = [
   {
+    id: "sovereignData",
     iconSrc: "/icons/home/heritage/sovereignty-first.svg",
-    title: "Sovereign Data",
-    description:
-      "Community information is treated with care, privacy, and Indigenous sovereignty at the center of the platform’s design.",
   },
   {
+    id: "identityLineage",
     iconSrc: "/icons/home/heritage/cultural-identity.svg",
-    title: "Identity & Lineage",
-    description:
-      "Members can preserve maternal lineage, strengthen cultural identity, and maintain records that honor family history.",
   },
   {
+    id: "communityAccess",
     iconSrc: "/icons/home/heritage/community-hub.svg",
-    title: "Community Access",
-    description:
-      "The platform connects descendants to services, resources, regional belonging, and opportunities to participate in community life.",
   },
 ] as const;
 
 export function AboutValuesSection() {
+  const t = useTranslations("about.values");
+
   return (
     <motion.section
       className="bg-background overflow-hidden"
@@ -48,22 +45,21 @@ export function AboutValuesSection() {
             className="border-border bg-surface-muted text-foreground inline-flex items-center rounded-full border px-4 py-1.5 text-xs font-semibold tracking-tight sm:px-5 sm:text-sm"
             variants={fadeInUpItem}
           >
-            What Guides Us
+            {t("badge")}
           </motion.span>
 
           <motion.h2
             className="text-foreground mx-auto mt-5 max-w-4xl text-[clamp(1.6rem,3.2vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em]"
             variants={fadeInUpItem}
           >
-            Principles Behind the Platform
+            {t("title")}
           </motion.h2>
 
           <motion.p
             className="text-muted-foreground mx-auto mt-4 max-w-4xl text-[clamp(0.9rem,1.15vw,1rem)] leading-[1.5]"
             variants={fadeInUpItem}
           >
-            Every feature is shaped around cultural respect, secure stewardship,
-            and meaningful connection for Taíno descendants.
+            {t("subtitle")}
           </motion.p>
         </div>
 
@@ -74,7 +70,7 @@ export function AboutValuesSection() {
           {values.map((value) => (
             <motion.div
               className="h-full"
-              key={value.title}
+              key={value.id}
               variants={fadeInUpItem}
             >
               <SurfaceCard as="article" className="flex h-full flex-col">
@@ -92,11 +88,11 @@ export function AboutValuesSection() {
                 </div>
 
                 <h3 className="text-foreground mt-4 text-[1.15rem] leading-tight font-semibold tracking-tight sm:text-[1.25rem]">
-                  {value.title}
+                  {t(`cards.${value.id}.title`)}
                 </h3>
 
                 <p className="text-muted-foreground mt-2 text-sm leading-6 sm:text-[15px]">
-                  {value.description}
+                  {t(`cards.${value.id}.description`)}
                 </p>
               </SurfaceCard>
             </motion.div>

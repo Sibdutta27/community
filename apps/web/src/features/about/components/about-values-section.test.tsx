@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { AboutValuesSection } from "@/features/about/components/about-values-section";
+import { renderWithIntl } from "@/test/i18n";
 
 // `next/font/google` loaders only run inside the Next.js build; stub the fonts
 // module so the section (which imports `@/styles/fonts`) can render in jsdom.
@@ -29,13 +30,22 @@ vi.mock("next/image", () => ({
 
 describe("AboutValuesSection", () => {
   it("renders the values", () => {
-    render(<AboutValuesSection />);
+    renderWithIntl(<AboutValuesSection />);
     expect(screen.getByText("Sovereign Data")).toBeInTheDocument();
     expect(screen.getByText("Community Access")).toBeInTheDocument();
   });
 
+  it("renders the values in Puerto Rican Spanish under the es locale", () => {
+    renderWithIntl(<AboutValuesSection />, "es");
+    expect(screen.getByText("Datos Soberanos")).toBeInTheDocument();
+    expect(screen.getByText("Acceso Comunitario")).toBeInTheDocument();
+    expect(
+      screen.getByText("Los Principios Detrás de la Plataforma"),
+    ).toBeInTheDocument();
+  });
+
   it("uses semantic tokens instead of hardcoded earthy colors", () => {
-    const { container } = render(<AboutValuesSection />);
+    const { container } = renderWithIntl(<AboutValuesSection />);
 
     expect(container.innerHTML).not.toMatch(/#fffdec/i);
     expect(container.innerHTML).not.toMatch(/#d7efd3/i);
@@ -45,7 +55,7 @@ describe("AboutValuesSection", () => {
   });
 
   it("renders the value cards as elevated surface cards", () => {
-    const { container } = render(<AboutValuesSection />);
+    const { container } = renderWithIntl(<AboutValuesSection />);
 
     const cards = container.querySelectorAll("article.shadow-card-soft");
     expect(cards).toHaveLength(3);

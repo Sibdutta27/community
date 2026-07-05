@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -13,72 +14,58 @@ import sharedStyles from "../styles/home-shared.module.scss";
 
 const memberServices = [
   {
-    title: "Health & Wellness",
-    description: "Holistic healthcare services for mind, body, and spirit",
+    id: "health",
     iconSrc: "/icons/home/support/health-wellness.svg",
     toneClassName: "bg-foreground",
-    buttonLabel: "Explore Health Services",
     href: "/services?category=health#popular-services",
-    bullets: [
-      "Traditional healing practices and herbal medicine consultations",
-      "Mental health counseling and wellness programs",
-      "Healthcare navigation and insurance assistance",
-      "Community health workshops and preventive care education",
+    bulletKeys: [
+      "cards.health.bullets.healing",
+      "cards.health.bullets.mentalHealth",
+      "cards.health.bullets.navigation",
+      "cards.health.bullets.workshops",
     ],
   },
   {
-    title: "Legal Assistance",
-    description: "Expert guidance on Indigenous rights and legal matters",
+    id: "legal",
     iconSrc: "/icons/home/support/legal-assistance.svg",
     toneClassName: "bg-foreground",
-    buttonLabel: "Explore Legal Support",
     href: "/services?category=legal#popular-services",
-    bullets: [
-      "Tribal sovereignty and Indigenous rights advocacy",
-      "Land claims and ancestral territory documentation support",
-      "Legal referrals and consultation services",
-      "Document preparation and notary services",
+    bulletKeys: [
+      "cards.legal.bullets.advocacy",
+      "cards.legal.bullets.landClaims",
+      "cards.legal.bullets.referrals",
+      "cards.legal.bullets.documents",
     ],
   },
   {
-    title: "Education & Training",
-    description: "Learning opportunities for all ages and skill levels",
+    id: "education",
     iconSrc: "/icons/home/support/education-training.svg",
     toneClassName: "bg-foreground",
-    buttonLabel: "Explore Education Programs",
     href: "/services?category=education_training#popular-services",
-    bullets: [
-      "Taíno language preservation and instruction programs",
-      "Cultural workshops on traditional crafts, music, and ceremonies",
-      "Scholarship opportunities for higher education",
-      "Vocational training and career development programs",
+    bulletKeys: [
+      "cards.education.bullets.language",
+      "cards.education.bullets.workshops",
+      "cards.education.bullets.scholarships",
+      "cards.education.bullets.vocational",
     ],
   },
   {
-    title: "Community Support",
-    description: "Resources to help members thrive and succeed",
+    id: "community",
     iconSrc: "/icons/home/support/community-support.svg",
     toneClassName: "bg-foreground",
-    buttonLabel: "Explore Community Support",
     href: "/services?category=community_support#popular-services",
-    bullets: [
-      "Emergency assistance and crisis intervention services",
-      "Housing support and homelessness prevention programs",
-      "Food security initiatives and community gardens",
-      "Elder care and youth mentorship programs",
+    bulletKeys: [
+      "cards.community.bullets.emergency",
+      "cards.community.bullets.housing",
+      "cards.community.bullets.food",
+      "cards.community.bullets.elders",
     ],
-  },
-] as const;
-
-const supportActions = [
-  {
-    label: "Email Support",
-    iconSrc: "/icons/home/support/email.svg",
-    className: "border-background/80 text-background border bg-transparent",
   },
 ] as const;
 
 export function HomeMemberServicesSection() {
+  const t = useTranslations("home.services");
+
   return (
     <motion.section
       className="bg-background overflow-hidden"
@@ -95,27 +82,21 @@ export function HomeMemberServicesSection() {
             className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
-            Member Services
+            {t("label")}
           </motion.p>
 
           <motion.h2
             className="text-foreground mx-auto mt-3 max-w-4xl text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
-            Comprehensive Support for Our Community
+            {t("title")}
           </motion.h2>
 
           <motion.p
             className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
-            As an enrolled member of the Taíno Nation, you will be part of a
-            growing services hub created to support health, wellbeing,
-            education, cultural connection, and community care. This space will
-            be built collectively over time, guided by the needs of our members
-            and strengthened by community leaders, practitioners, educators, and
-            service providers who wish to offer their knowledge in service to
-            one another.
+            {t("subtitle")}
           </motion.p>
         </div>
 
@@ -124,7 +105,16 @@ export function HomeMemberServicesSection() {
           variants={fadeInUpContainer}
         >
           {memberServices.map((service) => (
-            <HomeMemberServiceCard key={service.title} {...service} />
+            <HomeMemberServiceCard
+              key={service.id}
+              title={t(`cards.${service.id}.title`)}
+              description={t(`cards.${service.id}.description`)}
+              buttonLabel={t(`cards.${service.id}.button`)}
+              bullets={service.bulletKeys.map((bulletKey) => t(bulletKey))}
+              href={service.href}
+              iconSrc={service.iconSrc}
+              toneClassName={service.toneClassName}
+            />
           ))}
         </motion.div>
 
@@ -143,35 +133,28 @@ export function HomeMemberServicesSection() {
             </div>
 
             <h3 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
-              Need Help Accessing Services?
+              {t("help.title")}
             </h3>
 
             <p className="text-background/80 mx-auto mt-3 max-w-2xl text-sm leading-6 sm:text-base">
-              Our Member Services team is here to help you navigate available
-              resources and connect you with the support you need.
+              {t("help.body")}
             </p>
 
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              {supportActions.map((action) => (
-                <button
-                  key={action.label}
-                  className={cn(
-                    "focus-visible:ring-ring flex min-h-12 min-w-[15rem] cursor-pointer items-center justify-center gap-2.5 rounded-full px-6 text-[0.92rem] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:transform-none",
-                    action.className,
-                  )}
-                  type="button"
-                >
-                  <Image
-                    alt=""
-                    aria-hidden="true"
-                    className="h-4.5 w-4.5 object-contain"
-                    height={18}
-                    src={action.iconSrc}
-                    width={18}
-                  />
-                  <span>{action.label}</span>
-                </button>
-              ))}
+              <button
+                className="focus-visible:ring-ring border-background/80 text-background flex min-h-12 min-w-[15rem] cursor-pointer items-center justify-center gap-2.5 rounded-full border bg-transparent px-6 text-[0.92rem] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:transform-none"
+                type="button"
+              >
+                <Image
+                  alt=""
+                  aria-hidden="true"
+                  className="h-4.5 w-4.5 object-contain"
+                  height={18}
+                  src="/icons/home/support/email.svg"
+                  width={18}
+                />
+                <span>{t("help.emailSupport")}</span>
+              </button>
             </div>
           </div>
         </motion.article>

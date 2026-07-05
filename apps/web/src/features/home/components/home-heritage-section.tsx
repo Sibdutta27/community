@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { HomeHeritageCard } from "@/features/home/components/home-heritage-card";
 import { HomeMissionFeature } from "@/features/home/components/home-mission-feature";
@@ -11,35 +12,31 @@ import sharedStyles from "../styles/home-shared.module.scss";
 
 const heritageCards = [
   {
+    id: "sovereignData",
     iconSrc: "/icons/home/heritage/sovereignty-first.svg",
-    title: "Sovereign Data",
-    description:
-      "Your data belongs to you. You maintain ownership and control over the personal information and files you upload to your account. You may also choose to contribute selected files to the tribally governed “Indigenous Archives of Puerto Rico” project, where they will become part of a communally held archive stewarded for cultural preservation, kinship research, and future learning by Borikua Taíno community members.",
     tone: "mint",
   },
   {
+    id: "culturalIdentity",
     iconSrc: "/icons/home/heritage/cultural-identity.svg",
-    title: "Cultural Identity",
-    description:
-      "Receive your official Tribal ID, trace your maternal lineage, and connect with your ancestral Yucayeke to strengthen your Indigenous identity.",
     tone: "cream",
   },
   {
+    id: "communityHelp",
     iconSrc: "/icons/home/heritage/community-hub.svg",
-    title: "Community Help",
-    description:
-      "Learn from and contribute to a growing community resource hub where members can share information related to health services, legal assistance, job searches, cultural events, and other support for Taíno Nation members.",
     tone: "lilac",
   },
 ] as const;
 
-const missionItems = [
-  "Culturally Respectful Design",
-  "Secure & Private",
-  "Mobile & Web Access",
+const missionItemIds = [
+  "respectfulDesign",
+  "securePrivate",
+  "mobileWeb",
 ] as const;
 
 export function HomeHeritageSection() {
+  const t = useTranslations("home.heritage");
+
   return (
     <motion.section
       className="overflow-hidden"
@@ -59,25 +56,25 @@ export function HomeHeritageSection() {
             className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
-            About Our Platform
+            {t("label")}
           </motion.p>
 
           <motion.h2
             className="text-foreground mt-3 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
-            Preserving{" "}
-            <span className={sharedStyles.gradientText}>Heritage</span> Through
-            Technology
+            {t.rich("title", {
+              highlight: (chunks) => (
+                <span className={sharedStyles.gradientText}>{chunks}</span>
+              ),
+            })}
           </motion.h2>
 
           <motion.p
             className="text-muted-foreground mt-4 text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
-            The Taíno Nation Digital Platform is a sovereign, community-owned
-            system designed to honor our ancestors, preserve our lineage, and
-            strengthen our bonds as Indigenous descendants of Borikén.
+            {t("subtitle")}
           </motion.p>
         </div>
 
@@ -87,10 +84,10 @@ export function HomeHeritageSection() {
         >
           {heritageCards.map((card) => (
             <HomeHeritageCard
-              key={card.title}
-              description={card.description}
+              key={card.id}
+              description={t(`cards.${card.id}.description`)}
               iconSrc={card.iconSrc}
-              title={card.title}
+              title={t(`cards.${card.id}.title`)}
               tone={card.tone}
             />
           ))}
@@ -103,22 +100,20 @@ export function HomeHeritageSection() {
           <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
             <div className="max-w-105">
               <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-                Our Mission
+                {t("mission.title")}
               </h3>
 
               <p className="text-background/80 mt-5 text-sm leading-6">
-                To create a secure, culturally grounded digital platform that
-                empowers Borikua Taíno descendants to reclaim their heritage,
-                document their lineage, and participate in a thriving Indigenous
-                community. We honor the wisdom of our ancestors while embracing
-                modern technology to ensure our culture, traditions, and
-                identity endure for generations to come.
+                {t("mission.body")}
               </p>
             </div>
 
             <div className="grid gap-4">
-              {missionItems.map((item) => (
-                <HomeMissionFeature key={item} label={item} />
+              {missionItemIds.map((itemId) => (
+                <HomeMissionFeature
+                  key={itemId}
+                  label={t(`mission.items.${itemId}`)}
+                />
               ))}
             </div>
           </div>

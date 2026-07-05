@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -18,67 +19,36 @@ const warmStepTone = {
 } as const;
 
 const enrollmentSteps = [
-  {
-    step: "1",
-    title: "Create Account",
-    description:
-      "Sign up with your email and create a secure password to access the enrollment portal.",
-    tone: warmStepTone,
-  },
-  {
-    step: "2",
-    title: "Personal Information",
-    description:
-      "Provide your basic details including name, date of birth, and contact information.",
-    tone: warmStepTone,
-  },
-  {
-    step: "3",
-    title: "Maternal Lineage",
-    description:
-      "Document your maternal ancestry with names, dates, and places of birth for your lineage.",
-    tone: warmStepTone,
-  },
-  {
-    step: "4",
-    title: "Upload Documents",
-    description:
-      "Submit supporting documents such as birth certificates, family records, and lineage proof.",
-    tone: warmStepTone,
-  },
+  { step: "1", id: "account" },
+  { step: "2", id: "personalInfo" },
+  { step: "3", id: "maternalLineage" },
+  { step: "4", id: "documents" },
 ] as const;
 
 const needItems = [
   {
+    id: "governmentId",
     iconSrc: "/icons/home/enrollment/government-id.svg",
-    title: "Government-Issued ID",
-    description: "Driver's license, passport, or state ID",
   },
   {
+    id: "birthCertificate",
     iconSrc: "/icons/home/enrollment/certificate.svg",
-    title: "Birth Certificate",
-    description: "Your official birth certificate (certified copy)",
   },
   {
+    id: "lineageRecords",
     iconSrc: "/icons/home/enrollment/lineage-record.svg",
-    title: "Maternal Lineage Records",
-    description:
-      "Birth certificates for mother, grandmother, great-grandmother (if available)",
   },
   {
+    id: "supportingDocs",
     iconSrc: "/icons/home/enrollment/supporting-doc.svg",
-    title: "Supporting Documentation",
-    description: "Family trees, historical records, or tribal documentation",
   },
 ] as const;
 
-const tipItems = [
-  "Save your progress at any time and return later to complete your application",
-  "Scan documents in high quality (PDF or JPG format, under 10MB each)",
-  "Review all information carefully before submitting your application",
-] as const;
+const tipIds = ["saveProgress", "scanQuality", "review"] as const;
 
 export function HomeEnrollmentProcessSection() {
+  const t = useTranslations("home.process");
+
   return (
     <motion.section
       className="bg-background overflow-hidden"
@@ -95,23 +65,21 @@ export function HomeEnrollmentProcessSection() {
             className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
-            Enrollment Process
+            {t("label")}
           </motion.p>
 
           <motion.h2
             className="text-foreground mt-3 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
-            How to Enroll with the Taíno Nation of Borikén
+            {t("title")}
           </motion.h2>
 
           <motion.p
             className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
-            Our enrollment process is designed to be simple, respectful, and
-            thorough. Follow these steps to begin your journey toward official
-            tribal membership.
+            {t("subtitle")}
           </motion.p>
         </div>
 
@@ -120,12 +88,25 @@ export function HomeEnrollmentProcessSection() {
           variants={fadeInUpContainer}
         >
           {enrollmentSteps.map((card) => (
-            <HomeEnrollmentStepCard key={card.step} {...card} />
+            <HomeEnrollmentStepCard
+              key={card.step}
+              step={card.step}
+              title={t(`steps.${card.id}.title`)}
+              description={t(`steps.${card.id}.description`)}
+              tone={warmStepTone}
+            />
           ))}
         </motion.div>
 
         <motion.div className="mt-10" variants={fadeInUpContainer}>
-          <HomeEnrollmentResourcesSection items={needItems} tips={tipItems} />
+          <HomeEnrollmentResourcesSection
+            items={needItems.map((item) => ({
+              iconSrc: item.iconSrc,
+              title: t(`needs.items.${item.id}.title`),
+              description: t(`needs.items.${item.id}.description`),
+            }))}
+            tips={tipIds.map((tipId) => t(`tips.items.${tipId}`))}
+          />
         </motion.div>
 
         <HomeEnrollmentCta />

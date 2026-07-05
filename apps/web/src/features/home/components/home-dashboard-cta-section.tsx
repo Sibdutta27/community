@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
@@ -12,6 +13,8 @@ import { cn } from "@/lib/utils";
 import sharedStyles from "../styles/home-shared.module.scss";
 
 export function HomeDashboardCtaSection() {
+  const t = useTranslations("home.dashboardCta");
+
   return (
     <motion.section
       className="bg-background overflow-hidden"
@@ -32,13 +35,11 @@ export function HomeDashboardCtaSection() {
         >
           <div className="mx-auto max-w-5xl">
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">
-              Join 2,847 Enrolled Members
+              {t("title")}
             </h2>
 
             <p className="text-background/80 mx-auto mt-3.5 max-w-4xl text-sm leading-6 sm:text-base">
-              Become part of a growing community of Taíno descendants
-              reconnecting with their heritage and building a stronger future
-              together.
+              {t("body")}
             </p>
 
             <div className="mt-9 flex justify-center">
@@ -57,7 +58,7 @@ export function HomeDashboardCtaSection() {
                     src="/icons/home/begin-application.svg"
                     width={20}
                   />
-                  <span>Begin Your Application</span>
+                  <span>{t("button")}</span>
                 </Link>
               </Button>
             </div>

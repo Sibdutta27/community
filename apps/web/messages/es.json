@@ -12,12 +12,292 @@
   "footer": {
     "tagline": "Preservando la herencia indígena a través de la tierra, el linaje y la conexión comunitaria."
   },
+  "metadata": {
+    "title": "Nación Taíno de Borikén",
+    "description": "Plataforma comunitaria para la inscripción, el registro de identidad y el descubrimiento de servicios locales."
+  },
   "home": {
     "hero": {
       "title": "Bienvenido a la <highlight>Nación Taíno de Borikén</highlight>",
       "subtitle": "Reconecta con tus raíces ancestrales, preserva tu linaje y únete a una comunidad soberana dedicada a honrar nuestra herencia indígena y nuestra identidad cultural.",
       "ctaEnroll": "Comienza tu Inscripción",
-      "ctaExplore": "Explora la Comunidad"
+      "ctaExplore": "Explora la Comunidad",
+      "memberAvatarAlt": "Retrato de miembro de la comunidad {index}",
+      "tribalCitizens": "<count>500+</count> Ciudadanos Tribales"
+    },
+    "heritage": {
+      "label": "Sobre Nuestra Plataforma",
+      "title": "Preservando la <highlight>Herencia</highlight> a Través de la Tecnología",
+      "subtitle": "La Plataforma Digital de la Nación Taíno es un sistema soberano, propiedad de la comunidad, creado para honrar a nuestros ancestros, preservar nuestro linaje y fortalecer nuestros lazos como descendientes indígenas de Borikén.",
+      "cards": {
+        "sovereignData": {
+          "title": "Datos Soberanos",
+          "description": "Tus datos te pertenecen. Tú mantienes la propiedad y el control de la información personal y los archivos que subes a tu cuenta. Si quieres, también puedes aportar archivos seleccionados al proyecto “Indigenous Archives of Puerto Rico” (Archivos Indígenas de Puerto Rico), gobernado por la tribu, donde pasarán a formar parte de un archivo comunitario cuidado para la preservación cultural, la investigación de parentesco y el aprendizaje futuro de los miembros de la comunidad Borikua Taíno."
+        },
+        "culturalIdentity": {
+          "title": "Identidad Cultural",
+          "description": "Recibe tu Identificación Tribal oficial, traza tu linaje materno y conéctate con tu Yucayeke ancestral para fortalecer tu identidad indígena."
+        },
+        "communityHelp": {
+          "title": "Ayuda Comunitaria",
+          "description": "Aprende y aporta a un centro comunitario de recursos en crecimiento, donde los miembros pueden compartir información sobre servicios de salud, asistencia legal, búsqueda de empleo, eventos culturales y otros apoyos para los miembros de la Nación Taíno."
+        }
+      },
+      "mission": {
+        "title": "Nuestra Misión",
+        "body": "Crear una plataforma digital segura y con raíces culturales que empodere a los descendientes Borikua Taíno a reclamar su herencia, documentar su linaje y participar en una comunidad indígena vibrante. Honramos la sabiduría de nuestros ancestros mientras abrazamos la tecnología moderna para asegurar que nuestra cultura, nuestras tradiciones y nuestra identidad perduren por generaciones.",
+        "items": {
+          "respectfulDesign": "Diseño Culturalmente Respetuoso",
+          "securePrivate": "Seguro y Privado",
+          "mobileWeb": "Acceso Móvil y Web"
+        }
+      }
+    },
+    "process": {
+      "label": "Proceso de Inscripción",
+      "title": "Cómo Inscribirte en la Nación Taíno de Borikén",
+      "subtitle": "Nuestro proceso de inscripción está diseñado para ser sencillo, respetuoso y completo. Sigue estos pasos para comenzar tu camino hacia la membresía tribal oficial.",
+      "stepLabel": "Paso",
+      "steps": {
+        "account": {
+          "title": "Crea tu Cuenta",
+          "description": "Regístrate con tu email y crea una contraseña segura para acceder al portal de inscripción."
+        },
+        "personalInfo": {
+          "title": "Información Personal",
+          "description": "Provee tus datos básicos, incluyendo nombre, fecha de nacimiento e información de contacto."
+        },
+        "maternalLineage": {
+          "title": "Linaje Materno",
+          "description": "Documenta tu ascendencia materna con los nombres, fechas y lugares de nacimiento de tu linaje."
+        },
+        "documents": {
+          "title": "Sube tus Documentos",
+          "description": "Somete documentos de apoyo como certificados de nacimiento, récords familiares y evidencia de linaje."
+        }
+      },
+      "needs": {
+        "title": "¿Qué vas a necesitar?",
+        "items": {
+          "governmentId": {
+            "title": "Identificación Emitida por el Gobierno",
+            "description": "Licencia de conducir, pasaporte o identificación estatal"
+          },
+          "birthCertificate": {
+            "title": "Certificado de Nacimiento",
+            "description": "Tu certificado de nacimiento oficial (copia certificada)"
+          },
+          "lineageRecords": {
+            "title": "Récords de Linaje Materno",
+            "description": "Certificados de nacimiento de tu madre, abuela y bisabuela (si están disponibles)"
+          },
+          "supportingDocs": {
+            "title": "Documentación de Apoyo",
+            "description": "Árboles genealógicos, récords históricos o documentación tribal"
+          }
+        }
+      },
+      "tips": {
+        "title": "Consejos Útiles",
+        "items": {
+          "saveProgress": "Guarda tu progreso en cualquier momento y regresa luego para completar tu solicitud",
+          "scanQuality": "Escanea tus documentos en alta calidad (formato PDF o JPG, menos de 10MB cada uno)",
+          "review": "Revisa toda la información con calma antes de someter tu solicitud"
+        },
+        "supportCta": "Recibe Apoyo con tu Inscripción"
+      },
+      "cta": {
+        "button": "Comienza tu Solicitud",
+        "help": "¿Preguntas? <faqLink>Lee nuestras preguntas frecuentes</faqLink> o <contactLink>contáctanos</contactLink>"
+      }
+    },
+    "yucayeke": {
+      "label": "Regiones Yucayeke",
+      "title": "Conéctate con tu Tierra Ancestral",
+      "subtitle": "A cada miembro inscrito se le asigna un Yucayeke, una comunidad tradicional arraigada a la tierra que te conecta con tu territorio ancestral y con otros descendientes de tu región.",
+      "overview": {
+        "mapAlt": "Mapa ilustrado de Borikén representando las regiones Yucayeke",
+        "title": "¿Qué es un Yucayeke?",
+        "paragraph1": "En la cultura taína, un Yucayeke era una aldea o asentamiento liderado por un cacique. Estas comunidades se organizaban alrededor de territorios a lo largo de Borikén, cada una con su propia identidad, tradiciones y liderazgo.",
+        "paragraph2": "Hoy honramos esa tradición asignando a los miembros a regiones Yucayeke históricas según su linaje materno y sus conexiones ancestrales. Esto ayuda a preservar nuestra herencia territorial y fortalece los lazos dentro de las comunidades regionales.",
+        "cards": {
+          "regions": "18 Regiones Yucayeke Históricas",
+          "connect": "Conéctate con Miembros de tu Región",
+          "events": "Accede a Eventos y Encuentros Regionales"
+        }
+      },
+      "guainiaMapAlt": "Mapa regional ilustrado de Guainía"
+    },
+    "platform": {
+      "label": "Funciones de la Plataforma",
+      "title": "Todo lo que Necesitas en un Solo Lugar",
+      "subtitle": "Nuestra plataforma integral te da todas las herramientas y los recursos que necesitas para conectar con tu herencia, acceder a servicios y participar en la vida comunitaria.",
+      "features": {
+        "tribalId": "Recibe tu tarjeta de identificación oficial de la Nación Taíno con un número único de miembro, tu foto y detalles de verificación.",
+        "lineageTree": "Documenta y visualiza tu linaje materno con un árbol genealógico interactivo que muestra tus conexiones ancestrales.",
+        "documentVault": "Guarda y accede a tus documentos de inscripción, certificados y récords de linaje de forma segura en tu bóveda personal.",
+        "announcements": "Mantente al día con anuncios, noticias y actualizaciones importantes del liderazgo tribal y de los organizadores comunitarios.",
+        "events": "Descubre y regístrate en ceremonias culturales, talleres educativos, encuentros regionales y celebraciones comunitarias.",
+        "services": "Accede a servicios de salud, asistencia legal, recursos educativos y programas de apoyo comunitario exclusivos para miembros.",
+        "regionalCommunity": "Conéctate con otros miembros de tu región Yucayeke asignada y participa en actividades comunitarias regionales.",
+        "mobileApps": "Descarga nuestras apps de iOS y Android para acceder a tu perfil, tus documentos y las funciones comunitarias dondequiera que estés.",
+        "culturalResources": "Accede a recursos educativos, lecciones de idioma, archivos históricos y materiales de preservación cultural."
+      }
+    },
+    "services": {
+      "label": "Servicios para Miembros",
+      "title": "Apoyo Integral para Nuestra Comunidad",
+      "subtitle": "Como miembro inscrito de la Nación Taíno, serás parte de un centro de servicios en crecimiento, creado para apoyar la salud, el bienestar, la educación, la conexión cultural y el cuidado comunitario. Este espacio se construirá colectivamente con el tiempo, guiado por las necesidades de nuestros miembros y fortalecido por líderes comunitarios, practicantes, educadores y proveedores de servicios que deseen ofrecer su conocimiento al servicio de los demás.",
+      "cards": {
+        "health": {
+          "title": "Salud y Bienestar",
+          "description": "Servicios de salud holísticos para la mente, el cuerpo y el espíritu",
+          "button": "Explora los Servicios de Salud",
+          "bullets": {
+            "healing": "Prácticas de sanación tradicional y consultas de medicina herbal",
+            "mentalHealth": "Consejería de salud mental y programas de bienestar",
+            "navigation": "Orientación en el sistema de salud y asistencia con planes médicos",
+            "workshops": "Talleres comunitarios de salud y educación en cuidado preventivo"
+          }
+        },
+        "legal": {
+          "title": "Asistencia Legal",
+          "description": "Orientación experta sobre derechos indígenas y asuntos legales",
+          "button": "Explora el Apoyo Legal",
+          "bullets": {
+            "advocacy": "Defensa de la soberanía tribal y de los derechos indígenas",
+            "landClaims": "Apoyo con reclamaciones de tierras y documentación de territorios ancestrales",
+            "referrals": "Referidos legales y servicios de consulta",
+            "documents": "Preparación de documentos y servicios notariales"
+          }
+        },
+        "education": {
+          "title": "Educación y Adiestramiento",
+          "description": "Oportunidades de aprendizaje para todas las edades y niveles de destreza",
+          "button": "Explora los Programas Educativos",
+          "bullets": {
+            "language": "Programas de preservación y enseñanza del idioma taíno",
+            "workshops": "Talleres culturales de artesanía tradicional, música y ceremonias",
+            "scholarships": "Oportunidades de becas para la educación superior",
+            "vocational": "Adiestramiento vocacional y programas de desarrollo profesional"
+          }
+        },
+        "community": {
+          "title": "Apoyo Comunitario",
+          "description": "Recursos para ayudar a los miembros a crecer y salir adelante",
+          "button": "Explora el Apoyo Comunitario",
+          "bullets": {
+            "emergency": "Asistencia de emergencia y servicios de intervención en crisis",
+            "housing": "Apoyo de vivienda y programas para prevenir la pérdida del hogar",
+            "food": "Iniciativas de seguridad alimentaria y huertos comunitarios",
+            "elders": "Cuidado de adultos mayores y programas de mentoría para la juventud"
+          }
+        }
+      },
+      "help": {
+        "title": "¿Necesitas Ayuda para Acceder a los Servicios?",
+        "body": "Nuestro equipo de Servicios para Miembros está aquí para ayudarte a navegar los recursos disponibles y conectarte con el apoyo que necesitas.",
+        "emailSupport": "Apoyo por Email"
+      }
+    },
+    "stories": {
+      "label": "Voces de la Comunidad",
+      "title": "Historias de Nuestros Miembros",
+      "subtitle": "Escucha a descendientes taínos que han reconectado con su herencia a través de nuestra plataforma y han encontrado pertenencia en nuestra comunidad.",
+      "members": {
+        "isabela": "Unirme a la plataforma me ayudó a organizar mi linaje materno, reconectar con las historias de mi familia y sentir verdadera pertenencia dentro de la comunidad taína.",
+        "daniel": "Siempre conocí pedacitos de mi ascendencia, pero este espacio me dio la confianza para explorarla a fondo y conectar con descendientes que comparten ese mismo camino.",
+        "mariana": "A través de la plataforma encontré recursos culturales, conexiones regionales y una relación con mi herencia más fuerte que la que jamás había tenido."
+      },
+      "portraitAlt": "Retrato de {name}",
+      "showStory": "Ver la historia de {name}"
+    },
+    "dashboardCta": {
+      "title": "Únete a 2,847 Miembros Inscritos",
+      "body": "Forma parte de una comunidad creciente de descendientes taínos que están reconectando con su herencia y construyendo juntos un futuro más fuerte.",
+      "button": "Comienza tu Solicitud"
+    },
+    "faq": {
+      "label": "Preguntas Frecuentes",
+      "title": "¿Preguntas sobre la Inscripción?",
+      "subtitle": "Encuentra respuestas a las preguntas más comunes sobre el proceso de inscripción, los beneficios de la membresía y las funciones de la plataforma.",
+      "imageAlt": "Paisaje costero taíno",
+      "items": {
+        "eligibility": {
+          "question": "¿Quién es elegible para inscribirse en la Nación Taíno?",
+          "answer": "Los descendientes taínos que puedan proveer identificación personal y documentación que apoye su linaje materno son elegibles para comenzar el proceso de inscripción. Si todavía estás reuniendo tus récords, puedes revisar primero los requisitos y preparar tus materiales antes de someter la solicitud."
+        },
+        "timeline": {
+          "question": "¿Cuánto tiempo toma el proceso de inscripción?",
+          "answer": "Completar la solicitud de inscripción normalmente toma de 20 a 30 minutos. Después de someterla, nuestro equipo de revisión examina con cuidado tu solicitud y tus documentos de apoyo. El proceso completo de revisión usualmente toma de 4 a 6 semanas, y recibirás actualizaciones de estatus en el camino."
+        },
+        "security": {
+          "question": "¿Está segura mi información personal?",
+          "answer": "Sí. La información personal se cifra y se guarda en servidores soberanos seguros. El acceso está limitado a revisores autorizados que participan en el proceso de inscripción, y tus datos no se comparten con terceros."
+        },
+        "benefits": {
+          "question": "¿Qué beneficios reciben los miembros inscritos?",
+          "answer": "Los miembros inscritos pueden acceder a su Identificación Tribal, documentar su linaje materno, conectarse con su Yucayeke asignado, usar la bóveda segura de documentos y explorar servicios para miembros como recursos de salud, legales, educativos y de apoyo comunitario."
+        },
+        "fee": {
+          "question": "¿Hay que pagar para inscribirse?",
+          "answer": "No. Comenzar la solicitud de inscripción no tiene costo alguno. Lo que más vas a necesitar es tiempo para completar el formulario con exactitud y documentos de apoyo que ayuden a verificar tu linaje."
+        }
+      }
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "Sobre la Plataforma Digital de la Nación Taíno",
+      "subtitle": "Una plataforma soberana y centrada en la comunidad, diseñada para preservar el linaje, fortalecer la identidad cultural y conectar a los descendientes taínos a través de una tecnología respetuosa."
+    },
+    "story": {
+      "title": "Creada para Proteger la Herencia, la Identidad y la Conexión Comunitaria",
+      "paragraph1": "La Plataforma Digital de la Nación Taíno fue creada para darles a los descendientes una manera respetuosa de documentar su linaje, reconectar con su herencia ancestral y participar en una comunidad indígena viva.",
+      "paragraph2": "Es más que un sistema de récords. Es un hogar digital soberano donde la identidad, la historia familiar y la participación comunitaria se centran en los valores taínos, y no en herramientas administrativas genéricas.",
+      "stats": {
+        "members": {
+          "value": "2,847",
+          "label": "Miembros Inscritos"
+        },
+        "regions": {
+          "value": "8 Regiones",
+          "label": "Conexiones Yucayeke"
+        },
+        "access": {
+          "value": "24/7",
+          "label": "Acceso Comunitario Seguro"
+        }
+      },
+      "imageAlt": "Paisaje taíno"
+    },
+    "values": {
+      "badge": "Lo que nos Guía",
+      "title": "Los Principios Detrás de la Plataforma",
+      "subtitle": "Cada función se diseña alrededor del respeto cultural, la custodia segura y la conexión significativa para los descendientes taínos.",
+      "cards": {
+        "sovereignData": {
+          "title": "Datos Soberanos",
+          "description": "La información de la comunidad se trata con cuidado, privacidad y soberanía indígena en el centro del diseño de la plataforma."
+        },
+        "identityLineage": {
+          "title": "Identidad y Linaje",
+          "description": "Los miembros pueden preservar su linaje materno, fortalecer su identidad cultural y mantener récords que honran la historia familiar."
+        },
+        "communityAccess": {
+          "title": "Acceso Comunitario",
+          "description": "La plataforma conecta a los descendientes con servicios, recursos, pertenencia regional y oportunidades para participar en la vida comunitaria."
+        }
+      }
+    },
+    "mission": {
+      "title": "Nuestra Misión",
+      "body": "Queremos crear una plataforma digital segura y con raíces culturales que empodere a los descendientes taínos a preservar su linaje, reclamar su herencia y participar en una comunidad vibrante. La meta no es solo el acceso, sino la continuidad a través de las generaciones.",
+      "items": {
+        "honorAncestors": "Honrar a los Ancestros a Través de la Tecnología",
+        "protectPrivacy": "Proteger la Privacidad de la Comunidad",
+        "supportEnrollment": "Apoyar la Inscripción y la Participación"
+      }
     }
   }
 }

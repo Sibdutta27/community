@@ -3,19 +3,18 @@
 import Image from "next/image";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 import sharedStyles from "@/features/home/styles/home-shared.module.scss";
 
-const storyStats = [
-  { label: "Enrolled Members", value: "2,847" },
-  { label: "Yucayeke Connections", value: "8 Regions" },
-  { label: "Secure Community Access", value: "24/7" },
-] as const;
+const storyStatIds = ["members", "regions", "access"] as const;
 
 export function AboutStorySection() {
+  const t = useTranslations("about.story");
+
   return (
     <motion.section
       className="bg-surface overflow-hidden"
@@ -30,35 +29,25 @@ export function AboutStorySection() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:items-center">
           <motion.div variants={fadeInUpItem}>
             <h2 className="text-foreground max-w-3xl text-[clamp(1.6rem,3.1vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em]">
-              Built to Protect Heritage, Identity, and Community Connection
+              {t("title")}
             </h2>
 
             <div className="text-muted-foreground mt-4 space-y-4 text-[0.92rem] leading-[1.65] sm:text-[0.97rem]">
-              <p>
-                The Taíno Nation Digital Platform was created to give
-                descendants a respectful way to document lineage, reconnect with
-                ancestral heritage, and participate in a living Indigenous
-                community.
-              </p>
-              <p>
-                It is more than a records system. It is a sovereign digital home
-                where identity, family history, and community participation are
-                centered around Taíno values rather than generic administrative
-                tools.
-              </p>
+              <p>{t("paragraph1")}</p>
+              <p>{t("paragraph2")}</p>
             </div>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              {storyStats.map((stat) => (
+              {storyStatIds.map((statId) => (
                 <div
-                  key={stat.label}
+                  key={statId}
                   className="border-border bg-surface shadow-card-soft rounded-2xl border p-4"
                 >
                   <p className="text-foreground text-[1.2rem] font-semibold tracking-tight">
-                    {stat.value}
+                    {t(`stats.${statId}.value`)}
                   </p>
                   <p className="text-muted-foreground mt-1 text-[0.8rem] leading-[1.45]">
-                    {stat.label}
+                    {t(`stats.${statId}.label`)}
                   </p>
                 </div>
               ))}
@@ -70,7 +59,7 @@ export function AboutStorySection() {
             variants={fadeInUpItem}
           >
             <Image
-              alt="Taíno landscape"
+              alt={t("imageAlt")}
               className="object-cover"
               fill
               sizes="(min-width: 1024px) 42vw, 100vw"

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -24,6 +25,8 @@ export function HomeEnrollmentStepCard({
   description,
   tone,
 }: HomeEnrollmentStepCardProps) {
+  const t = useTranslations("home.process");
+
   return (
     <motion.article
       className="border-border bg-surface shadow-card-soft relative rounded-2xl border px-4.5 pt-[2.7rem] pb-5.5 text-center sm:px-5 sm:pt-12 sm:pb-6"
@@ -52,7 +55,7 @@ export function HomeEnrollmentStepCard({
               tone.numberClassName,
             )}
           >
-            Step
+            {t("stepLabel")}
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { HomeEnrollmentProcessSection } from "@/features/home/components/home-enrollment-process-section";
+import { renderWithIntl } from "@/test/i18n";
 
 // `next/font/google` loaders only run inside the Next.js build; stub the fonts
 // module so the section (which imports `@/styles/fonts`) can render in jsdom.
@@ -39,13 +40,34 @@ vi.mock("next/link", () => ({
 
 describe("HomeEnrollmentProcessSection", () => {
   it("renders the enrollment steps", () => {
-    render(<HomeEnrollmentProcessSection />);
+    renderWithIntl(<HomeEnrollmentProcessSection />);
     expect(screen.getByText("Create Account")).toBeInTheDocument();
     expect(screen.getByText("Upload Documents")).toBeInTheDocument();
   });
 
+  it("renders the full process slice in Puerto Rican Spanish under the es locale", () => {
+    renderWithIntl(<HomeEnrollmentProcessSection />, "es");
+
+    // Section header
+    expect(
+      screen.getByText("Cómo Inscribirte en la Nación Taíno de Borikén"),
+    ).toBeInTheDocument();
+    // Steps (titles + the "Paso" bubble label)
+    expect(screen.getByText("Crea tu Cuenta")).toBeInTheDocument();
+    expect(screen.getByText("Sube tus Documentos")).toBeInTheDocument();
+    expect(screen.getAllByText("Paso")).toHaveLength(4);
+    // Document checklist + tips
+    expect(screen.getByText("¿Qué vas a necesitar?")).toBeInTheDocument();
+    expect(screen.getByText("Certificado de Nacimiento")).toBeInTheDocument();
+    expect(screen.getByText("Consejos Útiles")).toBeInTheDocument();
+    // CTA
+    expect(
+      screen.getByRole("link", { name: /Comienza tu Solicitud/ }),
+    ).toBeInTheDocument();
+  });
+
   it("uses semantic tokens instead of hardcoded earthy colors", () => {
-    const { container } = render(<HomeEnrollmentProcessSection />);
+    const { container } = renderWithIntl(<HomeEnrollmentProcessSection />);
 
     expect(container.innerHTML).not.toMatch(/#fffdec/i);
     expect(container.innerHTML).not.toMatch(/#d7efd3/i);

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { CircleCheckBig } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { fadeInUpItem } from "@/lib/motion";
@@ -14,6 +15,8 @@ type HomeEnrollmentTipsCardProps = Readonly<{
 }>;
 
 export function HomeEnrollmentTipsCard({ tips }: HomeEnrollmentTipsCardProps) {
+  const t = useTranslations("home.process.tips");
+
   return (
     <motion.article
       className="border-border bg-surface text-foreground shadow-card-soft rounded-2xl border p-5 sm:p-6"
@@ -29,7 +32,7 @@ export function HomeEnrollmentTipsCard({ tips }: HomeEnrollmentTipsCardProps) {
       />
 
       <h3 className="mt-4 text-xl font-semibold tracking-tight sm:text-2xl">
-        Helpful Tips
+        {t("title")}
       </h3>
 
       <ul className="mt-4.5 space-y-4">
@@ -57,7 +60,7 @@ export function HomeEnrollmentTipsCard({ tips }: HomeEnrollmentTipsCardProps) {
               width={20}
               height={20}
             />
-            <span>Get Enrollment Support</span>
+            <span>{t("supportCta")}</span>
           </Link>
         </Button>
       </div>

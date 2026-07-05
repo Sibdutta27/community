@@ -4,49 +4,26 @@ import { useState } from "react";
 import Image from "next/image";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 import sharedStyles from "../styles/home-shared.module.scss";
 
-const faqItems = [
-  {
-    id: "eligibility",
-    question: "Who is eligible to enroll in the Taíno Nation?",
-    answer:
-      "Taíno descendants who can provide personal identification and documentation supporting their maternal lineage are eligible to begin the enrollment process. If you are still gathering records, you can review the requirements first and prepare your materials before submitting.",
-  },
-  {
-    id: "timeline",
-    question: "How long does the enrollment process take?",
-    answer:
-      "The enrollment application typically takes 20 to 30 minutes to complete. After submission, our review team carefully examines your application and supporting documents. The full review process usually takes 4 to 6 weeks, and you will receive status updates along the way.",
-  },
-  {
-    id: "security",
-    question: "Is my personal information secure?",
-    answer:
-      "Yes. Personal information is encrypted and stored on secure sovereign servers. Access is limited to authorized reviewers involved in the enrollment process, and your data is not shared with third parties.",
-  },
-  {
-    id: "benefits",
-    question: "What benefits do enrolled members receive?",
-    answer:
-      "Enrolled members can access their Tribal ID, document maternal lineage, connect with their assigned Yucayeke, use the secure document vault, and explore member services such as health, legal, educational, and community support resources.",
-  },
-  {
-    id: "fee",
-    question: "Is there a fee to enroll?",
-    answer:
-      "No. There is no fee to begin the enrollment application. What you will need most is time to complete the form accurately and supporting documents to help verify your lineage.",
-  },
+const faqItemIds = [
+  "eligibility",
+  "timeline",
+  "security",
+  "benefits",
+  "fee",
 ] as const;
 
+type FaqItemId = (typeof faqItemIds)[number];
+
 export function HomeEnrollmentFaqSection() {
-  const [openItemId, setOpenItemId] = useState<
-    (typeof faqItems)[number]["id"] | null
-  >("timeline");
+  const t = useTranslations("home.faq");
+  const [openItemId, setOpenItemId] = useState<FaqItemId | null>("timeline");
 
   return (
     <motion.section
@@ -68,22 +45,21 @@ export function HomeEnrollmentFaqSection() {
             className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
-            Frequently Asked Questions
+            {t("label")}
           </motion.p>
 
           <motion.h2
             className="text-foreground mx-auto mt-3 max-w-4xl text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
-            Questions About Enrollment?
+            {t("title")}
           </motion.h2>
 
           <motion.p
             className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
-            Find answers to common questions about the enrollment process,
-            membership benefits, and platform features.
+            {t("subtitle")}
           </motion.p>
         </div>
 
@@ -93,7 +69,7 @@ export function HomeEnrollmentFaqSection() {
             variants={fadeInUpItem}
           >
             <Image
-              alt="Taíno coastal landscape"
+              alt={t("imageAlt")}
               className="object-cover"
               fill
               sizes="(min-width: 1024px) 48vw, 100vw"
@@ -102,24 +78,24 @@ export function HomeEnrollmentFaqSection() {
           </motion.div>
 
           <motion.div className="space-y-3" variants={fadeInUpContainer}>
-            {faqItems.map((item) => {
-              const isOpen = item.id === openItemId;
+            {faqItemIds.map((itemId) => {
+              const isOpen = itemId === openItemId;
 
               return (
                 <motion.article
-                  key={item.id}
+                  key={itemId}
                   className="border-border bg-surface shadow-card-soft overflow-hidden rounded-2xl border"
                   variants={fadeInUpItem}
                 >
                   <h3>
                     <button
-                      aria-controls={`faq-panel-${item.id}`}
+                      aria-controls={`faq-panel-${itemId}`}
                       aria-expanded={isOpen}
                       className="focus-visible:ring-ring flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-4 text-left focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none sm:px-4.5 sm:py-4.5 lg:px-5"
                       type="button"
                       onClick={() =>
                         setOpenItemId((currentId) =>
-                          currentId === item.id ? null : item.id,
+                          currentId === itemId ? null : itemId,
                         )
                       }
                     >
@@ -129,7 +105,7 @@ export function HomeEnrollmentFaqSection() {
                           isOpen ? "text-foreground" : "text-foreground/80",
                         )}
                       >
-                        {item.question}
+                        {t(`items.${itemId}.question`)}
                       </span>
 
                       <span
@@ -144,10 +120,10 @@ export function HomeEnrollmentFaqSection() {
                   {isOpen ? (
                     <div
                       className="border-border border-t px-4 pt-3 pb-4 sm:px-4.5 sm:pb-4.5 lg:px-5 lg:pb-5"
-                      id={`faq-panel-${item.id}`}
+                      id={`faq-panel-${itemId}`}
                     >
                       <p className="text-muted-foreground max-w-3xl text-[0.84rem] leading-[1.55] sm:text-[0.88rem]">
-                        {item.answer}
+                        {t(`items.${itemId}.answer`)}
                       </p>
                     </div>
                   ) : null}
