@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ProtectedNavbar } from "@/components/layout/protected-navbar";
 import type { AuthUser } from "@/lib/auth";
+import { renderWithIntl } from "@/test/i18n";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/dashboard",
@@ -10,6 +11,10 @@ vi.mock("next/navigation", () => ({
     replace: vi.fn(),
     refresh: vi.fn(),
   }),
+}));
+
+vi.mock("@/i18n/locale-actions", () => ({
+  setUserLocale: vi.fn(async () => {}),
 }));
 
 vi.mock("next/image", () => ({
@@ -42,19 +47,19 @@ const user: AuthUser = {
 
 describe("ProtectedNavbar", () => {
   it("shows the brand wordmark next to the logo (not logo-only)", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
     expect(screen.getByText("Taíno Nation")).toBeInTheDocument();
   });
 
   it("renders the globe language switcher", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
     expect(
       screen.getByRole("button", { name: /change language/i }),
     ).toBeInTheDocument();
   });
 
   it("gives the profile trigger a visible azul focus ring", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
 
     const trigger = screen.getByText("Test Member").closest("button");
     expect(trigger).not.toBeNull();
@@ -63,7 +68,7 @@ describe("ProtectedNavbar", () => {
   });
 
   it("renders a refined initials avatar with an azul (not red) status badge", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
 
     const avatar = screen.getByText("TM");
     // Refined treatment: hairline ring, not the plain border.
@@ -76,7 +81,7 @@ describe("ProtectedNavbar", () => {
   });
 
   it("labels the account menu trigger and wires menu semantics", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
 
     const trigger = screen.getByRole("button", { name: "Account menu" });
     expect(trigger).toHaveAttribute("aria-haspopup", "menu");
@@ -91,7 +96,7 @@ describe("ProtectedNavbar", () => {
   });
 
   it("closes the account menu on Escape and returns focus to the trigger", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
 
     const trigger = screen.getByRole("button", { name: "Account menu" });
     fireEvent.click(trigger);
@@ -107,7 +112,7 @@ describe("ProtectedNavbar", () => {
   });
 
   it("wires the mobile menu toggle with aria-controls and aria-expanded", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
 
     const toggle = screen.getByRole("button", { name: "Open menu" });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
@@ -122,14 +127,14 @@ describe("ProtectedNavbar", () => {
   });
 
   it("labels the main navigation landmark", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
     expect(
       screen.getAllByRole("navigation", { name: "Main" }).length,
     ).toBeGreaterThan(0);
   });
 
   it("keeps the app navigation links", () => {
-    render(<ProtectedNavbar user={user} />);
+    renderWithIntl(<ProtectedNavbar user={user} />);
 
     for (const label of [
       "Dashboard",

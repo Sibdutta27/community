@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { Check, Globe } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
+import { resolveLocale, type Locale } from "@/i18n/config";
+import { setUserLocale } from "@/i18n/locale-actions";
 import { cn } from "@/lib/utils";
 
 const languages = [
   { code: "en", label: "English" },
   { code: "es", label: "Español" },
-] as const;
-
-type LanguageCode = (typeof languages)[number]["code"];
+] as const satisfies ReadonlyArray<{ code: Locale; label: string }>;
 
 type LanguageSwitcherProps = Readonly<{
   className?: string;
@@ -23,15 +25,22 @@ type LanguageSwitcherProps = Readonly<{
 }>;
 
 /**
- * Placeholder language switcher — selecting a language only updates the
- * `?lang=` query param (no real translations are wired up yet).
+ * Globe language switcher — persists the choice in the `community_locale`
+ * cookie (via a Server Action) and refreshes the router so the whole app
+ * re-renders in the selected locale. No URL changes.
  */
 export function LanguageSwitcher({
   className,
   variant = "compact",
 }: LanguageSwitcherProps) {
+  const t = useTranslations("common");
+  const activeLocale = resolveLocale(useLocale());
+  const router = useRouter();
+  const [, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
-  const [language, setLanguage] = useState<LanguageCode>("en");
+  // Optimistic selection: shows the new language immediately while the
+  // cookie write + server refresh are in flight.
+  const [language, setLanguage] = useState<Locale>(activeLocale);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -116,17 +125,21 @@ export function LanguageSwitcher({
     }
   };
 
-  const handleSelect = (code: LanguageCode) => {
+  const handleSelect = (code: Locale) => {
+    const previous = language;
     setLanguage(code);
     closeMenu(true);
 
-    // Placeholder behavior only: reflect the choice in the `?lang=` query
-    // param without navigating. Real translations come later.
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      url.searchParams.set("lang", code);
-      window.history.replaceState(window.history.state, "", url);
+    if (code === previous) {
+      return;
     }
+
+    startTransition(async () => {
+      await setUserLocale(code);
+      // Re-render server components (layout, pages) in the new locale —
+      // the URL stays exactly the same.
+      router.refresh();
+    });
   };
 
   const isRow = variant === "row";
@@ -141,7 +154,7 @@ export function LanguageSwitcher({
         ref={triggerRef}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        aria-label={`Change language (current: ${currentLanguage.label})`}
+        aria-label={t("changeLanguage", { language: currentLanguage.label })}
         type="button"
         className={cn(
           "text-muted-foreground hover:text-foreground hover:bg-surface-muted focus-visible:ring-ring focus-visible:ring-offset-surface flex cursor-pointer items-center font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
@@ -160,7 +173,7 @@ export function LanguageSwitcher({
       >
         <Globe aria-hidden="true" className="size-[18px] shrink-0" />
         {isRow ? (
-          <span className="flex-1 text-left">Language</span>
+          <span className="flex-1 text-left">{t("language")}</span>
         ) : null}
         <span
           className={cn(
@@ -174,7 +187,7 @@ export function LanguageSwitcher({
 
       {isOpen ? (
         <div
-          aria-label="Language"
+          aria-label={t("language")}
           role="menu"
           className={cn(
             "border-border bg-surface absolute top-[calc(100%+0.5rem)] z-50 rounded-2xl border p-1.5 shadow-[0_18px_34px_-24px_rgba(20,26,34,0.22)]",

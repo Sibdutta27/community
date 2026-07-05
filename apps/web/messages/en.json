@@ -1,0 +1,23 @@
+{
+  "common": {
+    "language": "Language",
+    "changeLanguage": "Change language (current: {language})"
+  },
+  "nav": {
+    "aboutUs": "About Us",
+    "enrollment": "Enrollment",
+    "signIn": "Sign In",
+    "enrollToday": "Enroll Today"
+  },
+  "footer": {
+    "tagline": "Preserving Indigenous heritage through land, lineage, and community connection."
+  },
+  "home": {
+    "hero": {
+      "title": "Welcome to <highlight>Taíno Nation of Borikén</highlight>",
+      "subtitle": "Reconnect with your ancestral roots, preserve your lineage, and join a sovereign community dedicated to honoring our Indigenous heritage and cultural identity.",
+      "ctaEnroll": "Start Your Enrollment",
+      "ctaExplore": "Explore Community"
+    }
+  }
+}

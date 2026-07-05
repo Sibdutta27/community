@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { useTranslations } from "next-intl";
+
 import { BrandMark } from "@/components/shared/brand-mark";
 import {
   footerBottomLinks,
@@ -52,6 +54,8 @@ function SocialIconButton({ href, label, iconSrc }: FooterSocialLink) {
 }
 
 export function PublicFooter() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="border-border text-foreground bg-surface border-t">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
@@ -66,8 +70,7 @@ export function PublicFooter() {
             </Link>
 
             <p className="text-muted-foreground mt-5 max-w-lg text-[0.98rem] leading-7 sm:mt-6 sm:text-[1.05rem] sm:leading-8">
-              Preserving Indigenous heritage through land, lineage, and
-              community connection.
+              {t("tagline")}
             </p>
 
             <div className="bg-border mt-6 h-px w-full max-w-96" />

@@ -1,0 +1,23 @@
+{
+  "common": {
+    "language": "Idioma",
+    "changeLanguage": "Cambiar idioma (idioma actual: {language})"
+  },
+  "nav": {
+    "aboutUs": "Sobre Nosotros",
+    "enrollment": "Inscripción",
+    "signIn": "Iniciar Sesión",
+    "enrollToday": "Inscríbete Hoy"
+  },
+  "footer": {
+    "tagline": "Preservando la herencia indígena a través de la tierra, el linaje y la conexión comunitaria."
+  },
+  "home": {
+    "hero": {
+      "title": "Bienvenido a la <highlight>Nación Taíno de Borikén</highlight>",
+      "subtitle": "Reconecta con tus raíces ancestrales, preserva tu linaje y únete a una comunidad soberana dedicada a honrar nuestra herencia indígena y nuestra identidad cultural.",
+      "ctaEnroll": "Comienza tu Inscripción",
+      "ctaExplore": "Explora la Comunidad"
+    }
+  }
+}

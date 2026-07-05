@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { PageHeroSection } from "@/components/shared/page-hero-section";
 import { Button } from "@/components/ui/button";
@@ -19,25 +20,26 @@ const memberAvatars = [
 ] as const;
 
 export function HomeHero() {
+  const t = useTranslations("home.hero");
+
   return (
     <PageHeroSection containerClassName={sharedStyles.sectionContainer}>
       <motion.h1
         className="text-foreground mt-3 max-w-4xl text-3xl font-semibold tracking-tight sm:mt-4 sm:text-4xl lg:mt-5 lg:text-5xl"
         variants={fadeInUpItem}
       >
-        Welcome to{" "}
-        <span className={sharedStyles.gradientText}>
-          Taíno Nation of Borikén
-        </span>
+        {t.rich("title", {
+          highlight: (chunks) => (
+            <span className={sharedStyles.gradientText}>{chunks}</span>
+          ),
+        })}
       </motion.h1>
 
       <motion.p
         className="text-muted-foreground mt-5 max-w-3xl text-sm leading-6 sm:text-base"
         variants={fadeInUpItem}
       >
-        Reconnect with your ancestral roots, preserve your lineage, and join a
-        sovereign community dedicated to honoring our Indigenous heritage and
-        cultural identity.
+        {t("subtitle")}
       </motion.p>
 
       <motion.div
@@ -46,12 +48,12 @@ export function HomeHero() {
       >
         <Button asChild size="xl" variant="emphasis">
           <Link href="/dashboard">
-            <span>Start Your Enrollment</span>
+            <span>{t("ctaEnroll")}</span>
             <ArrowRight />
           </Link>
         </Button>
         <Button asChild variant="outline" size="xl">
-          <Link href="/community">Explore Community</Link>
+          <Link href="/community">{t("ctaExplore")}</Link>
         </Button>
       </motion.div>
 

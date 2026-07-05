@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { publicNavigation } from "@/constants/navigation";
@@ -32,6 +33,7 @@ function isActivePath(pathname: string, href: string) {
 }
 
 export function PublicNavbar() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isSignInPage = isActivePath(pathname, "/sign-in");
@@ -75,7 +77,7 @@ export function PublicNavbar() {
                   aria-current={isActive ? "page" : undefined}
                   className={desktopNavLinkClass(isActive)}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
@@ -88,11 +90,11 @@ export function PublicNavbar() {
                 className={cn(isSignInPage && "text-foreground")}
                 href="/sign-in"
               >
-                Sign In
+                {t("signIn")}
               </Link>
             </Button>
             <Button size="sm" variant="emphasis" asChild>
-              <Link href="/sign-up">Enroll Today</Link>
+              <Link href="/sign-up">{t("enrollToday")}</Link>
             </Button>
           </div>
 
@@ -136,7 +138,7 @@ export function PublicNavbar() {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={mobileNavLinkClass(isActive)}
                     >
-                      {item.label}
+                      {t(item.labelKey)}
                     </Link>
                   );
                 })}
@@ -151,7 +153,7 @@ export function PublicNavbar() {
                     href="/sign-in"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Sign In
+                    {t("signIn")}
                   </Link>
                 </Button>
                 <Button variant="emphasis" asChild>
@@ -159,7 +161,7 @@ export function PublicNavbar() {
                     href="/sign-up"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Enroll Today
+                    {t("enrollToday")}
                   </Link>
                 </Button>
               </div>

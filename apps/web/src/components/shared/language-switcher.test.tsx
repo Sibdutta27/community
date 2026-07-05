@@ -1,12 +1,29 @@
-import { render, screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
+import { renderWithIntl } from "@/test/i18n";
+
+const routerRefresh = vi.hoisted(() => vi.fn());
+const setUserLocale = vi.hoisted(() => vi.fn(async () => {}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: routerRefresh }),
+}));
+
+vi.mock("@/i18n/locale-actions", () => ({
+  setUserLocale,
+}));
 
 describe("LanguageSwitcher", () => {
+  beforeEach(() => {
+    routerRefresh.mockClear();
+    setUserLocale.mockClear();
+  });
+
   it("renders a globe button labelled 'Change language'", () => {
-    render(<LanguageSwitcher />);
+    renderWithIntl(<LanguageSwitcher />);
 
     const trigger = screen.getByRole("button", { name: /change language/i });
     expect(trigger).toBeInTheDocument();
@@ -16,7 +33,7 @@ describe("LanguageSwitcher", () => {
 
   it("includes the current language in the trigger's accessible name", async () => {
     const user = userEvent.setup();
-    render(<LanguageSwitcher />);
+    renderWithIntl(<LanguageSwitcher />);
 
     expect(
       screen.getByRole("button", { name: /change language.*english/i }),
@@ -30,9 +47,42 @@ describe("LanguageSwitcher", () => {
     ).toBeInTheDocument();
   });
 
+  it("reflects the active locale from the intl context in the trigger", () => {
+    renderWithIntl(<LanguageSwitcher />, "es");
+
+    const trigger = screen.getByRole("button", {
+      name: /cambiar idioma.*español/i,
+    });
+    expect(trigger).toHaveTextContent(/es/i);
+  });
+
+  it("persists the choice via the community_locale server action and refreshes", async () => {
+    const user = userEvent.setup();
+    renderWithIntl(<LanguageSwitcher />);
+
+    await user.click(screen.getByRole("button", { name: /change language/i }));
+    await user.click(screen.getByRole("menuitemradio", { name: /Español/i }));
+
+    await waitFor(() => {
+      expect(setUserLocale).toHaveBeenCalledWith("es");
+      expect(routerRefresh).toHaveBeenCalled();
+    });
+  });
+
+  it("does not re-set the cookie when re-selecting the current language", async () => {
+    const user = userEvent.setup();
+    renderWithIntl(<LanguageSwitcher />);
+
+    await user.click(screen.getByRole("button", { name: /change language/i }));
+    await user.click(screen.getByRole("menuitemradio", { name: /English/i }));
+
+    expect(setUserLocale).not.toHaveBeenCalled();
+    expect(routerRefresh).not.toHaveBeenCalled();
+  });
+
   it("opens a menu listing English and Español", async () => {
     const user = userEvent.setup();
-    render(<LanguageSwitcher />);
+    renderWithIntl(<LanguageSwitcher />);
 
     await user.click(screen.getByRole("button", { name: /change language/i }));
 
@@ -47,7 +97,7 @@ describe("LanguageSwitcher", () => {
 
   it("closes the menu on Escape and restores focus to the trigger", async () => {
     const user = userEvent.setup();
-    render(<LanguageSwitcher />);
+    renderWithIntl(<LanguageSwitcher />);
 
     const trigger = screen.getByRole("button", { name: /change language/i });
     await user.click(trigger);
@@ -62,7 +112,7 @@ describe("LanguageSwitcher", () => {
 
   it("supports arrow-key navigation between languages", async () => {
     const user = userEvent.setup();
-    render(<LanguageSwitcher />);
+    renderWithIntl(<LanguageSwitcher />);
 
     const trigger = screen.getByRole("button", { name: /change language/i });
     trigger.focus();
@@ -80,7 +130,7 @@ describe("LanguageSwitcher", () => {
 
   it("marks the selected language after choosing Español", async () => {
     const user = userEvent.setup();
-    render(<LanguageSwitcher />);
+    renderWithIntl(<LanguageSwitcher />);
 
     await user.click(screen.getByRole("button", { name: /change language/i }));
     await user.click(screen.getByRole("menuitemradio", { name: /Español/i }));

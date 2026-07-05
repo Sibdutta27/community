@@ -1,4 +1,8 @@
+/**
+ * Public nav items carry `nav.*` message keys (not display strings) —
+ * components resolve them with `useTranslations("nav")`.
+ */
 export const publicNavigation = [
-  { label: "About Us", href: "/about" },
-  { label: "Enrollment", href: "/enrollment" },
+  { labelKey: "aboutUs", href: "/about" },
+  { labelKey: "enrollment", href: "/enrollment" },
 ] as const;

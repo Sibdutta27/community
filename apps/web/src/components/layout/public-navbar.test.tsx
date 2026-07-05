@@ -1,12 +1,18 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PublicNavbar } from "@/components/layout/public-navbar";
+import { renderWithIntl } from "@/test/i18n";
 
 const routerMocks = vi.hoisted(() => ({ pathname: "/" }));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => routerMocks.pathname,
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
+
+vi.mock("@/i18n/locale-actions", () => ({
+  setUserLocale: vi.fn(async () => {}),
 }));
 
 vi.mock("next/image", () => ({
@@ -23,7 +29,7 @@ describe("PublicNavbar", () => {
 
   it("marks the active link with the azul active treatment", () => {
     routerMocks.pathname = "/about";
-    render(<PublicNavbar />);
+    renderWithIntl(<PublicNavbar />);
 
     const activeLink = screen.getByRole("link", { name: "About Us" });
     expect(activeLink).toHaveAttribute("aria-current", "page");
@@ -35,7 +41,7 @@ describe("PublicNavbar", () => {
   });
 
   it("renders only the trimmed signed-out links (About Us + Enrollment)", () => {
-    render(<PublicNavbar />);
+    renderWithIntl(<PublicNavbar />);
 
     // Desktop + mobile menus both render the nav list.
     expect(
@@ -53,14 +59,14 @@ describe("PublicNavbar", () => {
   });
 
   it("renders the primary CTA as 'Enroll Today'", () => {
-    render(<PublicNavbar />);
+    renderWithIntl(<PublicNavbar />);
     expect(
       screen.getByRole("link", { name: "Enroll Today" }),
     ).toBeInTheDocument();
   });
 
   it("renders every 'Enroll Today' CTA with the flag-red emphasis variant", () => {
-    render(<PublicNavbar />);
+    renderWithIntl(<PublicNavbar />);
 
     // Open the mobile menu so both the desktop and mobile CTAs render.
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
@@ -73,12 +79,12 @@ describe("PublicNavbar", () => {
   });
 
   it("does not render the old 'Apply Now' CTA", () => {
-    render(<PublicNavbar />);
+    renderWithIntl(<PublicNavbar />);
     expect(screen.queryByText("Apply Now")).not.toBeInTheDocument();
   });
 
   it("wires the mobile menu toggle to the panel it controls", () => {
-    render(<PublicNavbar />);
+    renderWithIntl(<PublicNavbar />);
 
     const toggle = screen.getByRole("button", { name: "Open menu" });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
@@ -93,17 +99,41 @@ describe("PublicNavbar", () => {
   });
 
   it("labels the main navigation landmark", () => {
-    render(<PublicNavbar />);
+    renderWithIntl(<PublicNavbar />);
     expect(
       screen.getAllByRole("navigation", { name: "Main" }).length,
     ).toBeGreaterThan(0);
   });
 
   it("renders the globe language switcher instead of the old 'En Español' link", () => {
-    render(<PublicNavbar />);
+    renderWithIntl(<PublicNavbar />);
     expect(
       screen.getByRole("button", { name: /change language/i }),
     ).toBeInTheDocument();
     expect(screen.queryByText("En Español")).not.toBeInTheDocument();
+  });
+
+  it("renders the nav links and CTAs in Puerto Rican Spanish under the es locale", () => {
+    renderWithIntl(<PublicNavbar />, "es");
+
+    expect(
+      screen.getAllByRole("link", { name: "Sobre Nosotros" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Inscripción" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Iniciar Sesión" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Inscríbete Hoy" }).length,
+    ).toBeGreaterThan(0);
+
+    // The English source strings must be fully replaced.
+    for (const english of ["About Us", "Sign In", "Enroll Today"]) {
+      expect(
+        screen.queryByRole("link", { name: english }),
+      ).not.toBeInTheDocument();
+    }
   });
 });
