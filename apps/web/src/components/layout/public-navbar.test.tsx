@@ -1,10 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PublicNavbar } from "@/components/layout/public-navbar";
 
+const routerMocks = vi.hoisted(() => ({ pathname: "/" }));
+
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/",
+  usePathname: () => routerMocks.pathname,
 }));
 
 vi.mock("next/image", () => ({
@@ -15,6 +17,23 @@ vi.mock("next/image", () => ({
 }));
 
 describe("PublicNavbar", () => {
+  beforeEach(() => {
+    routerMocks.pathname = "/";
+  });
+
+  it("marks the active link with the azul active treatment", () => {
+    routerMocks.pathname = "/about";
+    render(<PublicNavbar />);
+
+    const activeLink = screen.getByRole("link", { name: "About Us" });
+    expect(activeLink).toHaveAttribute("aria-current", "page");
+    expect(activeLink).toHaveClass("text-primary", "bg-primary/8");
+
+    const inactiveLink = screen.getByRole("link", { name: "Enrollment" });
+    expect(inactiveLink).not.toHaveAttribute("aria-current");
+    expect(inactiveLink).toHaveClass("text-muted-foreground");
+  });
+
   it("renders only the trimmed signed-out links (About Us + Enrollment)", () => {
     render(<PublicNavbar />);
 

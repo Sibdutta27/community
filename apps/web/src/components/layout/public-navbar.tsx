@@ -45,7 +45,10 @@ export function PublicNavbar() {
     >
       <div className={navbarFrameClass}>
         <div className={navbarPillClass}>
-          <Link href="/" className="shrink-0">
+          <Link
+            href="/"
+            className="focus-visible:ring-ring focus-visible:ring-offset-surface shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          >
             {/* Full wordmark from `sm` up; shortened on the smallest widths
                 so the pill never overflows. */}
             <BrandMark

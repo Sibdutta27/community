@@ -55,6 +55,18 @@ function getInitials(name: string) {
     .join("");
 }
 
+/**
+ * Refined initials avatar: celeste-tint fill, crisp white inner border with
+ * a hairline outer ring, an inner top highlight and a soft ink drop — reads
+ * as a polished token rather than a flat disc.
+ */
+const avatarBaseClass =
+  "text-secondary-foreground bg-secondary ring-border/80 relative flex items-center justify-center rounded-full border-2 border-white ring-1 text-sm font-semibold shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_10px_20px_-14px_rgba(20,26,34,0.3)]";
+
+/** Azul status badge pinned to the avatar (member-verified shield). */
+const avatarBadgeClass =
+  "bg-primary absolute right-0 bottom-0 flex items-center justify-center rounded-full border-2 border-white text-[10px] text-white shadow-[0_1px_2px_rgba(20,26,34,0.25)]";
+
 export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
   const pathname = usePathname();
   const router = useRouter();
@@ -115,13 +127,16 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
   const logoutError =
     logoutMutation.error instanceof Error ? logoutMutation.error.message : null;
   const dropdownItemClass =
-    "text-foreground hover:bg-surface-muted flex w-full cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold no-underline transition-colors";
+    "text-foreground hover:bg-surface-muted focus-visible:bg-surface-muted focus-visible:ring-ring flex w-full cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold no-underline transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset";
 
   return (
     <header className={navbarHeaderClass}>
       <div className={navbarFrameClass}>
         <div className={navbarPillClass}>
-          <Link href="/" className="shrink-0">
+          <Link
+            href="/"
+            className="focus-visible:ring-ring focus-visible:ring-offset-surface shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          >
             {/* Small wordmark so the brand fits next to the app nav + avatar;
                 logo-only on the very smallest widths to avoid overflow. */}
             <BrandMark compact showLabel={false} className="min-[420px]:hidden" />
@@ -157,13 +172,23 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
               <button
                 aria-expanded={isProfileMenuOpen}
                 aria-haspopup="menu"
-                className="flex cursor-pointer list-none items-center gap-3 rounded-full px-2 py-1.5 outline-none lg:gap-2.5 lg:px-1.5 lg:py-1 xl:gap-3 xl:px-2 xl:py-1.5"
+                className="hover:bg-surface-muted/70 focus-visible:ring-ring focus-visible:ring-offset-surface flex cursor-pointer list-none items-center gap-3 rounded-full px-2 py-1.5 transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 lg:gap-2.5 lg:px-1.5 lg:py-1 xl:gap-3 xl:px-2 xl:py-1.5"
                 type="button"
                 onClick={() => setIsProfileMenuOpen((value) => !value)}
               >
-                <div className="text-secondary-foreground bg-secondary relative flex size-11 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(20,26,34,0.2)] lg:size-10 lg:text-[0.82rem] xl:size-11 xl:text-sm">
+                <div
+                  className={cn(
+                    avatarBaseClass,
+                    "size-11 lg:size-10 lg:text-[0.82rem] xl:size-11 xl:text-sm",
+                  )}
+                >
                   {getInitials(user.name)}
-                  <span className="bg-primary absolute right-0 bottom-0 flex size-4 items-center justify-center rounded-full border-2 border-white text-[10px] text-white lg:size-3.5 xl:size-4">
+                  <span
+                    className={cn(
+                      avatarBadgeClass,
+                      "size-4 lg:size-3.5 xl:size-4",
+                    )}
+                  >
                     <ShieldCheck className="size-2.5 lg:size-2 xl:size-2.5" />
                   </span>
                 </div>
@@ -188,7 +213,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
               </button>
 
               {isProfileMenuOpen ? (
-                <div className="border-border bg-surface absolute top-[calc(100%+0.75rem)] right-0 w-56 rounded-2xl border p-2 shadow-[0_18px_34px_-24px_rgba(20,26,34,0.22)]">
+                <div className="border-border/70 bg-surface/95 supports-backdrop-filter:bg-surface/90 absolute top-[calc(100%+0.75rem)] right-0 w-56 rounded-2xl border p-2 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_2px_8px_-4px_rgba(20,26,34,0.1),0_24px_44px_-24px_rgba(20,26,34,0.3)] backdrop-blur-xl">
                   <Link
                     className={dropdownItemClass}
                     href="/profile"
@@ -229,10 +254,10 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
 
         {isMobileMenuOpen ? (
           <div className={navbarMobilePanelClass}>
-            <div className="border-border bg-surface-muted flex items-center gap-3 rounded-2xl border p-3">
-              <div className="text-secondary-foreground bg-secondary relative flex size-12 items-center justify-center rounded-full border-border border text-sm font-semibold shadow-[0_12px_24px_-18px_rgba(20,26,34,0.2)]">
+            <div className="border-border/80 bg-surface-muted/80 flex items-center gap-3 rounded-2xl border p-3">
+              <div className={cn(avatarBaseClass, "size-12")}>
                 {getInitials(user.name)}
-                <span className="bg-primary absolute right-0 bottom-0 flex size-4 items-center justify-center rounded-full border-2 border-white text-[10px] text-white">
+                <span className={cn(avatarBadgeClass, "size-4")}>
                   <ShieldCheck className="size-2.5" />
                 </span>
               </div>

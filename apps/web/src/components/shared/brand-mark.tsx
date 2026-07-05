@@ -2,20 +2,32 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * The logo frame reads as a subtly lifted token: hairline border, faint
+ * inner top highlight and a soft ink contact shadow — matching the navbar's
+ * glass treatment without getting heavy.
+ */
+const brandFrameDepthClass =
+  "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_4px_10px_-6px_rgba(20,26,34,0.28)]";
+
 const brandMarkVariants = {
   compact: {
-    container: "inline-flex items-center gap-3",
-    frame:
-      "relative size-10 shrink-0 overflow-hidden rounded-full border border-border bg-surface p-1 sm:size-11",
+    container: "inline-flex items-center gap-2.5",
+    frame: cn(
+      "relative size-10 shrink-0 overflow-hidden rounded-full border border-border/80 bg-surface p-1 sm:size-11",
+      brandFrameDepthClass,
+    ),
     image: "rounded-full object-cover",
     title: "text-[1rem] leading-none font-semibold uppercase tracking-[0.12em]",
     subtitle:
       "mt-1 block text-[0.62rem] font-medium uppercase tracking-[0.26em]",
   },
   default: {
-    container: "inline-flex items-center gap-3.5",
-    frame:
-      "relative size-12 shrink-0 overflow-hidden rounded-full border border-border bg-surface p-1 sm:size-14",
+    container: "inline-flex items-center gap-3",
+    frame: cn(
+      "relative size-12 shrink-0 overflow-hidden rounded-full border border-border/80 bg-surface p-1 sm:size-14",
+      brandFrameDepthClass,
+    ),
     image: "rounded-full object-cover",
     title:
       "text-[1.14rem] leading-none font-semibold uppercase tracking-[0.14em] sm:text-[1.2rem]",

@@ -53,6 +53,28 @@ describe("ProtectedNavbar", () => {
     ).toBeInTheDocument();
   });
 
+  it("gives the profile trigger a visible azul focus ring", () => {
+    render(<ProtectedNavbar user={user} />);
+
+    const trigger = screen.getByText("Test Member").closest("button");
+    expect(trigger).not.toBeNull();
+    expect(trigger?.className).toContain("focus-visible:ring-2");
+    expect(trigger?.className).toContain("focus-visible:ring-ring");
+  });
+
+  it("renders a refined initials avatar with an azul (not red) status badge", () => {
+    render(<ProtectedNavbar user={user} />);
+
+    const avatar = screen.getByText("TM");
+    // Refined treatment: hairline ring, not the plain border.
+    expect(avatar.className).toContain("ring-1");
+
+    const badge = avatar.querySelector("span");
+    expect(badge).not.toBeNull();
+    expect(badge).toHaveClass("bg-primary");
+    expect(badge).not.toHaveClass("bg-emphasis");
+  });
+
   it("keeps the app navigation links", () => {
     render(<ProtectedNavbar user={user} />);
 
