@@ -1107,5 +1107,26 @@
     "documentUpload": "No se pudo subir el documento seleccionado en este momento.",
     "stepFourNext": "No se pudo completar el paso de subida de documentos en este momento.",
     "enrollmentSubmit": "No se pudo enviar su solicitud de inscripción en este momento."
+  },
+  "support": {
+    "badge": "Estamos para Ayudarle",
+    "title": "¿Necesita Asistencia?",
+    "subtitle": "Nuestro equipo de apoyo está disponible para ayudarle con el acceso a su cuenta, preguntas sobre la inscripción o problemas técnicos.",
+    "email": {
+      "title": "Apoyo por Correo",
+      "description": "Envíenos un mensaje detallado",
+      "hours": "Lun-Vie: 9am - 6pm AST"
+    },
+    "chat": {
+      "title": "Converse en los Foros",
+      "description": "Publique su consulta en los foros",
+      "cta": "Iniciar Chat"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Centro de Ayuda y Apoyo",
+      "subtitle": "Obtenga ayuda con preguntas sobre la inscripción, acceso a su cuenta, carga de documentos y problemas técnicos. Nuestro equipo está aquí para guiarle al canal de apoyo indicado."
+    }
   }
 }

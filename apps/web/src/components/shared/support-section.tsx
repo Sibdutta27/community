@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { montserrat, poppins } from "@/styles/fonts";
@@ -10,8 +11,6 @@ type SupportCard = Readonly<{
   kind: SupportCardKind;
   iconSrc: string;
   iconBgClassName: string;
-  title: string;
-  description: string;
   contactLabel?: string;
   contactHref?: string;
 }>;
@@ -21,8 +20,6 @@ const supportCards: readonly SupportCard[] = [
     kind: "email",
     iconSrc: "/icons/auth/email-support..svg",
     iconBgClassName: "bg-foreground",
-    title: "Email Support",
-    description: "Send us a detailed message",
     contactLabel: "support@tainonation.org",
     contactHref: "mailto:support@tainonation.org",
   },
@@ -30,12 +27,12 @@ const supportCards: readonly SupportCard[] = [
     kind: "chat",
     iconSrc: "/icons/auth/chat-support..svg",
     iconBgClassName: "bg-foreground",
-    title: "Chat in Forums",
-    description: "Post your concern in forums",
   },
 ] as const;
 
 function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
+  const t = useTranslations("support");
+
   return (
     <article className="border-border bg-surface shadow-card-soft flex h-full flex-col rounded-[18px] border px-3.5 py-4.5 text-center sm:px-4 sm:py-5 lg:px-5">
       <div
@@ -60,7 +57,7 @@ function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
           "text-foreground mt-3.5 text-[1rem] font-semibold tracking-[-0.04em] sm:text-[1.08rem] lg:text-[1.16rem]",
         )}
       >
-        {card.title}
+        {t(`${card.kind}.title`)}
       </h3>
       <p
         className={cn(
@@ -68,7 +65,7 @@ function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
           "text-muted-foreground mt-2 text-[0.8rem] leading-[1.45] sm:text-[0.86rem]",
         )}
       >
-        {card.description}
+        {t(`${card.kind}.description`)}
       </p>
 
       {card.kind === "chat" ? (
@@ -77,7 +74,7 @@ function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
           size="lg"
           type="button"
         >
-          Start Chat
+          {t("chat.cta")}
         </Button>
       ) : (
         <div className="mt-auto pt-4">
@@ -96,7 +93,7 @@ function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
               "text-muted-foreground mt-1 text-[0.74rem] leading-[1.45] sm:text-[0.8rem]",
             )}
           >
-            Mon-Fri: 9am - 6pm AST
+            {t("email.hours")}
           </p>
         </div>
       )}
@@ -105,6 +102,8 @@ function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
 }
 
 export function SupportSection() {
+  const t = useTranslations("support");
+
   return (
     <section className="relative isolate overflow-x-clip py-6 sm:py-8 lg:py-10">
       <div
@@ -121,7 +120,7 @@ export function SupportSection() {
                 "text-foreground text-[0.76rem] font-semibold tracking-[-0.02em] sm:text-[0.8rem]",
               )}
             >
-              We&apos;re Here to Help
+              {t("badge")}
             </p>
           </div>
 
@@ -131,11 +130,10 @@ export function SupportSection() {
               "text-foreground mt-4 text-[clamp(1.4rem,2.8vw,2.1rem)] font-semibold tracking-[-0.05em] sm:mt-5",
             )}
           >
-            Need Assistance?
+            {t("title")}
           </h2>
           <p className="text-muted-foreground mx-auto mt-2.5 max-w-3xl text-[0.82rem] leading-[1.45] tracking-[-0.01em] sm:mt-3 sm:text-[0.88rem]">
-            Our support team is available to help you with account access,
-            enrollment questions, or technical issues.
+            {t("subtitle")}
           </p>
         </div>
 

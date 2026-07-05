@@ -1107,5 +1107,26 @@
     "documentUpload": "Unable to upload the selected document right now.",
     "stepFourNext": "Unable to complete the document upload step right now.",
     "enrollmentSubmit": "Unable to submit your enrollment application right now."
+  },
+  "support": {
+    "badge": "We're Here to Help",
+    "title": "Need Assistance?",
+    "subtitle": "Our support team is available to help you with account access, enrollment questions, or technical issues.",
+    "email": {
+      "title": "Email Support",
+      "description": "Send us a detailed message",
+      "hours": "Mon-Fri: 9am - 6pm AST"
+    },
+    "chat": {
+      "title": "Chat in Forums",
+      "description": "Post your concern in forums",
+      "cta": "Start Chat"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Help Center & Support",
+      "subtitle": "Get help with enrollment questions, account access, document uploads, and technical issues. Our team is here to guide you to the right support channel."
+    }
   }
 }
