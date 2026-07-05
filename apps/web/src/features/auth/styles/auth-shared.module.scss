@@ -14,23 +14,23 @@
   }
 }
 
-.surfacePanel {
-  overflow: hidden;
-  border: 1px solid rgb(18 59 94 / 0.16);
-  border-radius: 30px;
-  background: var(--surface);
-  box-shadow: 0 24px 48px -38px rgb(11 32 51 / 0.24);
-}
-
+/* Dark azul side panel (benefits / next steps). Token-derived: the base is
+   the deep-azul ink (`--accent-foreground`), the hairline border is a
+   celeste tint, and the elevation reuses the shared card shadow. */
 .featurePanel {
   position: relative;
   overflow: hidden;
-  border-radius: 30px;
-  border: 1px solid rgb(78 166 220 / 0.35);
+  border-radius: 1rem; /* rounded-2xl */
+  border: 1px solid color-mix(in srgb, var(--celeste) 35%, transparent);
   background:
-    linear-gradient(180deg, rgb(16 46 82 / 0.98), rgb(9 27 50 / 0.98)), #0b2033;
-  color: #f2f7fc;
-  box-shadow: 0 28px 54px -34px rgb(11 32 51 / 0.34);
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--accent-foreground) 88%, var(--primary)),
+      var(--accent-foreground)
+    ),
+    var(--accent-foreground);
+  color: var(--secondary);
+  box-shadow: var(--shadow-surface-card);
 }
 
 .featurePanelOverlay {
@@ -40,12 +40,12 @@
   background:
     radial-gradient(
       circle at top right,
-      rgb(196 32 50 / 0.22),
+      color-mix(in srgb, var(--emphasis) 22%, transparent),
       transparent 30%
     ),
     radial-gradient(
       circle at bottom left,
-      rgb(78 166 220 / 0.14),
+      color-mix(in srgb, var(--celeste) 14%, transparent),
       transparent 34%
     ),
     linear-gradient(180deg, rgb(255 255 255 / 0.03), transparent 30%);
@@ -57,26 +57,22 @@
   color: var(--foreground);
 }
 
+/* Inline links — deep azul (links are `primary`, never the emphasis red). */
 .linkAccent {
-  color: var(--emphasis);
+  color: var(--primary);
   transition: color 0.2s ease;
 
   &:hover {
-    color: #9a1927;
+    color: color-mix(in srgb, var(--primary) 80%, var(--foreground));
   }
 }
 
 .formError {
-  border: 1px solid rgb(179 38 30 / 0.3);
-  border-radius: 1rem;
-  background: rgb(179 38 30 / 0.06);
+  border: 1px solid color-mix(in srgb, var(--destructive) 30%, transparent);
+  border-radius: 0.75rem; /* rounded-xl */
+  background: color-mix(in srgb, var(--destructive) 6%, transparent);
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   line-height: 1.5rem;
   color: var(--destructive);
-}
-
-/* Auth submit buttons are azul primary — match the hue shadow. */
-.submitButtonShadow {
-  box-shadow: 0 14px 28px -18px rgb(10 86 168 / 0.45);
 }

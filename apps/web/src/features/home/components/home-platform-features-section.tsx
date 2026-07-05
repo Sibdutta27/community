@@ -56,7 +56,7 @@ const platformFeatures = [
 export function HomePlatformFeaturesSection() {
   return (
     <motion.section
-      className="overflow-hidden bg-[linear-gradient(180deg,#2a2926_0%,#1f1e1c_100%)] text-white"
+      className="bg-background overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
@@ -66,25 +66,22 @@ export function HomePlatformFeaturesSection() {
         className={cn(sharedStyles.sectionContainer, "py-10 sm:py-12 lg:py-14")}
       >
         <div className="mx-auto max-w-5xl text-center">
-          <motion.span
-            className={cn(
-              sharedStyles.sectionBadge,
-              "border border-white/16 bg-white/6 px-4.5 py-2 text-[0.82rem] text-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]",
-            )}
+          <motion.p
+            className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
             Platform Features
-          </motion.span>
+          </motion.p>
 
           <motion.h2
-            className="mt-6 text-[clamp(1.7rem,3.2vw,3rem)] font-semibold tracking-[-0.05em] lg:leading-[1.08]"
+            className="text-foreground mt-3 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
             Everything You Need in One Place
           </motion.h2>
 
           <motion.p
-            className="mx-auto mt-4 max-w-4xl text-[clamp(0.9rem,1.15vw,1rem)] leading-[1.5] text-white/90"
+            className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
             Our comprehensive platform provides all the tools and resources you
@@ -94,7 +91,7 @@ export function HomePlatformFeaturesSection() {
         </div>
 
         <motion.div
-          className="mt-8 grid gap-3 md:grid-cols-2 lg:grid-cols-3"
+          className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
           variants={fadeInUpContainer}
         >
           {platformFeatures.map((feature) => (

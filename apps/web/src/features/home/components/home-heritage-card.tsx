@@ -33,12 +33,12 @@ export function HomeHeritageCard({
   return (
     <motion.article
       className={cn(
-        "border-border rounded-2xl border p-5 shadow-[0_16px_32px_-30px_rgba(0,0,0,0.2)] sm:p-6",
+        "border-border shadow-card-soft rounded-2xl border p-5 sm:p-6",
         toneClasses[tone],
       )}
       variants={fadeInUpItem}
     >
-      <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl sm:h-14 sm:w-14">
+      <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl sm:h-14 sm:w-14">
         <Image
           alt=""
           aria-hidden="true"

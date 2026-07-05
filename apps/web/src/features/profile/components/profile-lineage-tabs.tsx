@@ -19,10 +19,19 @@ export function ProfileLineageTabs({
   idBase,
   onChange,
 }: ProfileLineageTabsProps) {
+  // Roving tabindex: keyboard selection must also move focus so the
+  // tablist stays operable after an arrow-key change.
+  const selectTab = (value: ProfileLineageTabValue) => {
+    onChange(value);
+    requestAnimationFrame(() => {
+      document.getElementById(`${idBase}-${value}-tab`)?.focus();
+    });
+  };
+
   return (
     <nav
       aria-label="Profile sections"
-      className="border-b border-[#d7d1c3] bg-[#efefef]"
+      className="border-border bg-surface-muted border-b"
     >
       <div
         aria-orientation="horizontal"
@@ -38,10 +47,10 @@ export function ProfileLineageTabs({
               aria-controls={`${idBase}-${tab.value}-panel`}
               aria-selected={isActive}
               className={cn(
-                "flex min-w-[7rem] flex-1 cursor-pointer items-center justify-center gap-2 border-r border-[#d7d1c3] px-3 py-2.5 text-[12px] font-medium transition-colors sm:min-w-[7.5rem] sm:px-4 sm:py-3 sm:text-[13px] lg:min-w-[8rem] lg:px-4 lg:text-[14px]",
+                "border-border flex min-h-11 min-w-[7rem] flex-1 cursor-pointer items-center justify-center gap-2 border-r px-3 py-3 text-[12px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:min-w-[7.5rem] sm:px-4 sm:text-[13px] lg:min-w-[8rem] lg:px-4 lg:text-[14px]",
                 isActive
-                  ? "bg-[#f6f8f6] font-bold text-[#1B4C54]"
-                  : "text-[#757575] hover:bg-[#f8f8f8]",
+                  ? "bg-surface text-primary font-semibold"
+                  : "text-muted-foreground hover:bg-surface/60 hover:text-foreground",
               )}
               id={`${idBase}-${tab.value}-tab`}
               role="tab"
@@ -57,7 +66,7 @@ export function ProfileLineageTabs({
                   event.preventDefault();
                   const nextIndex =
                     (currentIndex + 1) % profileConfig.lineageTabs.length;
-                  onChange(profileConfig.lineageTabs[nextIndex].value);
+                  selectTab(profileConfig.lineageTabs[nextIndex].value);
                 }
 
                 if (event.key === "ArrowLeft") {
@@ -65,17 +74,17 @@ export function ProfileLineageTabs({
                   const nextIndex =
                     (currentIndex - 1 + profileConfig.lineageTabs.length) %
                     profileConfig.lineageTabs.length;
-                  onChange(profileConfig.lineageTabs[nextIndex].value);
+                  selectTab(profileConfig.lineageTabs[nextIndex].value);
                 }
 
                 if (event.key === "Home") {
                   event.preventDefault();
-                  onChange(profileConfig.lineageTabs[0].value);
+                  selectTab(profileConfig.lineageTabs[0].value);
                 }
 
                 if (event.key === "End") {
                   event.preventDefault();
-                  onChange(
+                  selectTab(
                     profileConfig.lineageTabs[
                       profileConfig.lineageTabs.length - 1
                     ].value,
@@ -84,9 +93,11 @@ export function ProfileLineageTabs({
               }}
             >
               <SvgIcon
-                className={cn("shrink-0", !isActive && "opacity-80")}
+                className="shrink-0"
                 sizeClassName="size-4"
-                toneColor={isActive ? "#1B4C54" : undefined}
+                toneColor={
+                  isActive ? "var(--primary)" : "var(--muted-foreground)"
+                }
                 src={tab.iconSrc}
               />
               <span className="whitespace-nowrap">{tab.label}</span>

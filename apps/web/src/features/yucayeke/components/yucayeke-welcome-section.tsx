@@ -9,7 +9,7 @@ export function YucayekeWelcomeSection() {
   const { map, paragraphs, title } = yucayekeWelcomeContent;
 
   return (
-    <section className="overflow-hidden bg-surface">
+    <section className="bg-surface overflow-hidden">
       <div
         className={cn(sharedStyles.sectionContainer, "py-8 sm:py-10 lg:py-12")}
       >
@@ -19,7 +19,7 @@ export function YucayekeWelcomeSection() {
               {title}
             </h2>
 
-            <div className="mt-3 space-y-3 text-justify text-[0.9rem] leading-6 font-semibold text-[#171717] sm:mt-4 sm:text-[0.94rem] sm:leading-7 lg:text-[0.96rem] lg:leading-7">
+            <div className="text-muted-foreground mt-3 space-y-3 text-[0.9rem] leading-6 sm:mt-4 sm:text-[0.94rem] sm:leading-7 lg:text-[0.96rem] lg:leading-7">
               {paragraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
@@ -27,7 +27,7 @@ export function YucayekeWelcomeSection() {
           </div>
 
           <div className="mx-auto w-full max-w-[26rem] lg:max-w-[24rem] xl:max-w-[26rem]">
-            <div className="relative h-[16rem] overflow-hidden rounded-[1.6rem] border border-[#d6e2d8] bg-[#ddecf5] shadow-[0_24px_60px_-50px_rgba(22,67,106,0.42)] sm:h-[20rem] lg:h-[24rem] xl:h-[26rem]">
+            <div className="border-border bg-secondary shadow-card relative h-[16rem] overflow-hidden rounded-2xl border sm:h-[20rem] lg:h-[24rem] xl:h-[26rem]">
               <Image
                 alt={map.alt}
                 className="object-cover"

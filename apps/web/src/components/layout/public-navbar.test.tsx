@@ -77,10 +77,32 @@ describe("PublicNavbar", () => {
     expect(screen.queryByText("Apply Now")).not.toBeInTheDocument();
   });
 
+  it("wires the mobile menu toggle to the panel it controls", () => {
+    render(<PublicNavbar />);
+
+    const toggle = screen.getByRole("button", { name: "Open menu" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAttribute("aria-controls");
+
+    fireEvent.click(toggle);
+
+    const closeToggle = screen.getByRole("button", { name: "Close menu" });
+    expect(closeToggle).toHaveAttribute("aria-expanded", "true");
+    const panelId = closeToggle.getAttribute("aria-controls") as string;
+    expect(document.getElementById(panelId)).not.toBeNull();
+  });
+
+  it("labels the main navigation landmark", () => {
+    render(<PublicNavbar />);
+    expect(
+      screen.getAllByRole("navigation", { name: "Main" }).length,
+    ).toBeGreaterThan(0);
+  });
+
   it("renders the globe language switcher instead of the old 'En Español' link", () => {
     render(<PublicNavbar />);
     expect(
-      screen.getByRole("button", { name: "Change language" }),
+      screen.getByRole("button", { name: /change language/i }),
     ).toBeInTheDocument();
     expect(screen.queryByText("En Español")).not.toBeInTheDocument();
   });

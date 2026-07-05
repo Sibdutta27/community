@@ -26,12 +26,12 @@ export function HomeEnrollmentStepCard({
 }: HomeEnrollmentStepCardProps) {
   return (
     <motion.article
-      className="border-border bg-surface relative rounded-2xl border px-4.5 pt-[2.7rem] pb-5.5 text-center shadow-[0_16px_30px_-26px_rgba(0,0,0,0.12)] sm:px-5 sm:pt-12 sm:pb-6"
+      className="border-border bg-surface shadow-card-soft relative rounded-2xl border px-4.5 pt-[2.7rem] pb-5.5 text-center sm:px-5 sm:pt-12 sm:pb-6"
       variants={fadeInUpItem}
     >
       <div
         className={cn(
-          "absolute top-0 left-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full shadow-[0_14px_26px_-20px_rgba(0,0,0,0.24)] sm:size-[5.7rem]",
+          "shadow-card-soft absolute top-0 left-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full sm:size-[5.7rem]",
           tone.bubbleClassName,
         )}
       >

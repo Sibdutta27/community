@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ProtectedNavbar } from "@/components/layout/protected-navbar";
@@ -49,7 +49,7 @@ describe("ProtectedNavbar", () => {
   it("renders the globe language switcher", () => {
     render(<ProtectedNavbar user={user} />);
     expect(
-      screen.getByRole("button", { name: "Change language" }),
+      screen.getByRole("button", { name: /change language/i }),
     ).toBeInTheDocument();
   });
 
@@ -73,6 +73,59 @@ describe("ProtectedNavbar", () => {
     expect(badge).not.toBeNull();
     expect(badge).toHaveClass("bg-primary");
     expect(badge).not.toHaveClass("bg-emphasis");
+  });
+
+  it("labels the account menu trigger and wires menu semantics", () => {
+    render(<ProtectedNavbar user={user} />);
+
+    const trigger = screen.getByRole("button", { name: "Account menu" });
+    expect(trigger).toHaveAttribute("aria-haspopup", "menu");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(trigger);
+
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    const menu = screen.getByRole("menu", { name: "Account" });
+    expect(trigger).toHaveAttribute("aria-controls", menu.id);
+    expect(screen.getAllByRole("menuitem").length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("closes the account menu on Escape and returns focus to the trigger", () => {
+    render(<ProtectedNavbar user={user} />);
+
+    const trigger = screen.getByRole("button", { name: "Account menu" });
+    fireEvent.click(trigger);
+    expect(screen.getByRole("menu", { name: "Account" })).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(
+      screen.queryByRole("menu", { name: "Account" }),
+    ).not.toBeInTheDocument();
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveFocus();
+  });
+
+  it("wires the mobile menu toggle with aria-controls and aria-expanded", () => {
+    render(<ProtectedNavbar user={user} />);
+
+    const toggle = screen.getByRole("button", { name: "Open menu" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAttribute("aria-controls");
+
+    fireEvent.click(toggle);
+
+    const closeToggle = screen.getByRole("button", { name: "Close menu" });
+    expect(closeToggle).toHaveAttribute("aria-expanded", "true");
+    const panelId = closeToggle.getAttribute("aria-controls") as string;
+    expect(document.getElementById(panelId)).not.toBeNull();
+  });
+
+  it("labels the main navigation landmark", () => {
+    render(<ProtectedNavbar user={user} />);
+    expect(
+      screen.getAllByRole("navigation", { name: "Main" }).length,
+    ).toBeGreaterThan(0);
   });
 
   it("keeps the app navigation links", () => {

@@ -43,4 +43,15 @@ describe("AboutValuesSection", () => {
     expect(container.querySelector(".bg-background")).not.toBeNull();
     expect(container.querySelector(".bg-surface")).not.toBeNull();
   });
+
+  it("renders the value cards as elevated surface cards", () => {
+    const { container } = render(<AboutValuesSection />);
+
+    const cards = container.querySelectorAll("article.shadow-card-soft");
+    expect(cards).toHaveLength(3);
+    cards.forEach((card) => {
+      expect(card.classList.contains("rounded-2xl")).toBe(true);
+      expect(card.classList.contains("border-border")).toBe(true);
+    });
+  });
 });

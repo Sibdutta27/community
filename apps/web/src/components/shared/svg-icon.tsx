@@ -39,7 +39,10 @@ export function SvgIcon({
   }
 
   return (
-    <span className={cn("relative shrink-0", sizeClassName, className)}>
+    <span
+      aria-hidden="true"
+      className={cn("relative shrink-0", sizeClassName, className)}
+    >
       <Image alt="" fill className="object-contain" sizes="100px" src={src} />
     </span>
   );

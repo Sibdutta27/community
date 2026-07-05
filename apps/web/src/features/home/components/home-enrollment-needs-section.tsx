@@ -3,8 +3,6 @@
 import { motion } from "framer-motion";
 
 import { fadeInUpItem } from "@/lib/motion";
-import { cn } from "@/lib/utils";
-import { poppins } from "@/styles/fonts";
 
 import {
   HomeEnrollmentNeedItem,
@@ -23,12 +21,7 @@ export function HomeEnrollmentNeedsSection({
       className="flex h-full flex-col justify-center pr-0 lg:pr-4"
       variants={fadeInUpItem}
     >
-      <h3
-        className={cn(
-          poppins.className,
-          "text-background text-[clamp(1.4rem,2vw,2rem)] font-semibold tracking-[-0.05em]",
-        )}
-      >
+      <h3 className="text-background text-xl font-semibold tracking-tight sm:text-2xl">
         What You&apos;ll Need?
       </h3>
 

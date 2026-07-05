@@ -48,7 +48,7 @@ export function ProfileLineageSection({
   return (
     <section
       aria-label="Profile sections"
-      className="mt-8 w-full overflow-hidden rounded-[24px] border border-[#d8d2c3] bg-[#fbf7e8] shadow-[0_22px_52px_-40px_rgba(80,85,65,0.2)] sm:mt-10"
+      className="border-border bg-surface shadow-card mt-8 w-full overflow-hidden rounded-2xl border sm:mt-10"
     >
       <ProfileLineageTabs
         activeTab={activeTab}
@@ -56,7 +56,7 @@ export function ProfileLineageSection({
         onChange={setActiveTab}
       />
 
-      <div className="px-3.5 py-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6">
+      <div className="p-5 sm:p-6 lg:p-8">
         {activeTab === "overview" ? (
           <div
             aria-labelledby={`${tabPanelBaseId}-overview-tab`}

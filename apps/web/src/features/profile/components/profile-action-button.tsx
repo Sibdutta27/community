@@ -14,7 +14,7 @@ export function ProfileActionButton({
     <button
       aria-label={label}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none",
+        "inline-flex min-h-10 min-w-10 cursor-pointer items-center justify-center transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none",
         className,
       )}
       type="button"

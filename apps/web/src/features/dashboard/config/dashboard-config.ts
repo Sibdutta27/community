@@ -1,7 +1,6 @@
 export type DashboardExpectationCard = Readonly<{
   iconSrc: string;
   title: string;
-  tone: "sand" | "peach" | "lavender";
 }>;
 
 export const dashboardConfig = {
@@ -28,17 +27,14 @@ export const dashboardConfig = {
       {
         iconSrc: "/icons/dashboard/secure.svg",
         title: "Secure & Private",
-        tone: "sand",
       },
       {
         iconSrc: "/icons/dashboard/progress.svg",
         title: "Save Your Progress",
-        tone: "peach",
       },
       {
         iconSrc: "/icons/dashboard/support.svg",
         title: "Expert Support",
-        tone: "lavender",
       },
     ] as const satisfies readonly DashboardExpectationCard[],
   },

@@ -31,30 +31,19 @@ export function EnrollmentStepCard({
   onAction,
 }: EnrollmentStepCardProps) {
   const progressWidth = `${Math.max(0, Math.min(progress, 1)) * 100}%`;
+  // Shared primary Button (azul pill) — no bespoke color overrides; the
+  // locked steps render it disabled so the state reads from opacity.
   const buttonClassName =
-    "h-9 w-full max-w-[10rem] rounded-md px-3 shadow-none sm:w-auto sm:min-w-[6.5rem]";
-  const buttonStateClassName = cn(
-    buttonClassName,
-    isEnabled
-      ? "bg-primary! text-white! hover:bg-primary! hover:opacity-90 hover:text-white! focus-visible:text-white! focus-visible:ring-ring [&_span]:text-xs [&_span]:font-semibold [&_span]:leading-none [&_span]:text-white!"
-      : "bg-muted-foreground! text-white! hover:bg-muted-foreground! hover:text-white! disabled:opacity-100 [&_span]:text-xs [&_span]:font-semibold [&_span]:leading-none [&_span]:text-white!",
-  );
+    "w-full max-w-[10rem] sm:w-auto sm:min-w-[6.5rem] [&_span]:text-xs [&_span]:font-semibold";
 
   return (
-    <article
-      className={cn(
-        "flex min-h-[15rem] flex-col rounded-[20px] border bg-white px-4 py-5 text-center shadow-[0_16px_34px_-28px_rgba(11,32,51,0.28)] transition-transform duration-200 sm:min-h-[17rem] sm:rounded-[22px] sm:px-4 sm:py-6",
-        isEnabled
-          ? "border-border shadow-[0_20px_44px_-32px_rgba(20,26,34,0.28)]"
-          : "border-border",
-      )}
-    >
+    <article className="border-border bg-surface shadow-card-soft flex min-h-[15rem] flex-col rounded-2xl border px-4 py-5 text-center sm:min-h-[17rem] sm:py-6">
       <div
         className={cn(
-          "mx-auto flex size-10 items-center justify-center rounded-full text-[1.25rem] font-semibold sm:size-11 sm:text-xl",
+          "bg-surface mx-auto flex size-10 items-center justify-center rounded-full border-2 text-[1.25rem] font-semibold sm:size-11 sm:text-xl",
           isEnabled
-            ? "border-foreground/40 text-foreground border-2 bg-white"
-            : "border-border text-muted-foreground border-2 bg-white",
+            ? "border-foreground/40 text-foreground"
+            : "border-border text-muted-foreground",
         )}
       >
         {step}
@@ -107,12 +96,12 @@ export function EnrollmentStepCard({
           <div className="mt-3.5 flex justify-center sm:mt-4">
             {isEnabled && onAction ? (
               <Button
-                className={buttonStateClassName}
+                className={buttonClassName}
                 loading={isLoading}
                 loadingText="Preparing..."
                 size="sm"
                 type="button"
-                variant="ghost"
+                variant="primary"
                 onClick={onAction}
               >
                 {ctaLabel}
@@ -120,23 +109,20 @@ export function EnrollmentStepCard({
             ) : isEnabled && href ? (
               <Button
                 asChild
-                className={buttonStateClassName}
+                className={buttonClassName}
                 size="sm"
-                variant="ghost"
+                variant="primary"
               >
-                <Link
-                  className="text-white! hover:text-white! focus-visible:text-white!"
-                  href={href}
-                >
+                <Link href={href}>
                   <span>{ctaLabel}</span>
                 </Link>
               </Button>
             ) : (
               <Button
-                className={buttonStateClassName}
+                className={buttonClassName}
                 disabled
                 size="sm"
-                variant="ghost"
+                variant="primary"
               >
                 {ctaLabel}
               </Button>

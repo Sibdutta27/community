@@ -9,12 +9,12 @@ export function YucayekeLegacySection() {
     yucayekeLegacyContent;
 
   return (
-    <section className="bg-white py-10 sm:py-12 lg:py-14">
+    <section className="bg-surface py-10 sm:py-12 lg:py-14">
       <div
         className={cn(sharedStyles.sectionContainer, "space-y-7 sm:space-y-8")}
       >
         <div className="mx-auto max-w-4xl text-center">
-          <span className="inline-flex rounded-full border-border bg-surface-muted border px-4 py-1.5 text-xs font-semibold tracking-tight text-foreground sm:px-5 sm:text-sm">
+          <span className="border-border bg-surface-muted text-foreground inline-flex rounded-full border px-4 py-1.5 text-xs font-semibold tracking-tight sm:px-5 sm:text-sm">
             {badge}
           </span>
 
@@ -23,13 +23,13 @@ export function YucayekeLegacySection() {
             <span className={sharedStyles.gradientText}>{titleHighlight}</span>
           </h2>
 
-          <p className="mx-auto mt-3 max-w-2xl text-[0.9rem] leading-6 text-[#5a5f66] sm:text-[0.95rem] sm:leading-7">
+          <p className="text-muted-foreground mx-auto mt-3 max-w-2xl text-[0.9rem] leading-6 sm:text-[0.95rem] sm:leading-7">
             {description}
           </p>
         </div>
 
-        <div className="rounded-[1.5rem] bg-[linear-gradient(180deg,#fff6ea_0%,#fffaf2_100%)] px-3 py-4 sm:px-4 sm:py-5 lg:px-5 lg:py-6">
-          <div className="mx-auto max-w-[64rem] space-y-4 sm:space-y-5 lg:space-y-6">
+        <div className="border-border bg-surface-muted/50 rounded-2xl border px-3 py-4 sm:px-4 sm:py-5 lg:px-5 lg:py-6">
+          <ol className="mx-auto max-w-[64rem] list-none space-y-4 sm:space-y-5 lg:space-y-6">
             {periods.map((period, index) => (
               <YucayekeLegacyTimelineItem
                 isLast={index === periods.length - 1}
@@ -37,7 +37,7 @@ export function YucayekeLegacySection() {
                 period={period}
               />
             ))}
-          </div>
+          </ol>
         </div>
       </div>
     </section>

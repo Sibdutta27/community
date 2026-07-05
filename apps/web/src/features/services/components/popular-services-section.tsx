@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
 import { ServiceListCard } from "@/features/services/components/service-list-card";
 import {
   getServiceCategoryPresentation,
@@ -159,54 +160,59 @@ export function PopularServicesSection({
   }
 
   return (
-    <section id="popular-services" className="bg-white py-10 sm:py-12 lg:py-14">
+    <section
+      id="popular-services"
+      className="bg-surface py-10 sm:py-12 lg:py-14"
+    >
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-[1.6rem] leading-tight font-semibold tracking-tight text-foreground sm:text-[1.95rem] lg:text-[2.4rem]">
+          <h2 className="text-foreground text-[1.6rem] leading-tight font-semibold tracking-tight sm:text-[1.95rem] lg:text-[2.4rem]">
             {popularServicesContent.title}
           </h2>
-          <p className="mx-auto mt-3 max-w-3xl text-[0.92rem] leading-6 text-[#55585d] sm:text-[0.98rem] sm:leading-7">
+          <p className="text-muted-foreground mx-auto mt-3 max-w-3xl text-[0.92rem] leading-6 sm:text-[0.98rem] sm:leading-7">
             {popularServicesContent.description}
           </p>
         </div>
 
-        <div className="mt-5 max-w-full overflow-x-auto overscroll-x-contain pb-2">
+        <div className="mt-5 max-w-full overflow-x-auto overscroll-x-contain py-2">
           <div className="flex min-w-max justify-center gap-2.5 lg:min-w-0">
-            <button
-              className={
-                selectedCategoryKey === ALL_SERVICES_KEY
-                  ? "border-primary bg-primary cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap text-white transition-colors sm:text-[0.92rem]"
-                  : "border-border bg-surface text-foreground hover:bg-surface-muted cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:text-[0.92rem]"
-              }
+            <Button
+              aria-pressed={selectedCategoryKey === ALL_SERVICES_KEY}
+              size="sm"
               type="button"
+              variant={
+                selectedCategoryKey === ALL_SERVICES_KEY ? "primary" : "outline"
+              }
               onClick={() => setSelectedCategoryKey(ALL_SERVICES_KEY)}
             >
               All Services
-            </button>
+            </Button>
 
             {categories.map((category) => {
               const presentation = getServiceCategoryPresentation(category);
 
               return (
-                <button
+                <Button
                   key={category.id}
-                  className={
-                    selectedCategoryKey === category.key
-                      ? "border-primary bg-primary cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap text-white transition-colors sm:text-[0.92rem]"
-                      : "border-border bg-surface text-foreground hover:bg-surface-muted cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:text-[0.92rem]"
-                  }
+                  aria-pressed={selectedCategoryKey === category.key}
+                  size="sm"
                   type="button"
+                  variant={
+                    selectedCategoryKey === category.key ? "primary" : "outline"
+                  }
                   onClick={() => setSelectedCategoryKey(category.key)}
                 >
                   {presentation.title}
-                </button>
+                </Button>
               );
             })}
           </div>
         </div>
 
         {filteredServicesQuery.isLoading ? (
-          <p className="mt-5 text-sm text-[#171717]/64">Loading services...</p>
+          <p className="text-muted-foreground mt-5 text-sm">
+            Loading services...
+          </p>
         ) : null}
 
         {services.length > 0 ? (
@@ -222,7 +228,7 @@ export function PopularServicesSection({
             ))}
           </div>
         ) : (
-          <div className="mt-5 rounded-[1.1rem] border border-[#eadfce] bg-[#fff8f0] px-4 py-4 text-[0.9rem] text-[#171717]/70">
+          <div className="border-border bg-surface-muted/60 text-muted-foreground mt-5 rounded-2xl border px-5 py-4 text-[0.9rem]">
             No services are available for this category right now.
           </div>
         )}

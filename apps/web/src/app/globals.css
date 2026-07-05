@@ -15,6 +15,23 @@
     scroll-behavior: smooth;
   }
 
+  /* WCAG 2.3.3 — honor prefers-reduced-motion for CSS-driven movement.
+     (framer-motion is handled via <MotionConfig reducedMotion="user"> in
+     AppProviders.) */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   ::selection {
     background: var(--primary);
     color: var(--primary-foreground);

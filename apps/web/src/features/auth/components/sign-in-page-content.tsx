@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { SurfaceCard } from "@/components/shared/surface-card";
 import { cn } from "@/lib/utils";
 import { SignInBenefitCard } from "@/features/auth/components/sign-in-benefit-card";
 import { SignInForm } from "@/features/auth/components/sign-in-form";
@@ -29,17 +30,17 @@ export function SignInPageContent() {
   return (
     <main className="bg-background pt-20 pb-10 sm:pt-24 sm:pb-12 lg:pt-28 lg:pb-14">
       <div className={sharedStyles.pageFrame}>
-        <section className="grid gap-3 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)]">
+        <section className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)]">
           <div
             className={cn(
               sharedStyles.featurePanel,
-              "order-2 px-5 py-5 sm:px-7 sm:py-7 lg:order-1 lg:px-8 lg:py-8",
+              "order-2 p-5 sm:p-6 lg:order-1 lg:p-8",
             )}
           >
-            <div className={sharedStyles.featurePanelOverlay} />
+            <div aria-hidden="true" className={sharedStyles.featurePanelOverlay} />
 
             <div className="relative flex h-full flex-col">
-              <div className="flex size-12 items-center justify-center rounded-2xl border border-white/20 bg-white/12 text-white shadow-[0_16px_28px_-18px_rgba(0,0,0,0.2)] sm:size-[3.25rem]">
+              <div className="flex size-12 items-center justify-center rounded-xl border border-white/20 bg-white/12 text-white sm:size-[3.25rem]">
                 <Image
                   alt=""
                   aria-hidden="true"
@@ -73,11 +74,15 @@ export function SignInPageContent() {
             </div>
           </div>
 
-          <div className={cn(sharedStyles.surfacePanel, "order-1 lg:order-2")}>
-            <div className="flex h-full items-center px-5 py-6 sm:px-7 sm:py-7 lg:px-8 lg:py-8">
+          <SurfaceCard
+            className="order-1 overflow-hidden lg:order-2"
+            padding="none"
+            tone="elevated"
+          >
+            <div className="flex h-full items-center p-6 sm:p-8 lg:p-10">
               <SignInForm />
             </div>
-          </div>
+          </SurfaceCard>
         </section>
       </div>
     </main>

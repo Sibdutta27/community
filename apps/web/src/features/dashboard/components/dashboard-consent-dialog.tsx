@@ -52,7 +52,7 @@ export function DashboardConsentDialog({
       }}
     >
       <DialogContent
-        className="max-h-[calc(100dvh-0.75rem)] w-[calc(100vw-0.75rem)] max-w-[44rem] gap-0 overflow-hidden rounded-[22px] p-0 sm:max-h-[calc(100dvh-2.5rem)] sm:w-[calc(100vw-3rem)] sm:rounded-[24px] lg:max-w-[46rem]"
+        className="max-h-[calc(100dvh-0.75rem)] w-[calc(100vw-0.75rem)] max-w-[44rem] gap-0 overflow-hidden rounded-2xl p-0 sm:max-h-[calc(100dvh-2.5rem)] sm:w-[calc(100vw-3rem)] lg:max-w-[46rem]"
         onEscapeKeyDown={(event) => {
           if (isSubmitting) {
             event.preventDefault();
@@ -76,18 +76,21 @@ export function DashboardConsentDialog({
 
           <button
             aria-label="Close consent dialog"
-            className="border-border bg-surface text-muted-foreground hover:bg-surface-muted hover:text-foreground inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+            className="border-border bg-surface text-muted-foreground hover:bg-surface-muted hover:text-foreground focus-visible:ring-ring inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
             disabled={isSubmitting}
             type="button"
             onClick={onClose}
           >
-            <X className="size-4 sm:size-[18px]" />
+            <X aria-hidden="true" className="size-4 sm:size-[18px]" />
           </button>
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5 sm:py-4">
           {errorMessage ? (
-            <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium">
+            <div
+              className="border-destructive/20 bg-destructive/10 text-destructive rounded-xl border px-4 py-3 text-sm font-medium"
+              role="alert"
+            >
               {errorMessage}
             </div>
           ) : null}
@@ -137,7 +140,7 @@ export function DashboardConsentDialog({
           <p className="text-muted-foreground mt-4 text-[0.88rem] leading-6 sm:text-[0.9rem]">
             Read all the{" "}
             <Link
-              className="text-foreground font-medium underline underline-offset-2"
+              className="text-foreground focus-visible:ring-ring rounded-sm font-medium underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
               href="/privacy-policy"
             >
               terms and conditions.

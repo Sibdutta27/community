@@ -16,11 +16,11 @@ export function DashboardExpectationsSection({
   return (
     <section className="mx-auto w-full max-w-6xl px-1 text-center sm:px-2">
       <div className="mx-auto max-w-4xl">
-        <h2 className="text-[clamp(2rem,4vw,3rem)] leading-tight font-semibold tracking-[-0.05em] text-foreground">
+        <h2 className="text-foreground text-[clamp(2rem,4vw,3rem)] leading-tight font-semibold tracking-tight">
           {title}
         </h2>
 
-        <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-[#3f4347] sm:text-base">
+        <p className="text-muted-foreground mx-auto mt-4 max-w-3xl text-sm leading-6 sm:text-base">
           {description}
         </p>
       </div>

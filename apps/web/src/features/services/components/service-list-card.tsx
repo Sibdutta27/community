@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 
-import type { ServiceApiItem } from "@/features/services/types/service";
+import { SurfaceCard } from "@/components/shared/surface-card";
+import { Button } from "@/components/ui/button";
 import { getServiceIconSrc } from "@/features/services/constants/services-content";
+import type { ServiceApiItem } from "@/features/services/types/service";
 
 type ServiceListCardProps = Readonly<{
   isRegistering: boolean;
@@ -30,16 +32,14 @@ export function ServiceListCard({
     service.status === "ACTIVE" && !isRegistered && !isRegistering;
   const buttonLabel = isRegistered
     ? "Registered"
-    : isRegistering
-      ? "Registering..."
-      : service.status === "ACTIVE"
-        ? "Register Service"
-        : "Currently Unavailable";
+    : service.status === "ACTIVE"
+      ? "Register Service"
+      : "Currently Unavailable";
 
   return (
-    <article className="flex h-full max-w-[31rem] flex-col rounded-[1.05rem] border border-[#eadfce] bg-[linear-gradient(180deg,#F5E7DB_0%,#FFFFFF_100%)] px-3 py-3 shadow-[0_14px_24px_-30px_rgba(11,32,51,0.15)] sm:px-3.5 sm:py-3.5">
-      <div className="flex items-start gap-2">
-        <div className="flex size-[2.9rem] shrink-0 items-center justify-center rounded-[0.7rem] bg-foreground">
+    <SurfaceCard as="article" className="flex h-full max-w-[31rem] flex-col">
+      <div className="flex items-start gap-3">
+        <div className="bg-foreground flex size-12 shrink-0 items-center justify-center rounded-xl">
           <Image
             alt=""
             aria-hidden="true"
@@ -51,10 +51,10 @@ export function ServiceListCard({
         </div>
 
         <div className="min-w-0">
-          <h3 className="text-[0.94rem] leading-tight font-semibold tracking-tight text-foreground sm:text-[1rem]">
+          <h3 className="text-foreground text-[0.94rem] leading-tight font-semibold tracking-tight sm:text-[1rem]">
             {service.name}
           </h3>
-          <div className="mt-1 flex items-start gap-1.5 text-[0.76rem] leading-4 font-medium text-muted-foreground sm:text-[0.8rem]">
+          <div className="text-muted-foreground mt-1 flex items-start gap-1.5 text-[0.76rem] leading-4 font-medium sm:text-[0.8rem]">
             <Image
               alt=""
               aria-hidden="true"
@@ -71,11 +71,11 @@ export function ServiceListCard({
         </div>
       </div>
 
-      <p className="mt-2.5 text-[0.78rem] leading-5 text-[#2d3136]/86 sm:text-[0.82rem] sm:leading-6">
+      <p className="text-muted-foreground mt-3 text-[0.78rem] leading-5 sm:text-[0.82rem] sm:leading-6">
         {service.description}
       </p>
 
-      <div className="mt-2.5 space-y-1 text-[0.75rem] font-medium text-foreground sm:text-[0.8rem]">
+      <div className="text-foreground mt-3 space-y-1 text-[0.75rem] font-medium sm:text-[0.8rem]">
         <div className="flex items-start gap-1.5">
           <Image
             alt=""
@@ -104,14 +104,19 @@ export function ServiceListCard({
         </div>
       </div>
 
-      <button
-        className="mt-3 cursor-pointer rounded-[0.68rem] bg-[linear-gradient(90deg,#c9825d_0%,#a57d46_100%)] px-4 py-2 text-[0.8rem] font-semibold tracking-tight text-white transition-opacity duration-200 hover:opacity-92 disabled:cursor-not-allowed disabled:opacity-55"
-        disabled={!canRegister}
-        type="button"
-        onClick={onRegister}
-      >
-        {buttonLabel}
-      </button>
-    </article>
+      <div className="mt-auto pt-4">
+        <Button
+          disabled={!canRegister}
+          fullWidth
+          loading={isRegistering}
+          loadingText="Registering..."
+          size="sm"
+          type="button"
+          onClick={onRegister}
+        >
+          {buttonLabel}
+        </Button>
+      </div>
+    </SurfaceCard>
   );
 }

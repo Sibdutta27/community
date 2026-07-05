@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-import { montserrat, poppins } from "@/styles/fonts";
 
 import sharedStyles from "@/features/home/styles/home-shared.module.scss";
 
@@ -30,21 +29,11 @@ export function AboutStorySection() {
       >
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:items-center">
           <motion.div variants={fadeInUpItem}>
-            <h2
-              className={cn(
-                montserrat.className,
-                "mt-5 max-w-3xl text-[clamp(1.6rem,3.1vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em] text-foreground",
-              )}
-            >
+            <h2 className="text-foreground max-w-3xl text-[clamp(1.6rem,3.1vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em]">
               Built to Protect Heritage, Identity, and Community Connection
             </h2>
 
-            <div
-              className={cn(
-                poppins.className,
-                "mt-4 space-y-4 text-[0.92rem] leading-[1.65] text-[#45413B] sm:text-[0.97rem]",
-              )}
-            >
+            <div className="text-muted-foreground mt-4 space-y-4 text-[0.92rem] leading-[1.65] sm:text-[0.97rem]">
               <p>
                 The Taíno Nation Digital Platform was created to give
                 descendants a respectful way to document lineage, reconnect with
@@ -63,22 +52,12 @@ export function AboutStorySection() {
               {storyStats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-[1.25rem] border border-[#E6E2D7] bg-[#FFFDF4] px-4 py-4 shadow-[0_14px_30px_-24px_rgba(16,24,40,0.14)]"
+                  className="border-border bg-surface shadow-card-soft rounded-2xl border p-4"
                 >
-                  <p
-                    className={cn(
-                      montserrat.className,
-                      "text-[1.2rem] font-semibold tracking-[-0.04em] text-foreground",
-                    )}
-                  >
+                  <p className="text-foreground text-[1.2rem] font-semibold tracking-tight">
                     {stat.value}
                   </p>
-                  <p
-                    className={cn(
-                      poppins.className,
-                      "mt-1 text-[0.8rem] leading-[1.45] text-[#625E57]",
-                    )}
-                  >
+                  <p className="text-muted-foreground mt-1 text-[0.8rem] leading-[1.45]">
                     {stat.label}
                   </p>
                 </div>
@@ -87,7 +66,7 @@ export function AboutStorySection() {
           </motion.div>
 
           <motion.div
-            className="relative min-h-[18rem] overflow-hidden rounded-[1.9rem] bg-[#F3F6F4] shadow-[0_24px_54px_-34px_rgba(18,33,31,0.22)] sm:min-h-[24rem] lg:min-h-[30rem]"
+            className="bg-surface-muted shadow-card relative min-h-[18rem] overflow-hidden rounded-2xl sm:min-h-[24rem] lg:min-h-[30rem]"
             variants={fadeInUpItem}
           >
             <Image

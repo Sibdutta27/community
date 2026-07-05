@@ -19,7 +19,7 @@ export function HomeEnrollmentResourcesSection({
 }: HomeEnrollmentResourcesSectionProps) {
   return (
     <motion.div
-      className="bg-foreground rounded-2xl p-3.5 shadow-[0_20px_44px_-32px_rgba(0,0,0,0.35)] sm:p-4"
+      className="bg-foreground shadow-card rounded-2xl p-5 sm:p-6"
       variants={fadeInUpContainer}
     >
       <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">

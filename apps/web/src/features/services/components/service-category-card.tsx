@@ -1,38 +1,18 @@
 import Image from "next/image";
 
-import type {
-  ServiceCategory,
-  ServiceCategoryTone,
-} from "@/features/services/constants/services-content";
-import { cn } from "@/lib/utils";
+import { SurfaceCard } from "@/components/shared/surface-card";
+import type { ServiceCategory } from "@/features/services/constants/services-content";
 
 type ServiceCategoryCardProps = Readonly<{
   category: ServiceCategory;
 }>;
 
-// Governance restyle: one neutral charcoal tile for every category — the
-// white icons stay legible without a rainbow of tile colors.
-const neutralTile = "bg-foreground";
-
-const toneClasses: Record<ServiceCategoryTone, string> = {
-  teal: neutralTile,
-  olive: neutralTile,
-  slate: neutralTile,
-  forest: neutralTile,
-  sea: neutralTile,
-  stone: neutralTile,
-  indigo: neutralTile,
-};
-
+// Governance restyle: one neutral ink tile for every category — the white
+// icons stay legible without a rainbow of tile colors (see design-system.md).
 export function ServiceCategoryCard({ category }: ServiceCategoryCardProps) {
   return (
-    <article className="border-border bg-surface flex h-full min-h-[9.5rem] flex-col rounded-[1.2rem] border px-3.5 py-3.5 text-center shadow-[0_14px_28px_-32px_rgba(20,26,34,0.16)] sm:min-h-[10rem] sm:px-4 sm:py-4">
-      <div
-        className={cn(
-          "mx-auto flex size-[3rem] items-center justify-center rounded-[0.75rem]",
-          toneClasses[category.tone],
-        )}
-      >
+    <SurfaceCard as="article" className="flex h-full flex-col text-center">
+      <div className="bg-foreground mx-auto flex size-12 items-center justify-center rounded-xl">
         <Image
           alt=""
           aria-hidden="true"
@@ -50,6 +30,6 @@ export function ServiceCategoryCard({ category }: ServiceCategoryCardProps) {
       <p className="text-muted-foreground mt-1.5 text-[0.8rem] leading-5 sm:text-[0.84rem] sm:leading-6">
         {category.description}
       </p>
-    </article>
+    </SurfaceCard>
   );
 }

@@ -8,18 +8,18 @@ export function YucayekeConnectSection() {
   const { badge, description, links, title } = yucayekeConnectionContent;
 
   return (
-    <section className="overflow-hidden bg-[linear-gradient(135deg,#2a2926_0%,#1f1e1c_100%)] py-10 sm:py-12 lg:py-14">
+    <section className="bg-foreground overflow-hidden py-10 sm:py-12 lg:py-14">
       <div className={cn(sharedStyles.sectionContainer, "relative")}>
         <div className="mx-auto max-w-4xl text-center">
-          <span className="inline-flex min-w-[11rem] justify-center rounded-full border border-white/24 bg-white/12 px-4 py-1.5 text-xs font-semibold tracking-tight text-white sm:min-w-[13rem] sm:px-5 sm:text-sm">
+          <span className="border-background/25 bg-background/10 text-background inline-flex min-w-[11rem] justify-center rounded-full border px-4 py-1.5 text-xs font-semibold tracking-tight sm:min-w-[13rem] sm:px-5 sm:text-sm">
             {badge}
           </span>
 
-          <h2 className="mt-5 text-[1.6rem] leading-tight font-semibold tracking-tight text-white sm:text-[2rem] lg:text-[2.6rem]">
+          <h2 className="text-background mt-5 text-[1.6rem] leading-tight font-semibold tracking-tight sm:text-[2rem] lg:text-[2.6rem]">
             {title}
           </h2>
 
-          <p className="mx-auto mt-4 max-w-3xl text-[0.92rem] leading-7 text-white/76 sm:text-[1rem] sm:leading-8">
+          <p className="text-background/75 mx-auto mt-4 max-w-3xl text-[0.92rem] leading-7 sm:text-[1rem] sm:leading-8">
             {description}
           </p>
         </div>

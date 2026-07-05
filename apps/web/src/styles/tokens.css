@@ -30,6 +30,15 @@
   --destructive-foreground: #ffffff;
   --celeste: #4ea6dc;
   --ring: #0a56a8;
+  /* Shared elevated-card shadows — soft, ink-tinted, long negative spread
+     (the enrollment step-card look). Use via `shadow-card` for hero-level
+     cards and `shadow-card-soft` for grid/list cards. Never heavy. */
+  --shadow-surface-card:
+    0 28px 56px -40px rgba(20, 26, 34, 0.35),
+    0 10px 24px -20px rgba(20, 26, 34, 0.25);
+  --shadow-surface-card-soft:
+    0 18px 36px -28px rgba(20, 26, 34, 0.22),
+    0 6px 16px -14px rgba(20, 26, 34, 0.16);
   --font-sans-base: var(--font-body), "Segoe UI", sans-serif;
   --font-ui-base: var(--font-body), "Segoe UI", sans-serif;
   --font-display-base: var(--font-display), "Segoe UI", sans-serif;
@@ -58,5 +67,7 @@
   --color-brand-brown: var(--brand-brown);
   --color-brand-sand: var(--brand-sand);
   --color-ring: var(--ring);
+  --shadow-card: var(--shadow-surface-card);
+  --shadow-card-soft: var(--shadow-surface-card-soft);
   --font-sans: var(--font-sans-base);
 }

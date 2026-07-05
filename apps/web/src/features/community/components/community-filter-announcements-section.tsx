@@ -147,22 +147,28 @@ export function CommunityFilterAnnouncementsSection({
   }
 
   return (
-    <section className="bg-surface py-7 sm:py-8 lg:py-9">
+    <section className="py-7 sm:py-8 lg:py-9">
       <div className={cn(sharedStyles.sectionContainer, "relative")}>
         <div className="max-w-xl">
-          <h2 className="text-[1.55rem] font-semibold tracking-tight text-foreground sm:text-[1.72rem]">
+          <h2 className="text-foreground text-[1.55rem] font-semibold tracking-tight sm:text-[1.72rem]">
             Filter Announcements
           </h2>
-          <p className="mt-1.5 text-[0.9rem] leading-6 text-[#171717]/66 sm:text-[0.94rem]">
+          <p className="text-muted-foreground mt-1.5 text-[0.9rem] leading-6 sm:text-[0.94rem]">
             Filter updates and explore announcements
           </p>
         </div>
 
         <div className="mt-4 max-w-full overflow-x-auto overscroll-x-contain pb-2">
-          <div className="flex min-w-max gap-2.5">
+          <div
+            aria-label="Filter announcements by category"
+            className="flex min-w-max gap-2.5"
+            role="group"
+          >
             <button
+              aria-pressed={selectedCategoryKey === ALL_UPDATES_KEY}
               className={cn(
-                "cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:px-4.5 sm:py-2.25 sm:text-[0.92rem]",
+                "min-h-10 cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:px-4.5 sm:text-[0.92rem]",
+                "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                 selectedCategoryKey === ALL_UPDATES_KEY
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-surface text-foreground hover:bg-surface-muted",
@@ -176,8 +182,10 @@ export function CommunityFilterAnnouncementsSection({
             {categories.map((category) => (
               <button
                 key={category.id}
+                aria-pressed={selectedCategoryKey === category.key}
                 className={cn(
-                  "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:px-4.5 sm:py-2.25 sm:text-[0.92rem]",
+                  "inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:px-4.5 sm:text-[0.92rem]",
+                  "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   selectedCategoryKey === category.key
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-surface text-foreground hover:bg-surface-muted",
@@ -201,7 +209,7 @@ export function CommunityFilterAnnouncementsSection({
         </div>
 
         {filteredEventsQuery.isLoading ? (
-          <p className="mt-5 text-sm text-[#171717]/64">
+          <p className="text-muted-foreground mt-5 text-sm" role="status">
             Loading announcements...
           </p>
         ) : null}
@@ -219,7 +227,7 @@ export function CommunityFilterAnnouncementsSection({
             ))}
           </div>
         ) : (
-          <div className="mt-4 rounded-[1.1rem] border border-[#c7dcd7] bg-white px-4 py-4 text-[0.9rem] text-[#171717]/70">
+          <div className="border-border bg-surface-muted text-muted-foreground mt-4 rounded-xl border px-4 py-4 text-[0.9rem]">
             No announcements are available for this category right now.
           </div>
         )}

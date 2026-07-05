@@ -12,27 +12,36 @@ const communityEventToneByCategoryKey: Record<string, CommunityEventCardTone> =
     workshops: "workshop",
   };
 
+// Governance restyle: every event card shares the one elevated-surface
+// recipe (hairline border + soft ink shadow) instead of per-category
+// multicolor borders — the tone map survives only as an API shim.
+const eventCardClasses = "border-border shadow-card-soft";
+
 export const communityEventCardClasses: Record<CommunityEventCardTone, string> =
   {
-    cultural: "border-[#b8dbd6] shadow-[0_18px_42px_-34px_rgba(9,95,88,0.28)]",
-    workshop:
-      "border-[#b6d6ea] shadow-[0_18px_42px_-34px_rgba(34,94,140,0.22)]",
-    ceremony: "border-[#d8c0b8] shadow-[0_18px_42px_-34px_rgba(111,54,40,0.2)]",
-    social: "border-[#f2b36a] shadow-[0_18px_42px_-34px_rgba(214,117,32,0.24)]",
+    cultural: eventCardClasses,
+    workshop: eventCardClasses,
+    ceremony: eventCardClasses,
+    social: eventCardClasses,
   };
+
+// Category badges are neutral/info chips: celeste tint with deep-azul text.
+const eventBadgeClasses = "bg-secondary text-secondary-foreground";
 
 export const communityEventBadgeClasses: Record<
   CommunityEventCardTone,
   string
 > = {
-  cultural: "bg-[#dbe9e6] text-[#0b5f58]",
-  workshop: "bg-[#dceaf5] text-[#275c8b]",
-  ceremony: "bg-[#f0dfdb] text-[#7f251a]",
-  social: "bg-[#ffe3c2] text-[#b35a00]",
+  cultural: eventBadgeClasses,
+  workshop: eventBadgeClasses,
+  ceremony: eventBadgeClasses,
+  social: eventBadgeClasses,
 };
 
+// Neutral icon tile (surface-muted + ink) — matches the enrollment
+// section-header tile.
 export const communityUpcomingEventIconWrapClass =
-  "border-[#0b5f58] bg-[#bff7ef] shadow-[0_16px_24px_-18px_rgba(9,95,88,0.45)]";
+  "border-border bg-surface-muted text-foreground";
 
 export function getCommunityEventTone(categoryKey?: string | null) {
   return (

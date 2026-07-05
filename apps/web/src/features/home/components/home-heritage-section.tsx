@@ -51,22 +51,19 @@ export function HomeHeritageSection() {
       <div
         className={cn(
           sharedStyles.sectionContainer,
-          "relative pt-2 pb-16 lg:pt-4 lg:pb-20",
+          "relative pt-2 pb-10 sm:pb-12 lg:pt-4 lg:pb-14",
         )}
       >
         <div className="mx-auto max-w-4xl text-center">
-          <motion.span
-            className={cn(
-              sharedStyles.sectionBadge,
-              "border-border bg-surface-muted text-foreground border px-5 py-2",
-            )}
+          <motion.p
+            className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
             About Our Platform
-          </motion.span>
+          </motion.p>
 
           <motion.h2
-            className="text-foreground mt-5 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
+            className="text-foreground mt-3 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
             Preserving{" "}
@@ -100,7 +97,7 @@ export function HomeHeritageSection() {
         </motion.div>
 
         <motion.article
-          className="bg-foreground text-background relative mt-12 overflow-hidden rounded-2xl px-5 py-8 shadow-[0_20px_44px_-32px_rgba(0,0,0,0.35)] sm:px-7 lg:px-9 lg:py-10"
+          className="bg-foreground text-background shadow-card relative mt-10 overflow-hidden rounded-2xl p-6 sm:p-8 lg:p-10"
           variants={fadeInUpItem}
         >
           <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
@@ -109,7 +106,7 @@ export function HomeHeritageSection() {
                 Our Mission
               </h3>
 
-              <p className="text-background/80 mt-5 text-justify text-sm leading-6">
+              <p className="text-background/80 mt-5 text-sm leading-6">
                 To create a secure, culturally grounded digital platform that
                 empowers Borikua Taíno descendants to reclaim their heritage,
                 document their lineage, and participate in a thriving Indigenous

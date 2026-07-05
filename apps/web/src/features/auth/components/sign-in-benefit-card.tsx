@@ -18,12 +18,12 @@ export function SignInBenefitCard({
   return (
     <article
       className={cn(
-        "rounded-[1.65rem] border border-white/10 bg-white/16 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] backdrop-blur-[2px] sm:px-5 sm:py-[1.125rem]",
+        "rounded-2xl border border-white/10 bg-white/16 p-4 backdrop-blur-[2px] sm:p-5",
         className,
       )}
     >
       <div className="flex items-start gap-4">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-white/15 text-white/95">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/15 text-white/95">
           <Image
             alt=""
             aria-hidden="true"

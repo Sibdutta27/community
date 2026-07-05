@@ -6,13 +6,14 @@ import sharedStyles from "../styles/yucayeke-shared.module.scss";
 
 export function YucayekeHighlightsSection() {
   return (
-    <section className="bg-[linear-gradient(180deg,#fff8e7_0%,#fffdf5_100%)]">
+    <section className="bg-background">
       <div
-        className={cn(
-          sharedStyles.sectionContainer,
-          "pt-4 pb-14 sm:pt-6 sm:pb-16 lg:pt-8 lg:pb-20",
-        )}
+        className={cn(sharedStyles.sectionContainer, "py-10 sm:py-12 lg:py-14")}
       >
+        {/* Keeps the outline logical (h1 → h2 → card h3s) without adding
+            visual chrome the design doesn't call for. */}
+        <h2 className="sr-only">Region highlights</h2>
+
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {yucayekeHighlights.map((card) => (
             <YucayekeHighlightCard
@@ -20,7 +21,6 @@ export function YucayekeHighlightsSection() {
               description={card.description}
               iconSrc={card.iconSrc}
               title={card.title}
-              tone={card.tone}
             />
           ))}
         </div>

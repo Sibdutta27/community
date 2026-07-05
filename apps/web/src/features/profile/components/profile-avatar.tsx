@@ -29,7 +29,7 @@ export function ProfileAvatar({
 
   return (
     <div className="relative shrink-0">
-      <div className="relative size-[7.75rem] overflow-hidden rounded-full border-[4px] border-[#17879d] bg-[#e9f1ef] shadow-[0_18px_36px_-28px_rgba(11,32,51,0.28)] sm:size-[8.75rem] sm:border-[5px] lg:size-[10rem] lg:border-[6px] xl:size-[10.75rem]">
+      <div className="border-surface bg-surface-muted shadow-card-soft relative size-[7.75rem] overflow-hidden rounded-full border-[4px] sm:size-[8.75rem] sm:border-[5px] lg:size-[10rem] lg:border-[6px] xl:size-[10.75rem]">
         {hasPortrait ? (
           <Image
             fill
@@ -41,7 +41,7 @@ export function ProfileAvatar({
             src={portraitSrc}
           />
         ) : (
-          <div className="flex size-full items-center justify-center bg-gradient-to-br from-[#d7ecea] via-[#c4e4e2] to-[#b1dbd8] text-[2.1rem] font-semibold tracking-[-0.04em] text-[#1f5968] sm:text-[2.35rem] lg:text-[2.6rem]">
+          <div className="bg-secondary text-secondary-foreground flex size-full items-center justify-center text-[2.1rem] font-semibold tracking-[-0.04em] sm:text-[2.35rem] lg:text-[2.6rem]">
             {initials}
           </div>
         )}

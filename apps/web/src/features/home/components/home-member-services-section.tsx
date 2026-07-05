@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-import { montserrat, poppins } from "@/styles/fonts";
 
 import { HomeMemberServiceCard } from "@/features/home/components/home-member-service-card";
 
@@ -75,14 +74,14 @@ const supportActions = [
   {
     label: "Email Support",
     iconSrc: "/icons/home/support/email.svg",
-    className: "border border-white/85 bg-transparent text-white",
+    className: "border-background/80 text-background border bg-transparent",
   },
 ] as const;
 
 export function HomeMemberServicesSection() {
   return (
     <motion.section
-      className="bg-surface-muted overflow-hidden"
+      className="bg-background overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
@@ -92,32 +91,22 @@ export function HomeMemberServicesSection() {
         className={cn(sharedStyles.sectionContainer, "py-10 sm:py-12 lg:py-14")}
       >
         <div className="mx-auto max-w-5xl text-center">
-          <motion.span
-            className={cn(
-              sharedStyles.sectionBadge,
-              poppins.className,
-              "border-border bg-surface-muted text-foreground border px-4.5 py-1.5 text-[0.8rem] tracking-[-0.02em]",
-            )}
+          <motion.p
+            className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
             Member Services
-          </motion.span>
+          </motion.p>
 
           <motion.h2
-            className={cn(
-              montserrat.className,
-              "text-foreground mx-auto mt-5 max-w-4xl text-[clamp(1.7rem,3.5vw,2.9rem)] leading-[1.06] font-semibold tracking-[-0.05em]",
-            )}
+            className="text-foreground mx-auto mt-3 max-w-4xl text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
             Comprehensive Support for Our Community
           </motion.h2>
 
           <motion.p
-            className={cn(
-              poppins.className,
-              "mx-auto mt-4 max-w-4xl text-[clamp(0.92rem,1.35vw,1.05rem)] leading-[1.5] tracking-[-0.02em] text-[#26231E]",
-            )}
+            className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
             As an enrolled member of the Taíno Nation, you will be part of a
@@ -131,7 +120,7 @@ export function HomeMemberServicesSection() {
         </div>
 
         <motion.div
-          className="mt-8 grid gap-3 lg:grid-cols-2"
+          className="mt-10 grid gap-4 lg:grid-cols-2"
           variants={fadeInUpContainer}
         >
           {memberServices.map((service) => (
@@ -140,31 +129,24 @@ export function HomeMemberServicesSection() {
         </motion.div>
 
         <motion.article
-          className="mt-10 rounded-[1.45rem] bg-[linear-gradient(135deg,#2a2926_0%,#1f1e1c_100%)] px-4 py-8 text-center text-white shadow-[0_28px_64px_-40px_rgba(27,18,13,0.42)] sm:px-6 sm:py-9 lg:px-8 lg:py-10"
+          className="bg-foreground text-background shadow-card mt-10 rounded-2xl p-6 text-center sm:p-8 lg:p-10"
           variants={fadeInUpItem}
         >
           <div className="mx-auto max-w-3xl">
-            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/6">
-              <span className="text-[1.4rem] leading-none text-white/92">
+            <div className="border-background/20 bg-background/10 mx-auto flex h-11 w-11 items-center justify-center rounded-full border">
+              <span
+                aria-hidden="true"
+                className="text-background/90 text-[1.4rem] leading-none"
+              >
                 i
               </span>
             </div>
 
-            <h3
-              className={cn(
-                montserrat.className,
-                "mt-4 text-[clamp(1.7rem,3.4vw,2.8rem)] leading-[1.06] font-semibold tracking-[-0.05em]",
-              )}
-            >
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
               Need Help Accessing Services?
             </h3>
 
-            <p
-              className={cn(
-                poppins.className,
-                "mx-auto mt-3 max-w-2xl text-[0.94rem] leading-[1.3] text-white/82 sm:text-[1rem]",
-              )}
-            >
+            <p className="text-background/80 mx-auto mt-3 max-w-2xl text-sm leading-6 sm:text-base">
               Our Member Services team is here to help you navigate available
               resources and connect you with the support you need.
             </p>
@@ -174,8 +156,7 @@ export function HomeMemberServicesSection() {
                 <button
                   key={action.label}
                   className={cn(
-                    montserrat.className,
-                    "flex min-h-12 min-w-[15rem] cursor-pointer items-center justify-center gap-2.5 rounded-full px-6 text-[0.92rem] font-semibold tracking-[-0.03em] transition-transform duration-200 hover:-translate-y-0.5",
+                    "focus-visible:ring-ring flex min-h-12 min-w-[15rem] cursor-pointer items-center justify-center gap-2.5 rounded-full px-6 text-[0.92rem] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:transform-none",
                     action.className,
                   )}
                   type="button"

@@ -45,6 +45,12 @@ describe("SupportSection", () => {
     expect(container.querySelector('a[href^="tel:"]')).toBeNull();
   });
 
+  it("uses the shared shadow-card-soft elevation on the support cards", () => {
+    const { container } = render(<SupportSection />);
+    expect(container.querySelector(".shadow-card-soft")).not.toBeNull();
+    expect(container.innerHTML).not.toContain("shadow-[0_16px_30px_-26px");
+  });
+
   it("uses semantic tokens instead of hardcoded brand colors", () => {
     const { container } = render(<SupportSection />);
     expect(container.innerHTML).not.toMatch(/#6FAFC4/i);

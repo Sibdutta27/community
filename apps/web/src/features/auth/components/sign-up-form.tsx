@@ -52,27 +52,41 @@ type SignUpFormValues = z.infer<typeof signUpSchema>;
 function ConsentLine({
   name,
   children,
+  errorMessage,
   register,
 }: Readonly<{
   name: keyof Pick<SignUpFormValues, "agreeToTerms" | "receiveUpdates">;
   children: ReactNode;
+  errorMessage?: string;
   register: UseFormRegister<SignUpFormValues>;
 }>) {
+  const errorId = `${name}-error`;
+
   return (
-    <div className="flex items-start gap-3">
-      <input
-        className="text-primary accent-primary mt-1 size-4 rounded border-border"
-        id={name}
-        aria-labelledby={`${name}-description`}
-        type="checkbox"
-        {...register(name)}
-      />
-      <div
-        className="text-[15px] leading-6 text-foreground"
-        id={`${name}-description`}
-      >
-        {children}
+    <div>
+      <div className="flex items-start gap-3">
+        <input
+          className="accent-primary border-border focus-visible:ring-ring mt-1 size-4 rounded focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          id={name}
+          aria-describedby={errorMessage ? errorId : undefined}
+          aria-invalid={errorMessage ? "true" : undefined}
+          aria-labelledby={`${name}-description`}
+          type="checkbox"
+          {...register(name)}
+        />
+        <div
+          className="text-foreground text-[15px] leading-6"
+          id={`${name}-description`}
+        >
+          {children}
+        </div>
       </div>
+
+      {errorMessage ? (
+        <p className="text-destructive mt-2 text-sm font-medium" id={errorId}>
+          {errorMessage}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -147,7 +161,10 @@ export function SignUpForm() {
       noValidate
     >
       <div className="text-center">
-        <h1 className="text-foreground text-[2.05rem] font-semibold tracking-[-0.04em] sm:text-[2.2rem]">
+        <p className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase">
+          Tribal Citizenship
+        </p>
+        <h1 className="text-foreground mt-2 text-[2.05rem] font-semibold tracking-tight sm:text-[2.2rem]">
           New to <span className={sharedStyles.gradientText}>Taíno Nation</span>
           ?
         </h1>
@@ -155,7 +172,7 @@ export function SignUpForm() {
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {errors.root?.message ? (
-          <div className={cn(sharedStyles.formError, "sm:col-span-2")}>
+          <div className={cn(sharedStyles.formError, "sm:col-span-2")} role="alert">
             {errors.root.message}
           </div>
         ) : null}
@@ -224,52 +241,43 @@ export function SignUpForm() {
       </div>
 
       <div className="mt-5 space-y-4">
-        <div>
-          <ConsentLine name="agreeToTerms" register={register}>
-            I agree to the{" "}
-            <Link
-              className={cn(
-                sharedStyles.linkAccent,
-                "underline-offset-2 hover:underline",
-              )}
-              href="/terms-of-service"
-            >
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link
-              className={cn(
-                sharedStyles.linkAccent,
-                "underline-offset-2 hover:underline",
-              )}
-              href="/privacy-policy"
-            >
-              Privacy Policy
-            </Link>
-            , and acknowledge that my data will be stored on sovereign Taíno
-            Nation servers.
-          </ConsentLine>
+        <ConsentLine
+          name="agreeToTerms"
+          errorMessage={errors.agreeToTerms?.message}
+          register={register}
+        >
+          I agree to the{" "}
+          <Link
+            className={cn(
+              sharedStyles.linkAccent,
+              "focus-visible:ring-ring rounded-sm underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+            )}
+            href="/terms-of-service"
+          >
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link
+            className={cn(
+              sharedStyles.linkAccent,
+              "focus-visible:ring-ring rounded-sm underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+            )}
+            href="/privacy-policy"
+          >
+            Privacy Policy
+          </Link>
+          , and acknowledge that my data will be stored on sovereign Taíno
+          Nation servers.
+        </ConsentLine>
 
-          {errors.agreeToTerms?.message ? (
-            <p className="mt-2 text-sm font-medium text-destructive">
-              {errors.agreeToTerms.message}
-            </p>
-          ) : null}
-        </div>
-
-        <div>
-          <ConsentLine name="receiveUpdates" register={register}>
-            Send me updates about enrollment status, community events, and
-            important announcements
-          </ConsentLine>
-        </div>
+        <ConsentLine name="receiveUpdates" register={register}>
+          Send me updates about enrollment status, community events, and
+          important announcements
+        </ConsentLine>
       </div>
 
       <Button
-        className={cn(
-          sharedStyles.submitButtonShadow,
-          "mt-6 h-11 rounded-xl text-[0.98rem]",
-        )}
+        className="mt-6 text-[0.98rem]"
         fullWidth
         size="lg"
         disabled={isSubmitting}
@@ -280,10 +288,13 @@ export function SignUpForm() {
         Join Now
       </Button>
 
-      <p className="mt-3.5 text-center text-sm text-muted-foreground">
+      <p className="text-muted-foreground mt-3.5 text-center text-sm">
         Already have an account?{" "}
         <Link
-          className={cn(sharedStyles.linkAccent, "font-semibold")}
+          className={cn(
+            sharedStyles.linkAccent,
+            "focus-visible:ring-ring rounded-sm font-semibold focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+          )}
           href={appendNextQuery("/sign-in", searchParams.get("next"))}
         >
           Sign In

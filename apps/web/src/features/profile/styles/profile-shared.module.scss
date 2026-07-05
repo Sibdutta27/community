@@ -1,29 +1,29 @@
 %empty-state-base {
   text-align: center;
-  border: 1px dashed rgba(36, 95, 109, 0.3);
-  border-radius: 18px;
+  border: 1px dashed var(--border);
+  border-radius: 0.75rem; // matches the rounded-xl nested-tile radius
 }
 
 .emptyStateRaised {
   @extend %empty-state-base;
 
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 16px 34px -26px rgba(36, 95, 109, 0.16);
+  background: var(--surface);
+  box-shadow: var(--shadow-surface-card-soft);
 }
 
 .emptyStatePlain {
   @extend %empty-state-base;
 
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--surface-muted);
 }
 
 .emptyTitle {
-  color: #123b5e;
+  color: var(--foreground);
   font-weight: 600;
   letter-spacing: -0.03em;
 }
 
 .emptyDescription {
-  color: #5a6472;
+  color: var(--muted-foreground);
   line-height: 1.25rem;
 }

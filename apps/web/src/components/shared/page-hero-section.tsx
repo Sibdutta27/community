@@ -13,8 +13,11 @@ type PageHeroSectionProps = Readonly<{
   containerClassName: string;
 }>;
 
+// Decorative wash tinted with the ink `--foreground` token (via color-mix so
+// no raw hex leaks in), matching the soft ink-tinted shadow convention —
+// never a raw pure-black overlay.
 const defaultBackgroundClassName =
-  "bg-[radial-gradient(circle_at_top,rgba(0,0,0,0.03),transparent_40%)]";
+  "bg-[radial-gradient(circle_at_top,color-mix(in_srgb,var(--foreground)_4%,transparent),transparent_40%)]";
 
 export function PageHeroSection({
   backgroundClassName = defaultBackgroundClassName,
@@ -28,7 +31,10 @@ export function PageHeroSection({
       animate="visible"
       variants={fadeInUpContainer}
     >
-      <div className={cn("absolute inset-0", backgroundClassName)} />
+      <div
+        aria-hidden="true"
+        className={cn("absolute inset-0", backgroundClassName)}
+      />
 
       <div
         className={cn(

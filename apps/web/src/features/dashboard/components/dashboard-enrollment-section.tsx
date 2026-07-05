@@ -18,11 +18,9 @@ import {
   getEnrollmentStatusDisplay,
   resolveEnrollmentStepState,
 } from "@/features/enrollment/config/enrollment-steps";
-import { cn } from "@/lib/utils";
 
 import { DashboardConsentDialog } from "./dashboard-consent-dialog";
 import { EnrollmentStepCard } from "./enrollment-step-card";
-import sharedStyles from "../styles/dashboard-shared.module.scss";
 
 type DashboardEnrollmentSectionProps = Readonly<{
   eyebrow: string;
@@ -181,50 +179,53 @@ export function DashboardEnrollmentSection({
 
   return (
     <>
-      <section id="enrollment-dashboard" className={sharedStyles.sectionPanel}>
+      {/* Hero-level enrollment-status panel: the shared elevated-surface
+          recipe (hairline border + full shadow-card) with an ink header
+          band — text on the band uses the background token, never raw
+          white literals. */}
+      <section
+        id="enrollment-dashboard"
+        className="border-border bg-surface shadow-card overflow-hidden rounded-2xl border"
+      >
         <div className="bg-foreground text-background flex flex-col gap-3 px-4 py-5 sm:gap-5 sm:px-8 sm:py-8 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p
-              className={cn(
-                sharedStyles.headerTitle,
-                "text-[1.25rem] leading-tight font-semibold sm:text-[1.75rem] lg:text-[2rem]",
-              )}
-            >
+            <p className="text-[1.25rem] leading-tight font-semibold tracking-tight sm:text-[1.75rem] lg:text-[2rem]">
               {eyebrow}
             </p>
-            <p className="mt-1.5 max-w-[18rem] text-[0.95rem] leading-6 text-white/82 sm:mt-2 sm:max-w-none sm:text-base">
+            <p className="text-background/80 mt-1.5 max-w-[18rem] text-[0.95rem] leading-6 sm:mt-2 sm:max-w-none sm:text-base">
               {description}
             </p>
           </div>
 
-          <div className="max-w-fit self-start rounded-[20px] border border-white/14 bg-white/8 px-3.5 py-2.5 text-left lg:max-w-none lg:self-auto lg:border-transparent lg:bg-transparent lg:px-0 lg:py-1 lg:text-right">
-            <p className="text-[0.7rem] font-medium tracking-[0.12em] text-white/80 uppercase sm:text-xs sm:tracking-[0.08em]">
+          <div className="border-background/15 bg-background/10 max-w-fit self-start rounded-xl border px-3.5 py-2.5 text-left lg:max-w-none lg:self-auto lg:border-transparent lg:bg-transparent lg:px-0 lg:py-1 lg:text-right">
+            <p className="text-background/80 text-[0.7rem] font-medium tracking-[0.12em] uppercase sm:text-xs sm:tracking-[0.08em]">
               {applicationStatusLabel}
             </p>
-            <p className="mt-1 text-[1.05rem] font-semibold text-white sm:text-sm">
+            <p className="text-background mt-1 text-[1.05rem] font-semibold sm:text-sm">
               {applicationStatusDisplay}
             </p>
           </div>
         </div>
 
         <div className="px-4 py-5 sm:px-8 sm:py-10">
-          <h2
-            className={cn(
-              sharedStyles.sectionTitle,
-              "text-[1.85rem] leading-tight font-semibold sm:text-2xl",
-            )}
-          >
+          <h2 className="text-foreground text-[1.85rem] leading-tight font-semibold tracking-tight sm:text-2xl">
             {sectionTitle}
           </h2>
 
           {sectionErrorMessage ? (
-            <div className="mt-5 rounded-[20px] border border-[#e7c6c2] bg-[#fff3f1] px-4 py-3 text-sm font-medium text-[#9e493f]">
+            <div
+              className="border-destructive/20 bg-destructive/10 text-destructive mt-5 rounded-xl border px-4 py-3 text-sm font-medium"
+              role="alert"
+            >
               {sectionErrorMessage}
             </div>
           ) : null}
 
           {accountInfoErrorMessage ? (
-            <div className="mt-5 rounded-[20px] border border-[#e9d8aa] bg-[#fff9eb] px-4 py-3 text-sm font-medium text-[#8a6000]">
+            <div
+              className="border-border bg-surface-muted text-foreground mt-5 rounded-xl border px-4 py-3 text-sm font-medium"
+              role="status"
+            >
               {accountInfoErrorMessage} Current enrollment progress could not be
               loaded, so the step status may be incomplete until the dashboard
               reconnects.

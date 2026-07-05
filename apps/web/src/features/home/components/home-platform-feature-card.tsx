@@ -17,19 +17,23 @@ export function HomePlatformFeatureCard({
 }: HomePlatformFeatureCardProps) {
   return (
     <motion.article
-      className="min-h-52 rounded-[1.4rem] border border-[#dcc7af]/24 bg-[rgba(246,237,225,0.1)] px-4 py-4 text-white shadow-[0_16px_38px_-24px_rgba(0,0,0,0.3)] backdrop-blur-[2px] sm:px-5 sm:py-5"
+      className="border-border bg-surface shadow-card-soft rounded-2xl border p-5 sm:p-6"
       variants={fadeInUpItem}
     >
-      <Image
-        alt=""
-        aria-hidden="true"
-        className="h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11"
-        height={56}
-        src={iconSrc}
-        width={56}
-      />
+      {/* The platform-feature SVGs are self-contained white glyphs; the ink
+          tile keeps them legible on the light card (neutral iconography). */}
+      <div className="bg-foreground flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl">
+        <Image
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full object-contain"
+          height={48}
+          src={iconSrc}
+          width={48}
+        />
+      </div>
 
-      <p className="mt-5 text-[0.88rem] leading-[1.5] text-[#f7efe5]/95 sm:mt-6 sm:text-[0.92rem]">
+      <p className="text-muted-foreground mt-4 text-sm leading-6 sm:mt-5 sm:text-[15px]">
         {text}
       </p>
     </motion.article>

@@ -130,6 +130,7 @@ export function LanguageSwitcher({
   };
 
   const isRow = variant === "row";
+  const currentLanguage = languages[selectedIndex];
 
   return (
     <div
@@ -140,13 +141,13 @@ export function LanguageSwitcher({
         ref={triggerRef}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        aria-label="Change language"
+        aria-label={`Change language (current: ${currentLanguage.label})`}
         type="button"
         className={cn(
-          "text-muted-foreground hover:text-foreground hover:bg-surface-muted focus-visible:ring-ring/50 flex cursor-pointer items-center font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none",
+          "text-muted-foreground hover:text-foreground hover:bg-surface-muted focus-visible:ring-ring focus-visible:ring-offset-surface flex cursor-pointer items-center font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
           isRow
             ? "w-full gap-3 rounded-2xl px-4 py-3 text-sm"
-            : "gap-1.5 rounded-full px-2.5 py-2 text-sm",
+            : "min-h-10 gap-1.5 rounded-full px-2.5 py-2 text-sm",
         )}
         onClick={() => {
           if (isOpen) {
@@ -194,7 +195,7 @@ export function LanguageSwitcher({
                 role="menuitemradio"
                 type="button"
                 className={cn(
-                  "hover:bg-surface-muted focus-visible:bg-surface-muted flex w-full cursor-pointer items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm font-medium transition-colors focus-visible:outline-none",
+                  "hover:bg-surface-muted focus-visible:bg-surface-muted focus-visible:ring-ring flex w-full cursor-pointer items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none",
                   isSelected ? "text-foreground" : "text-muted-foreground",
                 )}
                 onClick={() => handleSelect(item.code)}

@@ -16,7 +16,7 @@ export function DashboardDraftSavedNotice() {
 
   return (
     <div
-      className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5"
+      className="border-border bg-secondary text-secondary-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5"
       role="status"
     >
       Your progress has been saved — you can finish later.

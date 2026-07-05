@@ -5,16 +5,16 @@ import Link from "next/link";
 
 import { motion } from "framer-motion";
 
+import { Button } from "@/components/ui/button";
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-import { montserrat, poppins } from "@/styles/fonts";
 
 import sharedStyles from "../styles/home-shared.module.scss";
 
 export function HomeDashboardCtaSection() {
   return (
     <motion.section
-      className="bg-surface overflow-hidden"
+      className="bg-background overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.12 }}
@@ -23,52 +23,43 @@ export function HomeDashboardCtaSection() {
       <div
         className={cn(
           sharedStyles.sectionContainer,
-          "pt-2 pb-12 sm:pb-14 lg:pb-16",
+          "pt-2 pb-10 sm:pb-12 lg:pb-14",
         )}
       >
         <motion.article
-          className="rounded-[2rem] bg-[linear-gradient(180deg,#2a2926_0%,#1f1e1c_100%)] px-5 py-12 text-center text-white shadow-[0_28px_64px_-38px_rgba(20,26,34,0.42)] sm:px-8 sm:py-14 lg:px-12 lg:py-18"
+          className="bg-foreground text-background shadow-card rounded-2xl px-5 py-12 text-center sm:px-8 sm:py-14 lg:px-12 lg:py-16"
           variants={fadeInUpItem}
         >
           <div className="mx-auto max-w-5xl">
-            <h2
-              className={cn(
-                montserrat.className,
-                "text-[clamp(1.45rem,2.85vw,2.45rem)] leading-[1.08] font-semibold tracking-[-0.05em]",
-              )}
-            >
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">
               Join 2,847 Enrolled Members
             </h2>
 
-            <p
-              className={cn(
-                poppins.className,
-                "mx-auto mt-3.5 max-w-4xl text-[clamp(0.86rem,1.02vw,0.96rem)] leading-[1.5] text-white/95",
-              )}
-            >
+            <p className="text-background/80 mx-auto mt-3.5 max-w-4xl text-sm leading-6 sm:text-base">
               Become part of a growing community of Taíno descendants
               reconnecting with their heritage and building a stronger future
               together.
             </p>
 
             <div className="mt-9 flex justify-center">
-              <Link
-                className={cn(
-                  montserrat.className,
-                  "text-primary flex min-h-14 w-full max-w-[36rem] cursor-pointer items-center justify-center gap-3 rounded-full bg-white px-7 text-[0.9rem] font-semibold tracking-[-0.03em] shadow-[0_18px_38px_-26px_rgba(20,26,34,0.35)] transition-transform duration-200 hover:-translate-y-0.5 sm:text-[0.94rem]",
-                )}
-                href="/dashboard"
+              <Button
+                asChild
+                className="text-primary w-full max-w-[36rem] gap-3"
+                size="xl"
+                variant="outline"
               >
-                <Image
-                  alt=""
-                  aria-hidden="true"
-                  className="h-5 w-5 object-contain"
-                  height={20}
-                  src="/icons/home/begin-application.svg"
-                  width={20}
-                />
-                <span className="text-primary">Begin Your Application</span>
-              </Link>
+                <Link href="/dashboard">
+                  <Image
+                    alt=""
+                    aria-hidden="true"
+                    className="h-5 w-5 object-contain"
+                    height={20}
+                    src="/icons/home/begin-application.svg"
+                    width={20}
+                  />
+                  <span>Begin Your Application</span>
+                </Link>
+              </Button>
             </div>
           </div>
         </motion.article>

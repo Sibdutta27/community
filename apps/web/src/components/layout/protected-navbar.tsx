@@ -75,6 +75,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement | null>(null);
+  const profileTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (!isProfileMenuOpen) {
@@ -96,6 +97,8 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsProfileMenuOpen(false);
+        // Keyboard users shouldn't lose their place when the menu closes.
+        profileTriggerRef.current?.focus();
       }
     };
 
@@ -149,7 +152,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
             />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
             {navItems.map((item) => {
               const isActive = isActivePath(pathname, item.href);
 
@@ -170,8 +173,11 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
             <LanguageSwitcher />
             <div className="relative" ref={profileMenuRef}>
               <button
+                ref={profileTriggerRef}
+                aria-controls="account-menu"
                 aria-expanded={isProfileMenuOpen}
                 aria-haspopup="menu"
+                aria-label="Account menu"
                 className="hover:bg-surface-muted/70 focus-visible:ring-ring focus-visible:ring-offset-surface flex cursor-pointer list-none items-center gap-3 rounded-full px-2 py-1.5 transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 lg:gap-2.5 lg:px-1.5 lg:py-1 xl:gap-3 xl:px-2 xl:py-1.5"
                 type="button"
                 onClick={() => setIsProfileMenuOpen((value) => !value)}
@@ -189,7 +195,10 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                       "size-4 lg:size-3.5 xl:size-4",
                     )}
                   >
-                    <ShieldCheck className="size-2.5 lg:size-2 xl:size-2.5" />
+                    <ShieldCheck
+                      aria-hidden="true"
+                      className="size-2.5 lg:size-2 xl:size-2.5"
+                    />
                   </span>
                 </div>
 
@@ -205,6 +214,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                 </div>
 
                 <ChevronDown
+                  aria-hidden="true"
                   className={cn(
                     "text-muted-foreground size-4 transition-transform lg:size-3.5 xl:size-4",
                     isProfileMenuOpen && "rotate-180",
@@ -213,21 +223,28 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
               </button>
 
               {isProfileMenuOpen ? (
-                <div className="border-border/70 bg-surface/95 supports-backdrop-filter:bg-surface/90 absolute top-[calc(100%+0.75rem)] right-0 w-56 rounded-2xl border p-2 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_2px_8px_-4px_rgba(20,26,34,0.1),0_24px_44px_-24px_rgba(20,26,34,0.3)] backdrop-blur-xl">
+                <div
+                  aria-label="Account"
+                  id="account-menu"
+                  role="menu"
+                  className="border-border/70 bg-surface/95 supports-backdrop-filter:bg-surface/90 absolute top-[calc(100%+0.75rem)] right-0 w-56 rounded-2xl border p-2 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_2px_8px_-4px_rgba(20,26,34,0.1),0_24px_44px_-24px_rgba(20,26,34,0.3)] backdrop-blur-xl"
+                >
                   <Link
                     className={dropdownItemClass}
                     href="/profile"
+                    role="menuitem"
                     onClick={() => setIsProfileMenuOpen(false)}
                   >
-                    <User className="size-4" />
+                    <User aria-hidden="true" className="size-4" />
                     Profile
                   </Link>
                   <button
                     className={dropdownItemClass}
+                    role="menuitem"
                     onClick={handleLogout}
                     type="button"
                   >
-                    <LogOut className="size-4" />
+                    <LogOut aria-hidden="true" className="size-4" />
                     {isLoggingOut ? "Signing out..." : "Sign out"}
                   </button>
                   {logoutError ? (
@@ -241,6 +258,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
           </div>
 
           <Button
+            aria-controls="protected-mobile-menu"
             aria-expanded={isMobileMenuOpen}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             className="size-10 lg:hidden"
@@ -248,17 +266,21 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
             variant="ghost"
             onClick={() => setIsMobileMenuOpen((value) => !value)}
           >
-            {isMobileMenuOpen ? <X /> : <Menu />}
+            {isMobileMenuOpen ? (
+              <X aria-hidden="true" />
+            ) : (
+              <Menu aria-hidden="true" />
+            )}
           </Button>
         </div>
 
         {isMobileMenuOpen ? (
-          <div className={navbarMobilePanelClass}>
+          <div className={navbarMobilePanelClass} id="protected-mobile-menu">
             <div className="border-border/80 bg-surface-muted/80 flex items-center gap-3 rounded-2xl border p-3">
               <div className={cn(avatarBaseClass, "size-12")}>
                 {getInitials(user.name)}
                 <span className={cn(avatarBadgeClass, "size-4")}>
-                  <ShieldCheck className="size-2.5" />
+                  <ShieldCheck aria-hidden="true" className="size-2.5" />
                 </span>
               </div>
 
@@ -272,7 +294,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
               </div>
             </div>
 
-            <nav className="mt-4 grid gap-1">
+            <nav aria-label="Main" className="mt-4 grid gap-1">
               {navItems.map((item) => {
                 const isActive = isActivePath(pathname, item.href);
 

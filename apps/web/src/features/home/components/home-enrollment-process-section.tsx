@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-import { montserrat, poppins } from "@/styles/fonts";
 
 import { HomeEnrollmentCta } from "@/features/home/components/home-enrollment-cta";
 import { HomeEnrollmentResourcesSection } from "@/features/home/components/home-enrollment-resources-section";
@@ -92,32 +91,22 @@ export function HomeEnrollmentProcessSection() {
         className={cn(sharedStyles.sectionContainer, "py-10 sm:py-12 lg:py-14")}
       >
         <div className="mx-auto max-w-5xl text-center">
-          <motion.span
-            className={cn(
-              sharedStyles.sectionBadge,
-              poppins.className,
-              "border-border bg-surface-muted text-foreground border px-5 py-2 text-[0.84rem] tracking-[-0.02em]",
-            )}
+          <motion.p
+            className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
             Enrollment Process
-          </motion.span>
+          </motion.p>
 
           <motion.h2
-            className={cn(
-              montserrat.className,
-              "text-foreground mt-6 text-[clamp(1.7rem,3.2vw,3rem)] leading-[1.06] font-semibold tracking-[-0.05em]",
-            )}
+            className="text-foreground mt-3 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
             How to Enroll with the Taíno Nation of Borikén
           </motion.h2>
 
           <motion.p
-            className={cn(
-              poppins.className,
-              "text-muted-foreground mx-auto mt-4 max-w-4xl text-[clamp(0.9rem,1.15vw,1rem)] leading-[1.5] tracking-[-0.02em]",
-            )}
+            className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
             Our enrollment process is designed to be simple, respectful, and
@@ -135,7 +124,7 @@ export function HomeEnrollmentProcessSection() {
           ))}
         </motion.div>
 
-        <motion.div className="mt-9" variants={fadeInUpContainer}>
+        <motion.div className="mt-10" variants={fadeInUpContainer}>
           <HomeEnrollmentResourcesSection items={needItems} tips={tipItems} />
         </motion.div>
 

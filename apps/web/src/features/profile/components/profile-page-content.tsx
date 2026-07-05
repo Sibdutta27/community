@@ -34,7 +34,10 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
       data-auth-user-id={user.id}
     >
       {profileInfoErrorMessage ? (
-        <div className="mb-5 rounded-[20px] border border-[#e9d8aa] bg-[#fff9eb] px-4 py-3 text-sm font-medium text-[#8a6000] sm:px-5">
+        <div
+          className="border-border bg-surface-muted text-foreground mb-5 rounded-xl border px-4 py-3 text-sm font-medium sm:px-5"
+          role="status"
+        >
           {profileInfoErrorMessage} Showing fallback profile values where
           needed.
         </div>

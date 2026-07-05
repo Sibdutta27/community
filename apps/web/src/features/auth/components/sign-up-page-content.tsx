@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { SupportSection } from "@/components/shared/support-section";
+import { SurfaceCard } from "@/components/shared/surface-card";
 import { AuthInfoCard } from "@/features/auth/components/auth-info-card";
 import { SignUpForm } from "@/features/auth/components/sign-up-form";
 import { cn } from "@/lib/utils";
@@ -20,7 +21,7 @@ const authInfoCards = [
     title: "Estimated Timeline",
     description:
       "Complete enrollment process typically takes 4-6 weeks from application submission to approval",
-    className: "bg-[rgba(217,217,217,0.28)]",
+    className: "bg-surface-muted",
   },
   {
     iconSrc: "/icons/auth/shield-privacy.svg",
@@ -34,29 +35,31 @@ const authInfoCards = [
     title: "Join Our Community",
     description:
       "2,847 members have already reconnected with their heritage. You'll be part of a growing Indigenous community.",
-    className: "bg-[rgba(217,217,217,0.28)]",
+    className: "bg-surface-muted",
   },
 ] as const;
 
 export function SignUpPageContent() {
   return (
-    <main className="pt-20 pb-10 sm:pt-24 sm:pb-12 lg:pt-28 lg:pb-14">
+    <main className="bg-background pt-20 pb-10 sm:pt-24 sm:pb-12 lg:pt-28 lg:pb-14">
       <div className={sharedStyles.pageFrame}>
-        <section className="grid gap-3 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
-          <div className={sharedStyles.surfacePanel}>
-            <div className="px-5 py-5 sm:px-7 sm:py-7 lg:px-8 lg:py-8">
-              <SignUpForm />
-            </div>
-          </div>
+        <section className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
+          <SurfaceCard
+            className="overflow-hidden"
+            padding="roomy"
+            tone="elevated"
+          >
+            <SignUpForm />
+          </SurfaceCard>
 
           <div className="space-y-4 sm:space-y-6">
             <div
-              className={cn(
-                sharedStyles.featurePanel,
-                "px-5 py-5 sm:px-7 sm:py-7 lg:px-8 lg:py-8",
-              )}
+              className={cn(sharedStyles.featurePanel, "p-5 sm:p-6 lg:p-8")}
             >
-              <div className={sharedStyles.featurePanelOverlay} />
+              <div
+                aria-hidden="true"
+                className={sharedStyles.featurePanelOverlay}
+              />
 
               <div className="relative flex h-full flex-col">
                 <Image

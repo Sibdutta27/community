@@ -64,7 +64,7 @@ export function PublicNavbar() {
             />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
             {publicNavigation.map((item) => {
               const isActive = isActivePath(pathname, item.href);
 
@@ -97,6 +97,7 @@ export function PublicNavbar() {
           </div>
 
           <Button
+            aria-controls="public-mobile-menu"
             aria-expanded={isMobileMenuOpen}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             className="size-10 lg:hidden"
@@ -104,7 +105,11 @@ export function PublicNavbar() {
             variant="ghost"
             onClick={() => setIsMobileMenuOpen((open) => !open)}
           >
-            {isMobileMenuOpen ? <X /> : <Menu />}
+            {isMobileMenuOpen ? (
+              <X aria-hidden="true" />
+            ) : (
+              <Menu aria-hidden="true" />
+            )}
           </Button>
         </div>
 
@@ -112,13 +117,14 @@ export function PublicNavbar() {
           {isMobileMenuOpen ? (
             <motion.div
               key="mobile-menu"
+              id="public-mobile-menu"
               className={navbarMobilePanelClass}
               initial="hidden"
               animate="visible"
               exit="exit"
               variants={mobileMenuVariants}
             >
-              <nav className="grid gap-1">
+              <nav aria-label="Main" className="grid gap-1">
                 {publicNavigation.map((item) => {
                   const isActive = isActivePath(pathname, item.href);
 

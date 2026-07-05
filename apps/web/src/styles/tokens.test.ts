@@ -45,4 +45,19 @@ describe("design tokens (azul-led flag palette)", () => {
     expect(tokensCss).not.toContain("#2d6e7e");
     expect(tokensCss).not.toContain("#5c94a1");
   });
+
+  it("defines the shared elevated-card shadows (ink-tinted, layered)", () => {
+    // The enrollment-card layered shadow, promoted to tokens so every
+    // feature card can use `shadow-card` / `shadow-card-soft`.
+    expect(tokensCss).toMatch(
+      /--shadow-surface-card:\s*0 28px 56px -40px rgba\(20, 26, 34, 0\.35\),\s*0 10px 24px -20px rgba\(20, 26, 34, 0\.25\)/,
+    );
+    expect(tokensCss).toMatch(
+      /--shadow-surface-card-soft:\s*0 18px 36px -28px rgba\(20, 26, 34, 0\.22\),\s*0 6px 16px -14px rgba\(20, 26, 34, 0\.16\)/,
+    );
+    expect(tokensCss).toMatch(/--shadow-card:\s*var\(--shadow-surface-card\)/);
+    expect(tokensCss).toMatch(
+      /--shadow-card-soft:\s*var\(--shadow-surface-card-soft\)/,
+    );
+  });
 });

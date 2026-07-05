@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MotionConfig } from "framer-motion";
 import { useState, type ReactNode } from "react";
 
 type AppProvidersProps = Readonly<{
@@ -24,6 +25,10 @@ export function AppProviders({ children }: AppProvidersProps) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      {/* App-wide framer-motion guard: disables transform/opacity animation
+          for users with prefers-reduced-motion (WCAG 2.3.3). */}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
+    </QueryClientProvider>
   );
 }

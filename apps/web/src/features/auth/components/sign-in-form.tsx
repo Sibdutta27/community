@@ -109,7 +109,10 @@ export function SignInForm() {
       noValidate
     >
       <div className="text-center">
-        <h1 className="text-foreground text-[2.1rem] font-semibold tracking-[-0.04em] sm:text-[2.3rem]">
+        <p className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase">
+          Member Portal
+        </p>
+        <h1 className="text-foreground mt-2 text-[2.1rem] font-semibold tracking-tight sm:text-[2.3rem]">
           Login to{" "}
           <span className={sharedStyles.gradientText}>Taíno Nation</span>?
         </h1>
@@ -117,7 +120,9 @@ export function SignInForm() {
 
       <div className="mt-6 space-y-4">
         {errors.root?.message ? (
-          <div className={sharedStyles.formError}>{errors.root.message}</div>
+          <div className={sharedStyles.formError} role="alert">
+            {errors.root.message}
+          </div>
         ) : null}
 
         <AuthField
@@ -142,10 +147,10 @@ export function SignInForm() {
       </div>
 
       <div className="mt-3.5 flex items-center justify-between gap-4">
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-foreground">
+        <label className="text-foreground flex cursor-pointer items-center gap-2 text-sm">
           <input
             {...register("rememberMe")}
-            className="text-primary accent-primary size-4 rounded border-border"
+            className="accent-primary border-border focus-visible:ring-ring size-4 rounded focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             type="checkbox"
           />
           <span>Remember me</span>
@@ -154,7 +159,7 @@ export function SignInForm() {
         <button
           className={cn(
             sharedStyles.linkAccent,
-            "cursor-pointer text-sm font-medium",
+            "focus-visible:ring-ring cursor-pointer rounded-sm text-sm font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
           )}
           type="button"
         >
@@ -163,10 +168,7 @@ export function SignInForm() {
       </div>
 
       <Button
-        className={cn(
-          sharedStyles.submitButtonShadow,
-          "mt-5 h-11 rounded-xl text-[0.98rem]",
-        )}
+        className="mt-5 text-[0.98rem]"
         fullWidth
         size="lg"
         loading={isSubmitting}
@@ -176,10 +178,13 @@ export function SignInForm() {
         Log in
       </Button>
 
-      <p className="mt-3.5 text-center text-sm text-muted-foreground">
+      <p className="text-muted-foreground mt-3.5 text-center text-sm">
         Don&apos;t have an account?{" "}
         <Link
-          className={cn(sharedStyles.linkAccent, "font-semibold")}
+          className={cn(
+            sharedStyles.linkAccent,
+            "focus-visible:ring-ring rounded-sm font-semibold focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+          )}
           href={appendNextQuery("/sign-up", searchParams.get("next"))}
         >
           Sign up

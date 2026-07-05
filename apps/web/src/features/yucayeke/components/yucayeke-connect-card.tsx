@@ -3,17 +3,21 @@ import Link from "next/link";
 
 import type { YucayekeConnectionLink } from "@/features/yucayeke/constants/yucayeke-content";
 
-type YucayekeConnectCardProps = Readonly<{
-  link: YucayekeConnectionLink;
-}>;
-
-export function YucayekeConnectCard({ link }: YucayekeConnectCardProps) {
+/**
+ * Whole-card link on the ink (`bg-foreground`) connect band. The focus ring
+ * uses the celeste `accent` token (the azul family) because the deep-azul
+ * `ring` token is invisible against the dark ink background; the offset
+ * matches the band so the ring reads as a clean halo.
+ */
+export function YucayekeConnectCard({
+  link,
+}: Readonly<{ link: YucayekeConnectionLink }>) {
   return (
     <Link
-      className="group flex h-full min-h-[11.5rem] flex-col items-center rounded-[1.2rem] border border-white/14 bg-white/12 px-4 py-4 text-center text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm transition-transform duration-200 hover:-translate-y-0.5 hover:bg-white/14 sm:min-h-[12rem] sm:px-[1.125rem] sm:py-[1.125rem]"
+      className="group border-background/15 bg-background/10 text-background hover:bg-background/15 focus-visible:ring-accent focus-visible:ring-offset-foreground flex h-full min-h-[11.5rem] flex-col items-center rounded-2xl border p-5 text-center backdrop-blur-sm transition-transform duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:transform-none sm:min-h-[12rem] sm:p-6"
       href={link.href}
     >
-      <div className="flex size-[2.7rem] items-center justify-center rounded-[0.8rem] bg-white/18">
+      <div className="bg-background/15 flex size-12 items-center justify-center rounded-xl">
         <Image
           alt=""
           aria-hidden="true"
@@ -24,15 +28,15 @@ export function YucayekeConnectCard({ link }: YucayekeConnectCardProps) {
         />
       </div>
 
-      <h3 className="mt-4 text-[1.28rem] leading-[1.15] font-semibold tracking-[-0.04em] text-white sm:text-[1.38rem]">
+      <h3 className="text-background mt-4 text-[1.15rem] leading-tight font-semibold tracking-tight sm:text-[1.25rem]">
         {link.title}
       </h3>
 
-      <p className="mt-3 max-w-[22rem] text-[0.9rem] leading-6 text-white/76 sm:text-[0.94rem]">
+      <p className="text-background/75 mt-3 max-w-[22rem] text-[0.9rem] leading-6 sm:text-[0.94rem]">
         {link.description}
       </p>
 
-      <span className="mt-auto pt-4 text-[0.98rem] font-semibold tracking-tight text-white transition-opacity duration-200 group-hover:opacity-88">
+      <span className="text-background mt-auto pt-4 text-[0.95rem] font-semibold tracking-tight underline-offset-4 transition-colors duration-200 group-hover:underline">
         {link.ctaLabel}
       </span>
     </Link>

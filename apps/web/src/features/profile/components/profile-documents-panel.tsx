@@ -11,10 +11,10 @@ export function ProfileDocumentsPanel({
   return (
     <div className="space-y-5">
       <header className="max-w-3xl">
-        <h2 className="text-[1.45rem] leading-[1.05] font-semibold tracking-[-0.04em] text-[#123b5e] sm:text-[1.7rem] lg:text-[2rem]">
+        <h2 className="text-foreground text-[1.45rem] leading-[1.05] font-semibold tracking-tight sm:text-[1.7rem] lg:text-[2rem]">
           {documentsData.title}
         </h2>
-        <p className="mt-2 text-[0.88rem] leading-5 text-[#123b5e] sm:text-[0.93rem] lg:text-[0.98rem]">
+        <p className="text-muted-foreground mt-2 text-[0.88rem] leading-5 sm:text-[0.93rem] lg:text-[0.98rem]">
           {documentsData.description}
         </p>
       </header>
@@ -23,43 +23,43 @@ export function ProfileDocumentsPanel({
         {documentsData.metrics.map((metric) => (
           <article
             key={metric.label}
-            className="rounded-[16px] border border-[#d7d1c3] bg-white px-4 py-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.45)]"
+            className="border-border bg-surface shadow-card-soft rounded-xl border px-4 py-4"
           >
-            <p className="text-[11px] font-semibold tracking-[0.03em] text-[#6f7e81] uppercase">
+            <p className="text-muted-foreground text-[11px] font-semibold tracking-[0.03em] uppercase">
               {metric.label}
             </p>
-            <p className="mt-1.5 text-[1.42rem] leading-none font-semibold tracking-[-0.04em] text-[#1f5968] sm:text-[1.56rem]">
+            <p className="text-foreground mt-1.5 text-[1.42rem] leading-none font-semibold tracking-tight sm:text-[1.56rem]">
               {metric.value}
             </p>
-            <p className="mt-2 text-[12px] leading-[1.15rem] text-[#5a6472]">
+            <p className="text-muted-foreground mt-2 text-[12px] leading-[1.15rem]">
               {metric.helper}
             </p>
           </article>
         ))}
       </div>
 
-      <article className="rounded-[16px] border border-[#d7d1c3] bg-white p-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.4)] sm:p-5">
-        <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#123b5e] sm:text-[16px]">
+      <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
+        <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
           Document Categories
         </h3>
         <div className="mt-3 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
           {documentsData.categories.map((category) => (
             <div
               key={category.label}
-              className="rounded-[12px] border border-[#e3e9eb] bg-[#f7fbfc] px-3 py-3"
+              className="border-border bg-surface-muted rounded-lg border px-3 py-3"
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="text-[12px] font-semibold text-[#0b2033] sm:text-[13px]">
+                <p className="text-foreground min-w-0 truncate text-[12px] font-semibold sm:text-[13px]">
                   {category.label}
                 </p>
-                <span className="rounded-full bg-[#e7f2f4] px-2 py-0.5 text-[10px] font-semibold text-[#1f5968] sm:text-[11px]">
+                <span className="bg-secondary text-secondary-foreground shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold sm:text-[11px]">
                   {category.count}
                 </span>
               </div>
-              <p className="mt-1.5 text-[12px] leading-[1.15rem] text-[#607579]">
+              <p className="text-muted-foreground mt-1.5 text-[12px] leading-[1.15rem]">
                 {category.description}
               </p>
-              <p className="mt-1.5 text-[11px] font-semibold text-[#2f6c78]">
+              <p className="text-foreground mt-1.5 text-[11px] font-semibold">
                 {category.required}
               </p>
             </div>
@@ -68,15 +68,15 @@ export function ProfileDocumentsPanel({
       </article>
 
       {documentsData.missingRequired.length > 0 ? (
-        <article className="rounded-[16px] border border-[#ecd1cc] bg-[#fff5f3] p-4 shadow-[0_14px_26px_-22px_rgba(140,54,41,0.25)] sm:p-5">
-          <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#924639] sm:text-[16px]">
+        <article className="border-destructive/30 bg-destructive/5 shadow-card-soft rounded-xl border p-4 sm:p-5">
+          <h3 className="text-destructive text-[15px] font-semibold tracking-tight sm:text-[16px]">
             Missing Required Files
           </h3>
           <div className="mt-3 flex flex-wrap gap-2">
             {documentsData.missingRequired.map((item) => (
               <span
                 key={item}
-                className="inline-flex rounded-full border border-[#e8c1ba] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#904434]"
+                className="border-destructive/30 bg-destructive/10 text-destructive inline-flex rounded-full border px-3 py-1.5 text-[12px] font-semibold"
               >
                 {item}
               </span>
@@ -84,15 +84,15 @@ export function ProfileDocumentsPanel({
           </div>
         </article>
       ) : (
-        <article className="rounded-[16px] border border-[#cfe5d6] bg-[#f3fcf6] p-4 shadow-[0_14px_26px_-22px_rgba(41,117,76,0.22)] sm:p-5">
-          <p className="text-[13px] font-semibold text-[#2b6c4c] sm:text-[14px]">
+        <article className="border-border bg-secondary shadow-card-soft rounded-xl border p-4 sm:p-5">
+          <p className="text-secondary-foreground text-[13px] font-semibold sm:text-[14px]">
             Required document set is complete.
           </p>
         </article>
       )}
 
-      <article className="rounded-[16px] border border-[#d7d1c3] bg-white p-4 shadow-[0_14px_26px_-22px_rgba(36,95,109,0.4)] sm:p-5">
-        <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-[#123b5e] sm:text-[16px]">
+      <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
+        <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
           Recent Uploads
         </h3>
 
@@ -101,27 +101,27 @@ export function ProfileDocumentsPanel({
             {documentsData.uploads.map((upload) => {
               const normalizedStatus = upload.status.toLowerCase();
               const statusClassName = normalizedStatus.includes("reject")
-                ? "border-[#efc8c3] bg-[#fff3f1] text-[#a5463f]"
+                ? "border-destructive/30 bg-destructive/10 text-destructive"
                 : normalizedStatus.includes("approve")
-                  ? "border-[#cde5d5] bg-[#f1fbf5] text-[#287347]"
-                  : "border-[#d9e2de] bg-[#f5f8f6] text-[#5a6661]";
+                  ? "border-border bg-secondary text-secondary-foreground"
+                  : "border-border bg-surface-muted text-foreground";
 
               return (
                 <div
                   key={upload.id}
-                  className="rounded-[12px] border border-[#d9e3df] bg-[#f7fbf9] px-3 py-3"
+                  className="border-border bg-surface rounded-lg border px-3 py-3"
                 >
                   <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
-                      <p className="truncate text-[0.84rem] font-semibold tracking-[-0.01em] text-[#243238]">
+                      <p className="text-foreground truncate text-[0.84rem] font-semibold tracking-[-0.01em]">
                         {upload.name}
                       </p>
-                      <p className="mt-0.5 text-[0.74rem] text-[#6f7773]">
+                      <p className="text-muted-foreground mt-0.5 text-[0.74rem]">
                         {upload.category} · {upload.size} · {upload.uploadedAt}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex shrink-0 flex-wrap items-center gap-2">
                       <span
                         className={cn(
                           "rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold tracking-[0.04em] uppercase",
@@ -131,12 +131,13 @@ export function ProfileDocumentsPanel({
                         {upload.status}
                       </span>
                       <a
-                        className="border-primary/20 text-primary hover:bg-primary/10 rounded-full border bg-white px-2.5 py-1 text-[0.68rem] font-semibold tracking-[0.04em] uppercase transition-colors"
+                        className="border-primary/20 text-primary hover:bg-primary/10 bg-surface rounded-full border px-3 py-1.5 text-[0.68rem] font-semibold tracking-[0.04em] uppercase transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
                         href={upload.url}
                         rel="noreferrer"
                         target="_blank"
                       >
                         View
+                        <span className="sr-only"> {upload.name}</span>
                       </a>
                     </div>
                   </div>

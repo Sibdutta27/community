@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { SvgIcon } from "@/components/shared/svg-icon";
 
@@ -23,11 +25,11 @@ export function ProfileSummary({
   return (
     <div className="max-w-[33rem] min-w-0 flex-1 text-left">
       <div className="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 lg:flex-nowrap">
-        <h1 className="max-w-[13ch] text-[clamp(1.6rem,6vw,2.35rem)] leading-[0.96] font-semibold tracking-[-0.05em] text-[#135e71] sm:max-w-none sm:text-[clamp(1.85rem,4vw,2.7rem)] lg:text-[clamp(2.1rem,3vw,3rem)] lg:leading-none">
+        <h1 className="text-foreground max-w-[13ch] text-[clamp(1.6rem,6vw,2.35rem)] leading-[0.96] font-semibold tracking-[-0.05em] sm:max-w-none sm:text-[clamp(1.85rem,4vw,2.7rem)] lg:text-[clamp(2.1rem,3vw,3rem)] lg:leading-none">
           {name}
         </h1>
 
-        <div className="inline-flex h-[30px] shrink-0 items-center gap-1 rounded-full border-primary/40 bg-secondary text-foreground border px-2.5 text-[11px] font-semibold shadow-[0_10px_24px_-18px_rgba(20,26,34,0.3)] sm:h-8 sm:px-3 sm:text-[12px] lg:h-[30px] lg:px-2.5">
+        <div className="border-primary/40 bg-secondary text-secondary-foreground shadow-card-soft inline-flex h-[30px] shrink-0 items-center gap-1 rounded-full border px-2.5 text-[11px] font-semibold sm:h-8 sm:px-3 sm:text-[12px] lg:h-[30px] lg:px-2.5">
           <SvgIcon
             sizeClassName="size-2.5 sm:size-3"
             src="/icons/profile/verified.svg"
@@ -37,7 +39,7 @@ export function ProfileSummary({
       </div>
 
       {memberSince ? (
-        <p className="mt-2 text-[14px] font-semibold tracking-[-0.03em] text-[#2f3336] sm:mt-2.5 sm:text-[16px] lg:text-[17px]">
+        <p className="text-foreground mt-2 text-[14px] font-semibold tracking-[-0.03em] sm:mt-2.5 sm:text-[16px] lg:text-[17px]">
           {memberSince}
         </p>
       ) : null}
@@ -46,13 +48,13 @@ export function ProfileSummary({
         {details.map((detail) => (
           <div
             key={detail.value}
-            className="flex items-center gap-1.5 whitespace-normal sm:whitespace-nowrap"
+            className="flex min-w-0 items-center gap-1.5 whitespace-normal sm:whitespace-nowrap"
           >
             <SvgIcon
               sizeClassName="size-4 sm:size-[1.125rem]"
               src={detail.iconSrc}
             />
-            <span className="text-[12px] font-semibold tracking-[-0.02em] text-[#174451] sm:text-[13px] sm:leading-none lg:text-[14px]">
+            <span className="text-foreground min-w-0 text-[12px] font-semibold tracking-[-0.02em] sm:text-[13px] sm:leading-none lg:text-[14px]">
               {detail.value}
             </span>
           </div>
@@ -61,22 +63,15 @@ export function ProfileSummary({
 
       <div className="mt-5 flex max-w-full items-center gap-2 sm:mt-6 sm:gap-2.5">
         {canEditProfile ? (
-          <Button
-            variant="ghost"
-            className="h-[38px] shrink-0 rounded-[10px] bg-primary px-3 text-[12px] font-medium tracking-[-0.02em] whitespace-nowrap text-white shadow-[0_12px_24px_-20px_rgba(11,32,51,0.4)] hover:brightness-95 hover:text-white sm:h-[40px] sm:px-3.5 sm:text-[13px] lg:h-[38px] lg:px-3"
-            leftIcon={
+          <Button asChild size="sm" variant="primary">
+            <Link href="/dashboard#enrollment-dashboard">
               <SvgIcon
-                sizeClassName="size-[0.95rem] sm:size-4"
+                sizeClassName="size-4"
                 src="/icons/profile/edit.svg"
+                toneColor="var(--primary-foreground)"
               />
-            }
-            size="xl"
-            type="button"
-            onClick={() => {
-              window.location.href = "/dashboard#enrollment-dashboard";
-            }}
-          >
-            Edit Profile
+              <span>Edit Profile</span>
+            </Link>
           </Button>
         ) : null}
       </div>

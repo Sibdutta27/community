@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-import { montserrat, poppins } from "@/styles/fonts";
 
 import sharedStyles from "../styles/home-shared.module.scss";
 
@@ -59,35 +58,28 @@ export function HomeEnrollmentFaqSection() {
       variants={fadeInUpContainer}
     >
       <div
-        className={cn(sharedStyles.sectionContainer, "py-6 sm:py-8 lg:py-10")}
+        className={cn(
+          sharedStyles.sectionContainer,
+          "pt-2 pb-12 sm:pb-14 lg:pb-16",
+        )}
       >
         <div className="mx-auto max-w-5xl text-center">
-          <motion.span
-            className={cn(
-              sharedStyles.sectionBadge,
-              poppins.className,
-              "border-border bg-surface-muted text-foreground border px-4.5 py-1.75 text-[0.78rem] tracking-[-0.02em]",
-            )}
+          <motion.p
+            className="text-muted-foreground text-xs font-semibold tracking-[0.3em] uppercase"
             variants={fadeInUpItem}
           >
             Frequently Asked Questions
-          </motion.span>
+          </motion.p>
 
           <motion.h2
-            className={cn(
-              montserrat.className,
-              "text-foreground mx-auto mt-4 max-w-4xl text-[clamp(1.55rem,3.15vw,3rem)] leading-[1.08] font-semibold tracking-[-0.05em]",
-            )}
+            className="text-foreground mx-auto mt-3 max-w-4xl text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl"
             variants={fadeInUpItem}
           >
             Questions About Enrollment?
           </motion.h2>
 
           <motion.p
-            className={cn(
-              poppins.className,
-              "text-muted-foreground mx-auto mt-3 max-w-4xl text-[clamp(0.88rem,1.15vw,0.98rem)] leading-[1.45] tracking-[-0.02em]",
-            )}
+            className="text-muted-foreground mx-auto mt-4 max-w-4xl text-sm leading-6 sm:text-base"
             variants={fadeInUpItem}
           >
             Find answers to common questions about the enrollment process,
@@ -95,9 +87,9 @@ export function HomeEnrollmentFaqSection() {
           </motion.p>
         </div>
 
-        <div className="mt-6 grid gap-3.5 lg:mt-7 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
+        <div className="mt-8 grid gap-4 lg:mt-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
           <motion.div
-            className="border-border bg-surface-muted relative min-h-[15rem] overflow-hidden rounded-2xl border sm:min-h-[19rem] lg:min-h-[28rem]"
+            className="border-border bg-surface-muted shadow-card-soft relative min-h-[15rem] overflow-hidden rounded-2xl border sm:min-h-[19rem] lg:min-h-[28rem]"
             variants={fadeInUpItem}
           >
             <Image
@@ -116,52 +108,45 @@ export function HomeEnrollmentFaqSection() {
               return (
                 <motion.article
                   key={item.id}
-                  className="border-border bg-surface overflow-hidden rounded-xl border shadow-[0_14px_30px_-28px_rgba(0,0,0,0.16)]"
+                  className="border-border bg-surface shadow-card-soft overflow-hidden rounded-2xl border"
                   variants={fadeInUpItem}
                 >
-                  <button
-                    aria-controls={`faq-panel-${item.id}`}
-                    aria-expanded={isOpen}
-                    className="flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-4 text-left sm:px-4.5 sm:py-4.5 lg:px-5"
-                    type="button"
-                    onClick={() =>
-                      setOpenItemId((currentId) =>
-                        currentId === item.id ? null : item.id,
-                      )
-                    }
-                  >
-                    <span
-                      className={cn(
-                        montserrat.className,
-                        "text-[clamp(0.9rem,1.08vw,1rem)] leading-[1.22] font-semibold tracking-[-0.03em] transition-colors",
-                        isOpen ? "text-foreground" : "text-foreground/80",
-                      )}
+                  <h3>
+                    <button
+                      aria-controls={`faq-panel-${item.id}`}
+                      aria-expanded={isOpen}
+                      className="focus-visible:ring-ring flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-4 text-left focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none sm:px-4.5 sm:py-4.5 lg:px-5"
+                      type="button"
+                      onClick={() =>
+                        setOpenItemId((currentId) =>
+                          currentId === item.id ? null : item.id,
+                        )
+                      }
                     >
-                      {item.question}
-                    </span>
+                      <span
+                        className={cn(
+                          "text-[0.95rem] leading-[1.3] font-semibold tracking-tight transition-colors sm:text-[1rem]",
+                          isOpen ? "text-foreground" : "text-foreground/80",
+                        )}
+                      >
+                        {item.question}
+                      </span>
 
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        montserrat.className,
-                        "text-foreground min-w-5 text-center text-[1.15rem] leading-none font-semibold tracking-[-0.06em]",
-                      )}
-                    >
-                      {isOpen ? "−" : "+"}
-                    </span>
-                  </button>
+                      <span
+                        aria-hidden="true"
+                        className="text-foreground min-w-5 text-center text-[1.15rem] leading-none font-semibold"
+                      >
+                        {isOpen ? "−" : "+"}
+                      </span>
+                    </button>
+                  </h3>
 
                   {isOpen ? (
                     <div
                       className="border-border border-t px-4 pt-3 pb-4 sm:px-4.5 sm:pb-4.5 lg:px-5 lg:pb-5"
                       id={`faq-panel-${item.id}`}
                     >
-                      <p
-                        className={cn(
-                          poppins.className,
-                          "text-muted-foreground max-w-3xl text-[0.82rem] leading-[1.55] tracking-[-0.01em] sm:text-[0.86rem]",
-                        )}
-                      >
+                      <p className="text-muted-foreground max-w-3xl text-[0.84rem] leading-[1.55] sm:text-[0.88rem]">
                         {item.answer}
                       </p>
                     </div>
