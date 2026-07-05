@@ -2,6 +2,8 @@
 
 import { useId, useState } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 
 import sharedStyles from "../styles/profile-shared.module.scss";
@@ -14,7 +16,6 @@ import { ProfileSettingsPanel } from "./profile-settings-panel";
 import { ProfileYucayekePanel } from "./profile-yucayeke-panel";
 import {
   type ProfileActivityData,
-  profileConfig,
   type ProfileDocumentsData,
   type ProfileKinshipData,
   type ProfileLineageTabValue,
@@ -38,16 +39,15 @@ export function ProfileLineageSection({
   documentsData: ProfileDocumentsData;
   settingsData: ProfileSettingsData;
 }>) {
+  const t = useTranslations("profile");
   const [activeTab, setActiveTab] =
     useState<ProfileLineageTabValue>("overview");
   const tabPanelBaseId = useId();
-  const activeTabLabel =
-    profileConfig.lineageTabs.find((tab) => tab.value === activeTab)?.label ??
-    "Section";
+  const activeTabLabel = t(`tabs.${activeTab}`);
 
   return (
     <section
-      aria-label="Profile sections"
+      aria-label={t("tabs.ariaLabel")}
       className="border-border bg-surface shadow-card mt-8 w-full overflow-hidden rounded-2xl border sm:mt-10"
     >
       <ProfileLineageTabs
@@ -126,8 +126,7 @@ export function ProfileLineageSection({
                 "mt-2 text-[13px] sm:text-[14px]",
               )}
             >
-              This section is not implemented yet. Overview, Kinship, Yucayeke,
-              Documents, Activity, and Settings tabs are currently available.
+              {t("tabs.notImplemented")}
             </p>
           </div>
         )}

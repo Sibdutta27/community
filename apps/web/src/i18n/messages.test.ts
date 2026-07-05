@@ -24,6 +24,7 @@ describe("message catalogs", () => {
       "enrollment",
       "consent",
       "errors",
+      "profile",
     ]) {
       expect(enMessages).toHaveProperty(namespace);
       expect(esMessages).toHaveProperty(namespace);

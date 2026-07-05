@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 
 import type { ProfileSettingsData } from "../config/profile-config";
@@ -7,6 +9,8 @@ export function ProfileSettingsPanel({
 }: Readonly<{
   settingsData: ProfileSettingsData;
 }>) {
+  const t = useTranslations("profile");
+
   return (
     <div className="space-y-5">
       <header className="max-w-3xl">
@@ -21,7 +25,7 @@ export function ProfileSettingsPanel({
       <div className="grid gap-3 lg:grid-cols-2">
         <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Account Snapshot
+            {t("settings.accountSnapshot")}
           </h3>
           <dl className="mt-3 space-y-2.5">
             {settingsData.accountFacts.map((fact) => (
@@ -42,7 +46,7 @@ export function ProfileSettingsPanel({
 
         <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Notification Preferences
+            {t("settings.notificationPreferences")}
           </h3>
           <ul className="mt-3 space-y-2.5">
             {settingsData.preferences.map((preference) => (
@@ -62,7 +66,9 @@ export function ProfileSettingsPanel({
                         : "bg-surface-muted text-foreground",
                     )}
                   >
-                    {preference.enabled ? "Enabled" : "Disabled"}
+                    {preference.enabled
+                      ? t("settings.enabled")
+                      : t("settings.disabled")}
                   </span>
                 </div>
                 <p className="text-muted-foreground mt-1.5 text-[12px] leading-[1.15rem] sm:text-[13px]">
@@ -76,7 +82,7 @@ export function ProfileSettingsPanel({
 
       <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
         <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-          Security And Access
+          {t("settings.securityAndAccess")}
         </h3>
         <ul className="mt-3 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
           {settingsData.securityItems.map((item) => (

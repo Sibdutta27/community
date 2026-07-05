@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 
 import sharedStyles from "../styles/profile-shared.module.scss";
@@ -8,6 +10,8 @@ export function ProfileDocumentsPanel({
 }: Readonly<{
   documentsData: ProfileDocumentsData;
 }>) {
+  const t = useTranslations("profile");
+
   return (
     <div className="space-y-5">
       <header className="max-w-3xl">
@@ -40,7 +44,7 @@ export function ProfileDocumentsPanel({
 
       <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
         <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-          Document Categories
+          {t("documents.categoriesTitle")}
         </h3>
         <div className="mt-3 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
           {documentsData.categories.map((category) => (
@@ -70,7 +74,7 @@ export function ProfileDocumentsPanel({
       {documentsData.missingRequired.length > 0 ? (
         <article className="border-destructive/30 bg-destructive/5 shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-destructive text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Missing Required Files
+            {t("documents.missingRequiredTitle")}
           </h3>
           <div className="mt-3 flex flex-wrap gap-2">
             {documentsData.missingRequired.map((item) => (
@@ -86,14 +90,14 @@ export function ProfileDocumentsPanel({
       ) : (
         <article className="border-border bg-secondary shadow-card-soft rounded-xl border p-4 sm:p-5">
           <p className="text-secondary-foreground text-[13px] font-semibold sm:text-[14px]">
-            Required document set is complete.
+            {t("documents.requiredComplete")}
           </p>
         </article>
       )}
 
       <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
         <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-          Recent Uploads
+          {t("documents.recentUploads")}
         </h3>
 
         {documentsData.uploads.length > 0 ? (
@@ -136,7 +140,7 @@ export function ProfileDocumentsPanel({
                         rel="noreferrer"
                         target="_blank"
                       >
-                        View
+                        {t("documents.view")}
                         <span className="sr-only"> {upload.name}</span>
                       </a>
                     </div>
@@ -148,7 +152,7 @@ export function ProfileDocumentsPanel({
         ) : (
           <div className={cn(sharedStyles.emptyStatePlain, "mt-3 px-4 py-6")}>
             <p className={cn(sharedStyles.emptyDescription, "text-[13px]")}>
-              No uploads available yet.
+              {t("documents.noUploads")}
             </p>
           </div>
         )}

@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import { SvgIcon } from "@/components/shared/svg-icon";
 
@@ -20,6 +22,7 @@ export function ProfileSummary({
   memberSince,
   memberStatus,
 }: ProfileSummaryProps) {
+  const t = useTranslations("profile");
   const canEditProfile = enrollmentStatus?.trim().toUpperCase() !== "APPROVED";
 
   return (
@@ -70,7 +73,7 @@ export function ProfileSummary({
                 src="/icons/profile/edit.svg"
                 toneColor="var(--primary-foreground)"
               />
-              <span>Edit Profile</span>
+              <span>{t("summary.editProfile")}</span>
             </Link>
           </Button>
         ) : null}

@@ -1,3 +1,5 @@
+import type { useTranslations } from "next-intl";
+
 import type { AuthUser } from "@/lib/auth";
 import type {
   ProfileResponse,
@@ -28,9 +30,13 @@ import {
 
 type AccountInfoResponse = ProfileResponse;
 
+/** Translator scoped to the `profile` message namespace. */
+export type ProfileTranslator = ReturnType<typeof useTranslations<"profile">>;
+
 type BuildProfileViewDataArgs = Readonly<{
   accountInfo?: AccountInfoResponse | null;
   authUser: AuthUser;
+  t: ProfileTranslator;
 }>;
 
 export type ProfileViewData = Readonly<{
@@ -47,25 +53,40 @@ export type ProfileViewData = Readonly<{
 
 const fallbackCopy = profileConfig.copy;
 const fallbackDetails = profileConfig.details;
-const fallbackKinship = profileConfig.kinship;
 const fallbackOverview = profileConfig.overview;
-const fallbackYucayeke = profileConfig.yucayeke;
-const fallbackDocuments = profileConfig.documents;
 const fallbackActivity = profileConfig.activity;
-const fallbackSettings = profileConfig.settings;
 const fallbackRegionalMembers = profileConfig.regionalMembers;
 
-const documentTypeLabels: Readonly<Record<EnrollmentDocumentType, string>> = {
-  PROFILE_PICTURE: "Profile Picture",
-  USER_PHOTO: "Your Photo",
-  GENEALOGICAL_RECORDS: "Genealogical Records",
-  KINSHIP_LETTERS: "Kinship Letters",
-  ORAL_HISTORY: "Oral History",
-  DNA_TESTING: "DNA Testing",
-};
+const documentTypeLabelKeys = {
+  PROFILE_PICTURE: "documents.types.profilePicture",
+  USER_PHOTO: "documents.types.userPhoto",
+  GENEALOGICAL_RECORDS: "documents.types.genealogicalRecords",
+  KINSHIP_LETTERS: "documents.types.kinshipLetters",
+  ORAL_HISTORY: "documents.types.oralHistory",
+  DNA_TESTING: "documents.types.dnaTesting",
+} as const satisfies Readonly<Record<EnrollmentDocumentType, string>>;
 
-const missingValueLabel = "Not provided";
-const notAvailableLabel = "Not available";
+const enrollmentStatusKeys = {
+  NOT_STARTED: "enrollmentStatus.notStarted",
+  DRAFT: "enrollmentStatus.draft",
+  SUBMITTED: "enrollmentStatus.submitted",
+  APPROVED: "enrollmentStatus.approved",
+  REJECTED: "enrollmentStatus.rejected",
+} as const;
+
+const documentStatusKeys = {
+  PENDING: "documentStatus.pending",
+  APPROVED: "documentStatus.approved",
+  REJECTED: "documentStatus.rejected",
+} as const;
+
+const overviewChecklistKeys = [
+  "overview.checklist.step1",
+  "overview.checklist.step2",
+  "overview.checklist.step3",
+  "overview.checklist.step4",
+] as const;
+
 const emptyValueDash = "—";
 const defaultEnrollmentStepCount = 4;
 
@@ -73,33 +94,38 @@ const defaultEnrollmentStepCount = 4;
  * Kinship groups in render order — mirrors the backend `AncestryRelation`
  * slots written by enrollment steps 2 (maternal) and 3 (paternal).
  */
-const kinshipGroupDefinitions: readonly Readonly<{
-  emptyMessage: string;
-  relations: readonly Readonly<{
-    label: string;
-    relation: EnrollmentAncestryRelation;
-  }>[];
-  title: string;
-}>[] = [
+const kinshipGroupDefinitions = [
   {
-    emptyMessage: "No maternal kinship recorded yet.",
+    emptyMessageKey: "kinship.maternalEmpty",
     relations: [
-      { label: "Mother", relation: "MOTHER" },
-      { label: "Maternal Grandmother", relation: "MATERNAL_GRANDMOTHER" },
-      { label: "Maternal Grandfather", relation: "MATERNAL_GRANDFATHER" },
+      { labelKey: "kinship.relations.mother", relation: "MOTHER" },
+      {
+        labelKey: "kinship.relations.maternalGrandmother",
+        relation: "MATERNAL_GRANDMOTHER",
+      },
+      {
+        labelKey: "kinship.relations.maternalGrandfather",
+        relation: "MATERNAL_GRANDFATHER",
+      },
     ],
-    title: "Maternal Line",
+    titleKey: "kinship.maternalLine",
   },
   {
-    emptyMessage: "No paternal kinship recorded yet.",
+    emptyMessageKey: "kinship.paternalEmpty",
     relations: [
-      { label: "Father", relation: "FATHER" },
-      { label: "Paternal Grandmother", relation: "PATERNAL_GRANDMOTHER" },
-      { label: "Paternal Grandfather", relation: "PATERNAL_GRANDFATHER" },
+      { labelKey: "kinship.relations.father", relation: "FATHER" },
+      {
+        labelKey: "kinship.relations.paternalGrandmother",
+        relation: "PATERNAL_GRANDMOTHER",
+      },
+      {
+        labelKey: "kinship.relations.paternalGrandfather",
+        relation: "PATERNAL_GRANDFATHER",
+      },
     ],
-    title: "Paternal Line",
+    titleKey: "kinship.paternalLine",
   },
-];
+] as const;
 
 function readText(value: string | null | undefined) {
   if (!value) {
@@ -122,6 +148,47 @@ function toStatusLabel(value: string | null | undefined) {
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+/**
+ * Enrollment status shown as UI chrome: known enum values render via the
+ * message catalog; unknown backend values fall back to title-casing.
+ */
+function toEnrollmentStatusLabel(
+  t: ProfileTranslator,
+  value: string | null | undefined,
+) {
+  const normalizedValue = readText(value).toUpperCase();
+  const key =
+    enrollmentStatusKeys[normalizedValue as keyof typeof enrollmentStatusKeys];
+
+  return key ? t(key) : toStatusLabel(value);
+}
+
+function toDocumentStatusLabel(
+  t: ProfileTranslator,
+  value: string | null | undefined,
+) {
+  const normalizedValue = readText(value).toUpperCase();
+  const key =
+    documentStatusKeys[normalizedValue as keyof typeof documentStatusKeys];
+
+  return key ? t(key) : toStatusLabel(value);
+}
+
+function resolveEnrollmentStatus(
+  t: ProfileTranslator,
+  accountInfo?: AccountInfoResponse | null,
+) {
+  return (
+    toEnrollmentStatusLabel(
+      t,
+      accountInfo?.enrollmentStatus ?? accountInfo?.enrollment?.status,
+    ) ||
+    (accountInfo?.hasEnrollment
+      ? t("enrollmentStatus.inProgress")
+      : t("enrollmentStatus.notStarted"))
+  );
 }
 
 function formatDateLabel(value: string | null | undefined) {
@@ -248,19 +315,23 @@ function hasAncestorContent(
   );
 }
 
-function formatBorikuaTainoLabel(value: boolean | null | undefined) {
+function formatBorikuaTainoLabel(
+  t: ProfileTranslator,
+  value: boolean | null | undefined,
+) {
   if (value === true) {
-    return "Yes";
+    return t("kinship.yes");
   }
 
   if (value === false) {
-    return "No";
+    return t("kinship.no");
   }
 
   return emptyValueDash;
 }
 
 function buildAncestorFacts(
+  t: ProfileTranslator,
   ancestor: EnrollmentAncestrySummary,
 ): ProfileKinshipFact[] {
   const facts: ProfileKinshipFact[] = [];
@@ -270,49 +341,47 @@ function buildAncestorFacts(
   const birthDate = formatDateLabel(ancestor.dateOfBirth);
 
   if (municipality) {
-    facts.push({ label: "Municipality", value: municipality });
+    facts.push({ label: t("kinship.facts.municipality"), value: municipality });
   }
 
   if (yucayeke) {
-    facts.push({ label: "Yucayeke", value: yucayeke });
+    facts.push({ label: t("kinship.facts.yucayeke"), value: yucayeke });
   }
 
   if (nationality) {
-    facts.push({ label: "Nationality", value: nationality });
+    facts.push({ label: t("kinship.facts.nationality"), value: nationality });
   }
 
   if (birthDate) {
-    facts.push({ label: "Date of Birth", value: birthDate });
+    facts.push({ label: t("kinship.facts.dateOfBirth"), value: birthDate });
   }
 
   facts.push({
-    label: "Borikua Taíno",
-    value: formatBorikuaTainoLabel(ancestor.isBorikuaTaino),
+    label: t("kinship.facts.borikuaTaino"),
+    value: formatBorikuaTainoLabel(t, ancestor.isBorikuaTaino),
   });
 
   return facts;
 }
 
 function mapKinshipGroupAncestors(
+  t: ProfileTranslator,
   ancestry: EnrollmentAncestryMap | undefined,
-  relations: readonly Readonly<{
-    label: string;
-    relation: EnrollmentAncestryRelation;
-  }>[],
+  relations: (typeof kinshipGroupDefinitions)[number]["relations"],
 ): ProfileKinshipAncestor[] {
   const ancestors: ProfileKinshipAncestor[] = [];
 
-  for (const { label, relation } of relations) {
-    const ancestor = ancestry?.[relation];
+  for (const { labelKey, relation } of relations) {
+    const ancestor = ancestry?.[relation as EnrollmentAncestryRelation];
 
     if (!hasAncestorContent(ancestor)) {
       continue;
     }
 
     ancestors.push({
-      facts: buildAncestorFacts(ancestor),
+      facts: buildAncestorFacts(t, ancestor),
       name: readText(ancestor.name) || emptyValueDash,
-      relation: label,
+      relation: t(labelKey),
     });
   }
 
@@ -320,27 +389,31 @@ function mapKinshipGroupAncestors(
 }
 
 function mapKinshipData(
+  t: ProfileTranslator,
   accountInfo?: AccountInfoResponse | null,
 ): ProfileKinshipData {
   const ancestry = accountInfo?.enrollment?.ancestry;
 
   return {
-    description: fallbackKinship.description,
+    description: t("kinship.description"),
     groups: kinshipGroupDefinitions.map((group) => ({
-      ancestors: mapKinshipGroupAncestors(ancestry, group.relations),
-      emptyMessage: group.emptyMessage,
-      title: group.title,
+      ancestors: mapKinshipGroupAncestors(t, ancestry, group.relations),
+      emptyMessage: t(group.emptyMessageKey),
+      title: t(group.titleKey),
     })),
-    title: fallbackKinship.title,
+    title: t("kinship.title"),
   };
 }
 
-function countRecordedAncestors(accountInfo?: AccountInfoResponse | null) {
+function countRecordedAncestors(
+  t: ProfileTranslator,
+  accountInfo?: AccountInfoResponse | null,
+) {
   const ancestry = accountInfo?.enrollment?.ancestry;
 
   return kinshipGroupDefinitions.reduce(
     (count, group) =>
-      count + mapKinshipGroupAncestors(ancestry, group.relations).length,
+      count + mapKinshipGroupAncestors(t, ancestry, group.relations).length,
     0,
   );
 }
@@ -412,11 +485,11 @@ function formatDocumentFileSize(fileSizeInBytes: number) {
   return `${fileSizeInBytes} B`;
 }
 
-function getDocumentDisplayName(fileName: string) {
+function getDocumentDisplayName(t: ProfileTranslator, fileName: string) {
   const normalizedValue = readText(fileName);
 
   if (!normalizedValue) {
-    return "Uploaded document";
+    return t("documents.uploadedDocument");
   }
 
   const fileNameSegments = normalizedValue.split("/");
@@ -424,11 +497,14 @@ function getDocumentDisplayName(fileName: string) {
   return fileNameSegments[fileNameSegments.length - 1] || normalizedValue;
 }
 
-function getMissingRequiredDocuments(documentMap: DocumentMap) {
+function getMissingRequiredDocuments(
+  t: ProfileTranslator,
+  documentMap: DocumentMap,
+) {
   const missingDocuments: string[] = [];
 
   if (documentMap.USER_PHOTO.length < 1) {
-    missingDocuments.push("Your Photo");
+    missingDocuments.push(t("documents.types.userPhoto"));
   }
 
   return missingDocuments;
@@ -462,6 +538,7 @@ function getPendingDocumentCount(
 // -----------------------------
 
 function mapOverviewData(
+  t: ProfileTranslator,
   accountInfo?: AccountInfoResponse | null,
 ): ProfileOverviewData {
   const enrollment = accountInfo?.enrollment;
@@ -470,11 +547,9 @@ function mapOverviewData(
   const stepState = getResolvedStepState(accountInfo);
   const completedSteps = getCompletedStepsLabel(stepState);
   const totalDocuments = getDocumentCount(enrollment?.documents);
-  const recordedAncestors = countRecordedAncestors(accountInfo);
+  const recordedAncestors = countRecordedAncestors(t, accountInfo);
 
-  const enrollmentStatus =
-    toStatusLabel(accountInfo?.enrollmentStatus ?? enrollment?.status) ||
-    (accountInfo?.hasEnrollment ? "Enrollment In Progress" : "Not Started");
+  const enrollmentStatus = resolveEnrollmentStatus(t, accountInfo);
 
   const fullName = buildFullName([
     personalInfo?.firstName,
@@ -482,73 +557,79 @@ function mapOverviewData(
   ]);
   const phoneTypeLabel = toStatusLabel(contact?.phoneType);
   const phoneLabel = formatPhoneLabel(contact?.phoneNumber);
+  const missingValueLabel = t("summary.notProvided");
 
   return {
-    checklist: fallbackOverview.checklist.map((item, index) => {
+    checklist: fallbackOverview.checklist.map((_, index) => {
       const stepKey = String(index + 1) as keyof EnrollmentStepState;
       return {
         completed: stepState?.[stepKey] ?? false,
-        label: item.label,
+        label: t(overviewChecklistKeys[index]),
       };
     }),
     contactFacts: [
       {
-        ...fallbackOverview.contactFacts[0],
+        label: t("overview.facts.email"),
         value:
           readText(contact?.email) ||
           readText(accountInfo?.user?.email) ||
           missingValueLabel,
       },
       {
-        ...fallbackOverview.contactFacts[1],
+        label: t("overview.facts.phone"),
         value:
           phoneLabel && phoneTypeLabel
             ? `${phoneLabel} (${phoneTypeLabel})`
             : phoneLabel || missingValueLabel,
       },
     ],
-    description: fallbackOverview.description,
+    description: t("overview.description"),
     metrics: [
       {
-        ...fallbackOverview.metrics[0],
+        helper: t("overview.metrics.enrollmentStatus.helper"),
+        label: t("overview.metrics.enrollmentStatus.label"),
         value: enrollmentStatus,
       },
       {
-        ...fallbackOverview.metrics[1],
+        helper: t("overview.metrics.completedSteps.helper"),
+        label: t("overview.metrics.completedSteps.label"),
         value: completedSteps,
       },
       {
-        ...fallbackOverview.metrics[2],
+        helper: t("overview.metrics.documentsUploaded.helper"),
+        label: t("overview.metrics.documentsUploaded.label"),
         value: String(totalDocuments),
       },
       {
-        ...fallbackOverview.metrics[3],
+        helper: t("overview.metrics.ancestorsRecorded.helper"),
+        label: t("overview.metrics.ancestorsRecorded.label"),
         value: String(recordedAncestors),
       },
     ],
     personalFacts: [
       {
-        ...fallbackOverview.personalFacts[0],
+        label: t("overview.facts.fullName"),
         value: fullName || missingValueLabel,
       },
       {
-        ...fallbackOverview.personalFacts[1],
+        label: t("overview.facts.occupation"),
         value: readText(personalInfo?.occupation) || missingValueLabel,
       },
       {
-        ...fallbackOverview.personalFacts[2],
+        label: t("overview.facts.maritalStatus"),
         value: toStatusLabel(personalInfo?.maritalStatus) || missingValueLabel,
       },
       {
-        ...fallbackOverview.personalFacts[3],
+        label: t("overview.facts.identity"),
         value: toStatusLabel(personalInfo?.identity) || missingValueLabel,
       },
     ],
-    title: fallbackOverview.title,
+    title: t("overview.title"),
   };
 }
 
 function mapYucayekeData(
+  t: ProfileTranslator,
   accountInfo?: AccountInfoResponse | null,
 ): ProfileYucayekeData {
   const enrollment = accountInfo?.enrollment;
@@ -556,14 +637,14 @@ function mapYucayekeData(
   const stepState = getResolvedStepState(accountInfo);
   const completedSteps = getCompletedStepsLabel(stepState);
   const totalDocuments = getDocumentCount(enrollment?.documents);
-  const recordedAncestors = countRecordedAncestors(accountInfo);
-  const kinshipData = mapKinshipData(accountInfo);
+  const recordedAncestors = countRecordedAncestors(t, accountInfo);
+  const kinshipData = mapKinshipData(t, accountInfo);
   const declaredYucayeke = readText(personalInfo?.yucayeke);
   const communityName = declaredYucayeke
-    ? `Yucayeke ${declaredYucayeke}`
+    ? t("yucayeke.communityName", { name: declaredYucayeke })
     : personalInfo?.yucayekeUnknown
-      ? "Yucayeke Unknown"
-      : "Yucayeke";
+      ? t("yucayeke.unknownCommunity")
+      : t("yucayeke.defaultCommunity");
   const requiredConsents = (enrollment?.consent ?? []).filter(
     (consent) => consent.required,
   );
@@ -574,9 +655,10 @@ function mapYucayekeData(
     formatPhoneLabel(enrollment?.contact?.phoneNumber) ||
     readText(enrollment?.contact?.email) ||
     readText(accountInfo?.user?.email);
-  const statusLabel =
-    toStatusLabel(accountInfo?.enrollmentStatus ?? enrollment?.status) ||
-    (accountInfo?.hasEnrollment ? "Enrollment In Progress" : "Not Started");
+  const statusLabel = resolveEnrollmentStatus(t, accountInfo);
+  const missingValueLabel = t("summary.notProvided");
+  const municipalityFactLabel = t("kinship.facts.municipality");
+  const nationalityFactLabel = t("kinship.facts.nationality");
 
   const circles = [
     {
@@ -584,15 +666,16 @@ function mapYucayekeData(
       name:
         buildFullName([personalInfo?.firstName, personalInfo?.lastName]) ||
         readText(accountInfo?.user?.name) ||
-        "Member",
-      role: "You",
+        t("summary.memberFallback"),
+      role: t("yucayeke.you"),
     },
     ...kinshipData.groups.flatMap((group) =>
       group.ancestors.map((ancestor) => ({
         detail:
-          ancestor.facts.find((fact) => fact.label === "Municipality")
+          ancestor.facts.find((fact) => fact.label === municipalityFactLabel)
             ?.value ??
-          ancestor.facts.find((fact) => fact.label === "Nationality")?.value ??
+          ancestor.facts.find((fact) => fact.label === nationalityFactLabel)
+            ?.value ??
           missingValueLabel,
         name: ancestor.name,
         role: ancestor.relation,
@@ -603,40 +686,44 @@ function mapYucayekeData(
   return {
     circles,
     communityName,
-    description: fallbackYucayeke.description,
+    description: t("yucayeke.description"),
     metrics: [
       {
-        ...fallbackYucayeke.metrics[0],
+        helper: t("yucayeke.metrics.completedSteps.helper"),
+        label: t("yucayeke.metrics.completedSteps.label"),
         value: completedSteps,
       },
       {
-        ...fallbackYucayeke.metrics[1],
+        helper: t("yucayeke.metrics.ancestorsRecorded.helper"),
+        label: t("yucayeke.metrics.ancestorsRecorded.label"),
         value: String(recordedAncestors),
       },
       {
-        ...fallbackYucayeke.metrics[2],
+        helper: t("yucayeke.metrics.documents.helper"),
+        label: t("yucayeke.metrics.documents.label"),
         value: String(totalDocuments),
       },
       {
-        ...fallbackYucayeke.metrics[3],
+        helper: t("yucayeke.metrics.consents.helper"),
+        label: t("yucayeke.metrics.consents.label"),
         value: `${acceptedRequiredConsentsCount} / ${requiredConsents.length}`,
       },
     ],
     rhythm: [
       {
-        ...fallbackYucayeke.rhythm[0],
+        label: t("yucayeke.facts.profileStatus"),
         value: statusLabel,
       },
       {
-        ...fallbackYucayeke.rhythm[1],
+        label: t("yucayeke.facts.primaryContact"),
         value: contactMethod || missingValueLabel,
       },
       {
-        ...fallbackYucayeke.rhythm[2],
+        label: t("yucayeke.facts.identity"),
         value: toStatusLabel(personalInfo?.identity) || missingValueLabel,
       },
       {
-        ...fallbackYucayeke.rhythm[3],
+        label: t("yucayeke.facts.lastUpdate"),
         value:
           formatDateLabel(accountInfo?.lastUpdatedAt) ||
           formatDateLabel(accountInfo?.user?.updatedAt) ||
@@ -645,30 +732,33 @@ function mapYucayekeData(
     ],
     territoryFacts: [
       {
-        ...fallbackYucayeke.territoryFacts[0],
+        label: t("yucayeke.facts.birthCity"),
         value: readText(personalInfo?.cityOfBirth) || missingValueLabel,
       },
       {
-        ...fallbackYucayeke.territoryFacts[1],
+        label: t("yucayeke.facts.birthMunicipality"),
         value:
           readText(personalInfo?.municipalityOfBirth) || missingValueLabel,
       },
       {
-        ...fallbackYucayeke.territoryFacts[2],
+        label: t("yucayeke.facts.birthCountry"),
         value: readText(personalInfo?.countryOfBirth) || missingValueLabel,
       },
       {
-        ...fallbackYucayeke.territoryFacts[3],
+        label: t("yucayeke.facts.declaredYucayeke"),
         value:
           declaredYucayeke ||
-          (personalInfo?.yucayekeUnknown ? "Unknown" : missingValueLabel),
+          (personalInfo?.yucayekeUnknown
+            ? t("yucayeke.unknown")
+            : missingValueLabel),
       },
     ],
-    title: fallbackYucayeke.title,
+    title: t("yucayeke.title"),
   };
 }
 
 function mapDocumentsData(
+  t: ProfileTranslator,
   accountInfo?: AccountInfoResponse | null,
 ): ProfileDocumentsData {
   const documentMap = getDocumentMap(accountInfo?.enrollment?.documents);
@@ -686,54 +776,70 @@ function mapDocumentsData(
   return {
     categories: [
       {
-        ...fallbackDocuments.categories[0],
         count: String(documentMap.USER_PHOTO.length),
+        description: t("documents.categories.userPhoto.description"),
+        label: t("documents.categories.userPhoto.label"),
+        required: t("documents.requiredCount", { count: 1 }),
       },
       {
-        ...fallbackDocuments.categories[1],
         count: String(documentMap.GENEALOGICAL_RECORDS.length),
+        description: t("documents.categories.genealogicalRecords.description"),
+        label: t("documents.categories.genealogicalRecords.label"),
+        required: t("documents.optional"),
       },
       {
-        ...fallbackDocuments.categories[2],
         count: String(documentMap.KINSHIP_LETTERS.length),
+        description: t("documents.categories.kinshipLetters.description"),
+        label: t("documents.categories.kinshipLetters.label"),
+        required: t("documents.optional"),
       },
       {
-        ...fallbackDocuments.categories[3],
         count: String(documentMap.ORAL_HISTORY.length),
+        description: t("documents.categories.oralHistory.description"),
+        label: t("documents.categories.oralHistory.label"),
+        required: t("documents.optional"),
       },
       {
-        ...fallbackDocuments.categories[4],
         count: String(documentMap.DNA_TESTING.length),
+        description: t("documents.categories.dnaTesting.description"),
+        label: t("documents.categories.dnaTesting.label"),
+        required: t("documents.optional"),
       },
     ],
-    description: fallbackDocuments.description,
+    description: t("documents.description"),
     metrics: [
       {
-        ...fallbackDocuments.metrics[0],
+        helper: t("documents.metrics.totalUploaded.helper"),
+        label: t("documents.metrics.totalUploaded.label"),
         value: String(allDocuments.length),
       },
       {
-        ...fallbackDocuments.metrics[1],
+        helper: t("documents.metrics.requiredCoverage.helper"),
+        label: t("documents.metrics.requiredCoverage.label"),
         value: getRequiredCoverageValue(documentMap),
       },
       {
-        ...fallbackDocuments.metrics[2],
+        helper: t("documents.metrics.approved.helper"),
+        label: t("documents.metrics.approved.label"),
         value: String(approvedCount),
       },
       {
-        ...fallbackDocuments.metrics[3],
+        helper: t("documents.metrics.pending.helper"),
+        label: t("documents.metrics.pending.label"),
         value: String(pendingCount),
       },
     ],
-    missingRequired: getMissingRequiredDocuments(documentMap),
-    title: fallbackDocuments.title,
+    missingRequired: getMissingRequiredDocuments(t, documentMap),
+    title: t("documents.title"),
     uploads: allDocuments.slice(0, 8).map((document) => ({
-      category: documentTypeLabels[document.type],
+      category: t(documentTypeLabelKeys[document.type]),
       id: document.id,
-      name: getDocumentDisplayName(document.fileName),
+      name: getDocumentDisplayName(t, document.fileName),
       size: formatDocumentFileSize(document.fileSize),
-      status: toStatusLabel(document.status) || "Pending",
-      uploadedAt: formatDateLabel(document.uploadedAt) || "Unknown date",
+      status:
+        toDocumentStatusLabel(t, document.status) || t("documentStatus.pending"),
+      uploadedAt:
+        formatDateLabel(document.uploadedAt) || t("summary.unknownDate"),
       url: document.url,
     })),
   };
@@ -741,8 +847,10 @@ function mapDocumentsData(
 
 function mapActivityData({
   accountInfo,
+  t,
 }: Readonly<{
   accountInfo?: AccountInfoResponse | null;
+  t: ProfileTranslator;
 }>): ProfileActivityData {
   const enrollment = accountInfo?.enrollment;
   const stepState = getResolvedStepState(accountInfo);
@@ -771,11 +879,11 @@ function mapActivityData({
 
   if (accountCreatedAt) {
     events.push({
-      description: "Your profile account was created.",
+      description: t("activity.events.accountCreatedDescription"),
       id: "activity-account-created",
       rawDate: accountCreatedAt,
       timestamp: getTimeValue(accountCreatedAt),
-      title: "Account Created",
+      title: t("activity.events.accountCreatedTitle"),
       tone: "success",
     });
   }
@@ -794,11 +902,13 @@ function mapActivityData({
     }
 
     events.push({
-      description: `${consent.title} accepted.`,
+      description: t("activity.events.consentAcceptedDescription", {
+        title: consent.title,
+      }),
       id: `activity-consent-${consent.id}`,
       rawDate: consent.acceptedAt,
       timestamp: getTimeValue(consent.acceptedAt),
-      title: "Consent Accepted",
+      title: t("activity.events.consentAcceptedTitle"),
       tone: "success",
     });
   }
@@ -813,11 +923,19 @@ function mapActivityData({
           : "info";
 
     events.push({
-      description: `${getDocumentDisplayName(document.fileName)} (${formatDocumentFileSize(document.fileSize)}) · ${toStatusLabel(document.status) || "Pending"}.`,
+      description: t("activity.events.documentUploadedDescription", {
+        name: getDocumentDisplayName(t, document.fileName),
+        size: formatDocumentFileSize(document.fileSize),
+        status:
+          toDocumentStatusLabel(t, document.status) ||
+          t("documentStatus.pending"),
+      }),
       id: `activity-document-${document.id}`,
       rawDate: document.uploadedAt,
       timestamp: getTimeValue(document.uploadedAt),
-      title: `${documentTypeLabels[document.type]} Uploaded`,
+      title: t("activity.events.documentUploadedTitle", {
+        type: t(documentTypeLabelKeys[document.type]),
+      }),
       tone,
     });
   }
@@ -828,28 +946,28 @@ function mapActivityData({
       (leftEvent, rightEvent) => rightEvent.timestamp - leftEvent.timestamp,
     );
   const latestEventDate = sortedEvents[0]?.rawDate;
-  const missingRequiredDocuments = getMissingRequiredDocuments(documentMap);
+  const missingRequiredDocuments = getMissingRequiredDocuments(t, documentMap);
   const nextActions: string[] = [];
 
   if (stepState && !stepState["3"]) {
-    nextActions.push("Complete Paternal Kinship in Step 3.");
+    nextActions.push(t("activity.actions.completePaternalKinship"));
   }
 
   if (missingRequiredDocuments.length > 0) {
-    nextActions.push("Upload missing required documents in Step 4.");
+    nextActions.push(t("activity.actions.uploadMissingDocuments"));
   }
 
   if (pendingDocumentsCount > 0) {
-    nextActions.push("Check pending document review updates.");
+    nextActions.push(t("activity.actions.checkPendingReviews"));
   }
 
   return {
-    description: fallbackActivity.description,
+    description: t("activity.description"),
     events: sortedEvents.slice(0, 8).map((event) => ({
       dateLabel:
         formatDateTimeLabel(event.rawDate) ||
         formatDateLabel(event.rawDate) ||
-        "Unknown date",
+        t("summary.unknownDate"),
       description: event.description,
       id: event.id,
       title: event.title,
@@ -857,19 +975,23 @@ function mapActivityData({
     })),
     metrics: [
       {
-        ...fallbackActivity.metrics[0],
+        helper: t("activity.metrics.recentEvents.helper"),
+        label: t("activity.metrics.recentEvents.label"),
         value: String(sortedEvents.length),
       },
       {
-        ...fallbackActivity.metrics[1],
+        helper: t("activity.metrics.completedSteps.helper"),
+        label: t("activity.metrics.completedSteps.label"),
         value: completedSteps,
       },
       {
-        ...fallbackActivity.metrics[2],
+        helper: t("activity.metrics.pendingReviews.helper"),
+        label: t("activity.metrics.pendingReviews.label"),
         value: String(pendingDocumentsCount),
       },
       {
-        ...fallbackActivity.metrics[3],
+        helper: t("activity.metrics.lastUpdate.helper"),
+        label: t("activity.metrics.lastUpdate.label"),
         value:
           formatDateLabel(latestEventDate) ||
           formatDateLabel(accountInfo?.lastUpdatedAt) ||
@@ -878,16 +1000,18 @@ function mapActivityData({
       },
     ],
     nextActions,
-    title: fallbackActivity.title,
+    title: t("activity.title"),
   };
 }
 
 function mapSettingsData({
   accountInfo,
   authUser,
+  t,
 }: Readonly<{
   accountInfo?: AccountInfoResponse | null;
   authUser: AuthUser;
+  t: ProfileTranslator;
 }>): ProfileSettingsData {
   const enrollment = accountInfo?.enrollment;
   const stepState = getResolvedStepState(accountInfo);
@@ -915,65 +1039,73 @@ function mapSettingsData({
     readText(accountInfo?.user?.email) ||
     readText(authUser.email);
   const phone = formatPhoneLabel(enrollment?.contact?.phoneNumber);
-  const enrollmentStatus =
-    toStatusLabel(accountInfo?.enrollmentStatus ?? enrollment?.status) ||
-    (accountInfo?.hasEnrollment ? "Enrollment In Progress" : "Not Started");
+  const enrollmentStatus = resolveEnrollmentStatus(t, accountInfo);
+  const missingValueLabel = t("summary.notProvided");
 
   return {
     accountFacts: [
       {
-        ...fallbackSettings.accountFacts[0],
+        label: t("settings.facts.memberId"),
         value: memberId || missingValueLabel,
       },
       {
-        ...fallbackSettings.accountFacts[1],
+        label: t("settings.facts.email"),
         value: email || missingValueLabel,
       },
       {
-        ...fallbackSettings.accountFacts[2],
+        label: t("settings.facts.phone"),
         value: phone || missingValueLabel,
       },
       {
-        ...fallbackSettings.accountFacts[3],
+        label: t("settings.facts.enrollmentStatus"),
         value: enrollmentStatus,
       },
       {
-        ...fallbackSettings.accountFacts[4],
+        label: t("settings.facts.completedSteps"),
         value: completedSteps,
       },
     ],
-    description: fallbackSettings.description,
+    description: t("settings.description"),
     preferences: [
       {
-        ...fallbackSettings.preferences[0],
+        description: t("settings.preferences.emailNotifications.description"),
         enabled: Boolean(email),
+        label: t("settings.preferences.emailNotifications.label"),
       },
       {
-        ...fallbackSettings.preferences[1],
+        description: t("settings.preferences.smsNotifications.description"),
         enabled: Boolean(enrollment?.contact?.allowSMS),
+        label: t("settings.preferences.smsNotifications.label"),
       },
       {
-        ...fallbackSettings.preferences[2],
+        description: t(
+          "settings.preferences.documentReviewAlerts.description",
+        ),
         enabled: pendingDocumentsCount > 0,
+        label: t("settings.preferences.documentReviewAlerts.label"),
       },
       {
-        ...fallbackSettings.preferences[3],
+        description: t(
+          "settings.preferences.enrollmentProgressAlerts.description",
+        ),
         enabled: Boolean(stepState),
+        label: t("settings.preferences.enrollmentProgressAlerts.label"),
       },
     ],
     securityItems: [
       {
-        ...fallbackSettings.securityItems[0],
         description:
           requiredConsents.length > 0
             ? hasAllRequiredConsents
-              ? "All required consents accepted for this profile."
-              : "Some required consents are still pending."
-            : "No required consent records found yet.",
-        statusLabel:
-          requiredConsents.length > 0
-            ? `${acceptedRequiredConsentsCount}/${requiredConsents.length} Accepted`
-            : "0/0 Accepted",
+              ? t("settings.security.consentAllAccepted")
+              : t("settings.security.consentSomePending")
+            : t("settings.security.consentNoneFound"),
+        statusLabel: t("settings.security.consentAcceptedCount", {
+          accepted:
+            requiredConsents.length > 0 ? acceptedRequiredConsentsCount : 0,
+          total: requiredConsents.length,
+        }),
+        title: t("settings.security.consentStatusTitle"),
         tone:
           requiredConsents.length > 0
             ? hasAllRequiredConsents
@@ -982,27 +1114,33 @@ function mapSettingsData({
             : "neutral",
       },
       {
-        ...fallbackSettings.securityItems[1],
         description:
           pendingDocumentsCount > 0
-            ? "Pending document reviews may require follow-up."
-            : "No pending document reviews at the moment.",
+            ? t("settings.security.documentPendingDescription")
+            : t("settings.security.documentNonePending"),
         statusLabel:
           pendingDocumentsCount > 0
-            ? `${pendingDocumentsCount} Pending`
-            : `${approvedDocumentsCount} Approved`,
+            ? t("settings.security.documentPendingCount", {
+                count: pendingDocumentsCount,
+              })
+            : t("settings.security.documentApprovedCount", {
+                count: approvedDocumentsCount,
+              }),
+        title: t("settings.security.documentReviewTitle"),
         tone: pendingDocumentsCount > 0 ? "warn" : "good",
       },
       {
-        ...fallbackSettings.securityItems[2],
         description: enrollment
-          ? "Account is active and connected to enrollment data."
-          : "Account is active, but enrollment has not been started yet.",
-        statusLabel: enrollment ? "Active" : "Limited",
+          ? t("settings.security.accountActiveDescription")
+          : t("settings.security.accountLimitedDescription"),
+        statusLabel: enrollment
+          ? t("settings.security.active")
+          : t("settings.security.limited"),
+        title: t("settings.security.accountAccessTitle"),
         tone: enrollment ? "good" : "neutral",
       },
     ],
-    title: fallbackSettings.title,
+    title: t("settings.title"),
   };
 }
 
@@ -1040,15 +1178,21 @@ function formatRegionalMemberLocation(
 }
 
 function mapRegionalMembers(
+  t: ProfileTranslator,
   accountInfo: AccountInfoResponse | null | undefined,
 ): readonly ProfileRegionalMember[] {
   const fromApi = (accountInfo?.regionalMembers ?? [])
     .map((member, index) => {
       const memberId =
-        readText(member.memberId) || readText(member.id) || missingValueLabel;
+        readText(member.memberId) ||
+        readText(member.id) ||
+        t("summary.notProvided");
       const name = readText(member.name);
       const locationLabel = formatRegionalMemberLocation(member.location);
-      const role = readText(member.role) || locationLabel || "Regional Member";
+      const role =
+        readText(member.role) ||
+        locationLabel ||
+        t("regionalMembers.fallbackRole");
       const fallbackPortrait =
         fallbackRegionalMembers.length > 0
           ? fallbackRegionalMembers[index % fallbackRegionalMembers.length]
@@ -1079,23 +1223,20 @@ function mapRegionalMembers(
 export function buildProfileViewData({
   accountInfo,
   authUser,
+  t,
 }: BuildProfileViewDataArgs): ProfileViewData {
   const userName = readText(accountInfo?.user?.name) || readText(authUser.name);
   const enrollmentName = buildFullName([
     accountInfo?.enrollment?.personalInfo?.firstName,
     accountInfo?.enrollment?.personalInfo?.lastName,
   ]);
-  const name = enrollmentName || userName || "Member";
-  const statusLabel =
-    toStatusLabel(
-      accountInfo?.enrollmentStatus ?? accountInfo?.enrollment?.status,
-    ) ||
-    (accountInfo?.hasEnrollment ? "Enrollment In Progress" : "Not Started");
+  const name = enrollmentName || userName || t("summary.memberFallback");
+  const statusLabel = resolveEnrollmentStatus(t, accountInfo);
   const approvalDateLabel = resolveMemberSince(accountInfo);
   const memberSince = approvalDateLabel
-    ? `Member since ${approvalDateLabel}`
+    ? t("summary.memberSince", { date: approvalDateLabel })
     : undefined;
-  const location = resolveLocation(accountInfo) || missingValueLabel;
+  const location = resolveLocation(accountInfo) || t("summary.notProvided");
   const birthDateLabel = formatDateLabel(
     accountInfo?.enrollment?.personalInfo?.dateOfBirth,
   );
@@ -1107,7 +1248,7 @@ export function buildProfileViewData({
         readText(authUser.publicId) ||
         readText(accountInfo?.user?.id) ||
         readText(authUser.id) ||
-        missingValueLabel,
+        t("summary.notProvided"),
     },
     {
       iconSrc: fallbackDetails[1]?.iconSrc ?? "/icons/profile/location.svg",
@@ -1115,14 +1256,14 @@ export function buildProfileViewData({
     },
     {
       iconSrc: fallbackDetails[2]?.iconSrc ?? "/icons/profile/calendar.svg",
-      value: birthDateLabel
-        ? `Born: ${birthDateLabel}`
-        : `Born: ${notAvailableLabel}`,
+      value: t("summary.born", {
+        date: birthDateLabel || t("summary.notAvailable"),
+      }),
     },
   ];
 
   return {
-    activityData: mapActivityData({ accountInfo }),
+    activityData: mapActivityData({ accountInfo, t }),
     copy: {
       memberSince,
       memberStatus: statusLabel,
@@ -1130,11 +1271,11 @@ export function buildProfileViewData({
       portraitSrc: resolvePortraitSrc(accountInfo),
     },
     details,
-    kinshipData: mapKinshipData(accountInfo),
-    overviewData: mapOverviewData(accountInfo),
-    yucayekeData: mapYucayekeData(accountInfo),
-    documentsData: mapDocumentsData(accountInfo),
-    settingsData: mapSettingsData({ accountInfo, authUser }),
-    regionalMembers: mapRegionalMembers(accountInfo),
+    kinshipData: mapKinshipData(t, accountInfo),
+    overviewData: mapOverviewData(t, accountInfo),
+    yucayekeData: mapYucayekeData(t, accountInfo),
+    documentsData: mapDocumentsData(t, accountInfo),
+    settingsData: mapSettingsData({ accountInfo, authUser, t }),
+    regionalMembers: mapRegionalMembers(t, accountInfo),
   };
 }

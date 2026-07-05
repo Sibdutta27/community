@@ -770,6 +770,313 @@
     },
     "draftSavedNotice": "Su progreso se ha guardado — puede terminar más tarde."
   },
+  "profile": {
+    "summary": {
+      "ariaLabel": "Resumen del perfil de {name}",
+      "fallbackNotice": "Se muestran valores de perfil predeterminados donde sea necesario.",
+      "editProfile": "Editar perfil",
+      "memberSince": "Miembro desde {date}",
+      "born": "Nacimiento: {date}",
+      "portraitAlt": "Retrato de {name}",
+      "memberFallback": "Miembro",
+      "notProvided": "No provisto",
+      "notAvailable": "No disponible",
+      "unknownDate": "Fecha desconocida"
+    },
+    "enrollmentStatus": {
+      "notStarted": "No iniciada",
+      "inProgress": "Inscripción en curso",
+      "draft": "Borrador",
+      "submitted": "Sometida",
+      "approved": "Aprobada",
+      "rejected": "Rechazada"
+    },
+    "documentStatus": {
+      "pending": "Pendiente",
+      "approved": "Aprobado",
+      "rejected": "Rechazado"
+    },
+    "tabs": {
+      "overview": "Resumen",
+      "kinship": "Parentesco",
+      "yucayeke": "Yucayeke",
+      "documents": "Documentos",
+      "activity": "Actividad",
+      "settings": "Configuración",
+      "ariaLabel": "Secciones del perfil",
+      "notImplemented": "Esta sección aún no está disponible. Actualmente puede acceder a las pestañas Resumen, Parentesco, Yucayeke, Documentos, Actividad y Configuración."
+    },
+    "overview": {
+      "title": "Resumen",
+      "description": "Un vistazo rápido a su inscripción, los detalles de su perfil y el progreso de su parentesco registrado.",
+      "metrics": {
+        "enrollmentStatus": {
+          "label": "Estado de inscripción",
+          "helper": "Etapa actual del perfil"
+        },
+        "completedSteps": {
+          "label": "Pasos completados",
+          "helper": "Pasos finalizados"
+        },
+        "documentsUploaded": {
+          "label": "Documentos subidos",
+          "helper": "Archivos cargados"
+        },
+        "ancestorsRecorded": {
+          "label": "Ancestros registrados",
+          "helper": "Entradas de parentesco registradas"
+        }
+      },
+      "personalSnapshot": "Resumen personal",
+      "contactSnapshot": "Resumen de contacto",
+      "enrollmentChecklist": "Lista de verificación de inscripción",
+      "checklist": {
+        "step1": "Paso 1: Datos demográficos",
+        "step2": "Paso 2: Parentesco materno",
+        "step3": "Paso 3: Parentesco paterno",
+        "step4": "Paso 4: Carga de documentos"
+      },
+      "checklistCompleted": "Completado",
+      "checklistPending": "Pendiente",
+      "facts": {
+        "fullName": "Nombre completo",
+        "occupation": "Ocupación",
+        "maritalStatus": "Estado civil",
+        "identity": "Identidad",
+        "email": "Correo electrónico",
+        "phone": "Teléfono"
+      }
+    },
+    "kinship": {
+      "title": "Parentesco y ascendencia",
+      "description": "Su parentesco materno y paterno registrado en el formulario de inscripción.",
+      "maternalLine": "Linaje materno",
+      "paternalLine": "Linaje paterno",
+      "maternalEmpty": "Aún no se ha registrado parentesco materno.",
+      "paternalEmpty": "Aún no se ha registrado parentesco paterno.",
+      "relations": {
+        "mother": "Madre",
+        "maternalGrandmother": "Abuela materna",
+        "maternalGrandfather": "Abuelo materno",
+        "father": "Padre",
+        "paternalGrandmother": "Abuela paterna",
+        "paternalGrandfather": "Abuelo paterno"
+      },
+      "facts": {
+        "municipality": "Municipio",
+        "yucayeke": "Yucayeke",
+        "nationality": "Nacionalidad",
+        "dateOfBirth": "Fecha de nacimiento",
+        "borikuaTaino": "Borikua Taíno"
+      },
+      "yes": "Sí",
+      "no": "No"
+    },
+    "yucayeke": {
+      "title": "Yucayeke",
+      "description": "Su perfil de Yucayeke conecta su territorio, su línea familiar y el progreso de su inscripción en un solo lugar.",
+      "communityName": "Yucayeke {name}",
+      "unknownCommunity": "Yucayeke desconocido",
+      "defaultCommunity": "Yucayeke",
+      "metrics": {
+        "completedSteps": {
+          "label": "Pasos completados",
+          "helper": "Tareas de inscripción completadas"
+        },
+        "ancestorsRecorded": {
+          "label": "Ancestros registrados",
+          "helper": "Entradas de parentesco registradas"
+        },
+        "documents": {
+          "label": "Documentos",
+          "helper": "Archivos de apoyo sometidos"
+        },
+        "consents": {
+          "label": "Consentimientos",
+          "helper": "Consentimientos requeridos aceptados"
+        }
+      },
+      "territorySnapshot": "Resumen del territorio",
+      "familyCircle": "Círculo familiar en este Yucayeke",
+      "communityRhythm": "Ritmo comunitario",
+      "facts": {
+        "birthCity": "Ciudad de nacimiento",
+        "birthMunicipality": "Municipio de nacimiento",
+        "birthCountry": "País de nacimiento",
+        "declaredYucayeke": "Yucayeke declarado",
+        "profileStatus": "Estado del perfil",
+        "primaryContact": "Contacto principal",
+        "identity": "Identidad",
+        "lastUpdate": "Última actualización"
+      },
+      "you": "Usted",
+      "unknown": "Desconocido"
+    },
+    "documents": {
+      "title": "Documentos",
+      "description": "Consulte sus archivos subidos, la cobertura de documentos requeridos y el estado de revisión más reciente.",
+      "metrics": {
+        "totalUploaded": {
+          "label": "Total subidos",
+          "helper": "Todos los archivos subidos"
+        },
+        "requiredCoverage": {
+          "label": "Cobertura requerida",
+          "helper": "Archivos requeridos subidos"
+        },
+        "approved": {
+          "label": "Aprobados",
+          "helper": "Archivos aprobados por la administración"
+        },
+        "pending": {
+          "label": "Pendientes",
+          "helper": "Archivos en espera de revisión"
+        }
+      },
+      "categoriesTitle": "Categorías de documentos",
+      "categories": {
+        "userPhoto": {
+          "label": "Su foto",
+          "description": "Una foto suya clara y reciente."
+        },
+        "genealogicalRecords": {
+          "label": "Registros genealógicos",
+          "description": "Actas de nacimiento, bautismo, censo o registros civiles."
+        },
+        "kinshipLetters": {
+          "label": "Cartas de parentesco",
+          "description": "Cartas que certifican su parentesco."
+        },
+        "oralHistory": {
+          "label": "Historia oral",
+          "description": "Historia oral grabada o transcrita."
+        },
+        "dnaTesting": {
+          "label": "Pruebas de ADN",
+          "description": "Resultados de pruebas de ADN que respaldan su ascendencia."
+        }
+      },
+      "requiredCount": "Requerido: {count}",
+      "optional": "Opcional",
+      "missingRequiredTitle": "Archivos requeridos faltantes",
+      "requiredComplete": "El conjunto de documentos requeridos está completo.",
+      "recentUploads": "Subidas recientes",
+      "noUploads": "Aún no hay archivos subidos.",
+      "view": "Ver",
+      "uploadedDocument": "Documento subido",
+      "types": {
+        "profilePicture": "Foto de perfil",
+        "userPhoto": "Su foto",
+        "genealogicalRecords": "Registros genealógicos",
+        "kinshipLetters": "Cartas de parentesco",
+        "oralHistory": "Historia oral",
+        "dnaTesting": "Pruebas de ADN"
+      }
+    },
+    "activity": {
+      "title": "Actividad",
+      "description": "Actualizaciones recientes de la cronología de inscripción y documentos de su perfil.",
+      "metrics": {
+        "recentEvents": {
+          "label": "Eventos recientes",
+          "helper": "Entradas registradas en la cronología"
+        },
+        "completedSteps": {
+          "label": "Pasos completados",
+          "helper": "Pasos de inscripción completados"
+        },
+        "pendingReviews": {
+          "label": "Revisiones pendientes",
+          "helper": "Archivos en espera de revisión"
+        },
+        "lastUpdate": {
+          "label": "Última actualización",
+          "helper": "Actualización más reciente del perfil"
+        }
+      },
+      "recentTimeline": "Cronología reciente",
+      "nextActionsTitle": "Próximas acciones",
+      "noEvents": "Aún no hay eventos en la cronología.",
+      "noActions": "No hay acciones inmediatas.",
+      "events": {
+        "accountCreatedTitle": "Cuenta creada",
+        "accountCreatedDescription": "Se creó la cuenta de su perfil.",
+        "consentAcceptedTitle": "Consentimiento aceptado",
+        "consentAcceptedDescription": "Se aceptó: {title}.",
+        "documentUploadedTitle": "Documento subido: {type}",
+        "documentUploadedDescription": "{name} ({size}) · {status}."
+      },
+      "actions": {
+        "completePaternalKinship": "Complete el parentesco paterno en el Paso 3.",
+        "uploadMissingDocuments": "Suba los documentos requeridos que faltan en el Paso 4.",
+        "checkPendingReviews": "Revise las actualizaciones de revisión de documentos pendientes."
+      }
+    },
+    "settings": {
+      "title": "Configuración",
+      "description": "Administre las preferencias de su cuenta, sus opciones de comunicación y el estado de seguridad de su perfil de inscripción.",
+      "accountSnapshot": "Resumen de la cuenta",
+      "notificationPreferences": "Preferencias de notificación",
+      "securityAndAccess": "Seguridad y acceso",
+      "enabled": "Activado",
+      "disabled": "Desactivado",
+      "facts": {
+        "memberId": "ID de miembro",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "enrollmentStatus": "Estado de inscripción",
+        "completedSteps": "Pasos completados"
+      },
+      "preferences": {
+        "emailNotifications": {
+          "label": "Notificaciones por correo electrónico",
+          "description": "Reciba actualizaciones en su bandeja de entrada cuando cambie la actividad de su perfil."
+        },
+        "smsNotifications": {
+          "label": "Notificaciones por SMS",
+          "description": "Reciba alertas por SMS sobre cambios importantes en la inscripción."
+        },
+        "documentReviewAlerts": {
+          "label": "Alertas de revisión de documentos",
+          "description": "Reciba alertas cuando cambie el estado de revisión de sus documentos."
+        },
+        "enrollmentProgressAlerts": {
+          "label": "Alertas de progreso de inscripción",
+          "description": "Reciba actualizaciones cuando se completen pasos de la inscripción."
+        }
+      },
+      "security": {
+        "consentStatusTitle": "Estado de consentimientos",
+        "consentAllAccepted": "Todos los consentimientos requeridos han sido aceptados para este perfil.",
+        "consentSomePending": "Algunos consentimientos requeridos aún están pendientes.",
+        "consentNoneFound": "Aún no se encontraron registros de consentimientos requeridos.",
+        "consentAcceptedCount": "{accepted}/{total} aceptados",
+        "documentReviewTitle": "Revisión de documentos",
+        "documentPendingDescription": "Las revisiones de documentos pendientes pueden requerir seguimiento.",
+        "documentNonePending": "No hay revisiones de documentos pendientes por el momento.",
+        "documentPendingCount": "{count} pendientes",
+        "documentApprovedCount": "{count} aprobados",
+        "accountAccessTitle": "Acceso a la cuenta",
+        "accountActiveDescription": "La cuenta está activa y conectada a los datos de inscripción.",
+        "accountLimitedDescription": "La cuenta está activa, pero la inscripción aún no ha comenzado.",
+        "active": "Activa",
+        "limited": "Limitada"
+      }
+    },
+    "regionalMembers": {
+      "title": "Miembros regionales de la comunidad",
+      "ariaLabel": "Miembros regionales de la comunidad",
+      "searchLabel": "Buscar miembros",
+      "searchPlaceholder": "Buscar miembros",
+      "filter": "Filtrar",
+      "noMembersTitle": "No se encontraron miembros",
+      "noMembersDescription": "Intente con otro nombre u otro ID de miembro.",
+      "roleAndId": "{role} • ID de miembro: {memberId}",
+      "viewMember": "Ver a {name}",
+      "view": "Ver",
+      "fallbackRole": "Miembro regional"
+    }
+  },
   "consent": {
     "kicker": "CONSENTIMIENTO DE INSCRIPCIÓN",
     "description": "Acepte los consentimientos requeridos para continuar.",

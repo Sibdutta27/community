@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 
 type ProfileRegionalMemberCardProps = Readonly<{
@@ -15,6 +17,8 @@ export function ProfileRegionalMemberCard({
   portraitSrc,
   role,
 }: ProfileRegionalMemberCardProps) {
+  const t = useTranslations("profile");
+
   return (
     <article className="border-border bg-surface shadow-card-soft grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-2 rounded-2xl border px-3.5 py-3.5 sm:px-4 sm:py-3.5 lg:min-h-[72px] lg:px-3.5 lg:py-2.5 xl:min-h-[86px] xl:px-4 xl:py-3">
       <div className="border-surface bg-surface-muted shadow-card-soft relative size-12 shrink-0 overflow-hidden rounded-full border-[3px] sm:size-[3.5rem] lg:size-[3rem] xl:size-[3.35rem]">
@@ -32,18 +36,18 @@ export function ProfileRegionalMemberCard({
           {name}
         </h3>
         <p className="text-muted-foreground mt-0.5 truncate text-[10px] leading-tight sm:text-[11px] lg:text-[10px] xl:text-[12px]">
-          {role} • Member ID: {memberId}
+          {t("regionalMembers.roleAndId", { memberId, role })}
         </p>
       </div>
 
       <Button
-        aria-label={`View ${name}`}
+        aria-label={t("regionalMembers.viewMember", { name })}
         className="shrink-0"
         variant="primary"
         size="sm"
         type="button"
       >
-        View
+        {t("regionalMembers.view")}
       </Button>
     </article>
   );

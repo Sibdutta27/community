@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 
 import type { ProfileOverviewData } from "../config/profile-config";
@@ -7,6 +9,8 @@ export function ProfileOverviewPanel({
 }: Readonly<{
   overviewData: ProfileOverviewData;
 }>) {
+  const t = useTranslations("profile");
+
   return (
     <div className="space-y-5">
       <header className="max-w-3xl">
@@ -40,7 +44,7 @@ export function ProfileOverviewPanel({
       <div className="grid gap-3 lg:grid-cols-2">
         <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Personal Snapshot
+            {t("overview.personalSnapshot")}
           </h3>
           <dl className="mt-3 space-y-2.5">
             {overviewData.personalFacts.map((fact) => (
@@ -61,7 +65,7 @@ export function ProfileOverviewPanel({
 
         <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Contact Snapshot
+            {t("overview.contactSnapshot")}
           </h3>
           <dl className="mt-3 space-y-2.5">
             {overviewData.contactFacts.map((fact) => (
@@ -83,7 +87,7 @@ export function ProfileOverviewPanel({
 
       <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
         <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-          Enrollment Checklist
+          {t("overview.enrollmentChecklist")}
         </h3>
         <ul className="mt-3 space-y-2.5">
           {overviewData.checklist.map((item) => (
@@ -102,7 +106,9 @@ export function ProfileOverviewPanel({
                     : "bg-surface-muted text-foreground",
                 )}
               >
-                {item.completed ? "Completed" : "Pending"}
+                {item.completed
+                  ? t("overview.checklistCompleted")
+                  : t("overview.checklistPending")}
               </span>
             </li>
           ))}

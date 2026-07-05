@@ -770,6 +770,313 @@
     },
     "draftSavedNotice": "Your progress has been saved — you can finish later."
   },
+  "profile": {
+    "summary": {
+      "ariaLabel": "Profile summary for {name}",
+      "fallbackNotice": "Showing fallback profile values where needed.",
+      "editProfile": "Edit Profile",
+      "memberSince": "Member since {date}",
+      "born": "Born: {date}",
+      "portraitAlt": "{name} portrait",
+      "memberFallback": "Member",
+      "notProvided": "Not provided",
+      "notAvailable": "Not available",
+      "unknownDate": "Unknown date"
+    },
+    "enrollmentStatus": {
+      "notStarted": "Not Started",
+      "inProgress": "Enrollment In Progress",
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "documentStatus": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "kinship": "Kinship",
+      "yucayeke": "Yucayeke",
+      "documents": "Documents",
+      "activity": "Activity",
+      "settings": "Settings",
+      "ariaLabel": "Profile sections",
+      "notImplemented": "This section is not implemented yet. Overview, Kinship, Yucayeke, Documents, Activity, and Settings tabs are currently available."
+    },
+    "overview": {
+      "title": "Overview",
+      "description": "A quick snapshot of your enrollment, profile details, and recorded kinship progress.",
+      "metrics": {
+        "enrollmentStatus": {
+          "label": "Enrollment Status",
+          "helper": "Current profile stage"
+        },
+        "completedSteps": {
+          "label": "Completed Steps",
+          "helper": "Steps completed"
+        },
+        "documentsUploaded": {
+          "label": "Documents Uploaded",
+          "helper": "Uploaded records"
+        },
+        "ancestorsRecorded": {
+          "label": "Ancestors Recorded",
+          "helper": "Kinship entries recorded"
+        }
+      },
+      "personalSnapshot": "Personal Snapshot",
+      "contactSnapshot": "Contact Snapshot",
+      "enrollmentChecklist": "Enrollment Checklist",
+      "checklist": {
+        "step1": "Step 1: Demographics",
+        "step2": "Step 2: Maternal Kinship",
+        "step3": "Step 3: Paternal Kinship",
+        "step4": "Step 4: Document Upload"
+      },
+      "checklistCompleted": "Completed",
+      "checklistPending": "Pending",
+      "facts": {
+        "fullName": "Full Name",
+        "occupation": "Occupation",
+        "maritalStatus": "Marital Status",
+        "identity": "Identity",
+        "email": "Email",
+        "phone": "Phone"
+      }
+    },
+    "kinship": {
+      "title": "Kinship & Ancestry",
+      "description": "Your recorded maternal and paternal kinship from the enrollment form.",
+      "maternalLine": "Maternal Line",
+      "paternalLine": "Paternal Line",
+      "maternalEmpty": "No maternal kinship recorded yet.",
+      "paternalEmpty": "No paternal kinship recorded yet.",
+      "relations": {
+        "mother": "Mother",
+        "maternalGrandmother": "Maternal Grandmother",
+        "maternalGrandfather": "Maternal Grandfather",
+        "father": "Father",
+        "paternalGrandmother": "Paternal Grandmother",
+        "paternalGrandfather": "Paternal Grandfather"
+      },
+      "facts": {
+        "municipality": "Municipality",
+        "yucayeke": "Yucayeke",
+        "nationality": "Nationality",
+        "dateOfBirth": "Date of Birth",
+        "borikuaTaino": "Borikua Taíno"
+      },
+      "yes": "Yes",
+      "no": "No"
+    },
+    "yucayeke": {
+      "title": "Yucayeke",
+      "description": "Your Yucayeke profile connects your territory, family line, and enrollment progress in one place.",
+      "communityName": "Yucayeke {name}",
+      "unknownCommunity": "Yucayeke Unknown",
+      "defaultCommunity": "Yucayeke",
+      "metrics": {
+        "completedSteps": {
+          "label": "Completed Steps",
+          "helper": "Enrollment tasks completed"
+        },
+        "ancestorsRecorded": {
+          "label": "Ancestors Recorded",
+          "helper": "Recorded kinship entries"
+        },
+        "documents": {
+          "label": "Documents",
+          "helper": "Submitted supporting files"
+        },
+        "consents": {
+          "label": "Consents",
+          "helper": "Required consents accepted"
+        }
+      },
+      "territorySnapshot": "Territory Snapshot",
+      "familyCircle": "Family Circle In This Yucayeke",
+      "communityRhythm": "Community Rhythm",
+      "facts": {
+        "birthCity": "Birth City",
+        "birthMunicipality": "Birth Municipality",
+        "birthCountry": "Birth Country",
+        "declaredYucayeke": "Declared Yucayeke",
+        "profileStatus": "Profile Status",
+        "primaryContact": "Primary Contact",
+        "identity": "Identity",
+        "lastUpdate": "Last Update"
+      },
+      "you": "You",
+      "unknown": "Unknown"
+    },
+    "documents": {
+      "title": "Documents",
+      "description": "Track your uploaded files, required document coverage, and latest review status.",
+      "metrics": {
+        "totalUploaded": {
+          "label": "Total Uploaded",
+          "helper": "All uploaded files"
+        },
+        "requiredCoverage": {
+          "label": "Required Coverage",
+          "helper": "Required files uploaded"
+        },
+        "approved": {
+          "label": "Approved",
+          "helper": "Admin-approved files"
+        },
+        "pending": {
+          "label": "Pending",
+          "helper": "Files waiting review"
+        }
+      },
+      "categoriesTitle": "Document Categories",
+      "categories": {
+        "userPhoto": {
+          "label": "Your Photo",
+          "description": "A clear, recent photo of yourself."
+        },
+        "genealogicalRecords": {
+          "label": "Genealogical Records",
+          "description": "Birth, baptism, census, or civil records."
+        },
+        "kinshipLetters": {
+          "label": "Kinship Letters",
+          "description": "Letters attesting to your kinship."
+        },
+        "oralHistory": {
+          "label": "Oral History",
+          "description": "Recorded or transcribed oral history."
+        },
+        "dnaTesting": {
+          "label": "DNA Testing",
+          "description": "DNA test results supporting your ancestry."
+        }
+      },
+      "requiredCount": "Required: {count}",
+      "optional": "Optional",
+      "missingRequiredTitle": "Missing Required Files",
+      "requiredComplete": "Required document set is complete.",
+      "recentUploads": "Recent Uploads",
+      "noUploads": "No uploads available yet.",
+      "view": "View",
+      "uploadedDocument": "Uploaded document",
+      "types": {
+        "profilePicture": "Profile Picture",
+        "userPhoto": "Your Photo",
+        "genealogicalRecords": "Genealogical Records",
+        "kinshipLetters": "Kinship Letters",
+        "oralHistory": "Oral History",
+        "dnaTesting": "DNA Testing"
+      }
+    },
+    "activity": {
+      "title": "Activity",
+      "description": "Recent enrollment and document timeline updates from your profile journey.",
+      "metrics": {
+        "recentEvents": {
+          "label": "Recent Events",
+          "helper": "Tracked timeline entries"
+        },
+        "completedSteps": {
+          "label": "Completed Steps",
+          "helper": "Enrollment steps completed"
+        },
+        "pendingReviews": {
+          "label": "Pending Reviews",
+          "helper": "Files awaiting review"
+        },
+        "lastUpdate": {
+          "label": "Last Update",
+          "helper": "Most recent profile update"
+        }
+      },
+      "recentTimeline": "Recent Timeline",
+      "nextActionsTitle": "Next Actions",
+      "noEvents": "No timeline events yet.",
+      "noActions": "No immediate actions.",
+      "events": {
+        "accountCreatedTitle": "Account Created",
+        "accountCreatedDescription": "Your profile account was created.",
+        "consentAcceptedTitle": "Consent Accepted",
+        "consentAcceptedDescription": "{title} accepted.",
+        "documentUploadedTitle": "{type} Uploaded",
+        "documentUploadedDescription": "{name} ({size}) · {status}."
+      },
+      "actions": {
+        "completePaternalKinship": "Complete Paternal Kinship in Step 3.",
+        "uploadMissingDocuments": "Upload missing required documents in Step 4.",
+        "checkPendingReviews": "Check pending document review updates."
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Manage account preferences, communication choices, and security status for your enrollment profile.",
+      "accountSnapshot": "Account Snapshot",
+      "notificationPreferences": "Notification Preferences",
+      "securityAndAccess": "Security And Access",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "facts": {
+        "memberId": "Member ID",
+        "email": "Email",
+        "phone": "Phone",
+        "enrollmentStatus": "Enrollment Status",
+        "completedSteps": "Completed Steps"
+      },
+      "preferences": {
+        "emailNotifications": {
+          "label": "Email Notifications",
+          "description": "Receive updates in your inbox when profile activity changes."
+        },
+        "smsNotifications": {
+          "label": "SMS Notifications",
+          "description": "Receive SMS alerts for major enrollment changes."
+        },
+        "documentReviewAlerts": {
+          "label": "Document Review Alerts",
+          "description": "Get alerts when document review status changes."
+        },
+        "enrollmentProgressAlerts": {
+          "label": "Enrollment Progress Alerts",
+          "description": "Get updates when enrollment steps are completed."
+        }
+      },
+      "security": {
+        "consentStatusTitle": "Consent Status",
+        "consentAllAccepted": "All required consents accepted for this profile.",
+        "consentSomePending": "Some required consents are still pending.",
+        "consentNoneFound": "No required consent records found yet.",
+        "consentAcceptedCount": "{accepted}/{total} Accepted",
+        "documentReviewTitle": "Document Review",
+        "documentPendingDescription": "Pending document reviews may require follow-up.",
+        "documentNonePending": "No pending document reviews at the moment.",
+        "documentPendingCount": "{count} Pending",
+        "documentApprovedCount": "{count} Approved",
+        "accountAccessTitle": "Account Access",
+        "accountActiveDescription": "Account is active and connected to enrollment data.",
+        "accountLimitedDescription": "Account is active, but enrollment has not been started yet.",
+        "active": "Active",
+        "limited": "Limited"
+      }
+    },
+    "regionalMembers": {
+      "title": "Regional Community Members",
+      "ariaLabel": "Regional community members",
+      "searchLabel": "Search members",
+      "searchPlaceholder": "Search Members",
+      "filter": "Filter",
+      "noMembersTitle": "No members found",
+      "noMembersDescription": "Try a different name or member ID.",
+      "roleAndId": "{role} • Member ID: {memberId}",
+      "viewMember": "View {name}",
+      "view": "View",
+      "fallbackRole": "Regional Member"
+    }
+  },
   "consent": {
     "kicker": "ENROLLMENT CONSENT",
     "description": "Please accept the required consents to continue.",

@@ -2,6 +2,8 @@
 
 import { useMemo } from "react";
 
+import { useTranslations } from "next-intl";
+
 import type { AuthUser } from "@/lib/auth";
 
 import { ProfileAvatar } from "./profile-avatar";
@@ -11,6 +13,7 @@ import { useProfileInfoQuery } from "../lib/profile-queries";
 import { buildProfileViewData } from "../lib/profile-view-data";
 
 export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
+  const t = useTranslations("profile");
   const profileInfoQuery = useProfileInfoQuery();
 
   const profileViewData = useMemo(
@@ -18,8 +21,9 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
       buildProfileViewData({
         accountInfo: profileInfoQuery.data ?? null,
         authUser: user,
+        t,
       }),
-    [profileInfoQuery.data, user],
+    [profileInfoQuery.data, t, user],
   );
 
   const profileInfoErrorMessage =
@@ -29,7 +33,7 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
 
   return (
     <section
-      aria-label={`Profile summary for ${profileViewData.copy.name}`}
+      aria-label={t("summary.ariaLabel", { name: profileViewData.copy.name })}
       className="mx-auto w-full max-w-5xl pt-24 sm:pt-28 lg:pt-32"
       data-auth-user-id={user.id}
     >
@@ -38,8 +42,7 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
           className="border-border bg-surface-muted text-foreground mb-5 rounded-xl border px-4 py-3 text-sm font-medium sm:px-5"
           role="status"
         >
-          {profileInfoErrorMessage} Showing fallback profile values where
-          needed.
+          {profileInfoErrorMessage} {t("summary.fallbackNotice")}
         </div>
       ) : null}
 

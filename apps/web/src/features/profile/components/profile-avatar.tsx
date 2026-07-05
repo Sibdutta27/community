@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { SvgIcon } from "@/components/shared/svg-icon";
 
 function getInitials(name: string) {
@@ -23,6 +25,7 @@ export function ProfileAvatar({
   name: string;
   portraitSrc: string;
 }>) {
+  const t = useTranslations("profile");
   const [hasImageError, setHasImageError] = useState(false);
   const initials = useMemo(() => getInitials(name), [name]);
   const hasPortrait = portraitSrc.trim().length > 0 && !hasImageError;
@@ -34,7 +37,7 @@ export function ProfileAvatar({
           <Image
             fill
             priority
-            alt={`${name} portrait`}
+            alt={t("summary.portraitAlt", { name })}
             className="object-cover object-center"
             onError={() => setHasImageError(true)}
             sizes="(max-width: 640px) 124px, (max-width: 1024px) 140px, (max-width: 1536px) 160px, 172px"

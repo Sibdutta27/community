@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import type { ProfileYucayekeData } from "../config/profile-config";
 
 export function ProfileYucayekePanel({
@@ -5,6 +7,8 @@ export function ProfileYucayekePanel({
 }: Readonly<{
   yucayekeData: ProfileYucayekeData;
 }>) {
+  const t = useTranslations("profile");
+
   return (
     <div className="space-y-5">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -44,7 +48,7 @@ export function ProfileYucayekePanel({
       <div className="grid gap-3 lg:grid-cols-2">
         <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Territory Snapshot
+            {t("yucayeke.territorySnapshot")}
           </h3>
           <dl className="mt-3 space-y-2.5">
             {yucayekeData.territoryFacts.map((fact) => (
@@ -65,7 +69,7 @@ export function ProfileYucayekePanel({
 
         <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Family Circle In This Yucayeke
+            {t("yucayeke.familyCircle")}
           </h3>
           <ul className="mt-3 space-y-2.5">
             {yucayekeData.circles.map((member, index) => (
@@ -92,7 +96,7 @@ export function ProfileYucayekePanel({
 
       <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
         <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-          Community Rhythm
+          {t("yucayeke.communityRhythm")}
         </h3>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {yucayekeData.rhythm.map((item) => (

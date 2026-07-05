@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { SvgIcon } from "@/components/shared/svg-icon";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +21,8 @@ export function ProfileLineageTabs({
   idBase,
   onChange,
 }: ProfileLineageTabsProps) {
+  const t = useTranslations("profile");
+
   // Roving tabindex: keyboard selection must also move focus so the
   // tablist stays operable after an arrow-key change.
   const selectTab = (value: ProfileLineageTabValue) => {
@@ -30,7 +34,7 @@ export function ProfileLineageTabs({
 
   return (
     <nav
-      aria-label="Profile sections"
+      aria-label={t("tabs.ariaLabel")}
       className="border-border bg-surface-muted border-b"
     >
       <div
@@ -43,7 +47,7 @@ export function ProfileLineageTabs({
 
           return (
             <button
-              key={tab.label}
+              key={tab.value}
               aria-controls={`${idBase}-${tab.value}-panel`}
               aria-selected={isActive}
               className={cn(
@@ -100,7 +104,9 @@ export function ProfileLineageTabs({
                 }
                 src={tab.iconSrc}
               />
-              <span className="whitespace-nowrap">{tab.label}</span>
+              <span className="whitespace-nowrap">
+                {t(`tabs.${tab.value}`)}
+              </span>
             </button>
           );
         })}

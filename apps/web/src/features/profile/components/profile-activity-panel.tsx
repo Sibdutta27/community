@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 
 import sharedStyles from "../styles/profile-shared.module.scss";
@@ -8,6 +10,8 @@ export function ProfileActivityPanel({
 }: Readonly<{
   activityData: ProfileActivityData;
 }>) {
+  const t = useTranslations("profile");
+
   return (
     <div className="space-y-5">
       <header className="max-w-3xl">
@@ -41,7 +45,7 @@ export function ProfileActivityPanel({
       <div className="grid gap-3 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Recent Timeline
+            {t("activity.recentTimeline")}
           </h3>
 
           {activityData.events.length > 0 ? (
@@ -82,7 +86,7 @@ export function ProfileActivityPanel({
           ) : (
             <div className={cn(sharedStyles.emptyStatePlain, "mt-3 px-4 py-6")}>
               <p className={cn(sharedStyles.emptyDescription, "text-[13px]")}>
-                No timeline events yet.
+                {t("activity.noEvents")}
               </p>
             </div>
           )}
@@ -90,7 +94,7 @@ export function ProfileActivityPanel({
 
         <article className="border-border bg-surface shadow-card-soft rounded-xl border p-4 sm:p-5">
           <h3 className="text-foreground text-[15px] font-semibold tracking-tight sm:text-[16px]">
-            Next Actions
+            {t("activity.nextActionsTitle")}
           </h3>
 
           {activityData.nextActions.length > 0 ? (
@@ -107,7 +111,7 @@ export function ProfileActivityPanel({
           ) : (
             <div className={cn(sharedStyles.emptyStatePlain, "mt-3 px-4 py-6")}>
               <p className={cn(sharedStyles.emptyDescription, "text-[13px]")}>
-                No immediate actions.
+                {t("activity.noActions")}
               </p>
             </div>
           )}

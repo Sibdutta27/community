@@ -1,9 +1,22 @@
+import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
 
 import type { AuthUser } from "@/lib/auth";
 import type { ProfileResponse } from "@/types/enrollment";
 
-import { buildProfileViewData } from "@/features/profile/lib/profile-view-data";
+import {
+  buildProfileViewData,
+  type ProfileTranslator,
+} from "@/features/profile/lib/profile-view-data";
+
+import enMessages from "../../../../messages/en.json";
+
+/** Real `profile` translator over the en catalog, like the page provides. */
+const t = createTranslator({
+  locale: "en",
+  messages: enMessages,
+  namespace: "profile",
+}) as unknown as ProfileTranslator;
 
 const authUser: AuthUser = {
   id: "user-1",
@@ -104,6 +117,7 @@ describe("buildProfileViewData kinship / ancestry mapping", () => {
     const viewData = buildProfileViewData({
       accountInfo: buildAccountInfo(),
       authUser,
+      t,
     });
 
     expect(viewData.kinshipData.groups).toHaveLength(2);
@@ -124,6 +138,7 @@ describe("buildProfileViewData kinship / ancestry mapping", () => {
     const viewData = buildProfileViewData({
       accountInfo: buildAccountInfo(),
       authUser,
+      t,
     });
 
     const mother = viewData.kinshipData.groups[0].ancestors[0];
@@ -143,6 +158,7 @@ describe("buildProfileViewData kinship / ancestry mapping", () => {
     const viewData = buildProfileViewData({
       accountInfo: buildAccountInfo(),
       authUser,
+      t,
     });
 
     const [father, paternalGrandmother] =
@@ -170,6 +186,7 @@ describe("buildProfileViewData kinship / ancestry mapping", () => {
           : null,
       } as ProfileResponse,
       authUser,
+      t,
     });
 
     expect(viewData.kinshipData.groups).toHaveLength(2);
@@ -184,6 +201,7 @@ describe("buildProfileViewData kinship / ancestry mapping", () => {
     const viewData = buildProfileViewData({
       accountInfo: buildAccountInfo(),
       authUser,
+      t,
     });
 
     const ancestorsMetric = viewData.overviewData.metrics[3];
