@@ -587,6 +587,60 @@
       "fileNotAccepted": "Este espacio acepta archivos {formats} de hasta {maxSize}."
     }
   },
+  "dashboard": {
+    "hero": {
+      "titlePrefix": "Portal de",
+      "titleHighlight": "Solicitud",
+      "titleSuffix": "de Inscripción",
+      "description": "Comience su solicitud de inscripción, siga su progreso y reconéctese con su herencia taína. Cada paso lo acerca más a la membresía tribal oficial y a la conexión con la comunidad."
+    },
+    "enrollment": {
+      "eyebrow": "Panel de Inscripción",
+      "description": "Complete su solicitud y siga su progreso",
+      "applicationStatusLabel": "Estado de la solicitud",
+      "sectionTitle": "Su proceso de inscripción",
+      "accountInfoErrorSuffix": "No se pudo cargar el progreso actual de la inscripción, por lo que el estado de los pasos puede estar incompleto hasta que el panel se vuelva a conectar."
+    },
+    "status": {
+      "notStarted": "No iniciada",
+      "draft": "Borrador",
+      "submitted": "Sometida",
+      "approved": "Aprobada",
+      "rejected": "Rechazada",
+      "unavailable": "No disponible",
+      "loading": "Cargando..."
+    },
+    "steps": {
+      "loadingText": "Preparando...",
+      "cta": {
+        "start": "Comenzar el paso {step}",
+        "reviewStepOne": "Revisar el paso 1",
+        "continueStepOne": "Continuar el paso 1"
+      },
+      "descriptions": {
+        "1": "Proporcione sus datos demográficos personales",
+        "2": "Documente a su madre y a sus abuelos maternos",
+        "3": "Documente a su padre y a sus abuelos paternos",
+        "4": "Suba su foto y la evidencia que la respalde",
+        "5": "Firme y envíe su solicitud"
+      }
+    },
+    "errors": {
+      "startFlow": "No se pudo iniciar el proceso de inscripción en este momento.",
+      "acceptRequiredConsents": "Por favor, acepte todos los consentimientos requeridos antes de continuar al paso 1.",
+      "saveConsents": "No se pudieron guardar los consentimientos requeridos en este momento."
+    },
+    "expectations": {
+      "title": "Qué esperar durante la inscripción",
+      "description": "Nuestro proceso de inscripción está diseñado para ser minucioso y respetuoso, y garantiza que su herencia quede debidamente documentada mientras honra la historia de su familia.",
+      "cards": {
+        "secure": "Seguro y privado",
+        "progress": "Guarde su progreso",
+        "support": "Apoyo experto"
+      }
+    },
+    "draftSavedNotice": "Su progreso se ha guardado — puede terminar más tarde."
+  },
   "consent": {
     "kicker": "CONSENTIMIENTO DE INSCRIPCIÓN",
     "description": "Acepte los consentimientos requeridos para continuar.",

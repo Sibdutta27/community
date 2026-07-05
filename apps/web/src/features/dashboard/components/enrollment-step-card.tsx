@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ export function EnrollmentStepCard({
   isLoading = false,
   onAction,
 }: EnrollmentStepCardProps) {
+  const t = useTranslations("dashboard");
   const progressWidth = `${Math.max(0, Math.min(progress, 1)) * 100}%`;
   // Shared primary Button (azul pill) — no bespoke color overrides; the
   // locked steps render it disabled so the state reads from opacity.
@@ -98,7 +100,7 @@ export function EnrollmentStepCard({
               <Button
                 className={buttonClassName}
                 loading={isLoading}
-                loadingText="Preparing..."
+                loadingText={t("steps.loadingText")}
                 size="sm"
                 type="button"
                 variant="primary"

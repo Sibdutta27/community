@@ -587,6 +587,60 @@
       "fileNotAccepted": "This slot accepts {formats} files up to {maxSize}."
     }
   },
+  "dashboard": {
+    "hero": {
+      "titlePrefix": "Enrollment",
+      "titleHighlight": "Application",
+      "titleSuffix": "Portal",
+      "description": "Start your enrollment application, track your progress, and reconnect with your Taíno heritage. Each step brings you closer to official tribal membership and community connection."
+    },
+    "enrollment": {
+      "eyebrow": "Enrollment Dashboard",
+      "description": "Complete your application and track your progress",
+      "applicationStatusLabel": "Application Status",
+      "sectionTitle": "Your Enrollment Journey",
+      "accountInfoErrorSuffix": "Current enrollment progress could not be loaded, so the step status may be incomplete until the dashboard reconnects."
+    },
+    "status": {
+      "notStarted": "Not Started",
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "unavailable": "Unavailable",
+      "loading": "Loading..."
+    },
+    "steps": {
+      "loadingText": "Preparing...",
+      "cta": {
+        "start": "Start Step {step}",
+        "reviewStepOne": "Review Step 1",
+        "continueStepOne": "Continue Step 1"
+      },
+      "descriptions": {
+        "1": "Provide your personal demographic details",
+        "2": "Document your mother and maternal grandparents",
+        "3": "Document your father and paternal grandparents",
+        "4": "Upload your photo and supporting evidence",
+        "5": "Sign and submit your application"
+      }
+    },
+    "errors": {
+      "startFlow": "Unable to start the enrollment flow right now.",
+      "acceptRequiredConsents": "Please accept every required consent before continuing to Step 1.",
+      "saveConsents": "Unable to save the required consents right now."
+    },
+    "expectations": {
+      "title": "What to Expect During Enrollment",
+      "description": "Our enrollment process is designed to be thorough yet respectful, ensuring your heritage is properly documented while honoring your family's story.",
+      "cards": {
+        "secure": "Secure & Private",
+        "progress": "Save Your Progress",
+        "support": "Expert Support"
+      }
+    },
+    "draftSavedNotice": "Your progress has been saved — you can finish later."
+  },
   "consent": {
     "kicker": "ENROLLMENT CONSENT",
     "description": "Please accept the required consents to continue.",

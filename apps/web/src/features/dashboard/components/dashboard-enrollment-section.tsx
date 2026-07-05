@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
 import {
   accountQueryKeys,
@@ -15,26 +16,22 @@ import {
 } from "@/features/dashboard/lib/enrollment-queries";
 import {
   buildDashboardEnrollmentSteps,
-  getEnrollmentStatusDisplay,
   resolveEnrollmentStepState,
 } from "@/features/enrollment/config/enrollment-steps";
 
 import { DashboardConsentDialog } from "./dashboard-consent-dialog";
 import { EnrollmentStepCard } from "./enrollment-step-card";
 
-type DashboardEnrollmentSectionProps = Readonly<{
-  eyebrow: string;
-  description: string;
-  applicationStatusLabel: string;
-  sectionTitle: string;
-}>;
+const STATUS_LABEL_KEYS = {
+  DRAFT: "status.draft",
+  SUBMITTED: "status.submitted",
+  APPROVED: "status.approved",
+  REJECTED: "status.rejected",
+} as const;
 
-export function DashboardEnrollmentSection({
-  eyebrow,
-  description,
-  applicationStatusLabel,
-  sectionTitle,
-}: DashboardEnrollmentSectionProps) {
+export function DashboardEnrollmentSection() {
+  const t = useTranslations("dashboard");
+  const tStepTitles = useTranslations("enrollment.steps");
   const router = useRouter();
   const queryClient = useQueryClient();
   const accountInfoQuery = useAccountInfoQuery();
@@ -55,15 +52,22 @@ export function DashboardEnrollmentSection({
 
   const enrollmentSteps = buildDashboardEnrollmentSteps(resolvedStepState).map(
     (step) => {
-      if (step.step !== 1 || !hasEnrollment) {
-        return step;
+      const translatedStep = {
+        ...step,
+        title: tStepTitles(`${step.step}.title`),
+        description: t(`steps.descriptions.${step.step}`),
+        ctaLabel: t("steps.cta.start", { step: step.step }),
+      };
+
+      if (translatedStep.step !== 1 || !hasEnrollment) {
+        return translatedStep;
       }
 
       return {
-        ...step,
+        ...translatedStep,
         ctaLabel: resolvedStepState?.["1"]
-          ? "Review Step 1"
-          : "Continue Step 1",
+          ? t("steps.cta.reviewStepOne")
+          : t("steps.cta.continueStepOne"),
       };
     },
   );
@@ -74,15 +78,22 @@ export function DashboardEnrollmentSection({
     !accountInfoQuery.data && accountInfoQuery.error instanceof Error
       ? accountInfoQuery.error.message
       : null;
+  const rawEnrollmentStatus =
+    accountInfoQuery.data?.enrollmentStatus ??
+    accountInfoQuery.data?.enrollment?.status;
+  const statusLabelKey =
+    typeof rawEnrollmentStatus === "string"
+      ? STATUS_LABEL_KEYS[
+          rawEnrollmentStatus.toUpperCase() as keyof typeof STATUS_LABEL_KEYS
+        ]
+      : undefined;
   const applicationStatusDisplay = accountInfoErrorMessage
-    ? "Unavailable"
+    ? t("status.unavailable")
     : accountInfoQuery.isLoading
-      ? "Loading..."
-      : getEnrollmentStatusDisplay(
-          accountInfoQuery.data?.enrollmentStatus ??
-            accountInfoQuery.data?.enrollment?.status,
-          accountInfoQuery.data?.hasEnrollment,
-        );
+      ? t("status.loading")
+      : !hasEnrollment
+        ? t("status.notStarted")
+        : t(statusLabelKey ?? "status.draft");
   const hasAcceptedAllRequiredConsents = activeConsents.every(
     (consent) => !consent.required || selectedConsentIds.includes(consent.id),
   );
@@ -139,18 +150,14 @@ export function DashboardEnrollmentSection({
       setIsConsentDialogOpen(true);
     } catch (error) {
       setSectionErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to start the enrollment flow right now.",
+        error instanceof Error ? error.message : t("errors.startFlow"),
       );
     }
   };
 
   const handleAcceptConsents = async () => {
     if (!hasAcceptedAllRequiredConsents) {
-      setDialogErrorMessage(
-        "Please accept every required consent before continuing to Step 1.",
-      );
+      setDialogErrorMessage(t("errors.acceptRequiredConsents"));
       return;
     }
 
@@ -170,9 +177,7 @@ export function DashboardEnrollmentSection({
       router.push(stepOneHref);
     } catch (error) {
       setDialogErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to save the required consents right now.",
+        error instanceof Error ? error.message : t("errors.saveConsents"),
       );
     }
   };
@@ -190,16 +195,16 @@ export function DashboardEnrollmentSection({
         <div className="bg-foreground text-background flex flex-col gap-3 px-4 py-5 sm:gap-5 sm:px-8 sm:py-8 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="text-[1.25rem] leading-tight font-semibold tracking-tight sm:text-[1.75rem] lg:text-[2rem]">
-              {eyebrow}
+              {t("enrollment.eyebrow")}
             </p>
             <p className="text-background/80 mt-1.5 max-w-[18rem] text-[0.95rem] leading-6 sm:mt-2 sm:max-w-none sm:text-base">
-              {description}
+              {t("enrollment.description")}
             </p>
           </div>
 
           <div className="border-background/15 bg-background/10 max-w-fit self-start rounded-xl border px-3.5 py-2.5 text-left lg:max-w-none lg:self-auto lg:border-transparent lg:bg-transparent lg:px-0 lg:py-1 lg:text-right">
             <p className="text-background/80 text-[0.7rem] font-medium tracking-[0.12em] uppercase sm:text-xs sm:tracking-[0.08em]">
-              {applicationStatusLabel}
+              {t("enrollment.applicationStatusLabel")}
             </p>
             <p className="text-background mt-1 text-[1.05rem] font-semibold sm:text-sm">
               {applicationStatusDisplay}
@@ -209,7 +214,7 @@ export function DashboardEnrollmentSection({
 
         <div className="px-4 py-5 sm:px-8 sm:py-10">
           <h2 className="text-foreground text-[1.85rem] leading-tight font-semibold tracking-tight sm:text-2xl">
-            {sectionTitle}
+            {t("enrollment.sectionTitle")}
           </h2>
 
           {sectionErrorMessage ? (
@@ -226,9 +231,8 @@ export function DashboardEnrollmentSection({
               className="border-border bg-surface-muted text-foreground mt-5 rounded-xl border px-4 py-3 text-sm font-medium"
               role="status"
             >
-              {accountInfoErrorMessage} Current enrollment progress could not be
-              loaded, so the step status may be incomplete until the dashboard
-              reconnects.
+              {accountInfoErrorMessage}{" "}
+              {t("enrollment.accountInfoErrorSuffix")}
             </div>
           ) : null}
 
