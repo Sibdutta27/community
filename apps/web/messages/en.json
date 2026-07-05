@@ -1203,5 +1203,67 @@
         }
       }
     }
+  },
+  "services": {
+    "hero": {
+      "badge": "Member Resources",
+      "title": "Community Services Directory",
+      "description": "Comprehensive support services designed exclusively for Taíno Nation members. Access health care, legal assistance, educational programs, and community resources to support your wellbeing and growth."
+    },
+    "categories": {
+      "title": "Service Categories",
+      "description": "Browse our comprehensive directory of services organized by category. Select a service area to explore available support, contact details, and access options."
+    },
+    "popular": {
+      "title": "Popular Services",
+      "description": "Browse our comprehensive directory of services organized by category. Click on any service to view detailed information, contact details, and access options.",
+      "allServices": "All Services",
+      "loading": "Loading services...",
+      "empty": "No services are available for this category right now."
+    },
+    "categoryFallbackDescription": "Explore services, support options, and member resources.",
+    "categoryPresets": {
+      "health": {
+        "title": "Health & Wellness",
+        "description": "Medical, mental health, and holistic care."
+      },
+      "legal": {
+        "title": "Legal Assistance",
+        "description": "Rights advocacy and legal support."
+      },
+      "education": {
+        "title": "Education & Training",
+        "description": "Learning and skill development."
+      },
+      "support": {
+        "title": "Community Support",
+        "description": "Emergency and ongoing assistance."
+      },
+      "cultural": {
+        "title": "Cultural Programs",
+        "description": "Language, arts, and traditions."
+      },
+      "youth": {
+        "title": "Youth Services",
+        "description": "Programs for children and teens."
+      },
+      "elder": {
+        "title": "Elder Care",
+        "description": "Support for senior community members."
+      },
+      "housing": {
+        "title": "Housing Support",
+        "description": "Shelter and housing assistance."
+      }
+    },
+    "card": {
+      "registered": "Registered",
+      "register": "Register Service",
+      "unavailable": "Currently Unavailable",
+      "registering": "Registering...",
+      "availabilityFallback": "Availability on request",
+      "locationFallback": "Location details available after registration",
+      "contactFallback": "Contact details available inside the directory"
+    }
   }
 }

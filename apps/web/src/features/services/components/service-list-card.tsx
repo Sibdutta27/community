@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { Button } from "@/components/ui/button";
@@ -14,12 +15,13 @@ type ServiceListCardProps = Readonly<{
   service: ServiceApiItem;
 }>;
 
+/** Returns an authored availability string, or `null` for the i18n fallback. */
 function getAvailabilityLabel(service: ServiceApiItem) {
   const highlightedHours = service.highlights.find((item) =>
     /am|pm|mon|tue|wed|thu|fri|sat|sun/i.test(item),
   );
 
-  return highlightedHours ?? service.highlights[0] ?? "Availability on request";
+  return highlightedHours ?? service.highlights[0] ?? null;
 }
 
 export function ServiceListCard({
@@ -28,13 +30,14 @@ export function ServiceListCard({
   onRegister,
   service,
 }: ServiceListCardProps) {
+  const t = useTranslations("services.card");
   const canRegister =
     service.status === "ACTIVE" && !isRegistered && !isRegistering;
   const buttonLabel = isRegistered
-    ? "Registered"
+    ? t("registered")
     : service.status === "ACTIVE"
-      ? "Register Service"
-      : "Currently Unavailable";
+      ? t("register")
+      : t("unavailable");
 
   return (
     <SurfaceCard as="article" className="flex h-full max-w-[31rem] flex-col">
@@ -63,10 +66,7 @@ export function ServiceListCard({
               src="/icons/services/location.svg"
               width={14}
             />
-            <p>
-              {service.location ??
-                "Location details available after registration"}
-            </p>
+            <p>{service.location ?? t("locationFallback")}</p>
           </div>
         </div>
       </div>
@@ -85,7 +85,7 @@ export function ServiceListCard({
             src="/icons/services/time.svg"
             width={14}
           />
-          <p>{getAvailabilityLabel(service)}</p>
+          <p>{getAvailabilityLabel(service) ?? t("availabilityFallback")}</p>
         </div>
         <div className="flex items-start gap-1.5">
           <Image
@@ -96,11 +96,7 @@ export function ServiceListCard({
             src="/icons/services/phone.svg"
             width={14}
           />
-          <p>
-            {service.phone ??
-              service.email ??
-              "Contact details available inside the directory"}
-          </p>
+          <p>{service.phone ?? service.email ?? t("contactFallback")}</p>
         </div>
       </div>
 
@@ -109,7 +105,7 @@ export function ServiceListCard({
           disabled={!canRegister}
           fullWidth
           loading={isRegistering}
-          loadingText="Registering..."
+          loadingText={t("registering")}
           size="sm"
           type="button"
           onClick={onRegister}

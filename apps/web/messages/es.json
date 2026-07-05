@@ -1203,5 +1203,67 @@
         }
       }
     }
+  },
+  "services": {
+    "hero": {
+      "badge": "Recursos para Miembros",
+      "title": "Directorio de Servicios Comunitarios",
+      "description": "Servicios de apoyo integrales diseñados exclusivamente para los miembros de la Nación Taíno. Accede a cuidado de salud, asistencia legal, programas educativos y recursos comunitarios que apoyan tu bienestar y crecimiento."
+    },
+    "categories": {
+      "title": "Categorías de Servicios",
+      "description": "Explora nuestro directorio completo de servicios organizados por categoría. Selecciona un área de servicio para ver el apoyo disponible, los datos de contacto y las opciones de acceso."
+    },
+    "popular": {
+      "title": "Servicios Populares",
+      "description": "Explora nuestro directorio completo de servicios organizados por categoría. Haz clic en cualquier servicio para ver información detallada, datos de contacto y opciones de acceso.",
+      "allServices": "Todos los Servicios",
+      "loading": "Cargando servicios...",
+      "empty": "No hay servicios disponibles para esta categoría en este momento."
+    },
+    "categoryFallbackDescription": "Explora servicios, opciones de apoyo y recursos para miembros.",
+    "categoryPresets": {
+      "health": {
+        "title": "Salud y Bienestar",
+        "description": "Atención médica, salud mental y cuidado holístico."
+      },
+      "legal": {
+        "title": "Asistencia Legal",
+        "description": "Defensa de derechos y apoyo legal."
+      },
+      "education": {
+        "title": "Educación y Capacitación",
+        "description": "Aprendizaje y desarrollo de destrezas."
+      },
+      "support": {
+        "title": "Apoyo Comunitario",
+        "description": "Asistencia de emergencia y continua."
+      },
+      "cultural": {
+        "title": "Programas Culturales",
+        "description": "Idioma, artes y tradiciones."
+      },
+      "youth": {
+        "title": "Servicios Juveniles",
+        "description": "Programas para niños y adolescentes."
+      },
+      "elder": {
+        "title": "Cuidado de Ancianos",
+        "description": "Apoyo para los miembros mayores de la comunidad."
+      },
+      "housing": {
+        "title": "Apoyo de Vivienda",
+        "description": "Asistencia de refugio y vivienda."
+      }
+    },
+    "card": {
+      "registered": "Inscrito",
+      "register": "Inscribir Servicio",
+      "unavailable": "No Disponible por Ahora",
+      "registering": "Inscribiendo...",
+      "availabilityFallback": "Disponibilidad a solicitud",
+      "locationFallback": "Detalles de ubicación disponibles tras la inscripción",
+      "contactFallback": "Datos de contacto disponibles dentro del directorio"
+    }
   }
 }

@@ -1,19 +1,11 @@
-export const servicesHeroContent = {
-  badge: "Member Resources",
-  title: "Community Services Directory",
-  description:
-    "Comprehensive support services designed exclusively for Taíno Nation members. Access health care, legal assistance, educational programs, and community resources to support your wellbeing and growth.",
-} as const;
-
 export type ServiceCategoryTone =
-  | "teal"
-  | "olive"
-  | "slate"
-  | "forest"
-  | "sea"
-  | "stone"
-  | "indigo";
+  "teal" | "olive" | "slate" | "forest" | "sea" | "stone" | "indigo";
 
+/**
+ * Resolved card shape passed to the leaf card. Copy is authored in
+ * `messages/{en,es}.json` under `services.*` and resolved in the section
+ * components; only structural (locale-neutral) data lives here.
+ */
 export type ServiceCategory = Readonly<{
   description: string;
   iconSrc: string;
@@ -21,65 +13,76 @@ export type ServiceCategory = Readonly<{
   tone: ServiceCategoryTone;
 }>;
 
-export const servicesCategoriesContent = {
-  title: "Service Categories",
-  description:
-    "Browse our comprehensive directory of services organized by category. Select a service area to explore available support, contact details, and access options.",
-} as const;
+/** Keys into the `services.categoryPresets.*` message group. */
+export type ServiceCategoryPresetKey =
+  | "health"
+  | "legal"
+  | "education"
+  | "support"
+  | "cultural"
+  | "youth"
+  | "elder"
+  | "housing";
 
-export const popularServicesContent = {
-  title: "Popular Services",
-  description:
-    "Browse our comprehensive directory of services organized by category. Click on any service to view detailed information, contact details, and access options.",
-} as const;
+/**
+ * Presentation resolved for an API category: a `presetKey` into
+ * `services.categoryPresets.*` (with authored title/description), or `null`
+ * when unknown — in which case the API `name` is the title and
+ * `services.categoryFallbackDescription` the description.
+ */
+export type ServiceCategoryPresentation = Readonly<{
+  presetKey: ServiceCategoryPresetKey | null;
+  name: string;
+  iconSrc: string;
+  tone: ServiceCategoryTone;
+}>;
 
-const serviceCategoryPresentationByKey: Record<string, ServiceCategory> = {
+const serviceCategoryPresetByKey: Record<
+  string,
+  {
+    presetKey: ServiceCategoryPresetKey;
+    iconSrc: string;
+    tone: ServiceCategoryTone;
+  }
+> = {
   health: {
-    description: "Medical, mental health, and holistic care.",
+    presetKey: "health",
     iconSrc: "/icons/services/health-wellness.svg",
-    title: "Health & Wellness",
     tone: "teal",
   },
   legal: {
-    description: "Rights advocacy and legal support.",
+    presetKey: "legal",
     iconSrc: "/icons/services/legal-assistance.svg",
-    title: "Legal Assistance",
     tone: "olive",
   },
   education: {
-    description: "Learning and skill development.",
+    presetKey: "education",
     iconSrc: "/icons/services/education-training.svg",
-    title: "Education & Training",
     tone: "slate",
   },
   support: {
-    description: "Emergency and ongoing assistance.",
+    presetKey: "support",
     iconSrc: "/icons/services/community-support.svg",
-    title: "Community Support",
     tone: "forest",
   },
   cultural: {
-    description: "Language, arts, and traditions.",
+    presetKey: "cultural",
     iconSrc: "/icons/services/cultural-programme.svg",
-    title: "Cultural Programs",
     tone: "olive",
   },
   youth: {
-    description: "Programs for children and teens.",
+    presetKey: "youth",
     iconSrc: "/icons/services/youth-service.svg",
-    title: "Youth Services",
     tone: "sea",
   },
   elder: {
-    description: "Support for senior community members.",
+    presetKey: "elder",
     iconSrc: "/icons/services/elder-care.svg",
-    title: "Elder Care",
     tone: "stone",
   },
   housing: {
-    description: "Shelter and housing assistance.",
+    presetKey: "housing",
     iconSrc: "/icons/services/housing-support.svg",
-    title: "Housing Support",
     tone: "indigo",
   },
 };
@@ -88,21 +91,26 @@ export function getServiceCategoryPresentation(category: {
   icon: string;
   key: string;
   name: string;
-}): ServiceCategory {
+}): ServiceCategoryPresentation {
   const normalizedKey = category.key.trim().toLowerCase();
   const normalizedIcon = category.icon.trim().toLowerCase();
 
   const mapped =
-    serviceCategoryPresentationByKey[normalizedKey] ??
-    serviceCategoryPresentationByKey[normalizedIcon];
+    serviceCategoryPresetByKey[normalizedKey] ??
+    serviceCategoryPresetByKey[normalizedIcon];
 
   if (mapped) {
-    return mapped;
+    return {
+      presetKey: mapped.presetKey,
+      name: category.name,
+      iconSrc: mapped.iconSrc,
+      tone: mapped.tone,
+    };
   }
 
   return {
-    title: category.name,
-    description: "Explore services, support options, and member resources.",
+    presetKey: null,
+    name: category.name,
     iconSrc: "/icons/services/community-support.svg",
     tone: "forest",
   };

@@ -3,12 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import { ServiceListCard } from "@/features/services/components/service-list-card";
-import {
-  getServiceCategoryPresentation,
-  popularServicesContent,
-} from "@/features/services/constants/services-content";
+import { getServiceCategoryPresentation } from "@/features/services/constants/services-content";
 import {
   isRegisterServiceUnauthorizedError,
   useRegisterServiceMutation,
@@ -85,6 +84,7 @@ export function PopularServicesSection({
   initialServices,
   isAuthenticated,
 }: PopularServicesSectionProps) {
+  const t = useTranslations("services");
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -116,6 +116,9 @@ export function PopularServicesSection({
       categories,
     );
 
+    // Sync the active filter to the URL/category props; the functional update
+    // is a no-op when unchanged so this cannot cascade renders.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedCategoryKey((currentCategoryKey) =>
       currentCategoryKey === nextSelectedCategoryKey
         ? currentCategoryKey
@@ -167,10 +170,10 @@ export function PopularServicesSection({
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="text-foreground text-[1.6rem] leading-tight font-semibold tracking-tight sm:text-[1.95rem] lg:text-[2.4rem]">
-            {popularServicesContent.title}
+            {t("popular.title")}
           </h2>
           <p className="text-muted-foreground mx-auto mt-3 max-w-3xl text-[0.92rem] leading-6 sm:text-[0.98rem] sm:leading-7">
-            {popularServicesContent.description}
+            {t("popular.description")}
           </p>
         </div>
 
@@ -185,7 +188,7 @@ export function PopularServicesSection({
               }
               onClick={() => setSelectedCategoryKey(ALL_SERVICES_KEY)}
             >
-              All Services
+              {t("popular.allServices")}
             </Button>
 
             {categories.map((category) => {
@@ -202,7 +205,9 @@ export function PopularServicesSection({
                   }
                   onClick={() => setSelectedCategoryKey(category.key)}
                 >
-                  {presentation.title}
+                  {presentation.presetKey
+                    ? t(`categoryPresets.${presentation.presetKey}.title`)
+                    : presentation.name}
                 </Button>
               );
             })}
@@ -211,7 +216,7 @@ export function PopularServicesSection({
 
         {filteredServicesQuery.isLoading ? (
           <p className="text-muted-foreground mt-5 text-sm">
-            Loading services...
+            {t("popular.loading")}
           </p>
         ) : null}
 
@@ -229,7 +234,7 @@ export function PopularServicesSection({
           </div>
         ) : (
           <div className="border-border bg-surface-muted/60 text-muted-foreground mt-5 rounded-2xl border px-5 py-4 text-[0.9rem]">
-            No services are available for this category right now.
+            {t("popular.empty")}
           </div>
         )}
       </div>
