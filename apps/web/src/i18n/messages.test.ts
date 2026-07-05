@@ -16,7 +16,15 @@ function collectKeyPaths(value: unknown, prefix = ""): string[] {
 
 describe("message catalogs", () => {
   it("exposes the agreed namespaces", () => {
-    for (const namespace of ["common", "nav", "footer", "home"]) {
+    for (const namespace of [
+      "common",
+      "nav",
+      "footer",
+      "home",
+      "enrollment",
+      "consent",
+      "errors",
+    ]) {
       expect(enMessages).toHaveProperty(namespace);
       expect(esMessages).toHaveProperty(namespace);
     }

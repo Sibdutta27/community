@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -38,6 +39,7 @@ export function DashboardConsentDialog({
   onToggleConsent,
   selectedConsentIds,
 }: DashboardConsentDialogProps) {
+  const t = useTranslations("consent");
   const hasAcceptedAllRequired = activeConsents.every(
     (consent) => !consent.required || selectedConsentIds.includes(consent.id),
   );
@@ -67,15 +69,15 @@ export function DashboardConsentDialog({
         <div className="border-border flex items-start justify-between gap-3 border-b px-4 py-3.5 sm:px-5 sm:py-3.5">
           <DialogHeader className="min-w-0 flex-1 gap-1">
             <DialogTitle className="text-muted-foreground text-[0.72rem] font-semibold tracking-[0.2em] uppercase sm:text-xs">
-              ENROLLMENT CONSENT
+              {t("kicker")}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground text-sm leading-6 sm:text-[0.92rem]">
-              Please accept the required consents to continue.
+              {t("description")}
             </DialogDescription>
           </DialogHeader>
 
           <button
-            aria-label="Close consent dialog"
+            aria-label={t("closeAria")}
             className="border-border bg-surface text-muted-foreground hover:bg-surface-muted hover:text-foreground focus-visible:ring-ring inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
             disabled={isSubmitting}
             type="button"
@@ -138,13 +140,16 @@ export function DashboardConsentDialog({
           </div>
 
           <p className="text-muted-foreground mt-4 text-[0.88rem] leading-6 sm:text-[0.9rem]">
-            Read all the{" "}
-            <Link
-              className="text-foreground focus-visible:ring-ring rounded-sm font-medium underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-              href="/privacy-policy"
-            >
-              terms and conditions.
-            </Link>
+            {t.rich("readAll", {
+              link: (chunks) => (
+                <Link
+                  className="text-foreground focus-visible:ring-ring rounded-sm font-medium underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  href="/privacy-policy"
+                >
+                  {chunks}
+                </Link>
+              ),
+            })}
           </p>
         </div>
 
@@ -156,18 +161,18 @@ export function DashboardConsentDialog({
             variant="outline"
             onClick={onClose}
           >
-            Cancel
+            {t("cancel")}
           </Button>
 
           <Button
             size="sm"
             disabled={!hasAcceptedAllRequired}
             loading={isSubmitting}
-            loadingText="Saving consent..."
+            loadingText={t("savingConsent")}
             type="button"
             onClick={onSubmit}
           >
-            Accept and Continue
+            {t("acceptAndContinue")}
           </Button>
         </DialogFooter>
       </DialogContent>

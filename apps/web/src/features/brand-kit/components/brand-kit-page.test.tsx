@@ -1,5 +1,7 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+
+import { renderWithIntl as render } from "@/test/i18n";
 
 import { BrandKitPage } from "./brand-kit-page";
 

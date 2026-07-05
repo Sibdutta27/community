@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, PenLine } from "lucide-react";
-import { Fragment } from "react";
+import { useTranslations } from "next-intl";
+import { Fragment, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -28,13 +29,16 @@ import {
   useCompleteEnrollmentMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
-  enrollmentConfirmationSchema,
+  createEnrollmentConfirmationSchema,
   getEnrollmentConfirmationDefaultValues,
   mapEnrollmentConfirmationFormToPayload,
   type EnrollmentConfirmationFormValues,
 } from "@/features/enrollment/lib/enrollment-confirmation-form";
 
 export function EnrollmentConfirmationForm() {
+  const t = useTranslations("enrollment");
+  const tValidation = useTranslations("enrollment.validation");
+  const tErrors = useTranslations("errors");
   const router = useRouter();
   const queryClient = useQueryClient();
   const accountInfoQuery = useAccountInfoQuery();
@@ -47,8 +51,13 @@ export function EnrollmentConfirmationForm() {
   const incompleteSteps = getIncompleteEnrollmentSteps(stepState);
   const hasIncompleteSteps = incompleteSteps.length > 0;
 
+  const schema = useMemo(
+    () => createEnrollmentConfirmationSchema((key) => tValidation(key)),
+    [tValidation],
+  );
+
   const form = useForm<EnrollmentConfirmationFormValues>({
-    resolver: zodResolver(enrollmentConfirmationSchema),
+    resolver: zodResolver(schema),
     defaultValues: getEnrollmentConfirmationDefaultValues(),
     mode: "onTouched",
   });
@@ -75,9 +84,7 @@ export function EnrollmentConfirmationForm() {
       setError("root", {
         type: "server",
         message:
-          error instanceof Error
-            ? error.message
-            : "Unable to submit your enrollment application right now.",
+          error instanceof Error ? error.message : tErrors("enrollmentSubmit"),
       });
     }
   };
@@ -96,48 +103,46 @@ export function EnrollmentConfirmationForm() {
         ) : null}
 
         <p className="text-muted-foreground max-w-3xl text-[0.95rem] leading-7">
-          Sign with your full legal name to confirm that the information in your
-          application is true and complete. Submitting sends your application to
-          the council for review.
+          {t("confirmation.intro")}
         </p>
 
         <EnrollmentStepSection
-          description="Type your full legal name as your electronic signature and confirm the agreements below to submit your enrollment application."
+          description={t("confirmation.sectionDescription")}
           icon={PenLine}
-          title="E-Signature"
+          title={t("confirmation.sectionTitle")}
         >
           <EnrollmentInputField
             autoComplete="name"
             control={control}
-            label="Sign your full legal name"
+            label={t("confirmation.signatureName.label")}
             name="signatureName"
-            placeholder="Full legal name"
+            placeholder={t("confirmation.signatureName.placeholder")}
             required
           />
           <EnrollmentDateField
             control={control}
-            label="Date"
+            label={t("confirmation.signatureDate.label")}
             name="signatureDate"
-            placeholder="Signature date"
+            placeholder={t("confirmation.signatureDate.placeholder")}
             required
           />
           <EnrollmentCheckboxField
             className="md:col-span-2"
             control={control}
-            label="I agree to submit my information"
+            label={t("confirmation.agreeToSubmit")}
             name="agreeToSubmit"
           />
           <EnrollmentCheckboxField
             className="md:col-span-2"
             control={control}
-            label="I agree to the terms of service"
+            label={t("confirmation.agreeToTerms")}
             name="agreeToTerms"
           />
         </EnrollmentStepSection>
 
         {hasIncompleteSteps && !accountInfoQuery.isPending ? (
           <div className="border-border bg-surface text-foreground rounded-xl border px-4 py-3 text-sm sm:px-5">
-            Almost there — finish:{" "}
+            {t("confirmation.incompleteIntro")}{" "}
             {incompleteSteps.map((incompleteStep, index) => (
               <Fragment key={incompleteStep.step}>
                 {index > 0 ? ", " : null}
@@ -145,11 +150,13 @@ export function EnrollmentConfirmationForm() {
                   className="font-medium underline underline-offset-4"
                   href={incompleteStep.href}
                 >
-                  {incompleteStep.title}
+                  {t(
+                    `steps.${String(incompleteStep.step) as "1" | "2" | "3" | "4" | "5"}.title`,
+                  )}
                 </Link>
               </Fragment>
             ))}{" "}
-            before submitting your application.
+            {t("confirmation.incompleteOutro")}
           </div>
         ) : null}
 
@@ -170,12 +177,12 @@ export function EnrollmentConfirmationForm() {
               completeEnrollmentMutation.isPending || hasIncompleteSteps
             }
             loading={completeEnrollmentMutation.isPending}
-            loadingText="Submitting..."
+            loadingText={t("actions.submitting")}
             rightIcon={<CheckCircle2 />}
             size="lg"
             type="submit"
           >
-            Submit Application
+            {t("actions.submitApplication")}
           </Button>
         </EnrollmentStepFooter>
       </form>

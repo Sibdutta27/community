@@ -46,16 +46,20 @@ beforeEach(() => {
 
 import { EnrollmentStepLayout } from "@/features/enrollment/components/enrollment-step-layout";
 import { EnrollmentStepOneForm } from "@/features/enrollment/components/enrollment-step-one-form";
+import { withIntl, type TestLocale } from "@/test/i18n";
 
-function renderForm() {
+function renderForm(locale: TestLocale = "en") {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      <EnrollmentStepOneForm />
-    </QueryClientProvider>,
+    withIntl(
+      <QueryClientProvider client={queryClient}>
+        <EnrollmentStepOneForm />
+      </QueryClientProvider>,
+      locale,
+    ),
   );
 }
 
@@ -65,11 +69,13 @@ function renderFormInLayout() {
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      <EnrollmentStepLayout step={1}>
-        <EnrollmentStepOneForm />
-      </EnrollmentStepLayout>
-    </QueryClientProvider>,
+    withIntl(
+      <QueryClientProvider client={queryClient}>
+        <EnrollmentStepLayout step={1}>
+          <EnrollmentStepOneForm />
+        </EnrollmentStepLayout>
+      </QueryClientProvider>,
+    ),
   );
 }
 
@@ -120,6 +126,31 @@ describe("EnrollmentStepOneForm — demographics only", () => {
     expect(
       screen.queryByText("Any children under 18?"),
     ).not.toBeInTheDocument();
+  });
+
+  it("renders the section header, field labels, and options in PR-Spanish under the es catalog", () => {
+    renderForm("es");
+
+    // Section sub-header + explainer translate.
+    expect(
+      screen.getByRole("heading", { name: "Su información Yucayekeno" }),
+    ).toBeInTheDocument();
+    // Field labels + placeholders translate.
+    expect(screen.getByText("Nombre")).toBeInTheDocument();
+    expect(screen.getByText("Fecha de nacimiento")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Escriba su nombre")).toBeInTheDocument();
+    // Info tooltips translate.
+    expect(screen.getByTitle("Sexo asignado al nacer")).toBeInTheDocument();
+    // Yes/No radio options translate (enum values stay untouched).
+    expect(screen.getByText("¿Tiene hijos?")).toBeInTheDocument();
+    expect(screen.getByText("Sí")).toBeInTheDocument();
+    // Footer actions translate.
+    expect(
+      screen.getByRole("button", { name: "Siguiente" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /guardar y terminar más tarde/i }),
+    ).toBeInTheDocument();
   });
 
   it("no longer renders the removed contact/address/emergency sections", () => {

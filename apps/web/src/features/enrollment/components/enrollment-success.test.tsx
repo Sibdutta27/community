@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { EnrollmentSuccess } from "@/features/enrollment/components/enrollment-success";
+import { renderWithIntl as render } from "@/test/i18n";
 
 describe("EnrollmentSuccess", () => {
   it("renders the success heading and the 90-day council review notice", () => {

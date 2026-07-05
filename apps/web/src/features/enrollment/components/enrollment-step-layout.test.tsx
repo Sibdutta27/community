@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
@@ -10,6 +10,9 @@ import {
   EnrollmentStepFooter,
   EnrollmentStepLayout,
 } from "@/features/enrollment/components/enrollment-step-layout";
+import { renderWithIntl, withIntl } from "@/test/i18n";
+
+const render = renderWithIntl;
 
 /** The elevated form card the active folder tab merges into. */
 function getStepCard() {
@@ -92,6 +95,27 @@ describe("EnrollmentStepLayout — folder tabs + elevated card", () => {
       </EnrollmentStepLayout>,
     );
     expect(screen.getByText("Enrollment Application")).toBeInTheDocument();
+  });
+
+  it("renders the utility row and step heading in PR-Spanish under the es catalog", () => {
+    renderWithIntl(
+      <EnrollmentStepLayout step={1}>
+        <p>Body</p>
+      </EnrollmentStepLayout>,
+      "es",
+    );
+
+    // Persistent flow title + kicker translate.
+    expect(screen.getByText("Solicitud de Inscripción")).toBeInTheDocument();
+    expect(screen.getByText("Ciudadanía Tribal")).toBeInTheDocument();
+    // Progress label translates with ICU values.
+    expect(screen.getByText(/paso 1 de 5/i)).toBeInTheDocument();
+    // The step heading inside the card translates.
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "1. Añada sus datos demográficos",
+    );
+    // Folder-tab names translate too (step 1 tab).
+    expect(screen.getByText("Datos demográficos")).toBeInTheDocument();
   });
 
   it("routes Back to the dashboard on step 1 and to the previous step afterwards", () => {
@@ -190,9 +214,11 @@ describe("EnrollmentStepLayout — top 'Save & finish later' (context bridge)", 
     ).toBeInTheDocument();
 
     rerender(
-      <EnrollmentStepLayout step={1}>
-        <p>Step body</p>
-      </EnrollmentStepLayout>,
+      withIntl(
+        <EnrollmentStepLayout step={1}>
+          <p>Step body</p>
+        </EnrollmentStepLayout>,
+      ),
     );
 
     expect(

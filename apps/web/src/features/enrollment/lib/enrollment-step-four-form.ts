@@ -10,28 +10,30 @@ const MB = 1024 * 1024;
  * Per-slot upload policy, mirroring the backend `getDocumentPolicy` map:
  * which mime types each document slot accepts, the file-input `accept`
  * attribute, the format badges shown under the drop area, and the size cap.
+ * `formatBadges`/`formatsLabel`/`maxFileSizeLabel` are locale-neutral tokens
+ * ("JPG", "10 MB") — the sentences around them come from the message catalog.
  */
 export type EnrollmentStepFourSlotPolicy = Readonly<{
   accept: string;
-  badges: readonly string[];
+  formatBadges: readonly string[];
   allowedMimeTypes: ReadonlySet<string>;
   maxFileSizeBytes: number;
   maxFileSizeLabel: string;
-  formatLabel: string;
+  formatsLabel: string;
 }>;
 
 const imageSlotPolicy: EnrollmentStepFourSlotPolicy = {
   accept: ".jpg,.jpeg,.png,.webp",
-  badges: ["JPG", "PNG", "WEBP", "10 MB Max"],
+  formatBadges: ["JPG", "PNG", "WEBP"],
   allowedMimeTypes: new Set(["image/jpeg", "image/png", "image/webp"]),
   maxFileSizeBytes: 10 * MB,
   maxFileSizeLabel: "10 MB",
-  formatLabel: "JPG, PNG, or WEBP",
+  formatsLabel: "JPG, PNG, WEBP",
 };
 
 const documentSlotPolicy: EnrollmentStepFourSlotPolicy = {
   accept: ".jpg,.jpeg,.png,.webp,.pdf",
-  badges: ["PDF", "JPG", "PNG", "WEBP", "10 MB Max"],
+  formatBadges: ["PDF", "JPG", "PNG", "WEBP"],
   allowedMimeTypes: new Set([
     "application/pdf",
     "image/jpeg",
@@ -40,12 +42,12 @@ const documentSlotPolicy: EnrollmentStepFourSlotPolicy = {
   ]),
   maxFileSizeBytes: 10 * MB,
   maxFileSizeLabel: "10 MB",
-  formatLabel: "PDF, JPG, PNG, or WEBP",
+  formatsLabel: "PDF, JPG, PNG, WEBP",
 };
 
 const oralHistorySlotPolicy: EnrollmentStepFourSlotPolicy = {
   accept: ".jpg,.jpeg,.png,.webp,.pdf,.mp3,.m4a,.wav,.mp4,.mov",
-  badges: ["PDF", "JPG", "PNG", "WEBP", "MP3", "MP4", "MOV", "100 MB Max"],
+  formatBadges: ["PDF", "JPG", "PNG", "WEBP", "MP3", "MP4", "MOV"],
   allowedMimeTypes: new Set([
     "application/pdf",
     "image/jpeg",
@@ -60,7 +62,7 @@ const oralHistorySlotPolicy: EnrollmentStepFourSlotPolicy = {
   ]),
   maxFileSizeBytes: 100 * MB,
   maxFileSizeLabel: "100 MB",
-  formatLabel: "PDF, JPG, PNG, WEBP, MP3, MP4, or MOV",
+  formatsLabel: "PDF, JPG, PNG, WEBP, MP3, MP4, MOV",
 };
 
 const enrollmentStepFourSlotPolicies: Record<
@@ -81,10 +83,12 @@ export function getEnrollmentStepFourSlotPolicy(
   return enrollmentStepFourSlotPolicies[documentType] ?? documentSlotPolicy;
 }
 
+/**
+ * A step-4 upload slot. The user-facing copy (title + description) lives in
+ * the `enrollment.stepFour.slots` message catalog, keyed by `id`.
+ */
 export type EnrollmentStepFourUploadSlot = Readonly<{
   id: string;
-  title: string;
-  description: string;
   documentType: EnrollmentDocumentType;
   isSingle: boolean;
   required: boolean;
@@ -96,8 +100,6 @@ export type EnrollmentStepFourUploadSlot = Readonly<{
  */
 export const enrollmentStepFourUserPhotoCard = {
   id: "user_photo",
-  title: "Your Photo",
-  description: "Upload a clear, recent photo of yourself.",
   documentType: "USER_PHOTO",
   isSingle: true,
   required: true,
@@ -110,35 +112,24 @@ export const enrollmentStepFourUserPhotoCard = {
 export const enrollmentStepFourEvidenceUploadSlots = [
   {
     id: "genealogical_records",
-    title: "Genealogical Records",
-    description:
-      "Birth, baptism, census, or civil records that trace your family line.",
     documentType: "GENEALOGICAL_RECORDS",
     isSingle: false,
     required: false,
   },
   {
     id: "kinship_letters",
-    title: "Kinship Letters",
-    description:
-      "Letters from family or community members attesting to your kinship.",
     documentType: "KINSHIP_LETTERS",
     isSingle: false,
     required: false,
   },
   {
     id: "oral_history",
-    title: "Oral History",
-    description:
-      "Recorded or transcribed oral history that supports your lineage.",
     documentType: "ORAL_HISTORY",
     isSingle: false,
     required: false,
   },
   {
     id: "dna_testing",
-    title: "DNA Testing",
-    description: "DNA test results that support your ancestry, if available.",
     documentType: "DNA_TESTING",
     isSingle: false,
     required: false,
@@ -190,25 +181,38 @@ export function buildEnrollmentStepFourDocumentMap(
 }
 
 /**
- * Client-side guard run before any upload: checks the file's mime type and
- * size against the per-slot policy and returns a friendly inline error, or
- * `null` when the file is acceptable.
+ * Structured client-side upload rejection. The component maps the code to a
+ * localized message from `enrollment.validation` (`emptyFile` /
+ * `fileNotAccepted` with the `formats` + `maxSize` values).
  */
-export function getEnrollmentStepFourFileValidationMessage(
+export type EnrollmentStepFourFileValidationError =
+  | Readonly<{ code: "EMPTY_FILE" }>
+  | Readonly<{ code: "FILE_NOT_ACCEPTED"; formats: string; maxSize: string }>;
+
+/**
+ * Client-side guard run before any upload: checks the file's mime type and
+ * size against the per-slot policy and returns a structured error, or `null`
+ * when the file is acceptable.
+ */
+export function getEnrollmentStepFourFileValidationError(
   file: File,
   documentType: EnrollmentDocumentType,
-) {
+): EnrollmentStepFourFileValidationError | null {
   const policy = getEnrollmentStepFourSlotPolicy(documentType);
 
   if (file.size <= 0) {
-    return "Please choose a non-empty file.";
+    return { code: "EMPTY_FILE" };
   }
 
   if (
     !policy.allowedMimeTypes.has(file.type) ||
     file.size > policy.maxFileSizeBytes
   ) {
-    return `This slot accepts ${policy.formatLabel} files up to ${policy.maxFileSizeLabel}.`;
+    return {
+      code: "FILE_NOT_ACCEPTED",
+      formats: policy.formatsLabel,
+      maxSize: policy.maxFileSizeLabel,
+    };
   }
 
   return null;
@@ -226,11 +230,15 @@ export function formatEnrollmentDocumentFileSize(fileSizeInBytes: number) {
   return `${fileSizeInBytes} B`;
 }
 
+/**
+ * Last path segment of the stored file name, or `""` when the name is empty —
+ * the component falls back to the localized "uploaded document" label.
+ */
 export function getEnrollmentDocumentDisplayName(fileName: string) {
   const trimmedFileName = fileName.trim();
 
   if (!trimmedFileName) {
-    return "Uploaded document";
+    return "";
   }
 
   const fileNameSegments = trimmedFileName.split("/");

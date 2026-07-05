@@ -42,6 +42,7 @@ beforeEach(() => {
 
 import { EnrollmentStepLayout } from "@/features/enrollment/components/enrollment-step-layout";
 import { EnrollmentStepTwoForm } from "@/features/enrollment/components/enrollment-step-two-form";
+import { withIntl } from "@/test/i18n";
 
 function renderForm() {
   const queryClient = new QueryClient({
@@ -49,9 +50,11 @@ function renderForm() {
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      <EnrollmentStepTwoForm />
-    </QueryClientProvider>,
+    withIntl(
+      <QueryClientProvider client={queryClient}>
+        <EnrollmentStepTwoForm />
+      </QueryClientProvider>,
+    ),
   );
 }
 
@@ -125,15 +128,17 @@ describe("EnrollmentStepTwoForm — maternal kinship", () => {
 
   it("runs the same partial-draft save from the layout's TOP header action", async () => {
     render(
-      <QueryClientProvider
-        client={
-          new QueryClient({ defaultOptions: { queries: { retry: false } } })
-        }
-      >
-        <EnrollmentStepLayout step={2}>
-          <EnrollmentStepTwoForm />
-        </EnrollmentStepLayout>
-      </QueryClientProvider>,
+      withIntl(
+        <QueryClientProvider
+          client={
+            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+          }
+        >
+          <EnrollmentStepLayout step={2}>
+            <EnrollmentStepTwoForm />
+          </EnrollmentStepLayout>
+        </QueryClientProvider>,
+      ),
     );
 
     fireEvent.change(screen.getAllByPlaceholderText("Enter full name")[0], {

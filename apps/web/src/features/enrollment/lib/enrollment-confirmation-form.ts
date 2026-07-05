@@ -2,26 +2,39 @@ import { z } from "zod";
 
 import type { EnrollmentCompleteRequest } from "@/types/enrollment";
 
-export const enrollmentConfirmationSchema = z.object({
-  signatureName: z
-    .string()
-    .trim()
-    .min(1, "Please sign with your full legal name."),
-  signatureDate: z.string().min(1, "Please provide the signature date."),
-  agreeToSubmit: z
-    .boolean()
-    .refine((value) => value === true, {
-      message: "You must agree to submit your information.",
+/**
+ * Message keys under the `enrollment.validation` catalog namespace used by
+ * the confirmation schema. Components hand `createEnrollmentConfirmationSchema`
+ * a translator for that namespace so the Zod errors render in the member's
+ * locale.
+ */
+export type EnrollmentConfirmationValidationKey =
+  | "signatureNameRequired"
+  | "signatureDateRequired"
+  | "agreeToSubmitRequired"
+  | "agreeToTermsRequired";
+
+export type EnrollmentConfirmationValidationTranslator = (
+  key: EnrollmentConfirmationValidationKey,
+) => string;
+
+export function createEnrollmentConfirmationSchema(
+  t: EnrollmentConfirmationValidationTranslator,
+) {
+  return z.object({
+    signatureName: z.string().trim().min(1, t("signatureNameRequired")),
+    signatureDate: z.string().min(1, t("signatureDateRequired")),
+    agreeToSubmit: z.boolean().refine((value) => value === true, {
+      message: t("agreeToSubmitRequired"),
     }),
-  agreeToTerms: z
-    .boolean()
-    .refine((value) => value === true, {
-      message: "You must agree to the terms of service.",
+    agreeToTerms: z.boolean().refine((value) => value === true, {
+      message: t("agreeToTermsRequired"),
     }),
-});
+  });
+}
 
 export type EnrollmentConfirmationFormValues = z.infer<
-  typeof enrollmentConfirmationSchema
+  ReturnType<typeof createEnrollmentConfirmationSchema>
 >;
 
 /**

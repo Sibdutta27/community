@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { EnrollmentStepper } from "@/features/enrollment/components/enrollment-stepper";
+import { renderWithIntl as render } from "@/test/i18n";
 import { enrollmentStepDefinitions } from "@/features/enrollment/config/enrollment-steps";
 import type {
   EnrollmentStepKey,

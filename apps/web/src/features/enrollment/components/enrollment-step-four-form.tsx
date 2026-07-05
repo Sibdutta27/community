@@ -6,6 +6,7 @@ import { useMemo, useRef, useState, type ChangeEvent } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, RefreshCw } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { EnrollmentStepFooter } from "@/features/enrollment/components/enrollment-step-layout";
@@ -23,15 +24,23 @@ import {
   formatEnrollmentDocumentFileSize,
   formatEnrollmentDocumentStatus,
   getEnrollmentDocumentDisplayName,
-  getEnrollmentStepFourFileValidationMessage,
+  getEnrollmentStepFourFileValidationError,
   getEnrollmentStepFourSlotPolicy,
-  type EnrollmentStepFourUploadSlot,
+  type EnrollmentStepFourSlotPolicy,
   type EnrollmentStepFourUploadSlotId,
 } from "@/features/enrollment/lib/enrollment-step-four-form";
 import type { EnrollmentDocumentRecord } from "@/types/enrollment";
 
+/**
+ * The concrete slot definitions (literal ids) so the message-catalog keys
+ * derived from `slot.id` stay statically checked.
+ */
+type UploadSlot =
+  | typeof enrollmentStepFourUserPhotoCard
+  | (typeof enrollmentStepFourEvidenceUploadSlots)[number];
+
 type UploadTarget = Readonly<{
-  slot: EnrollmentStepFourUploadSlot;
+  slot: UploadSlot;
 }>;
 
 function UploadedDocumentRow({
@@ -39,15 +48,20 @@ function UploadedDocumentRow({
 }: Readonly<{
   document: EnrollmentDocumentRecord;
 }>) {
+  const t = useTranslations("enrollment.stepFour");
+
   return (
     <div className="border-border bg-surface flex flex-col gap-2 rounded-xl border px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
         <p className="text-foreground truncate text-[0.83rem] font-semibold tracking-tight">
-          {getEnrollmentDocumentDisplayName(document.fileName)}
+          {getEnrollmentDocumentDisplayName(document.fileName) ||
+            t("unnamedDocument")}
         </p>
         <p className="text-muted-foreground mt-0.5 text-[0.73rem]">
-          {formatEnrollmentDocumentFileSize(document.fileSize)} · Uploaded{" "}
-          {new Date(document.uploadedAt).toLocaleDateString()}
+          {formatEnrollmentDocumentFileSize(document.fileSize)} ·{" "}
+          {t("uploadedOn", {
+            date: new Date(document.uploadedAt).toLocaleDateString(),
+          })}
         </p>
       </div>
 
@@ -61,7 +75,7 @@ function UploadedDocumentRow({
           rel="noreferrer"
           target="_blank"
         >
-          View
+          {t("view")}
         </a>
       </div>
     </div>
@@ -69,30 +83,35 @@ function UploadedDocumentRow({
 }
 
 function UploadDropArea({
-  accept,
-  badges,
   disabled,
   multiple = false,
   onChange,
   onOpen,
+  policy,
   refSetter,
   slotId,
   uploading,
 }: Readonly<{
-  accept: string;
-  badges: readonly string[];
   disabled: boolean;
   multiple?: boolean;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onOpen: (slotId: EnrollmentStepFourUploadSlotId) => void;
+  policy: EnrollmentStepFourSlotPolicy;
   refSetter: (element: HTMLInputElement | null) => void;
   slotId: EnrollmentStepFourUploadSlotId;
   uploading: boolean;
 }>) {
+  const t = useTranslations("enrollment.stepFour");
+  // Locale-neutral format tokens plus the localized size-cap badge.
+  const badges = [
+    ...policy.formatBadges,
+    t("maxFileSize", { size: policy.maxFileSizeLabel }),
+  ];
+
   return (
     <>
       <input
-        accept={accept}
+        accept={policy.accept}
         className="sr-only"
         multiple={multiple}
         onChange={onChange}
@@ -114,7 +133,7 @@ function UploadDropArea({
           width={48}
         />
         <span className="text-muted-foreground mt-2 text-[0.88rem] font-semibold underline underline-offset-2">
-          {uploading ? "Uploading..." : "Click to upload"}
+          {uploading ? t("uploading") : t("clickToUpload")}
         </span>
       </button>
 
@@ -133,6 +152,8 @@ function UploadDropArea({
 }
 
 export function EnrollmentStepFourForm() {
+  const t = useTranslations("enrollment");
+  const tErrors = useTranslations("errors");
   const router = useRouter();
   const queryClient = useQueryClient();
   const documentListQuery = useEnrollmentStepFourDocumentListQuery();
@@ -169,13 +190,20 @@ export function EnrollmentStepFourForm() {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const validationError = getEnrollmentStepFourFileValidationMessage(
+    const validationError = getEnrollmentStepFourFileValidationError(
       file,
       slot.documentType,
     );
 
     if (validationError) {
-      setErrorMessage(validationError);
+      setErrorMessage(
+        validationError.code === "EMPTY_FILE"
+          ? t("validation.emptyFile")
+          : t("validation.fileNotAccepted", {
+              formats: validationError.formats,
+              maxSize: validationError.maxSize,
+            }),
+      );
       return;
     }
 
@@ -197,13 +225,14 @@ export function EnrollmentStepFourForm() {
       ]);
 
       setSuccessMessage(
-        uploadResponse.message || `${slot.title} uploaded successfully.`,
+        uploadResponse.message ||
+          t("stepFour.uploadSuccess", {
+            slot: t(`stepFour.slots.${slot.id}.title`),
+          }),
       );
     } catch (error) {
       setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to upload the selected document right now.",
+        error instanceof Error ? error.message : tErrors("documentUpload"),
       );
     } finally {
       setActiveUploadSlotId(null);
@@ -218,9 +247,7 @@ export function EnrollmentStepFourForm() {
       const result = await stepFourNextMutation.mutateAsync();
 
       if (!result.success) {
-        setErrorMessage(
-          "Your photo is still missing. Please upload it before continuing.",
-        );
+        setErrorMessage(t("stepFour.photoMissing"));
         return;
       }
 
@@ -231,9 +258,7 @@ export function EnrollmentStepFourForm() {
       router.push("/enrollment/step-5");
     } catch (error) {
       setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to complete the document upload step right now.",
+        error instanceof Error ? error.message : tErrors("stepFourNext"),
       );
     }
   };
@@ -266,8 +291,7 @@ export function EnrollmentStepFourForm() {
     <div className="space-y-8 sm:space-y-9">
       {documentListErrorMessage ? (
         <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
-          {documentListErrorMessage} Please refresh and try again before
-          completing Step 4.
+          {documentListErrorMessage} {t("stepFour.refreshNotice")}
         </div>
       ) : null}
 
@@ -284,41 +308,34 @@ export function EnrollmentStepFourForm() {
       ) : null}
 
       <p className="text-muted-foreground max-w-3xl text-[0.95rem] leading-7">
-        Upload a clear photo of yourself — it is the only required file.
-        Genealogical records, kinship letters, oral history, and DNA testing are
-        optional supporting evidence for your kinship claim.
+        {t("stepFour.intro")}
       </p>
 
       <section>
         <h2 className="text-foreground text-[1.2rem] font-semibold tracking-tight sm:text-[1.35rem]">
-          Required Document
+          {t("stepFour.requiredDocument")}
         </h2>
         <div className="mt-4 sm:mt-5">
           <section className="border-border bg-surface rounded-2xl border px-5 py-5 sm:px-6 sm:py-6">
             <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
-              {enrollmentStepFourUserPhotoCard.title}
+              {t(`stepFour.slots.${enrollmentStepFourUserPhotoCard.id}.title`)}
               <span className="text-foreground"> *</span>
             </h3>
             <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
-              {enrollmentStepFourUserPhotoCard.description}
+              {t(
+                `stepFour.slots.${enrollmentStepFourUserPhotoCard.id}.description`,
+              )}
             </p>
 
             <UploadDropArea
-              accept={
-                getEnrollmentStepFourSlotPolicy(
-                  enrollmentStepFourUserPhotoCard.documentType,
-                ).accept
-              }
-              badges={
-                getEnrollmentStepFourSlotPolicy(
-                  enrollmentStepFourUserPhotoCard.documentType,
-                ).badges
-              }
               disabled={uploadMutation.isPending}
               onChange={createInputChangeHandler({
                 slot: enrollmentStepFourUserPhotoCard,
               })}
               onOpen={openPicker}
+              policy={getEnrollmentStepFourSlotPolicy(
+                enrollmentStepFourUserPhotoCard.documentType,
+              )}
               refSetter={(element) => {
                 inputRefs.current[enrollmentStepFourUserPhotoCard.id] = element;
               }}
@@ -334,7 +351,7 @@ export function EnrollmentStepFourForm() {
                 <UploadedDocumentRow document={userPhotoDocument} />
               ) : (
                 <p className="text-muted-foreground text-[0.8rem]">
-                  No file uploaded yet.
+                  {t("stepFour.noFileUploaded")}
                 </p>
               )}
             </div>
@@ -344,7 +361,7 @@ export function EnrollmentStepFourForm() {
 
       <section>
         <h2 className="text-foreground text-[1.2rem] font-semibold tracking-tight sm:text-[1.35rem]">
-          Supporting Evidence
+          {t("stepFour.supportingEvidence")}
         </h2>
         <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-2">
           {enrollmentStepFourEvidenceUploadSlots.map((slot) => {
@@ -361,19 +378,18 @@ export function EnrollmentStepFourForm() {
                 key={slot.id}
               >
                 <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
-                  {slot.title}
+                  {t(`stepFour.slots.${slot.id}.title`)}
                 </h3>
                 <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
-                  {slot.description}
+                  {t(`stepFour.slots.${slot.id}.description`)}
                 </p>
 
                 <UploadDropArea
-                  accept={slotPolicy.accept}
-                  badges={slotPolicy.badges}
                   disabled={uploadMutation.isPending}
                   multiple
                   onChange={createInputChangeHandler({ slot })}
                   onOpen={openPicker}
+                  policy={slotPolicy}
                   refSetter={(element) => {
                     inputRefs.current[slot.id] = element;
                   }}
@@ -391,7 +407,7 @@ export function EnrollmentStepFourForm() {
                     ))
                   ) : (
                     <p className="text-muted-foreground text-[0.8rem]">
-                      No files uploaded yet.
+                      {t("stepFour.noFilesUploaded")}
                     </p>
                   )}
                 </div>
@@ -403,7 +419,7 @@ export function EnrollmentStepFourForm() {
 
       {!hasMandatoryDocuments && !isListLoading ? (
         <p className="text-muted-foreground text-[0.88rem] leading-6">
-          Missing required document: Your Photo
+          {t("stepFour.missingRequired")}
         </p>
       ) : null}
 
@@ -421,7 +437,7 @@ export function EnrollmentStepFourForm() {
           disabled={isListLoading || uploadMutation.isPending}
           leftIcon={<RefreshCw />}
           loading={documentListQuery.isRefetching}
-          loadingText="Refreshing..."
+          loadingText={t("actions.refreshing")}
           onClick={() => {
             void documentListQuery.refetch();
           }}
@@ -429,7 +445,7 @@ export function EnrollmentStepFourForm() {
           type="button"
           variant="outline"
         >
-          Refresh Files
+          {t("actions.refreshFiles")}
         </Button>
 
         <Button
@@ -441,7 +457,7 @@ export function EnrollmentStepFourForm() {
             !hasMandatoryDocuments
           }
           loading={stepFourNextMutation.isPending}
-          loadingText="Saving..."
+          loadingText={t("actions.saving")}
           onClick={() => {
             void handleContinueToConfirmation();
           }}
@@ -449,7 +465,7 @@ export function EnrollmentStepFourForm() {
           size="lg"
           type="button"
         >
-          Next
+          {t("actions.next")}
         </Button>
       </EnrollmentStepFooter>
     </div>

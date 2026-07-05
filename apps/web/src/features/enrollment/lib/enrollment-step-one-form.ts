@@ -20,13 +20,6 @@ export const enrollmentStepOneSexValues = [
   "PREFER_NOT_TO_SAY",
 ] as const;
 
-export const enrollmentStepOneSexOptions = [
-  { label: "Male", value: "MALE" },
-  { label: "Female", value: "FEMALE" },
-  { label: "Intersex", value: "INTERSEX" },
-  { label: "Prefer not to say", value: "PREFER_NOT_TO_SAY" },
-] as const;
-
 export const enrollmentStepOneGenderValues = [
   "MALE",
   "FEMALE",
@@ -37,30 +30,12 @@ export const enrollmentStepOneGenderValues = [
   "OTHER",
 ] as const;
 
-export const enrollmentStepOneGenderOptions = [
-  { label: "Male", value: "MALE" },
-  { label: "Female", value: "FEMALE" },
-  { label: "Non-binary", value: "NON_BINARY" },
-  { label: "Two-Spirit", value: "TWO_SPIRIT" },
-  { label: "Self-describe", value: "SELF_DESCRIBE" },
-  { label: "Prefer not to say", value: "PREFER_NOT_TO_SAY" },
-  { label: "Other", value: "OTHER" },
-] as const;
-
 export const enrollmentStepOneMaritalStatusValues = [
   "SINGLE",
   "MARRIED",
   "DIVORCED",
   "WIDOWED",
   "DOMESTIC_PARTNERSHIP",
-] as const;
-
-export const enrollmentStepOneMaritalStatusOptions = [
-  { label: "Single", value: "SINGLE" },
-  { label: "Married", value: "MARRIED" },
-  { label: "Divorced", value: "DIVORCED" },
-  { label: "Widowed", value: "WIDOWED" },
-  { label: "Domestic Partnership", value: "DOMESTIC_PARTNERSHIP" },
 ] as const;
 
 export const enrollmentStepOneIdentityValues = [
@@ -70,83 +45,89 @@ export const enrollmentStepOneIdentityValues = [
   "TAINO",
 ] as const;
 
-export const enrollmentStepOneIdentityOptions = [
-  { label: "Arawak", value: "ARAWAK" },
-  { label: "Kalinago", value: "KALINAGO" },
-  { label: "Garifuna", value: "GARIFUNA" },
-  { label: "Taíno", value: "TAINO" },
-] as const;
-
 export const enrollmentStepOneYesNoValues = ["YES", "NO"] as const;
 
-export const enrollmentStepOneYesNoOptions = [
-  { label: "Yes", value: "YES" },
-  { label: "No", value: "NO" },
-] as const;
+/**
+ * Message keys under the `enrollment.validation` catalog namespace used by
+ * the step 1 schema. Components hand `createEnrollmentStepOneSchema` a
+ * translator for that namespace so the Zod errors render in the member's
+ * locale (the values stay untranslated backend enums).
+ */
+export type EnrollmentStepOneValidationKey =
+  | "firstNameRequired"
+  | "lastNameRequired"
+  | "dateOfBirthRequired"
+  | "cityOfBirthRequired"
+  | "municipalityOfBirthRequired"
+  | "countryOfBirthRequired"
+  | "invalidDate"
+  | "invalidOption";
 
-const requiredString = (label: string) =>
-  z.string().trim().min(1, `${label} is required`);
+export type EnrollmentStepOneValidationTranslator = (
+  key: EnrollmentStepOneValidationKey,
+) => string;
+
 const optionalString = z.string().trim();
-
-function createOptionalSelectionSchema<
-  TValues extends readonly [string, ...string[]],
->(label: string, allowedValues: TValues) {
-  return optionalString.refine(
-    (value) =>
-      value === "" ||
-      allowedValues.includes(normalizeSelectionValue(value) as TValues[number]),
-    `Select a valid ${label.toLowerCase()}`,
-  );
-}
-
-const requiredDateString = (label: string) =>
-  requiredString(label).refine((value) => {
-    const parsedDate = parseISO(value);
-
-    return isValid(parsedDate) && format(parsedDate, "yyyy-MM-dd") === value;
-  }, "Enter a valid date");
 
 /**
  * Step 1 — Demographics. Flat schema matching the backend
  * `POST /enrollment/step1/upsert` contract: only first/last name, birth
  * date + place, sex/gender, marital status/occupation, and the Yucayekeno
- * questions are captured.
+ * questions are captured. Error copy comes from the `enrollment.validation`
+ * message catalog via the provided translator.
  */
-export const enrollmentStepOneSchema = z.object({
-  firstName: requiredString("First name"),
-  lastName: requiredString("Last name"),
-  dateOfBirth: requiredDateString("Date of birth"),
-  cityOfBirth: requiredString("City or town of birth"),
-  municipalityOfBirth: requiredString("Municipality of birth"),
-  countryOfBirth: requiredString("Country of birth"),
-  sex: createOptionalSelectionSchema("sex", enrollmentStepOneSexValues),
-  gender: createOptionalSelectionSchema(
-    "gender identity",
-    enrollmentStepOneGenderValues,
-  ),
-  maritalStatus: createOptionalSelectionSchema(
-    "marital status",
-    enrollmentStepOneMaritalStatusValues,
-  ),
-  occupation: optionalString,
-  identity: createOptionalSelectionSchema(
-    "identity",
-    enrollmentStepOneIdentityValues,
-  ),
-  yucayeke: optionalString,
-  yucayekeUnknown: z.boolean(),
-  hasChildren: createOptionalSelectionSchema(
-    "answer",
-    enrollmentStepOneYesNoValues,
-  ),
-  hasMinorChildren: createOptionalSelectionSchema(
-    "answer",
-    enrollmentStepOneYesNoValues,
-  ),
-});
+export function createEnrollmentStepOneSchema(
+  t: EnrollmentStepOneValidationTranslator,
+) {
+  const requiredString = (key: EnrollmentStepOneValidationKey) =>
+    z.string().trim().min(1, t(key));
+
+  const createOptionalSelectionSchema = <
+    TValues extends readonly [string, ...string[]],
+  >(
+    allowedValues: TValues,
+  ) =>
+    optionalString.refine(
+      (value) =>
+        value === "" ||
+        allowedValues.includes(
+          normalizeSelectionValue(value) as TValues[number],
+        ),
+      t("invalidOption"),
+    );
+
+  const requiredDateString = (key: EnrollmentStepOneValidationKey) =>
+    requiredString(key).refine((value) => {
+      const parsedDate = parseISO(value);
+
+      return isValid(parsedDate) && format(parsedDate, "yyyy-MM-dd") === value;
+    }, t("invalidDate"));
+
+  return z.object({
+    firstName: requiredString("firstNameRequired"),
+    lastName: requiredString("lastNameRequired"),
+    dateOfBirth: requiredDateString("dateOfBirthRequired"),
+    cityOfBirth: requiredString("cityOfBirthRequired"),
+    municipalityOfBirth: requiredString("municipalityOfBirthRequired"),
+    countryOfBirth: requiredString("countryOfBirthRequired"),
+    sex: createOptionalSelectionSchema(enrollmentStepOneSexValues),
+    gender: createOptionalSelectionSchema(enrollmentStepOneGenderValues),
+    maritalStatus: createOptionalSelectionSchema(
+      enrollmentStepOneMaritalStatusValues,
+    ),
+    occupation: optionalString,
+    identity: createOptionalSelectionSchema(enrollmentStepOneIdentityValues),
+    yucayeke: optionalString,
+    yucayekeUnknown: z.boolean(),
+    hasChildren: createOptionalSelectionSchema(enrollmentStepOneYesNoValues),
+    hasMinorChildren: createOptionalSelectionSchema(
+      enrollmentStepOneYesNoValues,
+    ),
+  });
+}
 
 export type EnrollmentStepOneFormValues = z.infer<
-  typeof enrollmentStepOneSchema
+  ReturnType<typeof createEnrollmentStepOneSchema>
 >;
 
 function readString(value: unknown) {

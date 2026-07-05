@@ -1,10 +1,15 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
-  enrollmentConfirmationSchema,
+  createEnrollmentConfirmationSchema,
   getEnrollmentConfirmationDefaultValues,
   mapEnrollmentConfirmationFormToPayload,
 } from "@/features/enrollment/lib/enrollment-confirmation-form";
+
+// Pass/fail-only assertions — an identity validation translator suffices.
+const enrollmentConfirmationSchema = createEnrollmentConfirmationSchema(
+  (key) => key,
+);
 
 const validValues = {
   signatureName: "Anani Guarocuya",

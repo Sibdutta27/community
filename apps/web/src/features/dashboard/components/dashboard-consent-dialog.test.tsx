@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { DashboardConsentDialog } from "@/features/dashboard/components/dashboard-consent-dialog";
+import { renderWithIntl as render, type TestLocale } from "@/test/i18n";
 import type { ActiveConsent } from "@/types/enrollment";
 
 const REWORDED_COMMUNICATION_COPY =
@@ -27,7 +28,7 @@ const activeConsents: readonly ActiveConsent[] = [
   },
 ];
 
-function renderDialog() {
+function renderDialog(locale: TestLocale = "en") {
   return render(
     <DashboardConsentDialog
       activeConsents={activeConsents}
@@ -39,6 +40,7 @@ function renderDialog() {
       onSubmit={vi.fn()}
       onToggleConsent={vi.fn()}
     />,
+    locale,
   );
 }
 
@@ -65,6 +67,30 @@ describe("DashboardConsentDialog", () => {
       "Evergreen Collective Memory / Indigenous Archives of Puerto Rico",
     );
     expect(optionalTitle).not.toHaveTextContent("*");
+  });
+
+  it("translates the dialog chrome to PR-Spanish while keeping the backend-sourced consent copy untouched", () => {
+    renderDialog("es");
+
+    // Chrome comes from the catalog…
+    expect(
+      screen.getByText("CONSENTIMIENTO DE INSCRIPCIÓN"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Acepte los consentimientos requeridos para continuar."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Aceptar y continuar" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Cancelar" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /términos y condiciones/i }),
+    ).toHaveAttribute("href", "/privacy-policy");
+    // …while the consent items themselves stay exactly as the backend sent them.
+    expect(screen.getByText("Communication Consent")).toBeInTheDocument();
+    expect(screen.getByText(REWORDED_COMMUNICATION_COPY)).toBeInTheDocument();
   });
 
   it("uses semantic tokens instead of hardcoded earthy colors", () => {

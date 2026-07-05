@@ -43,6 +43,7 @@ vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
 }));
 
 import { EnrollmentConfirmationForm } from "@/features/enrollment/components/enrollment-confirmation-form";
+import { withIntl } from "@/test/i18n";
 
 function renderForm() {
   const queryClient = new QueryClient({
@@ -50,9 +51,11 @@ function renderForm() {
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      <EnrollmentConfirmationForm />
-    </QueryClientProvider>,
+    withIntl(
+      <QueryClientProvider client={queryClient}>
+        <EnrollmentConfirmationForm />
+      </QueryClientProvider>,
+    ),
   );
 }
 

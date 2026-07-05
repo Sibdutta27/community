@@ -299,5 +299,323 @@
         "supportEnrollment": "Apoyar la Inscripción y la Participación"
       }
     }
+  },
+  "enrollment": {
+    "layout": {
+      "kicker": "Ciudadanía Tribal",
+      "title": "Solicitud de Inscripción",
+      "stepOf": "Paso {step} de {total}",
+      "back": "Atrás",
+      "saveFinishLater": "Guardar y terminar más tarde",
+      "saveFinishLaterAria": "Guardar y terminar más tarde"
+    },
+    "stepper": {
+      "listLabel": "Pasos de la inscripción",
+      "goToStep": "Ir al paso {step}: {title}",
+      "stepLabel": "Paso {step}: {title}"
+    },
+    "steps": {
+      "1": {
+        "title": "Datos demográficos",
+        "heading": "Añada sus datos demográficos",
+        "description": "Proporcione sus datos demográficos personales."
+      },
+      "2": {
+        "title": "Parentesco materno",
+        "heading": "Añada la información de su parentesco materno",
+        "description": "Documente a su madre y a sus abuelos maternos."
+      },
+      "3": {
+        "title": "Parentesco paterno",
+        "heading": "Añada la información de su parentesco paterno",
+        "description": "Documente a su padre y a sus abuelos paternos."
+      },
+      "4": {
+        "title": "Documentos",
+        "heading": "Suba sus documentos",
+        "description": "Suba su foto y cualquier evidencia de parentesco que la respalde."
+      },
+      "5": {
+        "title": "Confirmación",
+        "heading": "Revise y confirme",
+        "description": "Revise, firme y envíe su solicitud de inscripción para la revisión del concilio."
+      }
+    },
+    "actions": {
+      "next": "Siguiente",
+      "saving": "Guardando...",
+      "submitting": "Enviando...",
+      "refreshing": "Actualizando...",
+      "refreshFiles": "Actualizar archivos",
+      "submitApplication": "Enviar solicitud"
+    },
+    "prefillNotice": "Aun así puede completar el formulario manualmente, pero es posible que los datos guardados anteriormente en el paso {step} no aparezcan precargados.",
+    "stepOne": {
+      "fields": {
+        "firstName": {
+          "label": "Nombre",
+          "placeholder": "Escriba su nombre"
+        },
+        "lastName": {
+          "label": "Apellidos",
+          "placeholder": "Escriba sus apellidos"
+        },
+        "cityOfBirth": {
+          "label": "Ciudad o pueblo de nacimiento",
+          "placeholder": "Escriba la ciudad o el pueblo"
+        },
+        "dateOfBirth": {
+          "label": "Fecha de nacimiento",
+          "placeholder": "Seleccione la fecha de nacimiento"
+        },
+        "municipalityOfBirth": {
+          "label": "Municipio de nacimiento",
+          "placeholder": "Escriba el municipio"
+        },
+        "countryOfBirth": {
+          "label": "País de nacimiento",
+          "placeholder": "Escriba el país de nacimiento"
+        },
+        "sex": {
+          "label": "Sexo",
+          "info": "Sexo asignado al nacer",
+          "placeholder": "Seleccione su sexo"
+        },
+        "gender": {
+          "label": "Género",
+          "info": "Identidad de género",
+          "placeholder": "Seleccione su género"
+        },
+        "maritalStatus": {
+          "label": "Estado civil",
+          "placeholder": "Seleccione su estado civil"
+        },
+        "occupation": {
+          "label": "Ocupación",
+          "placeholder": "Escriba su ocupación"
+        }
+      },
+      "yucayekeno": {
+        "title": "Su información Yucayekeno",
+        "description": "Comparta cómo se identifica y su conexión con su Yucayeke y su familia.",
+        "identity": {
+          "label": "Identidad",
+          "placeholder": "Seleccione su identidad"
+        },
+        "yucayeke": {
+          "label": "Yucayeke",
+          "placeholder": "Escriba su Yucayeke"
+        },
+        "yucayekeUnknown": "No conozco mi Yucayeke",
+        "hasChildren": "¿Tiene hijos?",
+        "hasMinorChildren": "¿Alguno de sus hijos es menor de 18 años?"
+      }
+    },
+    "options": {
+      "sex": {
+        "MALE": "Masculino",
+        "FEMALE": "Femenino",
+        "INTERSEX": "Intersexual",
+        "PREFER_NOT_TO_SAY": "Prefiero no decirlo"
+      },
+      "gender": {
+        "MALE": "Masculino",
+        "FEMALE": "Femenino",
+        "NON_BINARY": "No binario",
+        "TWO_SPIRIT": "Dos Espíritus",
+        "SELF_DESCRIBE": "Prefiero describirme",
+        "PREFER_NOT_TO_SAY": "Prefiero no decirlo",
+        "OTHER": "Otro"
+      },
+      "maritalStatus": {
+        "SINGLE": "Soltero(a)",
+        "MARRIED": "Casado(a)",
+        "DIVORCED": "Divorciado(a)",
+        "WIDOWED": "Viudo(a)",
+        "DOMESTIC_PARTNERSHIP": "Unión consensual"
+      },
+      "identity": {
+        "ARAWAK": "Arawak",
+        "KALINAGO": "Kalinago",
+        "GARIFUNA": "Garífuna",
+        "TAINO": "Taíno"
+      },
+      "yesNo": {
+        "YES": "Sí",
+        "NO": "No"
+      }
+    },
+    "kinship": {
+      "maternalIntro": "Anote lo que sepa sobre su madre y sus abuelos maternos. Todos los campos son opcionales: comparta la información familiar más confiable que tenga y deje en blanco lo que desconozca.",
+      "paternalIntro": "Anote lo que sepa sobre su padre y sus abuelos paternos. Todos los campos son opcionales: comparta la información familiar más confiable que tenga y deje en blanco lo que desconozca.",
+      "fields": {
+        "fullName": {
+          "label": "Nombre completo",
+          "placeholder": "Escriba el nombre completo"
+        },
+        "dateOfBirth": {
+          "label": "Fecha de nacimiento",
+          "placeholder": "Seleccione la fecha de nacimiento"
+        },
+        "nationality": {
+          "label": "Nacionalidad",
+          "placeholder": "Escriba la nacionalidad"
+        },
+        "municipality": {
+          "label": "Municipio",
+          "placeholder": "Escriba el municipio"
+        },
+        "yucayeke": {
+          "label": "Yucayeke",
+          "placeholder": "Escriba el Yucayeke si lo conoce"
+        }
+      },
+      "ancestors": {
+        "mother": {
+          "title": "Madre",
+          "heritageQuestion": "¿Es su madre de ascendencia Borikua Taíno?",
+          "description": "Comparta lo que sepa sobre su madre: su nombre, su origen y su conexión con el pueblo Borikua Taíno."
+        },
+        "maternalGrandmother": {
+          "title": "Abuela materna",
+          "heritageQuestion": "¿Es su abuela materna de ascendencia Borikua Taíno?",
+          "description": "Anote los mejores datos disponibles sobre la madre de su madre."
+        },
+        "maternalGrandfather": {
+          "title": "Abuelo materno",
+          "heritageQuestion": "¿Es su abuelo materno de ascendencia Borikua Taíno?",
+          "description": "Anote los mejores datos disponibles sobre el padre de su madre."
+        },
+        "father": {
+          "title": "Padre",
+          "heritageQuestion": "¿Es su padre de ascendencia Borikua Taíno?",
+          "description": "Comparta lo que sepa sobre su padre: su nombre, su origen y su conexión con el pueblo Borikua Taíno."
+        },
+        "paternalGrandmother": {
+          "title": "Abuela paterna",
+          "heritageQuestion": "¿Es su abuela paterna de ascendencia Borikua Taíno?",
+          "description": "Anote los mejores datos disponibles sobre la madre de su padre."
+        },
+        "paternalGrandfather": {
+          "title": "Abuelo paterno",
+          "heritageQuestion": "¿Es su abuelo paterno de ascendencia Borikua Taíno?",
+          "description": "Anote los mejores datos disponibles sobre el padre de su padre."
+        }
+      }
+    },
+    "stepFour": {
+      "intro": "Suba una foto clara de usted; es el único archivo requerido. Los registros genealógicos, las cartas de parentesco, la historia oral y las pruebas de ADN son evidencia de apoyo opcional para su reclamo de parentesco.",
+      "requiredDocument": "Documento requerido",
+      "supportingEvidence": "Evidencia de apoyo",
+      "slots": {
+        "user_photo": {
+          "title": "Su foto",
+          "description": "Suba una foto suya clara y reciente."
+        },
+        "genealogical_records": {
+          "title": "Registros genealógicos",
+          "description": "Actas de nacimiento, registros de bautismo, censos o registros civiles que tracen su línea familiar."
+        },
+        "kinship_letters": {
+          "title": "Cartas de parentesco",
+          "description": "Cartas de familiares o miembros de la comunidad que den fe de su parentesco."
+        },
+        "oral_history": {
+          "title": "Historia oral",
+          "description": "Historia oral grabada o transcrita que respalde su linaje."
+        },
+        "dna_testing": {
+          "title": "Pruebas de ADN",
+          "description": "Resultados de pruebas de ADN que respalden su ascendencia, si están disponibles."
+        }
+      },
+      "clickToUpload": "Haga clic para subir",
+      "uploading": "Subiendo...",
+      "maxFileSize": "Máx. {size}",
+      "uploadedOn": "Subido el {date}",
+      "view": "Ver",
+      "unnamedDocument": "Documento subido",
+      "noFileUploaded": "Todavía no se ha subido ningún archivo.",
+      "noFilesUploaded": "Todavía no se han subido archivos.",
+      "uploadSuccess": "{slot} se subió correctamente.",
+      "photoMissing": "Todavía falta su foto. Súbala antes de continuar.",
+      "missingRequired": "Falta un documento requerido: su foto",
+      "refreshNotice": "Actualice la página e intente de nuevo antes de completar el paso 4."
+    },
+    "confirmation": {
+      "intro": "Firme con su nombre legal completo para confirmar que la información de su solicitud es verdadera y está completa. Al enviarla, su solicitud pasa al concilio para su revisión.",
+      "sectionTitle": "Firma electrónica",
+      "sectionDescription": "Escriba su nombre legal completo como su firma electrónica y confirme los acuerdos a continuación para enviar su solicitud de inscripción.",
+      "signatureName": {
+        "label": "Firme con su nombre legal completo",
+        "placeholder": "Nombre legal completo"
+      },
+      "signatureDate": {
+        "label": "Fecha",
+        "placeholder": "Fecha de la firma"
+      },
+      "agreeToSubmit": "Acepto enviar mi información",
+      "agreeToTerms": "Acepto los términos de servicio",
+      "incompleteIntro": "Ya casi termina. Complete:",
+      "incompleteOutro": "antes de enviar su solicitud."
+    },
+    "success": {
+      "title": "¡Solicitud enviada!",
+      "body": "Su solicitud de inscripción fue enviada al concilio para su revisión. El concilio revisará su solicitud dentro de un plazo de 90 días y usted recibirá una notificación cuando se tome una decisión.",
+      "backToDashboard": "Volver al panel",
+      "metaTitle": "Solicitud enviada"
+    },
+    "hero": {
+      "title": "Comience su camino hacia la membresía oficial de la Nación Taíno",
+      "subtitle": "Conozca cómo funciona la inscripción, qué documentos necesitará y las preguntas más comunes que hacen los miembros antes de comenzar su solicitud."
+    },
+    "validation": {
+      "firstNameRequired": "El nombre es obligatorio",
+      "lastNameRequired": "Los apellidos son obligatorios",
+      "dateOfBirthRequired": "La fecha de nacimiento es obligatoria",
+      "cityOfBirthRequired": "La ciudad o el pueblo de nacimiento es obligatorio",
+      "municipalityOfBirthRequired": "El municipio de nacimiento es obligatorio",
+      "countryOfBirthRequired": "El país de nacimiento es obligatorio",
+      "invalidDate": "Ingrese una fecha válida",
+      "invalidOption": "Seleccione una opción válida",
+      "selectYesNo": "Seleccione Sí o No",
+      "signatureNameRequired": "Firme con su nombre legal completo.",
+      "signatureDateRequired": "Indique la fecha de la firma.",
+      "agreeToSubmitRequired": "Debe aceptar el envío de su información.",
+      "agreeToTermsRequired": "Debe aceptar los términos de servicio.",
+      "emptyFile": "Seleccione un archivo que no esté vacío.",
+      "fileNotAccepted": "Este espacio acepta archivos {formats} de hasta {maxSize}."
+    }
+  },
+  "consent": {
+    "kicker": "CONSENTIMIENTO DE INSCRIPCIÓN",
+    "description": "Acepte los consentimientos requeridos para continuar.",
+    "closeAria": "Cerrar el diálogo de consentimiento",
+    "readAll": "Lea todos los <link>términos y condiciones.</link>",
+    "cancel": "Cancelar",
+    "acceptAndContinue": "Aceptar y continuar",
+    "savingConsent": "Guardando el consentimiento..."
+  },
+  "errors": {
+    "accountInfoLoad": "No se pudo cargar la información de inscripción de la cuenta en este momento.",
+    "consentsLoad": "No se pudieron cargar los consentimientos de esta inscripción.",
+    "consentsSave": "No se pudieron guardar los consentimientos requeridos en este momento.",
+    "enrollmentStart": "No se pudo iniciar la solicitud de inscripción en este momento.",
+    "stepOneSave": "No se pudieron guardar sus datos demográficos del paso 1 en este momento.",
+    "stepOneDraftSave": "No se pudo guardar su progreso del paso 1 en este momento.",
+    "stepOneLoad": "No se pudieron cargar sus datos demográficos del paso 1 en este momento.",
+    "stepTwoSave": "No se pudo guardar la información de parentesco materno del paso 2 en este momento.",
+    "stepTwoDraftSave": "No se pudo guardar su progreso del paso 2 en este momento.",
+    "stepTwoLoad": "No se pudo cargar la información de parentesco materno del paso 2 en este momento.",
+    "stepThreeSave": "No se pudo guardar la información de parentesco paterno del paso 3 en este momento.",
+    "stepThreeDraftSave": "No se pudo guardar su progreso del paso 3 en este momento.",
+    "stepThreeLoad": "No se pudo cargar la información de parentesco paterno del paso 3 en este momento.",
+    "documentsLoad": "No se pudieron cargar sus documentos de inscripción en este momento.",
+    "documentPresign": "No se pudo preparar la subida del documento en este momento.",
+    "documentStorageUpload": "El archivo no se pudo subir al almacenamiento. Inténtelo de nuevo.",
+    "documentConfirm": "El archivo se subió, pero no se pudo registrar. Inténtelo de nuevo.",
+    "documentUpload": "No se pudo subir el documento seleccionado en este momento.",
+    "stepFourNext": "No se pudo completar el paso de subida de documentos en este momento.",
+    "enrollmentSubmit": "No se pudo enviar su solicitud de inscripción en este momento."
   }
 }

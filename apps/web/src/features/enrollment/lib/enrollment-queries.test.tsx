@@ -5,6 +5,7 @@ import { renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useEnrollmentDocumentUploadMutation } from "@/features/enrollment/lib/enrollment-queries";
+import { withIntl } from "@/test/i18n";
 
 const MB = 1024 * 1024;
 
@@ -14,10 +15,11 @@ function createWrapper() {
   });
 
   return function Wrapper({ children }: Readonly<{ children: ReactNode }>) {
-    return (
+    // The hooks read their localized fallback messages via useTranslations.
+    return withIntl(
       <QueryClientProvider client={queryClient}>
         {children}
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   };
 }

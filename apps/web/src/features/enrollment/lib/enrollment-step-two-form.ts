@@ -3,10 +3,11 @@ import { z } from "zod";
 import {
   buildKinshipParentValue,
   buildKinshipPersonValue,
-  kinshipParentSchema,
-  kinshipPersonSchema,
+  createKinshipParentSchema,
+  createKinshipPersonSchema,
   mapKinshipParentToPayload,
   mapKinshipPersonToPayload,
+  type EnrollmentKinshipValidationTranslator,
 } from "@/features/enrollment/lib/enrollment-kinship-form";
 import type {
   EnrollmentAncestryInput,
@@ -15,51 +16,33 @@ import type {
   EnrollmentStepTwoUpsertRequest,
 } from "@/types/enrollment";
 
-export {
-  enrollmentKinshipYesNoOptions,
-  enrollmentKinshipYesNoValues,
-} from "@/features/enrollment/lib/enrollment-kinship-form";
+export { enrollmentKinshipYesNoValues } from "@/features/enrollment/lib/enrollment-kinship-form";
 
 /**
  * Step 2 — Maternal Kinship. Three fixed ancestors matching the backend
  * `POST /enrollment/step2/upsert` body: mother (with date of birth) plus the
- * maternal grandmother and grandfather.
+ * maternal grandmother and grandfather. The per-ancestor copy (title,
+ * description, heritage question) lives in the `enrollment.kinship.ancestors`
+ * message catalog, keyed by `key`.
  */
 export const maternalKinshipDefinitions = [
-  {
-    key: "mother",
-    title: "Mother",
-    heritageQuestion: "Is your mother of Borikua Taíno heritage?",
-    description:
-      "Share what you know about your mother — her name, origin, and connection to the Borikua Taíno people.",
-    hasDateOfBirth: true,
-  },
-  {
-    key: "maternalGrandmother",
-    title: "Maternal Grandmother",
-    heritageQuestion: "Is your maternal grandmother of Borikua Taíno heritage?",
-    description:
-      "Record the best available details about your mother's mother.",
-    hasDateOfBirth: false,
-  },
-  {
-    key: "maternalGrandfather",
-    title: "Maternal Grandfather",
-    heritageQuestion: "Is your maternal grandfather of Borikua Taíno heritage?",
-    description:
-      "Record the best available details about your mother's father.",
-    hasDateOfBirth: false,
-  },
+  { key: "mother", hasDateOfBirth: true },
+  { key: "maternalGrandmother", hasDateOfBirth: false },
+  { key: "maternalGrandfather", hasDateOfBirth: false },
 ] as const;
 
-export const enrollmentStepTwoSchema = z.object({
-  mother: kinshipParentSchema,
-  maternalGrandmother: kinshipPersonSchema,
-  maternalGrandfather: kinshipPersonSchema,
-});
+export function createEnrollmentStepTwoSchema(
+  t: EnrollmentKinshipValidationTranslator,
+) {
+  return z.object({
+    mother: createKinshipParentSchema(t),
+    maternalGrandmother: createKinshipPersonSchema(t),
+    maternalGrandfather: createKinshipPersonSchema(t),
+  });
+}
 
 export type EnrollmentStepTwoFormValues = z.infer<
-  typeof enrollmentStepTwoSchema
+  ReturnType<typeof createEnrollmentStepTwoSchema>
 >;
 
 export function getEnrollmentStepTwoDefaultValues(

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
 import { requestJson } from "@/services/http/fetcher";
 import type {
@@ -51,24 +52,26 @@ export const enrollmentQueryKeys = {
 };
 
 export function useAccountInfoQuery() {
+  const t = useTranslations("errors");
+
   return useQuery({
     queryKey: accountQueryKeys.info,
     queryFn: () =>
       requestJson<AccountInfoResponse>("/api/account/info", {
-        fallbackMessage:
-          "Unable to load the account enrollment information right now.",
+        fallbackMessage: t("accountInfoLoad"),
       }),
     staleTime: 60 * 1000,
   });
 }
 
 export function useActiveConsentsQuery(enabled = false) {
+  const t = useTranslations("errors");
+
   return useQuery({
     queryKey: enrollmentQueryKeys.activeConsents,
     queryFn: () =>
       requestJson<ActiveConsent[]>("/api/consent/active", {
-        fallbackMessage:
-          "Unable to load the consent records for this enrollment.",
+        fallbackMessage: t("consentsLoad"),
       }),
     enabled,
     staleTime: 5 * 60 * 1000,
@@ -76,17 +79,20 @@ export function useActiveConsentsQuery(enabled = false) {
 }
 
 export function useStartEnrollmentMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: () =>
       requestJson<EnrollmentStartResponse>("/api/enrollment/start", {
         method: "POST",
-        fallbackMessage:
-          "Unable to start the enrollment application right now.",
+        fallbackMessage: t("enrollmentStart"),
       }),
   });
 }
 
 export function useAcceptEnrollmentConsentsMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: (payload: ConsentAcceptRequest) =>
       requestJson<ConsentAcceptResponse, ConsentAcceptRequest>(
@@ -94,13 +100,15 @@ export function useAcceptEnrollmentConsentsMutation() {
         {
           method: "POST",
           body: payload,
-          fallbackMessage: "Unable to save the required consents right now.",
+          fallbackMessage: t("consentsSave"),
         },
       ),
   });
 }
 
 export function useEnrollmentStepOneUpsertMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: (payload: EnrollmentStepOneUpsertRequest) =>
       requestJson<
@@ -109,8 +117,7 @@ export function useEnrollmentStepOneUpsertMutation() {
       >("/api/enrollment/step1/upsert", {
         method: "POST",
         body: payload,
-        fallbackMessage:
-          "Unable to save your step 1 demographics right now.",
+        fallbackMessage: t("stepOneSave"),
       }),
   });
 }
@@ -121,6 +128,8 @@ export function useEnrollmentStepOneUpsertMutation() {
  * marks the step complete.
  */
 export function useEnrollmentStepOneSaveDraftMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: (payload: EnrollmentStepOneSaveDraftRequest) =>
       requestJson<EnrollmentSaveDraftResponse, EnrollmentStepOneSaveDraftRequest>(
@@ -128,19 +137,20 @@ export function useEnrollmentStepOneSaveDraftMutation() {
         {
           method: "POST",
           body: payload,
-          fallbackMessage: "Unable to save your step 1 progress right now.",
+          fallbackMessage: t("stepOneDraftSave"),
         },
       ),
   });
 }
 
 export function useEnrollmentStepOneQuery(enabled = true) {
+  const t = useTranslations("errors");
+
   return useQuery({
     queryKey: enrollmentQueryKeys.stepOneDemographics,
     queryFn: () =>
       requestJson<EnrollmentStepOnePrefillResponse>("/api/enrollment/step1", {
-        fallbackMessage:
-          "Unable to load your step 1 demographics right now.",
+        fallbackMessage: t("stepOneLoad"),
       }),
     enabled,
     staleTime: 60 * 1000,
@@ -148,6 +158,8 @@ export function useEnrollmentStepOneQuery(enabled = true) {
 }
 
 export function useEnrollmentStepTwoUpsertMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: (payload: EnrollmentStepTwoUpsertRequest) =>
       requestJson<
@@ -156,14 +168,15 @@ export function useEnrollmentStepTwoUpsertMutation() {
       >("/api/enrollment/step2/upsert", {
         method: "POST",
         body: payload,
-        fallbackMessage:
-          "Unable to save your step 2 maternal kinship information right now.",
+        fallbackMessage: t("stepTwoSave"),
       }),
   });
 }
 
 /** Partial Step 2 draft save ("Save & finish later") — see step 1 note. */
 export function useEnrollmentStepTwoSaveDraftMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: (payload: EnrollmentStepTwoSaveDraftRequest) =>
       requestJson<EnrollmentSaveDraftResponse, EnrollmentStepTwoSaveDraftRequest>(
@@ -171,19 +184,20 @@ export function useEnrollmentStepTwoSaveDraftMutation() {
         {
           method: "POST",
           body: payload,
-          fallbackMessage: "Unable to save your step 2 progress right now.",
+          fallbackMessage: t("stepTwoDraftSave"),
         },
       ),
   });
 }
 
 export function useEnrollmentStepTwoQuery(enabled = true) {
+  const t = useTranslations("errors");
+
   return useQuery({
     queryKey: enrollmentQueryKeys.stepTwoMaternalKinship,
     queryFn: () =>
       requestJson<EnrollmentStepTwoPrefillResponse>("/api/enrollment/step2", {
-        fallbackMessage:
-          "Unable to load your step 2 maternal kinship information right now.",
+        fallbackMessage: t("stepTwoLoad"),
       }),
     enabled,
     staleTime: 60 * 1000,
@@ -191,12 +205,13 @@ export function useEnrollmentStepTwoQuery(enabled = true) {
 }
 
 export function useEnrollmentStepThreeQuery(enabled = true) {
+  const t = useTranslations("errors");
+
   return useQuery({
     queryKey: enrollmentQueryKeys.stepThreePaternalKinship,
     queryFn: () =>
       requestJson<EnrollmentStepThreePrefillResponse>("/api/enrollment/step3", {
-        fallbackMessage:
-          "Unable to load your step 3 paternal kinship information right now.",
+        fallbackMessage: t("stepThreeLoad"),
       }),
     enabled,
     staleTime: 60 * 1000,
@@ -204,6 +219,8 @@ export function useEnrollmentStepThreeQuery(enabled = true) {
 }
 
 export function useEnrollmentStepThreeUpsertMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: (payload: EnrollmentStepThreeUpsertRequest) =>
       requestJson<
@@ -212,14 +229,15 @@ export function useEnrollmentStepThreeUpsertMutation() {
       >("/api/enrollment/step3/upsert", {
         method: "POST",
         body: payload,
-        fallbackMessage:
-          "Unable to save your step 3 paternal kinship information right now.",
+        fallbackMessage: t("stepThreeSave"),
       }),
   });
 }
 
 /** Partial Step 3 draft save ("Save & finish later") — see step 1 note. */
 export function useEnrollmentStepThreeSaveDraftMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: (payload: EnrollmentStepThreeSaveDraftRequest) =>
       requestJson<
@@ -228,17 +246,19 @@ export function useEnrollmentStepThreeSaveDraftMutation() {
       >("/api/enrollment/step3/save-draft", {
         method: "POST",
         body: payload,
-        fallbackMessage: "Unable to save your step 3 progress right now.",
+        fallbackMessage: t("stepThreeDraftSave"),
       }),
   });
 }
 
 export function useEnrollmentStepFourDocumentListQuery() {
+  const t = useTranslations("errors");
+
   return useQuery({
     queryKey: enrollmentQueryKeys.stepFourDocumentList,
     queryFn: () =>
       requestJson<EnrollmentDocumentListResponse>("/api/document/list", {
-        fallbackMessage: "Unable to load your enrollment documents right now.",
+        fallbackMessage: t("documentsLoad"),
       }),
     staleTime: 30 * 1000,
   });
@@ -249,9 +269,6 @@ type EnrollmentDocumentUploadPayload = Readonly<{
   file: File;
 }>;
 
-const documentStorageUploadErrorMessage =
-  "The file could not be uploaded to storage. Please try again.";
-
 /**
  * Presigned direct-to-storage upload flow (bypasses the serverless body limit):
  *   1. POST /api/document/presign-upload — validate against the per-slot
@@ -260,6 +277,8 @@ const documentStorageUploadErrorMessage =
  *   3. POST /api/document/confirm — record the Document for this enrollment.
  */
 export function useEnrollmentDocumentUploadMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: async ({
       documentType,
@@ -276,7 +295,7 @@ export function useEnrollmentDocumentUploadMutation() {
           mimeType: file.type,
           fileSize: file.size,
         },
-        fallbackMessage: "Unable to prepare the document upload right now.",
+        fallbackMessage: t("documentPresign"),
       });
 
       let storageResponse: Response;
@@ -288,11 +307,11 @@ export function useEnrollmentDocumentUploadMutation() {
           body: file,
         });
       } catch {
-        throw new Error(documentStorageUploadErrorMessage);
+        throw new Error(t("documentStorageUpload"));
       }
 
       if (!storageResponse.ok) {
-        throw new Error(documentStorageUploadErrorMessage);
+        throw new Error(t("documentStorageUpload"));
       }
 
       return requestJson<
@@ -307,25 +326,27 @@ export function useEnrollmentDocumentUploadMutation() {
           mimeType: file.type,
           fileSize: file.size,
         },
-        fallbackMessage:
-          "The file was uploaded but could not be recorded. Please try again.",
+        fallbackMessage: t("documentConfirm"),
       });
     },
   });
 }
 
 export function useEnrollmentStepFourNextMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: () =>
       requestJson<EnrollmentStepFourNextResponse>("/api/enrollment/step4/next", {
         method: "POST",
-        fallbackMessage:
-          "Unable to complete the document upload step right now.",
+        fallbackMessage: t("stepFourNext"),
       }),
   });
 }
 
 export function useCompleteEnrollmentMutation() {
+  const t = useTranslations("errors");
+
   return useMutation({
     mutationFn: (payload: EnrollmentCompleteRequest) =>
       requestJson<EnrollmentCompleteResponse, EnrollmentCompleteRequest>(
@@ -333,8 +354,7 @@ export function useCompleteEnrollmentMutation() {
         {
           method: "POST",
           body: payload,
-          fallbackMessage:
-            "Unable to submit your enrollment application right now.",
+          fallbackMessage: t("enrollmentSubmit"),
         },
       ),
   });

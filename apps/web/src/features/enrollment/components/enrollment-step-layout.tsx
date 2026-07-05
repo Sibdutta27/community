@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ArrowLeft, Bookmark } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { EnrollmentStepEntrance } from "@/features/enrollment/components/enrollment-motion";
@@ -55,6 +56,7 @@ export function EnrollmentStepLayout(props: EnrollmentStepLayoutProps) {
  * accessible name.
  */
 function EnrollmentSaveDraftHeaderAction() {
+  const t = useTranslations("enrollment.layout");
   const registration = useEnrollmentSaveDraftRegistration();
 
   if (!registration) {
@@ -63,7 +65,7 @@ function EnrollmentSaveDraftHeaderAction() {
 
   return (
     <Button
-      aria-label="Save and finish later"
+      aria-label={t("saveFinishLaterAria")}
       className="text-muted-foreground hover:text-foreground px-3 sm:px-4"
       disabled={registration.disabled || registration.pending}
       leftIcon={<Bookmark aria-hidden="true" />}
@@ -73,7 +75,7 @@ function EnrollmentSaveDraftHeaderAction() {
       type="button"
       variant="ghost"
     >
-      <span className="hidden sm:inline">Save & finish later</span>
+      <span className="hidden sm:inline">{t("saveFinishLater")}</span>
     </Button>
   );
 }
@@ -82,6 +84,7 @@ function EnrollmentStepLayoutContent({
   children,
   step,
 }: EnrollmentStepLayoutProps) {
+  const t = useTranslations("enrollment");
   const accountInfoQuery = useAccountInfoQuery();
   const stepState = resolveEnrollmentStepState(accountInfoQuery.data);
   const definition = getEnrollmentStepDefinition(step);
@@ -94,7 +97,7 @@ function EnrollmentStepLayoutContent({
           <Button asChild size="sm" variant="outline">
             <Link href={backHref}>
               <ArrowLeft aria-hidden="true" className="size-4" />
-              <span>Back</span>
+              <span>{t("layout.back")}</span>
             </Link>
           </Button>
 
@@ -108,10 +111,10 @@ function EnrollmentStepLayoutContent({
           />
           <div className="min-w-0">
             <p className="text-muted-foreground hidden text-[0.6rem] font-semibold tracking-[0.3em] uppercase sm:block">
-              Tribal Citizenship
+              {t("layout.kicker")}
             </p>
             <p className="text-foreground truncate text-[0.95rem] font-semibold tracking-[-0.01em] sm:mt-0.5 sm:text-[1.05rem]">
-              Enrollment Application
+              {t("layout.title")}
             </p>
           </div>
         </div>
@@ -122,7 +125,7 @@ function EnrollmentStepLayoutContent({
         <div className="flex shrink-0 items-center gap-2 sm:gap-4">
           <EnrollmentSaveDraftHeaderAction />
           <p className="text-muted-foreground shrink-0 text-xs font-medium tracking-[0.08em] uppercase">
-            Step {step} of {enrollmentTotalSteps}
+            {t("layout.stepOf", { step, total: enrollmentTotalSteps })}
           </p>
         </div>
       </header>
@@ -139,10 +142,10 @@ function EnrollmentStepLayoutContent({
           {definition ? (
             <div className="max-w-3xl">
               <h1 className="text-foreground text-[1.55rem] leading-tight font-semibold tracking-tight sm:text-[1.9rem]">
-                {definition.step}. {definition.headingTitle}
+                {definition.step}. {t(`steps.${definition.step}.heading`)}
               </h1>
               <p className="text-muted-foreground mt-2 text-[0.92rem] leading-6">
-                {definition.description}
+                {t(`steps.${definition.step}.description`)}
               </p>
             </div>
           ) : null}
@@ -184,6 +187,7 @@ export function EnrollmentStepFooter({
   saveDraftDisabled = false,
   saveDraftPending = false,
 }: EnrollmentStepFooterProps) {
+  const t = useTranslations("enrollment");
   const hasLeadingActions = Boolean(backHref) || Boolean(onSaveDraft);
 
   return (
@@ -209,7 +213,7 @@ export function EnrollmentStepFooter({
                 type="button"
                 variant="outline"
               >
-                Back
+                {t("layout.back")}
               </Button>
             ) : (
               <Button
@@ -220,7 +224,7 @@ export function EnrollmentStepFooter({
               >
                 <Link href={backHref}>
                   <ArrowLeft aria-hidden="true" className="size-5" />
-                  <span>Back</span>
+                  <span>{t("layout.back")}</span>
                 </Link>
               </Button>
             )
@@ -230,13 +234,13 @@ export function EnrollmentStepFooter({
             <Button
               disabled={saveDraftDisabled || saveDraftPending}
               loading={saveDraftPending}
-              loadingText="Saving..."
+              loadingText={t("actions.saving")}
               onClick={onSaveDraft}
               size="lg"
               type="button"
               variant="ghost"
             >
-              Save & finish later
+              {t("layout.saveFinishLater")}
             </Button>
           ) : null}
         </div>

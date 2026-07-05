@@ -42,6 +42,7 @@ beforeEach(() => {
 
 import { EnrollmentStepLayout } from "@/features/enrollment/components/enrollment-step-layout";
 import { EnrollmentStepThreeForm } from "@/features/enrollment/components/enrollment-step-three-form";
+import { withIntl } from "@/test/i18n";
 
 function renderForm() {
   const queryClient = new QueryClient({
@@ -49,9 +50,11 @@ function renderForm() {
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      <EnrollmentStepThreeForm />
-    </QueryClientProvider>,
+    withIntl(
+      <QueryClientProvider client={queryClient}>
+        <EnrollmentStepThreeForm />
+      </QueryClientProvider>,
+    ),
   );
 }
 
@@ -117,15 +120,17 @@ describe("EnrollmentStepThreeForm — paternal kinship", () => {
 
   it("runs the same partial-draft save from the layout's TOP header action", async () => {
     render(
-      <QueryClientProvider
-        client={
-          new QueryClient({ defaultOptions: { queries: { retry: false } } })
-        }
-      >
-        <EnrollmentStepLayout step={3}>
-          <EnrollmentStepThreeForm />
-        </EnrollmentStepLayout>
-      </QueryClientProvider>,
+      withIntl(
+        <QueryClientProvider
+          client={
+            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+          }
+        >
+          <EnrollmentStepLayout step={3}>
+            <EnrollmentStepThreeForm />
+          </EnrollmentStepLayout>
+        </QueryClientProvider>,
+      ),
     );
 
     fireEvent.click(

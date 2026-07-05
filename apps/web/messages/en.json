@@ -299,5 +299,323 @@
         "supportEnrollment": "Support Enrollment and Participation"
       }
     }
+  },
+  "enrollment": {
+    "layout": {
+      "kicker": "Tribal Citizenship",
+      "title": "Enrollment Application",
+      "stepOf": "Step {step} of {total}",
+      "back": "Back",
+      "saveFinishLater": "Save & finish later",
+      "saveFinishLaterAria": "Save and finish later"
+    },
+    "stepper": {
+      "listLabel": "Enrollment steps",
+      "goToStep": "Go to step {step}: {title}",
+      "stepLabel": "Step {step}: {title}"
+    },
+    "steps": {
+      "1": {
+        "title": "Demographics",
+        "heading": "Add your demographics",
+        "description": "Provide your personal demographic details."
+      },
+      "2": {
+        "title": "Maternal Kinship",
+        "heading": "Add your maternal kinship information",
+        "description": "Document your mother and maternal grandparents."
+      },
+      "3": {
+        "title": "Paternal Kinship",
+        "heading": "Add your paternal kinship information",
+        "description": "Document your father and paternal grandparents."
+      },
+      "4": {
+        "title": "Documents",
+        "heading": "Upload your documents",
+        "description": "Upload your photo and any supporting kinship evidence."
+      },
+      "5": {
+        "title": "Confirmation",
+        "heading": "Review & confirm",
+        "description": "Review, sign, and submit your enrollment application for council review."
+      }
+    },
+    "actions": {
+      "next": "Next",
+      "saving": "Saving...",
+      "submitting": "Submitting...",
+      "refreshing": "Refreshing...",
+      "refreshFiles": "Refresh Files",
+      "submitApplication": "Submit Application"
+    },
+    "prefillNotice": "You can still complete the form manually, but any previously saved step {step} values may not be prefilled.",
+    "stepOne": {
+      "fields": {
+        "firstName": {
+          "label": "First Name",
+          "placeholder": "Enter your first name"
+        },
+        "lastName": {
+          "label": "Last Name",
+          "placeholder": "Enter your last name"
+        },
+        "cityOfBirth": {
+          "label": "City / Town of Birth",
+          "placeholder": "Enter city or town"
+        },
+        "dateOfBirth": {
+          "label": "Date of Birth",
+          "placeholder": "Select date of birth"
+        },
+        "municipalityOfBirth": {
+          "label": "Municipality of Birth",
+          "placeholder": "Enter municipality"
+        },
+        "countryOfBirth": {
+          "label": "Country of Birth",
+          "placeholder": "Enter country of birth"
+        },
+        "sex": {
+          "label": "Sex",
+          "info": "Sex assigned at birth",
+          "placeholder": "Select your sex"
+        },
+        "gender": {
+          "label": "Gender",
+          "info": "Gender identity",
+          "placeholder": "Select your gender"
+        },
+        "maritalStatus": {
+          "label": "Marital Status",
+          "placeholder": "Select marital status"
+        },
+        "occupation": {
+          "label": "Occupation",
+          "placeholder": "Enter occupation"
+        }
+      },
+      "yucayekeno": {
+        "title": "Your Yucayekeno Information",
+        "description": "Share how you identify and your connection to your Yucayeke and family.",
+        "identity": {
+          "label": "Identity",
+          "placeholder": "Select your identity"
+        },
+        "yucayeke": {
+          "label": "Yucayeke",
+          "placeholder": "Enter your Yucayeke"
+        },
+        "yucayekeUnknown": "I don't know my Yucayeke",
+        "hasChildren": "Do you have children?",
+        "hasMinorChildren": "Any children under 18?"
+      }
+    },
+    "options": {
+      "sex": {
+        "MALE": "Male",
+        "FEMALE": "Female",
+        "INTERSEX": "Intersex",
+        "PREFER_NOT_TO_SAY": "Prefer not to say"
+      },
+      "gender": {
+        "MALE": "Male",
+        "FEMALE": "Female",
+        "NON_BINARY": "Non-binary",
+        "TWO_SPIRIT": "Two-Spirit",
+        "SELF_DESCRIBE": "Self-describe",
+        "PREFER_NOT_TO_SAY": "Prefer not to say",
+        "OTHER": "Other"
+      },
+      "maritalStatus": {
+        "SINGLE": "Single",
+        "MARRIED": "Married",
+        "DIVORCED": "Divorced",
+        "WIDOWED": "Widowed",
+        "DOMESTIC_PARTNERSHIP": "Domestic Partnership"
+      },
+      "identity": {
+        "ARAWAK": "Arawak",
+        "KALINAGO": "Kalinago",
+        "GARIFUNA": "Garifuna",
+        "TAINO": "Taíno"
+      },
+      "yesNo": {
+        "YES": "Yes",
+        "NO": "No"
+      }
+    },
+    "kinship": {
+      "maternalIntro": "Record what you know about your mother and maternal grandparents. Every field is optional — share the most reliable family knowledge you have, and leave anything unknown blank.",
+      "paternalIntro": "Record what you know about your father and paternal grandparents. Every field is optional — share the most reliable family knowledge you have, and leave anything unknown blank.",
+      "fields": {
+        "fullName": {
+          "label": "Full Name",
+          "placeholder": "Enter full name"
+        },
+        "dateOfBirth": {
+          "label": "Date of Birth",
+          "placeholder": "Select date of birth"
+        },
+        "nationality": {
+          "label": "Nationality",
+          "placeholder": "Enter nationality"
+        },
+        "municipality": {
+          "label": "Municipality",
+          "placeholder": "Enter municipality"
+        },
+        "yucayeke": {
+          "label": "Yucayeke",
+          "placeholder": "Enter Yucayeke if known"
+        }
+      },
+      "ancestors": {
+        "mother": {
+          "title": "Mother",
+          "heritageQuestion": "Is your mother of Borikua Taíno heritage?",
+          "description": "Share what you know about your mother — her name, origin, and connection to the Borikua Taíno people."
+        },
+        "maternalGrandmother": {
+          "title": "Maternal Grandmother",
+          "heritageQuestion": "Is your maternal grandmother of Borikua Taíno heritage?",
+          "description": "Record the best available details about your mother's mother."
+        },
+        "maternalGrandfather": {
+          "title": "Maternal Grandfather",
+          "heritageQuestion": "Is your maternal grandfather of Borikua Taíno heritage?",
+          "description": "Record the best available details about your mother's father."
+        },
+        "father": {
+          "title": "Father",
+          "heritageQuestion": "Is your father of Borikua Taíno heritage?",
+          "description": "Share what you know about your father — his name, origin, and connection to the Borikua Taíno people."
+        },
+        "paternalGrandmother": {
+          "title": "Paternal Grandmother",
+          "heritageQuestion": "Is your paternal grandmother of Borikua Taíno heritage?",
+          "description": "Record the best available details about your father's mother."
+        },
+        "paternalGrandfather": {
+          "title": "Paternal Grandfather",
+          "heritageQuestion": "Is your paternal grandfather of Borikua Taíno heritage?",
+          "description": "Record the best available details about your father's father."
+        }
+      }
+    },
+    "stepFour": {
+      "intro": "Upload a clear photo of yourself — it is the only required file. Genealogical records, kinship letters, oral history, and DNA testing are optional supporting evidence for your kinship claim.",
+      "requiredDocument": "Required Document",
+      "supportingEvidence": "Supporting Evidence",
+      "slots": {
+        "user_photo": {
+          "title": "Your Photo",
+          "description": "Upload a clear, recent photo of yourself."
+        },
+        "genealogical_records": {
+          "title": "Genealogical Records",
+          "description": "Birth, baptism, census, or civil records that trace your family line."
+        },
+        "kinship_letters": {
+          "title": "Kinship Letters",
+          "description": "Letters from family or community members attesting to your kinship."
+        },
+        "oral_history": {
+          "title": "Oral History",
+          "description": "Recorded or transcribed oral history that supports your lineage."
+        },
+        "dna_testing": {
+          "title": "DNA Testing",
+          "description": "DNA test results that support your ancestry, if available."
+        }
+      },
+      "clickToUpload": "Click to upload",
+      "uploading": "Uploading...",
+      "maxFileSize": "{size} Max",
+      "uploadedOn": "Uploaded {date}",
+      "view": "View",
+      "unnamedDocument": "Uploaded document",
+      "noFileUploaded": "No file uploaded yet.",
+      "noFilesUploaded": "No files uploaded yet.",
+      "uploadSuccess": "{slot} uploaded successfully.",
+      "photoMissing": "Your photo is still missing. Please upload it before continuing.",
+      "missingRequired": "Missing required document: Your Photo",
+      "refreshNotice": "Please refresh and try again before completing Step 4."
+    },
+    "confirmation": {
+      "intro": "Sign with your full legal name to confirm that the information in your application is true and complete. Submitting sends your application to the council for review.",
+      "sectionTitle": "E-Signature",
+      "sectionDescription": "Type your full legal name as your electronic signature and confirm the agreements below to submit your enrollment application.",
+      "signatureName": {
+        "label": "Sign your full legal name",
+        "placeholder": "Full legal name"
+      },
+      "signatureDate": {
+        "label": "Date",
+        "placeholder": "Signature date"
+      },
+      "agreeToSubmit": "I agree to submit my information",
+      "agreeToTerms": "I agree to the terms of service",
+      "incompleteIntro": "Almost there — finish:",
+      "incompleteOutro": "before submitting your application."
+    },
+    "success": {
+      "title": "Success!",
+      "body": "Your enrollment application has been submitted to the council for review. The council will review your application within 90 days, and you will be notified once a decision has been made.",
+      "backToDashboard": "Back to Dashboard",
+      "metaTitle": "Application Submitted"
+    },
+    "hero": {
+      "title": "Begin Your Journey to Official Taíno Nation Membership",
+      "subtitle": "Learn how enrollment works, what documents you will need, and the key questions members ask before starting their application."
+    },
+    "validation": {
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "dateOfBirthRequired": "Date of birth is required",
+      "cityOfBirthRequired": "City or town of birth is required",
+      "municipalityOfBirthRequired": "Municipality of birth is required",
+      "countryOfBirthRequired": "Country of birth is required",
+      "invalidDate": "Enter a valid date",
+      "invalidOption": "Select a valid option",
+      "selectYesNo": "Select Yes or No",
+      "signatureNameRequired": "Please sign with your full legal name.",
+      "signatureDateRequired": "Please provide the signature date.",
+      "agreeToSubmitRequired": "You must agree to submit your information.",
+      "agreeToTermsRequired": "You must agree to the terms of service.",
+      "emptyFile": "Please choose a non-empty file.",
+      "fileNotAccepted": "This slot accepts {formats} files up to {maxSize}."
+    }
+  },
+  "consent": {
+    "kicker": "ENROLLMENT CONSENT",
+    "description": "Please accept the required consents to continue.",
+    "closeAria": "Close consent dialog",
+    "readAll": "Read all the <link>terms and conditions.</link>",
+    "cancel": "Cancel",
+    "acceptAndContinue": "Accept and Continue",
+    "savingConsent": "Saving consent..."
+  },
+  "errors": {
+    "accountInfoLoad": "Unable to load the account enrollment information right now.",
+    "consentsLoad": "Unable to load the consent records for this enrollment.",
+    "consentsSave": "Unable to save the required consents right now.",
+    "enrollmentStart": "Unable to start the enrollment application right now.",
+    "stepOneSave": "Unable to save your step 1 demographics right now.",
+    "stepOneDraftSave": "Unable to save your step 1 progress right now.",
+    "stepOneLoad": "Unable to load your step 1 demographics right now.",
+    "stepTwoSave": "Unable to save your step 2 maternal kinship information right now.",
+    "stepTwoDraftSave": "Unable to save your step 2 progress right now.",
+    "stepTwoLoad": "Unable to load your step 2 maternal kinship information right now.",
+    "stepThreeSave": "Unable to save your step 3 paternal kinship information right now.",
+    "stepThreeDraftSave": "Unable to save your step 3 progress right now.",
+    "stepThreeLoad": "Unable to load your step 3 paternal kinship information right now.",
+    "documentsLoad": "Unable to load your enrollment documents right now.",
+    "documentPresign": "Unable to prepare the document upload right now.",
+    "documentStorageUpload": "The file could not be uploaded to storage. Please try again.",
+    "documentConfirm": "The file was uploaded but could not be recorded. Please try again.",
+    "documentUpload": "Unable to upload the selected document right now.",
+    "stepFourNext": "Unable to complete the document upload step right now.",
+    "enrollmentSubmit": "Unable to submit your enrollment application right now."
   }
 }

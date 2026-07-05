@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   enrollmentStepDefinitions,
@@ -38,9 +39,11 @@ export function EnrollmentStepper({
   currentStep,
   stepState,
 }: EnrollmentStepperProps) {
+  const t = useTranslations("enrollment");
+
   return (
     <ol
-      aria-label="Enrollment steps"
+      aria-label={t("stepper.listLabel")}
       className={cn(
         // `relative z-10 -mb-px` lets the active tab paint over the card's
         // top border for the seamless folder merge.
@@ -51,6 +54,7 @@ export function EnrollmentStepper({
       )}
     >
       {enrollmentStepDefinitions.map((definition) => {
+        const stepTitle = t(`steps.${definition.step}.title`);
         const stepKey = String(definition.step) as keyof EnrollmentStepState;
         const isActive = definition.step === currentStep;
         const isCompleted = !isActive && Boolean(stepState?.[stepKey]);
@@ -114,7 +118,7 @@ export function EnrollmentStepper({
                 definition.step
               )}
             </span>
-            <span className={nameClassName}>{definition.title}</span>
+            <span className={nameClassName}>{stepTitle}</span>
           </>
         );
 
@@ -123,7 +127,10 @@ export function EnrollmentStepper({
             {isNavigable ? (
               <Link
                 aria-current={isActive ? "step" : undefined}
-                aria-label={`Go to step ${definition.step}: ${definition.title}`}
+                aria-label={t("stepper.goToStep", {
+                  step: definition.step,
+                  title: stepTitle,
+                })}
                 className={tabClassName}
                 data-state={tabState}
                 href={definition.href}
@@ -133,7 +140,10 @@ export function EnrollmentStepper({
             ) : (
               <span
                 aria-current={isActive ? "step" : undefined}
-                aria-label={`Step ${definition.step}: ${definition.title}`}
+                aria-label={t("stepper.stepLabel", {
+                  step: definition.step,
+                  title: stepTitle,
+                })}
                 className={tabClassName}
                 data-state={tabState}
               >

@@ -1,13 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  enrollmentStepTwoSchema,
+  createEnrollmentStepTwoSchema,
   getEnrollmentStepTwoDefaultValues,
   mapEnrollmentStepTwoFormToDraftPayload,
   mapEnrollmentStepTwoFormToPayload,
   maternalKinshipDefinitions,
   type EnrollmentStepTwoFormValues,
 } from "@/features/enrollment/lib/enrollment-step-two-form";
+
+// Pass/fail-only assertions — an identity validation translator suffices.
+const enrollmentStepTwoSchema = createEnrollmentStepTwoSchema((key) => key);
 
 function buildFormValues(): EnrollmentStepTwoFormValues {
   return {

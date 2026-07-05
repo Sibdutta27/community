@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, UserRound } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -27,8 +28,8 @@ import {
   useEnrollmentStepThreeUpsertMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
-  enrollmentKinshipYesNoOptions,
-  enrollmentStepThreeSchema,
+  createEnrollmentStepThreeSchema,
+  enrollmentKinshipYesNoValues,
   getEnrollmentStepThreeDefaultValues,
   mapEnrollmentStepThreeFormToDraftPayload,
   mapEnrollmentStepThreeFormToPayload,
@@ -45,6 +46,9 @@ function formatDateInputValue(date: Date) {
 }
 
 export function EnrollmentStepThreeForm() {
+  const t = useTranslations("enrollment");
+  const tValidation = useTranslations("enrollment.validation");
+  const tErrors = useTranslations("errors");
   const router = useRouter();
   const queryClient = useQueryClient();
   const accountInfoQuery = useAccountInfoQuery();
@@ -61,8 +65,18 @@ export function EnrollmentStepThreeForm() {
   const lastHydratedDefaultsRef = useRef<string | null>(null);
   const maxBirthDate = formatDateInputValue(new Date());
 
+  const yesNoOptions = enrollmentKinshipYesNoValues.map((value) => ({
+    label: t(`options.yesNo.${value}`),
+    value,
+  }));
+
+  const schema = useMemo(
+    () => createEnrollmentStepThreeSchema((key) => tValidation(key)),
+    [tValidation],
+  );
+
   const form = useForm<EnrollmentStepThreeFormValues>({
-    resolver: zodResolver(enrollmentStepThreeSchema),
+    resolver: zodResolver(schema),
     defaultValues: getEnrollmentStepThreeDefaultValues(),
     mode: "onTouched",
   });
@@ -119,9 +133,7 @@ export function EnrollmentStepThreeForm() {
       setError("root", {
         type: "server",
         message:
-          error instanceof Error
-            ? error.message
-            : "Unable to save your step 3 paternal kinship information right now.",
+          error instanceof Error ? error.message : tErrors("stepThreeSave"),
       });
     }
   };
@@ -147,9 +159,7 @@ export function EnrollmentStepThreeForm() {
       setError("root", {
         type: "server",
         message:
-          error instanceof Error
-            ? error.message
-            : "Unable to save your step 3 progress right now.",
+          error instanceof Error ? error.message : tErrors("stepThreeDraftSave"),
       });
     }
   };
@@ -173,8 +183,7 @@ export function EnrollmentStepThreeForm() {
       >
         {stepThreeErrorMessage ? (
           <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
-            {stepThreeErrorMessage} You can still complete the form manually,
-            but any previously saved step 3 values may not be prefilled.
+            {stepThreeErrorMessage} {t("prefillNotice", { step: 3 })}
           </div>
         ) : null}
 
@@ -185,57 +194,55 @@ export function EnrollmentStepThreeForm() {
         ) : null}
 
         <p className="text-muted-foreground max-w-3xl text-[0.95rem] leading-7">
-          Record what you know about your father and paternal grandparents.
-          Every field is optional — share the most reliable family knowledge you
-          have, and leave anything unknown blank.
+          {t("kinship.paternalIntro")}
         </p>
 
         {paternalKinshipDefinitions.map((ancestor) => (
           <EnrollmentStepSection
             key={ancestor.key}
-            description={ancestor.description}
+            description={t(`kinship.ancestors.${ancestor.key}.description`)}
             icon={UserRound}
-            title={ancestor.title}
+            title={t(`kinship.ancestors.${ancestor.key}.title`)}
           >
             <EnrollmentInputField
               control={control}
-              label="Full Name"
+              label={t("kinship.fields.fullName.label")}
               name={`${ancestor.key}.name`}
-              placeholder="Enter full name"
+              placeholder={t("kinship.fields.fullName.placeholder")}
             />
             {ancestor.key === "father" ? (
               <EnrollmentDateField
                 control={control}
-                label="Date of Birth"
+                label={t("kinship.fields.dateOfBirth.label")}
                 max={maxBirthDate}
                 name="father.dateOfBirth"
-                placeholder="Select date of birth"
+                placeholder={t("kinship.fields.dateOfBirth.placeholder")}
               />
             ) : null}
             <EnrollmentInputField
               control={control}
-              label="Nationality"
+              label={t("kinship.fields.nationality.label")}
               name={`${ancestor.key}.nationality`}
-              placeholder="Enter nationality"
+              placeholder={t("kinship.fields.nationality.placeholder")}
             />
             <EnrollmentInputField
               control={control}
-              label="Municipality"
+              label={t("kinship.fields.municipality.label")}
               name={`${ancestor.key}.municipality`}
-              placeholder="Enter municipality"
+              placeholder={t("kinship.fields.municipality.placeholder")}
             />
             <EnrollmentInputField
               control={control}
-              label="Yucayeke"
+              label={t("kinship.fields.yucayeke.label")}
               name={`${ancestor.key}.yucayeke`}
-              placeholder="Enter Yucayeke if known"
+              placeholder={t("kinship.fields.yucayeke.placeholder")}
             />
             <EnrollmentRadioGroupField
               className="md:col-span-2"
               control={control}
-              label={ancestor.heritageQuestion}
+              label={t(`kinship.ancestors.${ancestor.key}.heritageQuestion`)}
               name={`${ancestor.key}.isBorikuaTaino`}
-              options={enrollmentKinshipYesNoOptions}
+              options={yesNoOptions}
             />
           </EnrollmentStepSection>
         ))}
@@ -252,12 +259,12 @@ export function EnrollmentStepThreeForm() {
           <Button
             className="min-w-[10rem]"
             loading={upsertMutation.isPending}
-            loadingText="Saving..."
+            loadingText={t("actions.saving")}
             rightIcon={<ArrowRight />}
             size="lg"
             type="submit"
           >
-            Next
+            {t("actions.next")}
           </Button>
         </EnrollmentStepFooter>
       </form>

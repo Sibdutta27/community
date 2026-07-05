@@ -1,16 +1,20 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  enrollmentStepOneGenderOptions,
-  enrollmentStepOneIdentityOptions,
-  enrollmentStepOneMaritalStatusOptions,
-  enrollmentStepOneSexOptions,
-  enrollmentStepOneSchema,
+  createEnrollmentStepOneSchema,
+  enrollmentStepOneGenderValues,
+  enrollmentStepOneIdentityValues,
+  enrollmentStepOneMaritalStatusValues,
+  enrollmentStepOneSexValues,
   getEnrollmentStepOneDefaultValues,
   mapEnrollmentStepOneFormToDraftPayload,
   mapEnrollmentStepOneFormToPayload,
   type EnrollmentStepOneFormValues,
 } from "@/features/enrollment/lib/enrollment-step-one-form";
+
+// The schema factory receives a translator for `enrollment.validation`;
+// these unit tests only assert pass/fail, so an identity translator suffices.
+const enrollmentStepOneSchema = createEnrollmentStepOneSchema((key) => key);
 
 function buildValidFormValues(): EnrollmentStepOneFormValues {
   return {
@@ -33,8 +37,8 @@ function buildValidFormValues(): EnrollmentStepOneFormValues {
 }
 
 describe("enrollmentStepOneSchema (flat demographics contract)", () => {
-  it("exposes the four uppercase sex options", () => {
-    expect(enrollmentStepOneSexOptions.map((option) => option.value)).toEqual([
+  it("exposes the four uppercase sex values (labels live in the catalog)", () => {
+    expect([...enrollmentStepOneSexValues]).toEqual([
       "MALE",
       "FEMALE",
       "INTERSEX",
@@ -42,10 +46,8 @@ describe("enrollmentStepOneSchema (flat demographics contract)", () => {
     ]);
   });
 
-  it("exposes the seven uppercase gender options", () => {
-    expect(
-      enrollmentStepOneGenderOptions.map((option) => option.value),
-    ).toEqual([
+  it("exposes the seven uppercase gender values", () => {
+    expect([...enrollmentStepOneGenderValues]).toEqual([
       "MALE",
       "FEMALE",
       "NON_BINARY",
@@ -56,16 +58,14 @@ describe("enrollmentStepOneSchema (flat demographics contract)", () => {
     ]);
   });
 
-  it("includes DOMESTIC_PARTNERSHIP in the marital-status options", () => {
-    expect(
-      enrollmentStepOneMaritalStatusOptions.some(
-        (option) => option.value === "DOMESTIC_PARTNERSHIP",
-      ),
-    ).toBe(true);
+  it("includes DOMESTIC_PARTNERSHIP in the marital-status values", () => {
+    expect(enrollmentStepOneMaritalStatusValues).toContain(
+      "DOMESTIC_PARTNERSHIP",
+    );
   });
 
-  it("exposes the four identity options", () => {
-    expect(enrollmentStepOneIdentityOptions.map((o) => o.value)).toEqual([
+  it("exposes the four identity values", () => {
+    expect([...enrollmentStepOneIdentityValues]).toEqual([
       "ARAWAK",
       "KALINAGO",
       "GARIFUNA",

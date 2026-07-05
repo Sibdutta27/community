@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  enrollmentStepThreeSchema,
+  createEnrollmentStepThreeSchema,
   getEnrollmentStepThreeDefaultValues,
   mapEnrollmentStepThreeFormToPayload,
   paternalKinshipDefinitions,
   type EnrollmentStepThreeFormValues,
 } from "@/features/enrollment/lib/enrollment-step-three-form";
+
+// Pass/fail-only assertions — an identity validation translator suffices.
+const enrollmentStepThreeSchema = createEnrollmentStepThreeSchema((key) => key);
 
 function buildFormValues(): EnrollmentStepThreeFormValues {
   return {

@@ -10,48 +10,68 @@ const dateInputPattern = /^\d{4}-\d{2}-\d{2}$/;
 
 export const enrollmentKinshipYesNoValues = ["YES", "NO"] as const;
 
-export const enrollmentKinshipYesNoOptions = [
-  { label: "Yes", value: "YES" },
-  { label: "No", value: "NO" },
-] as const;
+/**
+ * Message keys under the `enrollment.validation` catalog namespace used by
+ * the kinship schemas. Components hand the schema factories a translator for
+ * that namespace so the Zod errors render in the member's locale.
+ */
+export type EnrollmentKinshipValidationKey = "selectYesNo" | "invalidDate";
+
+export type EnrollmentKinshipValidationTranslator = (
+  key: EnrollmentKinshipValidationKey,
+) => string;
 
 const optionalString = z.string().trim();
 
-const optionalYesNoString = optionalString.refine(
-  (value) =>
-    value === "" ||
-    enrollmentKinshipYesNoValues.includes(
-      value as (typeof enrollmentKinshipYesNoValues)[number],
-    ),
-  "Select Yes or No",
-);
+const createOptionalYesNoString = (t: EnrollmentKinshipValidationTranslator) =>
+  optionalString.refine(
+    (value) =>
+      value === "" ||
+      enrollmentKinshipYesNoValues.includes(
+        value as (typeof enrollmentKinshipYesNoValues)[number],
+      ),
+    t("selectYesNo"),
+  );
 
-const optionalDateString = optionalString.refine((value) => {
-  if (value === "") {
-    return true;
-  }
+const createOptionalDateString = (t: EnrollmentKinshipValidationTranslator) =>
+  optionalString.refine((value) => {
+    if (value === "") {
+      return true;
+    }
 
-  const parsedDate = parseISO(value);
+    const parsedDate = parseISO(value);
 
-  return isValid(parsedDate) && format(parsedDate, "yyyy-MM-dd") === value;
-}, "Enter a valid date");
+    return isValid(parsedDate) && format(parsedDate, "yyyy-MM-dd") === value;
+  }, t("invalidDate"));
 
 /** A grandparent kinship person — no date of birth captured. */
-export const kinshipPersonSchema = z.object({
-  name: optionalString,
-  nationality: optionalString,
-  municipality: optionalString,
-  yucayeke: optionalString,
-  isBorikuaTaino: optionalYesNoString,
-});
+export function createKinshipPersonSchema(
+  t: EnrollmentKinshipValidationTranslator,
+) {
+  return z.object({
+    name: optionalString,
+    nationality: optionalString,
+    municipality: optionalString,
+    yucayeke: optionalString,
+    isBorikuaTaino: createOptionalYesNoString(t),
+  });
+}
 
 /** The parent (mother / father) — same shape plus an optional date of birth. */
-export const kinshipParentSchema = kinshipPersonSchema.extend({
-  dateOfBirth: optionalDateString,
-});
+export function createKinshipParentSchema(
+  t: EnrollmentKinshipValidationTranslator,
+) {
+  return createKinshipPersonSchema(t).extend({
+    dateOfBirth: createOptionalDateString(t),
+  });
+}
 
-export type KinshipPersonFormValues = z.infer<typeof kinshipPersonSchema>;
-export type KinshipParentFormValues = z.infer<typeof kinshipParentSchema>;
+export type KinshipPersonFormValues = z.infer<
+  ReturnType<typeof createKinshipPersonSchema>
+>;
+export type KinshipParentFormValues = z.infer<
+  ReturnType<typeof createKinshipParentSchema>
+>;
 
 export const emptyKinshipPersonValue: KinshipPersonFormValues = {
   name: "",

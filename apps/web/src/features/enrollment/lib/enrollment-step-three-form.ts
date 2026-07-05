@@ -3,10 +3,11 @@ import { z } from "zod";
 import {
   buildKinshipParentValue,
   buildKinshipPersonValue,
-  kinshipParentSchema,
-  kinshipPersonSchema,
+  createKinshipParentSchema,
+  createKinshipPersonSchema,
   mapKinshipParentToPayload,
   mapKinshipPersonToPayload,
+  type EnrollmentKinshipValidationTranslator,
 } from "@/features/enrollment/lib/enrollment-kinship-form";
 import type {
   EnrollmentAncestryInput,
@@ -15,51 +16,32 @@ import type {
   EnrollmentStepThreeUpsertRequest,
 } from "@/types/enrollment";
 
-export {
-  enrollmentKinshipYesNoOptions,
-  enrollmentKinshipYesNoValues,
-} from "@/features/enrollment/lib/enrollment-kinship-form";
+export { enrollmentKinshipYesNoValues } from "@/features/enrollment/lib/enrollment-kinship-form";
 
 /**
  * Step 3 — Paternal Kinship. Mirrors step 2 for the paternal line, matching
  * the backend `POST /enrollment/step3/upsert` body: father (with date of
- * birth) plus the paternal grandmother and grandfather.
+ * birth) plus the paternal grandmother and grandfather. The per-ancestor copy
+ * lives in the `enrollment.kinship.ancestors` message catalog, keyed by `key`.
  */
 export const paternalKinshipDefinitions = [
-  {
-    key: "father",
-    title: "Father",
-    heritageQuestion: "Is your father of Borikua Taíno heritage?",
-    description:
-      "Share what you know about your father — his name, origin, and connection to the Borikua Taíno people.",
-    hasDateOfBirth: true,
-  },
-  {
-    key: "paternalGrandmother",
-    title: "Paternal Grandmother",
-    heritageQuestion: "Is your paternal grandmother of Borikua Taíno heritage?",
-    description:
-      "Record the best available details about your father's mother.",
-    hasDateOfBirth: false,
-  },
-  {
-    key: "paternalGrandfather",
-    title: "Paternal Grandfather",
-    heritageQuestion: "Is your paternal grandfather of Borikua Taíno heritage?",
-    description:
-      "Record the best available details about your father's father.",
-    hasDateOfBirth: false,
-  },
+  { key: "father", hasDateOfBirth: true },
+  { key: "paternalGrandmother", hasDateOfBirth: false },
+  { key: "paternalGrandfather", hasDateOfBirth: false },
 ] as const;
 
-export const enrollmentStepThreeSchema = z.object({
-  father: kinshipParentSchema,
-  paternalGrandmother: kinshipPersonSchema,
-  paternalGrandfather: kinshipPersonSchema,
-});
+export function createEnrollmentStepThreeSchema(
+  t: EnrollmentKinshipValidationTranslator,
+) {
+  return z.object({
+    father: createKinshipParentSchema(t),
+    paternalGrandmother: createKinshipPersonSchema(t),
+    paternalGrandfather: createKinshipPersonSchema(t),
+  });
+}
 
 export type EnrollmentStepThreeFormValues = z.infer<
-  typeof enrollmentStepThreeSchema
+  ReturnType<typeof createEnrollmentStepThreeSchema>
 >;
 
 export function getEnrollmentStepThreeDefaultValues(

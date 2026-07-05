@@ -1,10 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Sprout } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useForm, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -28,12 +29,12 @@ import {
   useEnrollmentStepOneUpsertMutation,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
-  enrollmentStepOneSchema,
-  enrollmentStepOneGenderOptions,
-  enrollmentStepOneIdentityOptions,
-  enrollmentStepOneMaritalStatusOptions,
-  enrollmentStepOneSexOptions,
-  enrollmentStepOneYesNoOptions,
+  createEnrollmentStepOneSchema,
+  enrollmentStepOneGenderValues,
+  enrollmentStepOneIdentityValues,
+  enrollmentStepOneMaritalStatusValues,
+  enrollmentStepOneSexValues,
+  enrollmentStepOneYesNoValues,
   getEnrollmentStepOneDefaultValues,
   mapEnrollmentStepOneFormToDraftPayload,
   mapEnrollmentStepOneFormToPayload,
@@ -49,6 +50,9 @@ function formatDateInputValue(date: Date) {
 }
 
 export function EnrollmentStepOneForm() {
+  const t = useTranslations("enrollment");
+  const tValidation = useTranslations("enrollment.validation");
+  const tErrors = useTranslations("errors");
   const router = useRouter();
   const queryClient = useQueryClient();
   const accountInfoQuery = useAccountInfoQuery();
@@ -63,8 +67,34 @@ export function EnrollmentStepOneForm() {
   const lastHydratedDefaultsRef = useRef<string | null>(null);
   const maxBirthDate = formatDateInputValue(new Date());
 
+  // Localized option labels — the VALUES stay the untranslated backend enums.
+  const sexOptions = enrollmentStepOneSexValues.map((value) => ({
+    label: t(`options.sex.${value}`),
+    value,
+  }));
+  const genderOptions = enrollmentStepOneGenderValues.map((value) => ({
+    label: t(`options.gender.${value}`),
+    value,
+  }));
+  const maritalStatusOptions = enrollmentStepOneMaritalStatusValues.map(
+    (value) => ({ label: t(`options.maritalStatus.${value}`), value }),
+  );
+  const identityOptions = enrollmentStepOneIdentityValues.map((value) => ({
+    label: t(`options.identity.${value}`),
+    value,
+  }));
+  const yesNoOptions = enrollmentStepOneYesNoValues.map((value) => ({
+    label: t(`options.yesNo.${value}`),
+    value,
+  }));
+
+  const schema = useMemo(
+    () => createEnrollmentStepOneSchema((key) => tValidation(key)),
+    [tValidation],
+  );
+
   const form = useForm<EnrollmentStepOneFormValues>({
-    resolver: zodResolver(enrollmentStepOneSchema),
+    resolver: zodResolver(schema),
     defaultValues: getEnrollmentStepOneDefaultValues(),
     mode: "onTouched",
   });
@@ -141,9 +171,7 @@ export function EnrollmentStepOneForm() {
       setError("root", {
         type: "server",
         message:
-          error instanceof Error
-            ? error.message
-            : "Unable to save your step 1 demographics right now.",
+          error instanceof Error ? error.message : tErrors("stepOneSave"),
       });
     }
   };
@@ -169,9 +197,7 @@ export function EnrollmentStepOneForm() {
       setError("root", {
         type: "server",
         message:
-          error instanceof Error
-            ? error.message
-            : "Unable to save your step 1 progress right now.",
+          error instanceof Error ? error.message : tErrors("stepOneDraftSave"),
       });
     }
   };
@@ -195,8 +221,7 @@ export function EnrollmentStepOneForm() {
       >
         {stepOneErrorMessage ? (
           <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
-            {stepOneErrorMessage} You can still complete the form manually, but
-            any previously saved step 1 values may not be prefilled.
+            {stepOneErrorMessage} {t("prefillNotice", { step: 1 })}
           </div>
         ) : null}
 
@@ -209,117 +234,117 @@ export function EnrollmentStepOneForm() {
         <EnrollmentStepSection>
           <EnrollmentInputField
             control={control}
-            label="First Name"
+            label={t("stepOne.fields.firstName.label")}
             name="firstName"
-            placeholder="Enter your first name"
+            placeholder={t("stepOne.fields.firstName.placeholder")}
             required
           />
           <EnrollmentInputField
             control={control}
-            label="Last Name"
+            label={t("stepOne.fields.lastName.label")}
             name="lastName"
-            placeholder="Enter your last name"
+            placeholder={t("stepOne.fields.lastName.placeholder")}
             required
           />
           <EnrollmentInputField
             control={control}
-            label="City / Town of Birth"
+            label={t("stepOne.fields.cityOfBirth.label")}
             name="cityOfBirth"
-            placeholder="Enter city or town"
+            placeholder={t("stepOne.fields.cityOfBirth.placeholder")}
             required
           />
           <EnrollmentDateField
             control={control}
-            label="Date of Birth"
+            label={t("stepOne.fields.dateOfBirth.label")}
             max={maxBirthDate}
             name="dateOfBirth"
-            placeholder="Select date of birth"
+            placeholder={t("stepOne.fields.dateOfBirth.placeholder")}
             required
           />
           <EnrollmentInputField
             control={control}
-            label="Municipality of Birth"
+            label={t("stepOne.fields.municipalityOfBirth.label")}
             name="municipalityOfBirth"
-            placeholder="Enter municipality"
+            placeholder={t("stepOne.fields.municipalityOfBirth.placeholder")}
             required
           />
           <EnrollmentInputField
             autoComplete="country-name"
             control={control}
-            label="Country of Birth"
+            label={t("stepOne.fields.countryOfBirth.label")}
             name="countryOfBirth"
-            placeholder="Enter country of birth"
+            placeholder={t("stepOne.fields.countryOfBirth.placeholder")}
             required
           />
           <EnrollmentSelectField
             control={control}
-            label="Sex"
-            labelInfo="Sex assigned at birth"
+            label={t("stepOne.fields.sex.label")}
+            labelInfo={t("stepOne.fields.sex.info")}
             name="sex"
-            options={enrollmentStepOneSexOptions}
-            placeholder="Select your sex"
+            options={sexOptions}
+            placeholder={t("stepOne.fields.sex.placeholder")}
           />
           <EnrollmentSelectField
             control={control}
-            label="Gender"
-            labelInfo="Gender identity"
+            label={t("stepOne.fields.gender.label")}
+            labelInfo={t("stepOne.fields.gender.info")}
             name="gender"
-            options={enrollmentStepOneGenderOptions}
-            placeholder="Select your gender"
+            options={genderOptions}
+            placeholder={t("stepOne.fields.gender.placeholder")}
           />
           <EnrollmentSelectField
             control={control}
-            label="Marital Status"
+            label={t("stepOne.fields.maritalStatus.label")}
             name="maritalStatus"
-            options={enrollmentStepOneMaritalStatusOptions}
-            placeholder="Select marital status"
+            options={maritalStatusOptions}
+            placeholder={t("stepOne.fields.maritalStatus.placeholder")}
           />
           <EnrollmentInputField
             control={control}
-            label="Occupation"
+            label={t("stepOne.fields.occupation.label")}
             name="occupation"
-            placeholder="Enter occupation"
+            placeholder={t("stepOne.fields.occupation.placeholder")}
           />
         </EnrollmentStepSection>
 
         <EnrollmentStepSection
-          description="Share how you identify and your connection to your Yucayeke and family."
+          description={t("stepOne.yucayekeno.description")}
           icon={Sprout}
-          title="Your Yucayekeno Information"
+          title={t("stepOne.yucayekeno.title")}
         >
           <EnrollmentSelectField
             control={control}
-            label="Identity"
+            label={t("stepOne.yucayekeno.identity.label")}
             name="identity"
-            options={enrollmentStepOneIdentityOptions}
-            placeholder="Select your identity"
+            options={identityOptions}
+            placeholder={t("stepOne.yucayekeno.identity.placeholder")}
           />
           <EnrollmentInputField
             control={control}
-            label="Yucayeke"
+            label={t("stepOne.yucayekeno.yucayeke.label")}
             name="yucayeke"
-            placeholder="Enter your Yucayeke"
+            placeholder={t("stepOne.yucayekeno.yucayeke.placeholder")}
             readOnly={yucayekeUnknown}
           />
           <EnrollmentCheckboxField
             className="md:col-span-2"
             control={control}
-            label="I don't know my Yucayeke"
+            label={t("stepOne.yucayekeno.yucayekeUnknown")}
             name="yucayekeUnknown"
             variant="plain"
           />
           <EnrollmentRadioGroupField
             control={control}
-            label="Do you have children?"
+            label={t("stepOne.yucayekeno.hasChildren")}
             name="hasChildren"
-            options={enrollmentStepOneYesNoOptions}
+            options={yesNoOptions}
           />
           {hasChildren === "YES" ? (
             <EnrollmentRadioGroupField
               control={control}
-              label="Any children under 18?"
+              label={t("stepOne.yucayekeno.hasMinorChildren")}
               name="hasMinorChildren"
-              options={enrollmentStepOneYesNoOptions}
+              options={yesNoOptions}
             />
           ) : null}
         </EnrollmentStepSection>
@@ -334,12 +359,12 @@ export function EnrollmentStepOneForm() {
           <Button
             className="min-w-[10rem]"
             loading={upsertMutation.isPending}
-            loadingText="Saving..."
+            loadingText={t("actions.saving")}
             rightIcon={<ArrowRight />}
             size="lg"
             type="submit"
           >
-            Next
+            {t("actions.next")}
           </Button>
         </EnrollmentStepFooter>
       </form>
