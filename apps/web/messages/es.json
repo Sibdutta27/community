@@ -1103,6 +1103,43 @@
       "viewMember": "Ver a {name}",
       "view": "Ver",
       "fallbackRole": "Miembro regional"
+    },
+    "idCard": {
+      "nation": "Taíno Nation of Borikén",
+      "title": "Identificación Tribal",
+      "cardAria": "Tarjeta de Identificación Tribal de Taíno Nation of Borikén",
+      "labels": {
+        "fullName": "Nombre Completo",
+        "memberId": "Identificación de Miembro",
+        "dateOfBirth": "Fecha de Nacimiento",
+        "yucayeke": "Asignación de Yucayeke",
+        "enrollmentDate": "Fecha de Inscripción",
+        "documentNumber": "Número de Documento"
+      },
+      "authorizedBy": "Autorizado por",
+      "tribalCouncil": "Consejo Tribal",
+      "verified": "Verificado",
+      "notAvailable": "—",
+      "pendingValue": "Pendiente",
+      "notes": {
+        "preview": "Esta es una vista previa. Completa tu inscripción para recibir tu identificación verificada.",
+        "submitted": "Tu inscripción está en revisión. Tu identificación oficial se activa cuando sea aprobada.",
+        "rejected": "Tu inscripción necesita atención. Actualízala para recibir tu identificación."
+      },
+      "badges": {
+        "pending": "Pendiente de verificación",
+        "preview": "Vista Previa"
+      },
+      "cta": {
+        "enrollNow": "Inscríbete Ahora",
+        "updateEnrollment": "Actualizar Inscripción"
+      },
+      "actions": {
+        "downloadPdf": "Descargar PDF",
+        "saveImage": "Guardar Imagen",
+        "generating": "Generando…",
+        "error": "No se pudo generar el archivo. Inténtalo de nuevo."
+      }
     }
   },
   "consent": {

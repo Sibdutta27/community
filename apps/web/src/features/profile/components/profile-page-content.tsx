@@ -9,6 +9,8 @@ import type { AuthUser } from "@/lib/auth";
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileLineageSection } from "./profile-lineage-section";
 import { ProfileSummary } from "./profile-summary";
+import { TribalIdentificationCard } from "./tribal-identification-card";
+import { buildIdCardData } from "../lib/id-card-data";
 import { useProfileInfoQuery } from "../lib/profile-queries";
 import { buildProfileViewData } from "../lib/profile-view-data";
 
@@ -24,6 +26,11 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
         t,
       }),
     [profileInfoQuery.data, t, user],
+  );
+
+  const idCardData = useMemo(
+    () => buildIdCardData(profileInfoQuery.data ?? null, user),
+    [profileInfoQuery.data, user],
   );
 
   const profileInfoErrorMessage =
@@ -45,6 +52,8 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
           {profileInfoErrorMessage} {t("summary.fallbackNotice")}
         </div>
       ) : null}
+
+      <TribalIdentificationCard data={idCardData} />
 
       <div className="mr-auto flex max-w-[48rem] flex-col items-start gap-4 text-left lg:flex-row lg:items-center lg:gap-4 xl:max-w-[52rem] xl:gap-5">
         <ProfileAvatar
