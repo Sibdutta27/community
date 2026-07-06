@@ -46,9 +46,9 @@ const user: AuthUser = {
 } as AuthUser;
 
 describe("ProtectedNavbar", () => {
-  it("shows the brand wordmark next to the logo (not logo-only)", () => {
+  it("shows the full brand wordmark next to the logo (not logo-only)", () => {
     renderWithIntl(<ProtectedNavbar user={user} />);
-    expect(screen.getByText("Taíno Nation")).toBeInTheDocument();
+    expect(screen.getByText("Taíno Nation of Borikén")).toBeInTheDocument();
   });
 
   it("renders the globe language switcher", () => {

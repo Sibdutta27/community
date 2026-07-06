@@ -9,8 +9,7 @@ function collectKeyPaths(value: unknown, prefix = ""): string[] {
   }
 
   return Object.entries(value as Record<string, unknown>).flatMap(
-    ([key, child]) =>
-      collectKeyPaths(child, prefix ? `${prefix}.${key}` : key),
+    ([key, child]) => collectKeyPaths(child, prefix ? `${prefix}.${key}` : key),
   );
 }
 
@@ -25,6 +24,11 @@ describe("message catalogs", () => {
       "consent",
       "errors",
       "profile",
+      "support",
+      "contact",
+      "yucayeke",
+      "services",
+      "community",
     ]) {
       expect(enMessages).toHaveProperty(namespace);
       expect(esMessages).toHaveProperty(namespace);
