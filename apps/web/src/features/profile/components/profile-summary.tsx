@@ -27,8 +27,8 @@ export function ProfileSummary({
 
   return (
     <div className="max-w-[33rem] min-w-0 flex-1 text-left">
-      <div className="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 lg:flex-nowrap">
-        <h1 className="text-foreground max-w-[13ch] text-[clamp(1.6rem,6vw,2.35rem)] leading-[0.96] font-semibold tracking-[-0.05em] sm:max-w-none sm:text-[clamp(1.85rem,4vw,2.7rem)] lg:text-[clamp(2.1rem,3vw,3rem)] lg:leading-none">
+      <div className="flex flex-wrap items-center justify-start gap-x-2 gap-y-2">
+        <h1 className="text-foreground basis-full text-[clamp(1.6rem,6vw,2.35rem)] leading-[0.96] font-semibold tracking-[-0.05em] sm:text-[clamp(1.85rem,4vw,2.7rem)] lg:text-[clamp(2.1rem,3vw,3rem)] lg:leading-none">
           {name}
         </h1>
 

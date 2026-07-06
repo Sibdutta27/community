@@ -35,14 +35,16 @@ function safeFilePart(value: string) {
 function Field({
   label,
   value,
+  className,
   valueClassName,
 }: Readonly<{
   label: string;
   value: string;
+  className?: string;
   valueClassName?: string;
 }>) {
   return (
-    <div className="min-w-0">
+    <div className={cn("min-w-0", className)}>
       <p className="text-muted-foreground text-[0.46rem] font-semibold tracking-[0.12em] uppercase">
         {label}
       </p>
@@ -116,13 +118,12 @@ export function TribalIdentificationCard({
   const showPhoto = data.photoUrl && !hidePhotoForExport;
 
   return (
-    <div className="flex w-full max-w-[22rem] shrink-0 flex-col lg:w-[19rem] lg:max-w-none xl:w-[20rem]">
-      {/* Exported node — the ID card itself. Fills the row height on lg so it
-          matches the summary column beside it. */}
+    <div className="flex w-full max-w-[26rem] shrink-0 flex-col lg:w-[23rem] lg:max-w-none xl:w-[25rem]">
+      {/* Exported node — the ID card itself, in a landscape real-ID shape. */}
       <div
         ref={cardRef}
         aria-label={t("cardAria")}
-        className="border-primary/15 shadow-card-soft relative isolate flex flex-col overflow-hidden rounded-2xl border p-3.5 lg:flex-1"
+        className="border-primary/15 shadow-card-soft relative isolate flex flex-col overflow-hidden rounded-2xl border p-3.5"
         role="group"
         style={{ background: CARD_GRADIENT }}
       >
@@ -168,9 +169,9 @@ export function TribalIdentificationCard({
           </span>
         </div>
 
-        {/* Body: photo + stacked fields */}
-        <div className="mt-3 flex items-start gap-3">
-          <div className="border-border bg-secondary relative size-14 shrink-0 overflow-hidden rounded-lg border sm:size-16">
+        {/* Body: photo + fields (two columns fill the landscape width) */}
+        <div className="mt-3 flex items-start gap-3.5">
+          <div className="border-border bg-secondary relative size-16 shrink-0 overflow-hidden rounded-lg border sm:size-[4.5rem]">
             {showPhoto ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -182,7 +183,7 @@ export function TribalIdentificationCard({
                 src={data.photoUrl}
               />
             ) : (
-              <div className="text-secondary-foreground flex size-full items-center justify-center text-[1.2rem] font-semibold tracking-[-0.03em]">
+              <div className="text-secondary-foreground flex size-full items-center justify-center text-[1.3rem] font-semibold tracking-[-0.03em]">
                 {data.initials}
               </div>
             )}
@@ -192,19 +193,31 @@ export function TribalIdentificationCard({
             <Field
               label={t("labels.fullName")}
               value={show(data.fullName)}
-              valueClassName="text-[0.8rem] whitespace-normal"
+              valueClassName="text-[0.82rem] whitespace-normal"
             />
-            <Field label={t("labels.memberId")} value={show(data.memberId)} />
-            <Field
-              label={t("labels.dateOfBirth")}
-              value={show(data.dateOfBirth)}
-            />
+            <div className="flex gap-3">
+              <Field
+                className="flex-1"
+                label={t("labels.memberId")}
+                value={show(data.memberId)}
+              />
+              <Field
+                className="flex-1"
+                label={t("labels.dateOfBirth")}
+                value={show(data.dateOfBirth)}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="mt-1.5 space-y-1.5">
-          <Field label={t("labels.yucayeke")} value={show(data.yucayeke)} />
+        <div className="mt-2 flex gap-3">
           <Field
+            className="flex-1"
+            label={t("labels.yucayeke")}
+            value={show(data.yucayeke)}
+          />
+          <Field
+            className="flex-1"
             label={t("labels.enrollmentDate")}
             value={show(data.enrollmentDate)}
             valueClassName="uppercase"
@@ -213,7 +226,7 @@ export function TribalIdentificationCard({
 
         {/* Footer: authorization + document number / CTA — pinned to the
             bottom so the card fills the matched column height. */}
-        <div className="border-border mt-3 flex items-end justify-between gap-2 border-t pt-2.5 lg:mt-auto">
+        <div className="border-border mt-3 flex items-end justify-between gap-2 border-t pt-2.5">
           <div className="min-w-0">
             <p className="text-muted-foreground text-[0.46rem] font-semibold tracking-[0.12em] uppercase">
               {t("authorizedBy")}
