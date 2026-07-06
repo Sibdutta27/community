@@ -62,7 +62,7 @@
 
 .table-type-count-active {
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #0a56a8, #1d6fb8);
   /* Vibrant blue gradient */
   color: #ffffff;
   /* White text for contrast */
@@ -76,14 +76,14 @@
 .table-type-count-active:hover {
   transform: translateY(-1px);
   /* Slight lift on hover */
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(10, 86, 168, 0.3);
   /* Glow effect */
 }
 
 .table-type-count-inactive {
   font-weight: 200;
   padding: 0.5rem 1rem;
-  background: linear-gradient(180deg, #374151, #2d3748);
+  background: linear-gradient(180deg, #1a3d5f, #12314f);
   /* Darker gradient for inactive */
   color: #d1d5db;
   /* Light gray text for readability */
@@ -93,7 +93,7 @@
 }
 
 .table-type-count-inactive:hover {
-  background: linear-gradient(180deg, #4b5563, #374151);
+  background: linear-gradient(180deg, #4b5563, #1a3d5f);
   /* Slightly lighter on hover */
   transform: translateY(-1px);
   /* Lift effect */
@@ -157,7 +157,7 @@
     /* Full width for input and select elements */
     box-sizing: border-box;
     /* Ensure padding and borders are included in width */
-    background: #2d3748;
+    background: #12314f;
     /* Darker input background for contrast */
     color: #ffffff;
     /* White text for readability */
@@ -167,9 +167,9 @@
 
   .table-filters-inner input:focus,
   .table-filters-inner select:focus {
-    border-color: #3b82f6;
+    border-color: #0a56a8;
     /* Blue border on focus */
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 0 3px rgba(10, 86, 168, 0.3);
     /* Focus ring */
   }
 
@@ -285,7 +285,7 @@
 
 /* Focus ring for accessibility */
 .custom-checkbox-input:focus+.custom-checkbox .custom-checkbox-box {
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14), 0 3px 10px rgba(2, 6, 23, 0.6);
+  box-shadow: 0 0 0 4px rgba(10, 86, 168, 0.14), 0 3px 10px rgba(2, 6, 23, 0.6);
   transform: translateY(-1px);
 }
 
@@ -296,7 +296,7 @@
 
 /* When checked -> change appearance */
 .custom-checkbox-input:checked+.custom-checkbox .custom-checkbox-box {
-  background: linear-gradient(180deg, #3b82f6, #2563eb);
+  background: linear-gradient(180deg, #0a56a8, #1d6fb8);
   border: 1px solid #ffffff;
   /* keep white border when checked */
   box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28), inset 0 -6px 12px rgba(255, 255, 255, 0.06);
@@ -313,7 +313,7 @@
   position: absolute;
   inset: -6px;
   border-radius: 8px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.06) 40%, transparent 60%);
+  background: radial-gradient(circle, rgba(10, 86, 168, 0.12) 0%, rgba(10, 86, 168, 0.06) 40%, transparent 60%);
   opacity: 1;
   transform: scale(0.85);
   animation: checkbox-pulse 420ms ease-out;
@@ -363,7 +363,7 @@
 /* End of CSS */
 /* Select input */
 .rdt_Pagination select {
-  background-color: #1f2937;
+  background-color: #0f2942;
   color: white;
   border-radius: 6px;
 }

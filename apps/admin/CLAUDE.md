@@ -4,8 +4,9 @@ Vite 6 + React 19 (**JS, not TS**), MUI v9 + Emotion, react-router-dom v7, TanSt
 react-hook-form + Zod, react-data-table-component, react-toastify. Full map:
 [`../../docs/architecture/admin-panel.md`](../../docs/architecture/admin-panel.md).
 
-> ⚠️ This app has its **own dark purple/blue design system** — distinct from apps/web.
-> Do not import or mirror the frontend's tokens/components here.
+> ⚠️ This app shares the **azul-flag palette** with apps/web but keeps its own
+> **deep-azul-chrome-over-light-content** structure (MUI-driven). Do not import or mirror
+> apps/web's tokens/components here. See [`../../docs/design-system-admin.md`](../../docs/design-system-admin.md).
 
 ## Layout
 
@@ -40,8 +41,10 @@ Vite aliases: `@`, `@components`, `@pages`, `@hooks`, `@utils`, `@assets`, `@the
   server-side pagination, selectable rows, debounced search (`useDebounceState`, ~1000ms),
   skeleton loading. Dark-theme styles in `components/ui/Table/styles.js`.
 - **Styling:** MUI defaults + **inline `sx`** + per-component CSS Modules (`*.module.css`).
-  No custom MUI `ThemeProvider` — colors are applied ad hoc (sidebar `#12001f`, navbar `#111827`,
-  accent purple `#7c3aed → #c084fc`, bg `#f6f3ff`). Sanitize any HTML with `dompurify`.
+  Central MUI theme in `src/theme/theme.js` (azul primary `#0a56a8`, celeste `#4ea6dc`, flag-red
+  error `#c42032`, light bg `#f6f8fa`) + `--admin-*` CSS vars in `styles/style.css` (chrome
+  `#0a2540`). Prefer `color="primary|secondary|error"` / `var(--admin-*)` over hardcoded hexes.
+  Sanitize any HTML with `dompurify`.
 
 ## Run
 

@@ -21,7 +21,7 @@ export default function Navbar() {
       position="sticky"
       elevation={0}
       sx={{
-        background: '#111827',
+        background: 'var(--admin-chrome)',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
       }}
     >
@@ -48,8 +48,8 @@ export default function Navbar() {
           <Typography
             variant="h4"
             sx={{
-              color: '#4607AE',
-              fontWeight: 400,
+              color: '#ffffff',
+              fontWeight: 500,
               fontFamily: 'inherit'
             }}
           >
@@ -71,7 +71,7 @@ export default function Navbar() {
           {/* NOTIFICATION */}
           <IconButton
             sx={{
-              color: '#c084fc',
+              color: '#4ea6dc',
 
               background:
                 'rgba(255,255,255,0.04)',

@@ -7,7 +7,7 @@ export const customStyles = {
     },
     headRow: {
         style: {
-            backgroundColor: "#2d3748",
+            backgroundColor: "#12314f",
             color: "#d1d5db",
             fontSize: "14px",
             fontWeight: "600",
@@ -15,11 +15,11 @@ export const customStyles = {
     },
     rows: {
         style: {
-            backgroundColor: "#1f2937",
+            backgroundColor: "#0f2942",
             color: "#ffffff",
             // borderBottom: "1px solid #4b5563",
             "&:hover": {
-                backgroundColor: "#374151",
+                backgroundColor: "#1a3d5f",
             },
             "&:nth-child(odd)": {
                 opacity: "0.8"
@@ -33,13 +33,13 @@ export const customStyles = {
     },
     pagination: {
         style: {
-            backgroundColor: "#1f2937",
+            backgroundColor: "#0f2942",
             color: "#2d77e6",
             borderTop: "1px solid #4b556364",
             padding: "7px",
         },
         pageButtonsStyle: {
-            backgroundColor: "#3b82f6", // Button background color
+            backgroundColor: "#0a56a8", // Button background color
             color: "#ffffff", // Button text/icon color
             border: "none",
             borderRadius: "4px",
@@ -48,7 +48,7 @@ export const customStyles = {
             cursor: "pointer",
             fill: "#ffffff", // For SVG icons (e.g., Next/Previous arrows)
             "&:hover:not(:disabled)": {
-                backgroundColor: "#2563eb", // Hover background color
+                backgroundColor: "#1d6fb8", // Hover background color
             },
             "&:disabled": {
                 backgroundColor: "#4b5563", // Disabled button background

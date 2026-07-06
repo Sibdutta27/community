@@ -1,71 +1,77 @@
 # Design System — apps/admin
 
-The internal admin dashboard's visual language. **This applies to `apps/admin`
-only.** `apps/web` is a separate warm, earthy app — never mix the two.
+The internal admin dashboard's visual language. **This applies to `apps/admin` only.**
 
-Source of truth: `apps/admin/src/styles/style.css`, per-component CSS Modules
-(`*.module.css`), and inline MUI `sx` props. There is **no `ThemeProvider`/`createTheme`**
-— colors are applied ad hoc. When you change those, run `/style-guide refresh admin` to
-update this doc.
+Rebranded to the **azul-flag palette** (shared with `apps/web`) so the two products read as one
+brand — but the admin keeps its own **dark-chrome-over-light-content** structure and MUI-driven
+component set. It is **not** a copy of the member app: don't import `apps/web` tokens/components.
+
+Sources of truth: a central **MUI theme** at `apps/admin/src/theme/theme.js` (`createTheme` +
+`ThemeProvider`/`CssBaseline` wired in `src/main.jsx`), the `:root { --admin-* }` CSS variables in
+`apps/admin/src/styles/style.css`, per-component CSS Modules (`*.module.css`), and inline `sx`. When
+you change colors, run `/style-guide refresh admin` to update this doc.
 
 ## Aesthetic direction
 
-Dark, focused, **utilitarian admin** identity built on MUI v9. A near-black purple sidebar
-and dark slate navbar frame a soft lavender-tinted content area; **violet/purple** is the
-accent and interactive color. Inter for everything. Subtle lift-on-hover (translateY +
-purple-tinted shadow) for affordance. Dense, table-driven, function over decoration —
-deliberately plainer than the member frontend.
+**Deep-azul chrome over a cool light content area.** A dark azul side-rail and top bar (white text)
+frame a clean `#f6f8fa` workspace; **azul** is the primary/interactive color, **celeste** the
+highlight, and **flag-red** is reserved for destructive/reject. Data tables stay a dark azul-navy for
+focus. Inter for everything; subtle lift-on-hover (translateY + azul-tinted shadow). Dense,
+table-driven, function-first.
 
-## Color tokens (ad-hoc; recovered from styles)
+## Color tokens
 
-No formal token system. Apply these consistently via `sx` / CSS Modules:
+Central MUI theme (`theme.js`) drives the light content + all MUI defaults; `--admin-*` CSS vars
+(`style.css`) drive the CSS-Module chrome. Keep both in sync.
 
 | Role | Value | Use |
 |------|-------|-----|
-| Sidebar background | `#12001f` | dark purple app rail |
-| Navbar background | `#111827` | dark slate top bar |
-| Page background | `#f6f3ff` | lavender-tinted content area |
-| Primary text | `#1b1033` | body/foreground (dark indigo) |
-| Accent (purple) | `#7c3aed` → `#c084fc` | primary actions, gradients, active states |
-| Accent glow (hover) | `rgba(124, 58, 247, 0.18)` | button hover shadow |
-| Purple variants | `rgba(169, 85, 247, 0.12 / .35 / .5)` | borders, highlights, selected rows |
-| Surface (cards/inputs) | `#ffffff` | panels on the lavender bg |
-| Table dark surface | `#181A1B` | data-table dark theme (`ui/Table/styles.js`) |
-| Muted text / borders | `#9ca3af`, `#6b7280`, `#d1d5db` | secondary text, borders, placeholders |
-| Success | `#22c55e` (+ `rgba(34,197,94,.15/.3)`) | positive status, approved |
-| Danger | `#ef4444` (+ `rgba(239,68,68,.15/.3)`) | destructive, rejected, errors |
-| Info | `#3b82f6` / `#60a5fa` | informational accents/links |
+| Chrome (sidebar/navbar) | `#0a2540` (`--admin-chrome`) | dark azul app rail + top bar |
+| Chrome deep (login/gradients) | `#08213c` (`--admin-chrome-2`) | login bg, deep-azul gradients |
+| On-chrome text | `#ffffff` / `rgba(255,255,255,.7)` | text/icons on dark chrome |
+| Page background | `#f6f8fa` (`--admin-bg`) | cool content area |
+| Surface (cards/inputs) | `#ffffff` (`--admin-surface`) | panels on the content bg |
+| Ink / primary text | `#141a22` (`--admin-ink`) | body/foreground |
+| Muted text / borders | `#5a6472` / `#e2e6eb` (`--admin-muted` / `--admin-border`) | secondary text, hairlines |
+| **Primary — azul** | `#0a56a8` (`--admin-primary`, light `#1d6fb8`) | primary actions, active nav, links, focus |
+| **Celeste** | `#4ea6dc` (`--admin-celeste`) | highlights, secondary accent, sub-nav active |
+| Secondary tint | `#e7f2fb` (`--admin-secondary-tint`) | soft azul surfaces (search pill, chips) |
+| **Success (approve)** | `#1f9d57` (`--admin-success`) | approved / positive status |
+| **Danger (reject) — flag-red** | `#c42032` (`--admin-danger`) | reject, destructive, errors |
+| Warning | `#f59e0b` (`--admin-warning`) | pending / caution status |
+| Table head / row / hover | `#12314f` / `#0f2942` / `#1a3d5f` | dark azul-navy data table (`ui/Table/styles.js`) |
+| Hover glow | `rgba(10,86,168,.18)` (`--admin-glow`) | button lift shadow |
+
+WCAG-AA verified: white on chrome ~15.5:1, ink on content ~16:1, azul on white ~7.2:1, white on
+flag-red ~5.8:1, table white-on-row ~14.8:1.
 
 ## Typography
 
-| Role | Font | Source | Notes |
-|------|------|--------|-------|
-| All text | **Inter** | `body` in `src/styles/style.css` (fallbacks: ui-sans-serif, system-ui, -apple-system, "Segoe UI") | single family; weight/size via MUI `sx` per component |
-
-No serif/display split (unlike the frontend). Keep everything Inter.
+**Inter** everywhere (`theme.js` `typography.fontFamily` + `body` in `style.css`; fallbacks
+ui-sans-serif, system-ui, "Segoe UI"). Single family; buttons `textTransform: none`, weight 600. No
+serif/display split (that's the frontend).
 
 ## Component patterns
 
-- **Buttons:** MUI `Button` styled with inline `sx`. Global rule (`style.css`): on hover,
-  `transform: translateY(-1px)` + `box-shadow: 0 12px 24px rgba(124,58,237,0.18)` with a
-  200ms transition. Primary actions use the purple accent.
-- **Inputs / forms:** MUI inputs + `react-hook-form` + `zodResolver`; `Controller` for MUI
-  `Select`. Validation feedback via `react-toastify` (`toast.success/error`).
-- **Tables:** custom wrapper in `components/ui/Table/` around `react-data-table-component`
-  with a **dark theme** (`#181A1B`), server-side pagination, selectable rows, debounced
-  search (~1000ms), skeleton loading. This is the primary data surface.
-- **Layout:** `layouts/AdminLayout/` = `Sidebar` (`#12001f`) + `Navbar` (`#111827`) +
-  `<Outlet/>`; `StatCard` for dashboard metrics.
-- **Styling approach:** MUI defaults + **inline `sx`** + per-component CSS Modules
-  (`*.module.css`). Global resets/box-sizing in `src/styles/style.css`. Sanitize any
+- **Theme first:** MUI components inherit azul primary / celeste secondary / flag-red error, light
+  backgrounds, rounded buttons, azul focus rings, and azul/`success` Stepper icons from `theme.js` —
+  prefer `color="primary|secondary|error"` over hardcoded colors.
+- **Buttons:** rounded (`borderRadius: 999`), azul contained by default; global hover lift
+  (`translateY(-1px)` + azul glow) from `style.css`. Reject/destructive = `color="error"` (flag-red).
+- **Chrome:** `layouts/AdminLayout` = `Sidebar` + `Navbar` on `--admin-chrome`; active nav item is an
+  azul gradient, sub-nav active is celeste. Login is a deep-azul card with light-text inputs.
+- **Tables:** shared `components/ui/Table/` wrapper around `react-data-table-component` — dark
+  azul-navy theme, azul pagination, server-side pagination, selectable rows, debounced search,
+  skeleton loading. Primary data surface.
+- **Styling approach:** theme + inline `sx` + CSS Modules referencing `var(--admin-*)`. Sanitize any
   injected HTML with `dompurify`.
 
 ## When building new admin UI
 
-1. Use MUI components + inline `sx`; match the existing dark purple/slate + lavender scheme.
+1. Lean on the MUI theme (`color="primary|secondary|error"`); reach for `var(--admin-*)` in CSS
+   Modules. Avoid new hardcoded hexes.
 2. Inter only — no Cinzel/Montserrat (those are the frontend).
-3. Purple (`#7c3aed`/`#c084fc`) for primary/active; green/red/blue for status semantics.
-4. Put tabular data in the shared `ui/Table` wrapper; keep server-side pagination + search.
-5. **Never import or mirror `apps/web` tokens/components** — different design system.
-6. If the team introduces a real MUI `createTheme` theme later, migrate these ad-hoc values
-   into it and re-run `/style-guide refresh admin`.
+3. Azul for primary/active, celeste for highlights, **flag-red for reject/destructive**, green for
+   approve, amber for pending.
+4. Tabular data → the shared `ui/Table` wrapper (server-side pagination + search).
+5. **Never import or mirror `apps/web` tokens/components** — shared palette, separate system.

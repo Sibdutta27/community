@@ -17,7 +17,7 @@ const UserSectionSkeleton = () => {
                 gap: 1.5,
 
                 '& .MuiSkeleton-root': {
-                    bgcolor: '#300a5d',
+                    bgcolor: 'rgba(255,255,255,0.12)',
                 },
             }}
         >
@@ -97,7 +97,7 @@ const UserSection = () => {
                 ) : (
                     <Avatar
                         sx={{
-                            bgcolor: '#7b2ff7',
+                            bgcolor: '#0a56a8',
                             width: 42,
                             height: 42,
                             fontWeight: 700,

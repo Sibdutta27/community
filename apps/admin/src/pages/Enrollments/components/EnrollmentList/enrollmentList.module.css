@@ -39,16 +39,16 @@
 
 .rejectedStatus {
   background-color: rgba(239, 68, 68, 0.15) !important;
-  color: #ef4444 !important;
+  color: #c42032 !important;
   font-weight: 600 !important;
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .submittedStatus {
-  background-color: rgba(59, 130, 246, 0.15) !important;
-  color: #3b82f6 !important;
+  background-color: rgba(10, 86, 168, 0.15) !important;
+  color: #0a56a8 !important;
   font-weight: 600 !important;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(10, 86, 168, 0.3);
 }
 
 .draftStatus {
@@ -113,6 +113,6 @@
   gap: 18px;
 
   background: #181A1B;
-  border: 1px solid rgba(169, 85, 247, 0.35);
+  border: 1px solid rgba(78, 166, 220, 0.35);
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.28);
 }

@@ -27,6 +27,20 @@ import { useLogin } from './useLogin';
 
 import styles from './login.module.css';
 
+// The login card is deep-azul chrome, so the inputs need light text / borders
+// (the app's MUI theme is light mode).
+const darkInputSx = {
+    '& .MuiOutlinedInput-root': {
+        color: '#ffffff',
+        backgroundColor: 'rgba(255,255,255,0.05)',
+        '& fieldset': { borderColor: 'rgba(255,255,255,0.18)' },
+        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.35)' },
+        '&.Mui-focused fieldset': { borderColor: '#4ea6dc' },
+    },
+    '& .MuiInputBase-input::placeholder': { color: '#9fb3c8', opacity: 1 },
+    '& .MuiSvgIcon-root': { color: '#9fb3c8' },
+};
+
 const loginSchema = z.object({
     email: z
         .string()
@@ -109,6 +123,7 @@ export default function LoginPage() {
 
                             <TextField
                                 fullWidth
+                                sx={darkInputSx}
                                 placeholder="Enter your email"
                                 {...register('email')}
                                 error={!!errors.email}
@@ -135,6 +150,7 @@ export default function LoginPage() {
 
                             <TextField
                                 fullWidth
+                                sx={darkInputSx}
                                 type={
                                     showPassword
                                         ? 'text'

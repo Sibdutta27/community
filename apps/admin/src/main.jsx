@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import adminTheme from '@theme/theme';
 import App from './App.jsx';
 import './styles/style.css';
 
@@ -20,6 +22,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={adminTheme}>
+        <CssBaseline />
         <ToastContainer
           position="top-right"
           autoClose={3000}
@@ -32,6 +36,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           pauseOnHover
         />
         <App />
+        </ThemeProvider>
       </QueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>

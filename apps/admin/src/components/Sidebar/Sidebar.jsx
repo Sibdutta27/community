@@ -48,7 +48,7 @@ const menuItems = [
     children: [
       {
         label: 'All Enrollments',
-        icon: <Assignment sx={{ color: '#60a5fa' }} />,
+        icon: <Assignment sx={{ color: '#4ea6dc' }} />,
         path: '/enrollments/all',
       },
 
@@ -66,7 +66,7 @@ const menuItems = [
 
       {
         label: 'Rejected',
-        icon: <Assignment sx={{ color: '#ef4444' }} />,
+        icon: <Assignment sx={{ color: '#c42032' }} />,
         path: '/enrollments/rejected',
       },
     ],
@@ -140,7 +140,7 @@ export default function Sidebar() {
           transition: '0.3s',
           overflowX: 'hidden',
 
-          background: '#12001f',
+          background: 'var(--admin-chrome)',
           color: '#fff',
 
           borderRight: '1px solid rgba(255,255,255,0.08)',
@@ -214,12 +214,12 @@ export default function Sidebar() {
 
                     '&:hover': {
                       background:
-                        '#2e383b',
+                        'rgba(255,255,255,0.08)',
                     },
 
                     '&.active': {
                       background:
-                        'linear-gradient(90deg,#7b2ff7,#9d4edd)',
+                        'linear-gradient(90deg,#0a56a8,#1d6fb8)',
                     },
                   }}
                 >
@@ -259,7 +259,7 @@ export default function Sidebar() {
 
                       '&:hover': {
                         background:
-                          '#2e383b',
+                          'rgba(255,255,255,0.08)',
                       },
                     }}
                   >
@@ -316,14 +316,14 @@ export default function Sidebar() {
 
                             '&:hover': {
                               background:
-                                '#2e383b',
+                                'rgba(255,255,255,0.08)',
                             },
 
                             '&.active': {
                               background:
-                                'rgba(123,47,247,0.25)',
+                                'rgba(78,166,220,0.2)',
 
-                              color: '#c084fc',
+                              color: '#4ea6dc',
                             },
                           }}
                         >

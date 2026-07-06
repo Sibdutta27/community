@@ -89,7 +89,7 @@
   gap: 18px;
 
   background: #181A1B;
-  border: 1px solid rgba(169, 85, 247, 0.35);
+  border: 1px solid rgba(78, 166, 220, 0.35);
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.28);
 }
 
@@ -103,10 +103,10 @@
   padding: 14px 16px;
 
   background:
-    rgba(168, 85, 247, 0.06) !important;
+    rgba(78, 166, 220, 0.06) !important;
 
   border:
-    1px solid rgba(169, 85, 247, 0.5) !important;
+    1px solid rgba(78, 166, 220, 0.5) !important;
 
   color: #ffffff !important;
 
@@ -119,10 +119,10 @@
 
 .keyTextarea:hover {
   border-color:
-    rgba(169, 85, 247, 0.814) !important;
+    rgba(78, 166, 220, 0.814) !important;
 
   background:
-    rgba(169, 85, 247, 0.12) !important;
+    rgba(78, 166, 220, 0.12) !important;
 }
 
 .keyTextarea textarea {

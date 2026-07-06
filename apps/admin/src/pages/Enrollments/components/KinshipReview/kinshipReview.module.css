@@ -54,14 +54,14 @@
   justify-content: center;
 
   background:
-    rgba(168,85,247,0.06);
+    rgba(78, 166, 220,0.06);
 
   border:
-    1px solid rgba(169, 85, 247, 0.5);
+    1px solid rgba(78, 166, 220, 0.5);
 }
 
 .iconBox svg {
-  color: #c084fc;
+  color: #4ea6dc;
   font-size: 28px;
 }
 
@@ -123,20 +123,20 @@
   gap: 12px;
 
   background:
-    rgba(168,85,247,0.06);
+    rgba(78, 166, 220,0.06);
 
   border:
-    1px solid rgba(169, 85, 247, 0.5);
+    1px solid rgba(78, 166, 220, 0.5);
 
   transition: 0.2s;
 }
 
 .fieldBox:hover {
   border-color:
-    rgba(169, 85, 247, 0.814);
+    rgba(78, 166, 220, 0.814);
 
   background:
-    rgba(169, 85, 247, 0.26);
+    rgba(78, 166, 220, 0.26);
 }
 
 .fieldIcon {
@@ -146,7 +146,7 @@
 }
 
 .fieldIcon svg {
-  color: #c084fc;
+  color: #4ea6dc;
   font-size: 20px;
 }
 

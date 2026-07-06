@@ -40,7 +40,7 @@
 
 .cardIcon {
   font-size: 28px !important;
-  color: #a855f7;
+  color: #0a56a8;
 }
 
 .cardTitle {
@@ -96,20 +96,20 @@
   align-items: center;
 
   background:
-    rgba(168,85,247,0.06);
+    rgba(78, 166, 220,0.06);
 
   border:
-    1px solid  rgba(169, 85, 247, 0.5);;
+    1px solid  rgba(78, 166, 220, 0.5);;
 
   transition: 0.2s;
 }
 
 .fieldBox:hover {
   border-color:
-    rgba(169, 85, 247, 0.814);
+    rgba(78, 166, 220, 0.814);
 
   background:
-    rgba(169, 85, 247, 0.26);
+    rgba(78, 166, 220, 0.26);
 }
 
 .fieldValue {

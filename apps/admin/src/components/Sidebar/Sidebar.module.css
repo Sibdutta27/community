@@ -10,7 +10,8 @@
   border-radius: 14px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #7c3aed, #c084fc);
+  background: linear-gradient(135deg, #0a56a8, #4ea6dc);
+  color: #fff;
   font-weight: 800;
 }
 
@@ -21,6 +22,6 @@
 
 .logoBox span {
   font-size: 12px;
-  color: #c9b7ff;
+  color: #9fd0ec;
 }
 
