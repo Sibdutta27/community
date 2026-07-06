@@ -9,13 +9,14 @@ import {
   footerQuickLinks,
   footerSocialLinks,
   footerSupportLinks,
-  type FooterLink,
   type FooterSocialLink,
 } from "@/constants/footer";
 
+type ResolvedFooterLink = Readonly<{ label: string; href: string }>;
+
 type FooterLinkListProps = Readonly<{
   title: string;
-  links: ReadonlyArray<FooterLink>;
+  links: ReadonlyArray<ResolvedFooterLink>;
 }>;
 
 const footerLinkClass =
@@ -28,7 +29,7 @@ function FooterLinkList({ title, links }: FooterLinkListProps) {
 
       <ul className="text-muted-foreground mt-3.5 space-y-2.5 text-[0.95rem] leading-6 sm:mt-4 sm:text-base">
         {links.map((link) => (
-          <li key={link.label}>
+          <li key={link.href + link.label}>
             <Link className={footerLinkClass} href={link.href}>
               {link.label}
             </Link>
@@ -56,6 +57,19 @@ function SocialIconButton({ href, label, iconSrc }: FooterSocialLink) {
 export function PublicFooter() {
   const t = useTranslations("footer");
 
+  const quickLinks = footerQuickLinks.map((link) => ({
+    label: t(`quickLinks.${link.key}`),
+    href: link.href,
+  }));
+  const supportLinks = footerSupportLinks.map((link) => ({
+    label: t(`support.${link.key}`),
+    href: link.href,
+  }));
+  const bottomLinks = footerBottomLinks.map((link) => ({
+    label: t(`bottom.${link.key}`),
+    href: link.href,
+  }));
+
   return (
     <footer className="border-border text-foreground bg-surface border-t">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
@@ -82,13 +96,13 @@ export function PublicFooter() {
             </div>
           </div>
 
-          <FooterLinkList title="Quick Links" links={footerQuickLinks} />
+          <FooterLinkList title={t("headings.quickLinks")} links={quickLinks} />
 
-          <FooterLinkList title="Support" links={footerSupportLinks} />
+          <FooterLinkList title={t("headings.support")} links={supportLinks} />
 
           <section>
             <h3 className="text-foreground text-[15px] font-semibold">
-              Contact
+              {t("headings.contact")}
             </h3>
 
             <div className="text-muted-foreground mt-3.5 space-y-2.5 text-[0.95rem] leading-6 sm:mt-4 sm:text-base">
@@ -110,17 +124,14 @@ export function PublicFooter() {
 
       <div className="border-border border-t">
         <div className="text-muted-foreground mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 text-[0.8rem] sm:px-6 sm:text-[0.85rem] lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <p>
-            © 2024 Taíno Nation of Borikén. All rights reserved. Living
-            Indigenous Sovereignty.
-          </p>
+          <p>{t("copyright")}</p>
 
           <nav
-            aria-label="Legal"
+            aria-label={t("legalAria")}
             className="flex flex-wrap items-center gap-x-2 gap-y-1 lg:justify-end"
           >
-            {footerBottomLinks.map((link, index) => (
-              <span key={link.label} className="flex items-center">
+            {bottomLinks.map((link, index) => (
+              <span key={link.href + link.label} className="flex items-center">
                 {index > 0 ? (
                   <span aria-hidden="true" className="text-border mx-2">
                     •

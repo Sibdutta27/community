@@ -10,7 +10,35 @@
     "enrollToday": "Inscríbete Hoy"
   },
   "footer": {
-    "tagline": "Preservando la herencia indígena a través de la tierra, el linaje y la conexión comunitaria."
+    "tagline": "Preservando la herencia indígena a través de la tierra, el linaje y la conexión comunitaria.",
+    "headings": {
+      "quickLinks": "Enlaces Rápidos",
+      "support": "Apoyo",
+      "contact": "Contacto"
+    },
+    "legalAria": "Legal",
+    "copyright": "© 2024 Taíno Nation of Borikén. Todos los derechos reservados. Soberanía Indígena Viva.",
+    "quickLinks": {
+      "about": "Sobre Nosotros",
+      "enrollment": "Proceso de Inscripción",
+      "yucayeke": "Regiones Yucayeke",
+      "services": "Servicios para Miembros",
+      "events": "Eventos Comunitarios",
+      "cultural": "Recursos Culturales"
+    },
+    "support": {
+      "help": "Centro de Ayuda",
+      "faq": "Preguntas Frecuentes de Inscripción",
+      "contact": "Contactar Apoyo",
+      "documents": "Asistencia con Documentos",
+      "technical": "Apoyo Técnico",
+      "privacy": "Política de Privacidad"
+    },
+    "bottom": {
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio",
+      "cookies": "Política de Cookies"
+    }
   },
   "metadata": {
     "title": "Nación Taíno de Borikén",

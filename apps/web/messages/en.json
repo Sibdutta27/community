@@ -10,7 +10,35 @@
     "enrollToday": "Enroll Today"
   },
   "footer": {
-    "tagline": "Preserving Indigenous heritage through land, lineage, and community connection."
+    "tagline": "Preserving Indigenous heritage through land, lineage, and community connection.",
+    "headings": {
+      "quickLinks": "Quick Links",
+      "support": "Support",
+      "contact": "Contact"
+    },
+    "legalAria": "Legal",
+    "copyright": "© 2024 Taíno Nation of Borikén. All rights reserved. Living Indigenous Sovereignty.",
+    "quickLinks": {
+      "about": "About Us",
+      "enrollment": "Enrollment Process",
+      "yucayeke": "Yucayeke Regions",
+      "services": "Member Services",
+      "events": "Community Events",
+      "cultural": "Cultural Resources"
+    },
+    "support": {
+      "help": "Help Center",
+      "faq": "Enrollment FAQ",
+      "contact": "Contact Support",
+      "documents": "Document Assistance",
+      "technical": "Technical Support",
+      "privacy": "Privacy Policy"
+    },
+    "bottom": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "cookies": "Cookie Policy"
+    }
   },
   "metadata": {
     "title": "Taíno Nation of Borikén",
