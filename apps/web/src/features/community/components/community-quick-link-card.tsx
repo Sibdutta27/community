@@ -1,14 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import type { CommunityQuickLinkItem } from "@/features/community/constants/community-quick-links";
-
 type CommunityQuickLinkCardProps = Readonly<{
-  description: CommunityQuickLinkItem["description"];
-  href: CommunityQuickLinkItem["href"];
-  iconBackgroundClassName: CommunityQuickLinkItem["iconBackgroundClassName"];
-  iconSrc: CommunityQuickLinkItem["iconSrc"];
-  title: CommunityQuickLinkItem["title"];
+  description: string;
+  href: string;
+  iconBackgroundClassName: string;
+  iconSrc: string;
+  title: string;
 }>;
 
 export function CommunityQuickLinkCard({

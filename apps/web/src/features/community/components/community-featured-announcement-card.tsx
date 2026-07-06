@@ -1,4 +1,5 @@
 import { CalendarDays, Clock, MapPin, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   communityEventBadgeClasses,
@@ -30,6 +31,8 @@ export function CommunityFeaturedAnnouncementCard({
   title,
   tone,
 }: CommunityFeaturedAnnouncementCardProps) {
+  const t = useTranslations("community.events");
+
   return (
     <article
       className={`bg-surface flex h-full flex-col rounded-2xl border p-5 sm:p-6 ${communityEventCardClasses[tone]}`}
@@ -58,7 +61,7 @@ export function CommunityFeaturedAnnouncementCard({
                   aria-hidden="true"
                   className="text-muted-foreground size-4 shrink-0"
                 />
-                <span>{attendeeCount} attending</span>
+                <span>{t("attending", { count: attendeeCount })}</span>
               </div>
             </div>
           </div>

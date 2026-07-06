@@ -1265,5 +1265,50 @@
       "locationFallback": "Detalles de ubicación disponibles tras la inscripción",
       "contactFallback": "Datos de contacto disponibles dentro del directorio"
     }
+  },
+  "community": {
+    "hero": {
+      "titleLead": "Eventos y",
+      "titleHighlight": "Comunidad",
+      "subtitle": "Recibe los últimos anuncios, novedades e información importante del liderazgo de la Nación Taíno y de los organizadores comunitarios. Mantente al tanto de eventos, servicios y oportunidades."
+    },
+    "featured": {
+      "title": "Anuncios Destacados",
+      "subtitle": "Novedades importantes e información esencial para la comunidad"
+    },
+    "filter": {
+      "title": "Filtrar Anuncios",
+      "subtitle": "Filtra las novedades y explora los anuncios",
+      "allUpdates": "Todas las Novedades",
+      "ariaGroup": "Filtrar anuncios por categoría",
+      "loading": "Cargando anuncios...",
+      "empty": "No hay anuncios disponibles para esta categoría en este momento."
+    },
+    "events": {
+      "badgeFallback": "Evento",
+      "locationFallback": "Ubicación por anunciar",
+      "attending": "{count} asistiendo",
+      "register": "Inscribirme",
+      "registered": "Inscrito",
+      "registering": "Inscribiendo..."
+    },
+    "quickLinks": {
+      "title": "Enlaces Rápidos",
+      "subtitle": "Accede a recursos e información importantes de la comunidad sin tener que buscar en varias páginas.",
+      "items": {
+        "services": {
+          "title": "Directorio de Servicios",
+          "description": "Explora los servicios disponibles para miembros, recursos prácticos y opciones de apoyo para las necesidades cotidianas de la comunidad."
+        },
+        "documents": {
+          "title": "Biblioteca de Documentos",
+          "description": "Abre tus expedientes guardados, materiales para miembros y documentos esenciales desde un solo lugar organizado."
+        },
+        "help": {
+          "title": "Centro de Ayuda",
+          "description": "Obtén orientación, respuestas de apoyo y recursos confiables para tus preguntas sobre la plataforma y la membresía."
+        }
+      }
+    }
   }
 }

@@ -1265,5 +1265,50 @@
       "locationFallback": "Location details available after registration",
       "contactFallback": "Contact details available inside the directory"
     }
+  },
+  "community": {
+    "hero": {
+      "titleLead": "Events &",
+      "titleHighlight": "Community",
+      "subtitle": "Get the latest announcements, updates, and important information from Taíno Nation leadership and community organizers. Stay informed about events, services, and opportunities."
+    },
+    "featured": {
+      "title": "Featured Announcements",
+      "subtitle": "Critical updates and important community information"
+    },
+    "filter": {
+      "title": "Filter Announcements",
+      "subtitle": "Filter updates and explore announcements",
+      "allUpdates": "All Updates",
+      "ariaGroup": "Filter announcements by category",
+      "loading": "Loading announcements...",
+      "empty": "No announcements are available for this category right now."
+    },
+    "events": {
+      "badgeFallback": "Event",
+      "locationFallback": "Location to be announced",
+      "attending": "{count} attending",
+      "register": "Register",
+      "registered": "Registered",
+      "registering": "Registering..."
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "subtitle": "Access important community resources and information without digging through multiple pages.",
+      "items": {
+        "services": {
+          "title": "Service Directory",
+          "description": "Explore available member services, practical resources, and support options for everyday community needs."
+        },
+        "documents": {
+          "title": "Document Library",
+          "description": "Open your saved records, member materials, and essential documents from one organized place."
+        },
+        "help": {
+          "title": "Help Center",
+          "description": "Get guidance, support answers, and trusted help resources for platform and membership questions."
+        }
+      }
+    }
   }
 }

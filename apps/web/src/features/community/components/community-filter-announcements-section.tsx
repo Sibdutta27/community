@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { format, formatDistanceToNow } from "date-fns";
+import { useTranslations } from "next-intl";
 
 import { CommunityFilterAnnouncementCard } from "@/features/community/components/community-filter-announcement-card";
 import { getCommunityEventTone } from "@/features/community/constants/community-event-card-tones";
@@ -32,6 +33,8 @@ type CommunityFilterAnnouncementsSectionProps = Readonly<{
 
 const ALL_UPDATES_KEY = "all";
 
+type EventCardFallbacks = Readonly<{ badge: string; location: string }>;
+
 const categoryIconByKey: Record<string, string> = {
   ceremonies: "/icons/community/ceremonies.svg",
   cultural_events: "/icons/community/cultural-events.svg",
@@ -51,8 +54,11 @@ function getRegistrationCount(event: CommunityEventApiItem) {
   return event.registrationCount ?? event._count?.registrations ?? 0;
 }
 
-function buildFilterCardProps(event: CommunityEventApiItem) {
-  const badgeLabel = event.category?.name ?? "Event";
+function buildFilterCardProps(
+  event: CommunityEventApiItem,
+  fallbacks: EventCardFallbacks,
+) {
+  const badgeLabel = event.category?.name ?? fallbacks.badge;
   const publishedAgo = formatDistanceToNow(new Date(event.createdAt), {
     addSuffix: true,
   });
@@ -62,7 +68,7 @@ function buildFilterCardProps(event: CommunityEventApiItem) {
     badgeLabel,
     dateLabel: formatEventDate(event.startDateTime),
     description: event.description,
-    locationLabel: event.location ?? "Location to be announced",
+    locationLabel: event.location ?? fallbacks.location,
     metaLabel: `${badgeLabel} • ${publishedAgo}`,
     timeLabel: formatEventTimeRange(event.startDateTime, event.endDateTime),
     title: event.title,
@@ -90,6 +96,11 @@ export function CommunityFilterAnnouncementsSection({
   initialRegisteredEventIds,
   isAuthenticated,
 }: CommunityFilterAnnouncementsSectionProps) {
+  const t = useTranslations("community");
+  const fallbacks: EventCardFallbacks = {
+    badge: t("events.badgeFallback"),
+    location: t("events.locationFallback"),
+  };
   const pathname = usePathname();
   const router = useRouter();
   const [selectedCategoryKey, setSelectedCategoryKey] =
@@ -151,16 +162,16 @@ export function CommunityFilterAnnouncementsSection({
       <div className={cn(sharedStyles.sectionContainer, "relative")}>
         <div className="max-w-xl">
           <h2 className="text-foreground text-[1.55rem] font-semibold tracking-tight sm:text-[1.72rem]">
-            Filter Announcements
+            {t("filter.title")}
           </h2>
           <p className="text-muted-foreground mt-1.5 text-[0.9rem] leading-6 sm:text-[0.94rem]">
-            Filter updates and explore announcements
+            {t("filter.subtitle")}
           </p>
         </div>
 
         <div className="mt-4 max-w-full overflow-x-auto overscroll-x-contain pb-2">
           <div
-            aria-label="Filter announcements by category"
+            aria-label={t("filter.ariaGroup")}
             className="flex min-w-max gap-2.5"
             role="group"
           >
@@ -168,7 +179,7 @@ export function CommunityFilterAnnouncementsSection({
               aria-pressed={selectedCategoryKey === ALL_UPDATES_KEY}
               className={cn(
                 "min-h-10 cursor-pointer rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:px-4.5 sm:text-[0.92rem]",
-                "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
                 selectedCategoryKey === ALL_UPDATES_KEY
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-surface text-foreground hover:bg-surface-muted",
@@ -176,7 +187,7 @@ export function CommunityFilterAnnouncementsSection({
               type="button"
               onClick={() => setSelectedCategoryKey(ALL_UPDATES_KEY)}
             >
-              All Updates
+              {t("filter.allUpdates")}
             </button>
 
             {categories.map((category) => (
@@ -185,7 +196,7 @@ export function CommunityFilterAnnouncementsSection({
                 aria-pressed={selectedCategoryKey === category.key}
                 className={cn(
                   "inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-[0.9rem] font-semibold whitespace-nowrap transition-colors sm:px-4.5 sm:text-[0.92rem]",
-                  "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
                   selectedCategoryKey === category.key
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-surface text-foreground hover:bg-surface-muted",
@@ -210,7 +221,7 @@ export function CommunityFilterAnnouncementsSection({
 
         {filteredEventsQuery.isLoading ? (
           <p className="text-muted-foreground mt-5 text-sm" role="status">
-            Loading announcements...
+            {t("filter.loading")}
           </p>
         ) : null}
 
@@ -219,7 +230,7 @@ export function CommunityFilterAnnouncementsSection({
             {events.map((event) => (
               <CommunityFilterAnnouncementCard
                 key={event.id}
-                {...buildFilterCardProps(event)}
+                {...buildFilterCardProps(event, fallbacks)}
                 isRegistered={registeredEventIds.includes(event.id)}
                 isRegistering={pendingEventId === event.id}
                 onRegister={() => void handleRegister(event.id)}
@@ -228,7 +239,7 @@ export function CommunityFilterAnnouncementsSection({
           </div>
         ) : (
           <div className="border-border bg-surface-muted text-muted-foreground mt-4 rounded-xl border px-4 py-4 text-[0.9rem]">
-            No announcements are available for this category right now.
+            {t("filter.empty")}
           </div>
         )}
       </div>

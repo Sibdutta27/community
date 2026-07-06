@@ -1,36 +1,36 @@
-export type CommunityQuickLinkItem = Readonly<{
-  description: string;
-  href: string;
-  iconBackgroundClassName: string;
-  iconSrc: string;
-  title: string;
-}>;
+/** Keys into the `community.quickLinks.items.*` message group. */
+export type CommunityQuickLinkKey = "services" | "documents" | "help";
 
-// Governance restyle: one neutral charcoal tile for every quick link — the
-// white outline icons stay legible without multicolor tiles.
-export const communityQuickLinks: readonly CommunityQuickLinkItem[] = [
+/**
+ * Structural (locale-neutral) data for the community quick links. Titles and
+ * descriptions are authored in `messages/{en,es}.json` under
+ * `community.quickLinks.items.*` and resolved in the section component.
+ *
+ * Governance restyle: one neutral charcoal tile for every quick link — the
+ * white outline icons stay legible without multicolor tiles.
+ */
+export const communityQuickLinks = [
   {
-    description:
-      "Explore available member services, practical resources, and support options for everyday community needs.",
+    key: "services",
     href: "/services",
     iconBackgroundClassName: "bg-foreground",
     iconSrc: "/icons/events/service-directory.svg",
-    title: "Service Directory",
   },
   {
-    description:
-      "Open your saved records, member materials, and essential documents from one organized place.",
+    key: "documents",
     href: "/profile",
     iconBackgroundClassName: "bg-foreground",
     iconSrc: "/icons/events/document-library.svg",
-    title: "Document Library",
   },
   {
-    description:
-      "Get guidance, support answers, and trusted help resources for platform and membership questions.",
+    key: "help",
     href: "/contact",
     iconBackgroundClassName: "bg-foreground",
     iconSrc: "/icons/events/help-center.svg",
-    title: "Help Center",
   },
-] as const;
+] as const satisfies readonly {
+  key: CommunityQuickLinkKey;
+  href: string;
+  iconBackgroundClassName: string;
+  iconSrc: string;
+}[];

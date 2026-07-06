@@ -1,4 +1,5 @@
 import { CalendarDays, Clock, MapPin, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +38,8 @@ export function CommunityFilterAnnouncementCard({
   title,
   tone,
 }: CommunityFilterAnnouncementCardProps) {
+  const t = useTranslations("community.events");
+
   return (
     <article
       className={`bg-surface w-full overflow-hidden rounded-2xl border p-5 sm:p-6 ${communityEventCardClasses[tone]}`}
@@ -96,7 +99,9 @@ export function CommunityFilterAnnouncementCard({
                 aria-hidden="true"
                 className="text-muted-foreground size-4 shrink-0"
               />
-              <span className="leading-5">{attendeeCount} attending</span>
+              <span className="leading-5">
+                {t("attending", { count: attendeeCount })}
+              </span>
             </div>
           </div>
 
@@ -104,13 +109,13 @@ export function CommunityFilterAnnouncementCard({
             className="w-full sm:w-auto sm:min-w-[9.5rem]"
             disabled={isRegistering}
             loading={isRegistering}
-            loadingText="Registering..."
+            loadingText={t("registering")}
             onClick={onRegister}
             size="sm"
             type="button"
             variant={isRegistered ? "secondary" : "primary"}
           >
-            {isRegistered ? "Registered" : "Register"}
+            {isRegistered ? t("registered") : t("register")}
           </Button>
         </div>
       </div>
