@@ -9,13 +9,13 @@
 /* CARD */
 
 .kinshipCard {
-  background: #181A1B !important;
+  background: #ffffff !important;
 
   border-radius: 24px !important;
 
   padding: 28px !important;
 
-  border: 1px solid #aaaaaa;
+  border: 1px solid #5a6472;
 
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@
 
   padding-bottom: 20px;
 
-  border-bottom: 1px solid #aaaaaa;
+  border-bottom: 1px solid #5a6472;
 }
 
 .headerLeft {
@@ -78,7 +78,7 @@
   font-size: 24px !important;
   font-weight: 700 !important;
 
-  color: white;
+  color: var(--admin-ink);
 }
 
 /* GRID */
@@ -151,7 +151,7 @@
 }
 
 .fieldValue {
-  color: white;
+  color: var(--admin-ink);
 
   font-size: 15px !important;
   font-weight: 500 !important;

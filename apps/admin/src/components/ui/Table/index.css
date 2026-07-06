@@ -1,3 +1,5 @@
+/* Premium LIGHT data table — sits inside an elevated white Panel. */
+
 /* Loading Table Styles */
 .loading-table {
   width: 100%;
@@ -10,7 +12,7 @@
 
 .loading-table-pulse {
   height: 1rem;
-  background-color: rgb(229, 231, 235);
+  background-color: #eef2f6;
   border-radius: 0.25rem;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -27,12 +29,11 @@
   align-items: center;
 }
 
-/* Main Table Container */
+/* Main Table Container (Panel provides border + elevation) */
 .table-container {
   background-color: transparent;
-  color: rgb(107, 114, 128);
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  color: var(--admin-muted);
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -41,76 +42,54 @@
   pointer-events: none;
 }
 
-.table-selectable {
-  border: 1px solid rgb(229, 231, 235);
-}
-
-/* Type Counts Section */
+/* Type Counts Section — light pill tabs */
 .table-type-counts {
   display: flex;
-  padding: 0.75rem 1rem;
-  background-color: #19212c;
-  border-bottom: 1px solid #4b556364;
-  /* Soft white border for contrast */
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-  /* Inner shadow for elegance */
-}
-
-.table-type-counts>*+* {
-  margin-left: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 0 1rem;
+  border-bottom: 1px solid var(--admin-border);
 }
 
 .table-type-count-active {
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #0a56a8, #1d6fb8);
-  /* Vibrant blue gradient */
+  background: var(--admin-primary);
   color: #ffffff;
-  /* White text for contrast */
-  border-radius: 0.375rem;
+  border-radius: 999px;
   cursor: pointer;
-  font-weight: 250;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  /* Smooth hover effects */
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 10px 22px -16px rgba(10, 86, 168, 0.6);
 }
 
 .table-type-count-active:hover {
   transform: translateY(-1px);
-  /* Slight lift on hover */
-  box-shadow: 0 4px 12px rgba(10, 86, 168, 0.3);
-  /* Glow effect */
+  filter: brightness(0.97);
 }
 
 .table-type-count-inactive {
-  font-weight: 200;
   padding: 0.5rem 1rem;
-  background: linear-gradient(180deg, #1a3d5f, #12314f);
-  /* Darker gradient for inactive */
-  color: #d1d5db;
-  /* Light gray text for readability */
-  border-radius: 0.375rem;
+  background: var(--admin-surface-muted);
+  color: var(--admin-muted);
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.2s ease;
 }
 
 .table-type-count-inactive:hover {
-  background: linear-gradient(180deg, #4b5563, #1a3d5f);
-  /* Slightly lighter on hover */
+  background: #e4e9ef;
+  color: var(--admin-ink);
   transform: translateY(-1px);
-  /* Lift effect */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  /* Subtle shadow */
 }
 
-/* Filters Section */
+/* Filters Section — light */
 .table-filters {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1rem;
-  padding-top: 2rem;
-  background: linear-gradient(180deg, #19212c, #1e293b);
-  /* Matching gradient */
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-  /* Inner shadow for depth */
+  padding: 1.25rem 0 0.75rem;
 }
 
 .table-filters-inner {
@@ -118,120 +97,84 @@
   flex: 1;
   justify-content: space-between;
   flex-wrap: wrap;
-  /* Allow filters to wrap on smaller screens */
   gap: 0.75rem;
-  /* Use gap instead of margin for consistent spacing */
 }
 
-/* Responsive styles for mobile */
+.table-filters-inner input,
+.table-filters-inner select {
+  background: var(--admin-surface);
+  color: var(--admin-ink);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+}
+
+.table-filters-inner input:focus,
+.table-filters-inner select:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+  box-shadow: 0 6px 16px -10px rgba(10, 86, 168, 0.4);
+}
+
+/* Responsive: stack filters on mobile */
 @media (max-width: 640px) {
   .table-filters {
     flex-direction: column;
-    /* Stack filters vertically on mobile */
     align-items: stretch;
-    /* Ensure filters take full width */
-    padding: 0.5rem;
-    /* Slightly reduce padding for mobile */
+    padding: 0.75rem 0;
   }
 
   .table-filters-inner {
     flex-direction: column;
-    /* Stack filter items vertically */
     width: 100%;
-    /* Full width for filter container */
   }
 
-  .table-filters-inner>div {
+  .table-filters-inner > div {
     width: 100%;
-    /* Ensure filter elements take full width */
   }
 
   .table-filters-inner .role-select-container {
     min-width: 0;
-    /* Remove min-width for mobile */
   }
 
   .table-filters-inner input,
   .table-filters-inner select {
     width: 100%;
-    /* Full width for input and select elements */
     box-sizing: border-box;
-    /* Ensure padding and borders are included in width */
-    background: #12314f;
-    /* Darker input background for contrast */
-    color: #ffffff;
-    /* White text for readability */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    /* Subtle white border */
-  }
-
-  .table-filters-inner input:focus,
-  .table-filters-inner select:focus {
-    border-color: #0a56a8;
-    /* Blue border on focus */
-    box-shadow: 0 0 0 3px rgba(10, 86, 168, 0.3);
-    /* Focus ring */
   }
 
   .table-filters-inner button {
     width: 100%;
-    /* Full width for buttons */
     margin-top: 0.5rem;
-    /* Add spacing above buttons */
-    background: linear-gradient(135deg, #10b981, #059669);
-    /* Green gradient for button */
-    color: #ffffff;
-    /* White text */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    /* Smooth hover */
-  }
-
-  .table-filters-inner button:hover {
-    transform: translateY(-1px);
-    /* Lift effect */
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    /* Green glow */
   }
 }
 
-/* DataTable */
 .table-data {
   min-width: 100%;
-  background-color: black;
+  background-color: transparent;
 }
 
+/* "Change role" action — azul pill */
 .table-filters-inner .change-role-button {
   width: auto;
-  /* Reduce width to content size */
   padding-left: 1.5rem;
-  /* Adjust padding for smaller button */
   padding-right: 1.5rem;
-  /* Consistent padding */
   align-self: flex-start;
-  /* Align button to the start (left) */
-  background: linear-gradient(135deg, #10b981, #059669);
-  /* Green gradient */
+  background: var(--admin-primary);
   color: #ffffff;
-  /* White text */
-  border-radius: 0.375rem;
-  /* Match other elements */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  /* Smooth hover */
+  border-radius: 999px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 12px 24px -18px rgba(10, 86, 168, 0.5);
 }
 
 .table-filters-inner .change-role-button:hover {
   transform: translateY(-1px);
-  /* Lift effect */
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  /* Green glow */
+  filter: brightness(0.97);
 }
 
 /*
-  checkbox-styles
-  -------------------
+  checkbox-styles (light)
+  -----------------------
 */
-
-/* Root container */
 .custom-checkbox-container {
   display: inline-flex;
   align-items: center;
@@ -241,7 +184,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Hide the native checkbox but keep it accessible */
 .custom-checkbox-input {
   position: absolute;
   opacity: 0;
@@ -250,7 +192,6 @@
   pointer-events: none;
 }
 
-/* Visual checkbox shell */
 .custom-checkbox {
   display: inline-flex;
   align-items: center;
@@ -258,13 +199,12 @@
 }
 
 .custom-checkbox-box {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 6px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.12));
-  box-shadow: 0 2px 6px rgba(2, 6, 23, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  /* white border */
+  background: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(20, 26, 34, 0.06);
+  border: 1px solid #cfd6de;
   display: inline-grid;
   place-items: center;
   transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, border 140ms ease;
@@ -272,99 +212,61 @@
   overflow: visible;
 }
 
-/* Checkmark (SVG) - hidden by default */
 .custom-checkbox-check {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   transform-origin: center center;
   transform: scale(0.1) rotate(-10deg);
   opacity: 0;
-  transition: transform 180ms cubic-bezier(.2, .9, .2, 1), opacity 120ms ease;
-  stroke: white;
+  transition: transform 180ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 120ms ease;
+  stroke: #ffffff;
 }
 
-/* Focus ring for accessibility */
-.custom-checkbox-input:focus+.custom-checkbox .custom-checkbox-box {
-  box-shadow: 0 0 0 4px rgba(10, 86, 168, 0.14), 0 3px 10px rgba(2, 6, 23, 0.6);
-  transform: translateY(-1px);
+.custom-checkbox-input:focus-visible + .custom-checkbox .custom-checkbox-box {
+  box-shadow: 0 0 0 3px rgba(10, 86, 168, 0.25);
 }
 
-/* Hover state */
 .custom-checkbox-container:hover .custom-checkbox-box {
-  transform: translateY(-2px);
+  border-color: #a9b4c0;
 }
 
-/* When checked -> change appearance */
-.custom-checkbox-input:checked+.custom-checkbox .custom-checkbox-box {
+.custom-checkbox-input:checked + .custom-checkbox .custom-checkbox-box {
   background: linear-gradient(180deg, #0a56a8, #1d6fb8);
-  border: 1px solid #ffffff;
-  /* keep white border when checked */
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28), inset 0 -6px 12px rgba(255, 255, 255, 0.06);
+  border: 1px solid #0a56a8;
+  box-shadow: 0 6px 16px -10px rgba(10, 86, 168, 0.5);
 }
 
-.custom-checkbox-input:checked+.custom-checkbox .custom-checkbox-check {
+.custom-checkbox-input:checked + .custom-checkbox .custom-checkbox-check {
   transform: scale(1) rotate(0deg);
   opacity: 1;
 }
 
-/* Small subtle pulse when toggled */
-.custom-checkbox-input:checked+.custom-checkbox .custom-checkbox-box::after {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: 8px;
-  background: radial-gradient(circle, rgba(10, 86, 168, 0.12) 0%, rgba(10, 86, 168, 0.06) 40%, transparent 60%);
-  opacity: 1;
-  transform: scale(0.85);
-  animation: checkbox-pulse 420ms ease-out;
-}
-
-@keyframes checkbox-pulse {
-  0% {
-    opacity: 0.85;
-    transform: scale(0.6);
-  }
-
-  60% {
-    opacity: 0.5;
-    transform: scale(1.05);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.25);
-  }
-}
-
-/* Disabled state */
 .custom-checkbox-disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }
 
 .custom-checkbox-label {
-  color: #d1d5db;
-  /* text-gray-300 */
+  color: var(--admin-muted);
   font-size: 0.95rem;
 }
 
-/* Optional: make the checkbox larger when you pass .large className */
 .custom-checkbox-container.large .custom-checkbox-box {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 8px;
 }
 
 .custom-checkbox-container.large .custom-checkbox-check {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
-/* End of CSS */
-/* Select input */
+/* Pagination */
 .rdt_Pagination select {
-  background-color: #0f2942;
-  color: white;
+  background-color: #ffffff;
+  color: var(--admin-ink);
+  border: 1px solid var(--admin-border);
   border-radius: 6px;
 }
 

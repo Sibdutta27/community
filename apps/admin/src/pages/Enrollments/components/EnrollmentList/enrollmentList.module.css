@@ -68,11 +68,11 @@
   font-family: monospace !important;
   font-size: 13px !important;
   font-weight: 700 !important;
-  color: #60a5fa;
-  background-color: rgba(96, 165, 250, 0.12);
+  color: #0a56a8;
+  background-color: rgba(10, 86, 168, 0.12);
   padding: 4px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(96, 165, 250, 0.2);
+  border: 1px solid rgba(10, 86, 168, 0.2);
   white-space: nowrap;
 }
 
@@ -112,7 +112,7 @@
 
   gap: 18px;
 
-  background: #181A1B;
+  background: #ffffff;
   border: 1px solid rgba(78, 166, 220, 0.35);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 10px 35px rgba(20, 26, 34, 0.28);
 }

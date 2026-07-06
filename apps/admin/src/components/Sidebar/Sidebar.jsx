@@ -140,10 +140,11 @@ export default function Sidebar() {
           transition: '0.3s',
           overflowX: 'hidden',
 
-          background: 'var(--admin-chrome)',
-          color: '#fff',
+          background: 'var(--admin-chrome-surface)',
+          color: 'var(--admin-ink)',
 
-          borderRight: '1px solid rgba(255,255,255,0.08)',
+          borderRight: '1px solid var(--admin-chrome-border)',
+          boxShadow: '2px 0 24px -20px rgba(20,26,34,0.25)',
           boxSizing: 'border-box',
         },
       }}
@@ -172,11 +173,11 @@ export default function Sidebar() {
         <IconButton
           onClick={() => setCollapsed(!collapsed)}
           sx={{
-            color: '#fff',
-            background: 'rgba(255,255,255,0.08)',
+            color: 'var(--admin-muted)',
+            background: 'var(--admin-surface-muted)',
 
             '&:hover': {
-              background: 'rgba(255,255,255,0.15)',
+              background: '#e4e9ef',
             },
           }}
         >
@@ -190,7 +191,7 @@ export default function Sidebar() {
 
       <Divider
         sx={{
-          borderColor: 'rgba(255, 255, 255, 0.33)',
+          borderColor: 'var(--admin-border)',
         }}
       />
 
@@ -214,18 +215,21 @@ export default function Sidebar() {
 
                     '&:hover': {
                       background:
-                        'rgba(255,255,255,0.08)',
+                        'var(--admin-hover-bg)',
                     },
 
                     '&.active': {
-                      background:
-                        'linear-gradient(90deg,#0a56a8,#1d6fb8)',
+                      background: 'var(--admin-active-bg)',
+                      color: 'var(--admin-active-fg)',
+                      '& .MuiListItemIcon-root': {
+                        color: 'var(--admin-active-fg)',
+                      },
                     },
                   }}
                 >
                   <ListItemIcon
                     sx={{
-                      color: '#fff',
+                      color: 'var(--admin-muted)',
                       minWidth: 0,
                       mr: collapsed ? 0 : 2,
                       justifyContent: 'center',
@@ -259,13 +263,13 @@ export default function Sidebar() {
 
                       '&:hover': {
                         background:
-                          'rgba(255,255,255,0.08)',
+                          'var(--admin-hover-bg)',
                       },
                     }}
                   >
                     <ListItemIcon
                       sx={{
-                        color: '#fff',
+                        color: 'var(--admin-muted)',
                         minWidth: 0,
                         mr: collapsed ? 0 : 2,
                         justifyContent: 'center',
@@ -300,7 +304,7 @@ export default function Sidebar() {
                       component="div"
                       disablePadding
                       sx={{
-                        borderLeft: "1px solid rgba(255, 255, 255, 0.63)"
+                        borderLeft: "1px solid var(--admin-border)"
                       }}
                     >
                       {item.children.map((child) => (
@@ -316,20 +320,21 @@ export default function Sidebar() {
 
                             '&:hover': {
                               background:
-                                'rgba(255,255,255,0.08)',
+                                'var(--admin-hover-bg)',
                             },
 
                             '&.active': {
-                              background:
-                                'rgba(78,166,220,0.2)',
-
-                              color: '#4ea6dc',
+                              background: 'var(--admin-active-bg)',
+                              color: 'var(--admin-active-fg)',
+                              '& .MuiListItemIcon-root': {
+                                color: 'var(--admin-active-fg)',
+                              },
                             },
                           }}
                         >
                           <ListItemIcon
                             sx={{
-                              color: '#fff',
+                              color: 'var(--admin-muted)',
                               minWidth: 35,
                             }}
                           >

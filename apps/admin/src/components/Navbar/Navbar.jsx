@@ -21,8 +21,11 @@ export default function Navbar() {
       position="sticky"
       elevation={0}
       sx={{
-        background: 'var(--admin-chrome)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        background: 'rgba(255,255,255,0.8)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: '1px solid var(--admin-border)',
+        color: 'var(--admin-ink)',
       }}
     >
       <Toolbar
@@ -48,8 +51,9 @@ export default function Navbar() {
           <Typography
             variant="h4"
             sx={{
-              color: '#ffffff',
-              fontWeight: 500,
+              color: 'var(--admin-primary)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
               fontFamily: 'inherit'
             }}
           >
@@ -71,14 +75,13 @@ export default function Navbar() {
           {/* NOTIFICATION */}
           <IconButton
             sx={{
-              color: '#4ea6dc',
+              color: 'var(--admin-muted)',
 
               background:
-                'rgba(255,255,255,0.04)',
+                'var(--admin-surface-muted)',
 
               '&:hover': {
-                background:
-                  'rgba(255,255,255,0.08)',
+                background: '#e4e9ef',
               },
             }}
           >

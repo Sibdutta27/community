@@ -1,9 +1,13 @@
 .page {
   min-height: 100vh;
   display: flex;
-  background: linear-gradient(135deg, #08213c, #0a2540);
+  background: radial-gradient(
+      circle at 15% 15%,
+      color-mix(in srgb, var(--admin-celeste) 22%, transparent),
+      transparent 45%
+    ),
+    linear-gradient(135deg, #f6f8fa 0%, #e7f2fb 100%);
 }
-
 
 .rightSection {
   flex: 1;
@@ -22,26 +26,25 @@
 
   padding: 40px !important;
 
-  background: #0a2540 !important;
+  background: var(--admin-surface) !important;
 
   border-radius: 24px !important;
 
-  border: 1px solid
-    rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--admin-border);
 
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: var(--admin-shadow-card) !important;
 }
 
 .title {
-  color: white;
+  color: var(--admin-ink);
   font-weight: 700 !important;
+  letter-spacing: -0.02em;
 
   margin-bottom: 8px !important;
 }
 
 .subtitle {
-  color: #9ca3af;
+  color: var(--admin-muted);
   margin-bottom: 32px !important;
 }
 
@@ -52,9 +55,9 @@
 }
 
 .label {
-  color: #d1d5db;
+  color: var(--admin-ink);
   margin-bottom: 8px !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
 }
 
 /* BUTTON */
@@ -62,13 +65,9 @@
 .loginButton {
   height: 52px;
 
-  border-radius: 14px !important;
+  border-radius: 999px !important;
 
-  background: linear-gradient(
-    90deg,
-    #0a56a8,
-    #1d6fb8
-  ) !important;
+  background: linear-gradient(90deg, #0a56a8, #1d6fb8) !important;
 
   text-transform: none !important;
 
@@ -77,8 +76,10 @@
   font-weight: 600 !important;
 
   margin-top: 8px !important;
+
+  box-shadow: 0 14px 28px -18px rgba(10, 86, 168, 0.55) !important;
 }
 
 .loginButton:hover {
-  opacity: 0.9;
+  filter: brightness(0.97);
 }

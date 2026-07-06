@@ -2,76 +2,68 @@
 
 The internal admin dashboard's visual language. **This applies to `apps/admin` only.**
 
-Rebranded to the **azul-flag palette** (shared with `apps/web`) so the two products read as one
-brand — but the admin keeps its own **dark-chrome-over-light-content** structure and MUI-driven
-component set. It is **not** a copy of the member app: don't import `apps/web` tokens/components.
+The admin now shares the member app's **premium light "governance" aesthetic** (the same azul-flag
+palette, cool surfaces, elevated white cards, soft layered ink shadows, pill azul buttons, Inter with
+tight-tracked headings) — so the two products read as one brand. It is **not** a copy of `apps/web`:
+reproduce the primitives natively in MUI; don't import apps/web tokens/components.
 
-Sources of truth: a central **MUI theme** at `apps/admin/src/theme/theme.js` (`createTheme` +
-`ThemeProvider`/`CssBaseline` wired in `src/main.jsx`), the `:root { --admin-* }` CSS variables in
-`apps/admin/src/styles/style.css`, per-component CSS Modules (`*.module.css`), and inline `sx`. When
-you change colors, run `/style-guide refresh admin` to update this doc.
+Sources of truth: the central **MUI theme** at `apps/admin/src/theme/theme.js` (`createTheme` +
+`ThemeProvider`/`CssBaseline` in `src/main.jsx`), the `:root { --admin-* }` CSS variables in
+`apps/admin/src/styles/style.css`, the shared **`components/Panel`** (elevated card + `SectionHeader`)
+and **`components/PageHeader`**, per-component CSS Modules, and inline `sx`. Run
+`/style-guide refresh admin` after color changes.
 
 ## Aesthetic direction
 
-**Deep-azul chrome over a cool light content area.** A dark azul side-rail and top bar (white text)
-frame a clean `#f6f8fa` workspace; **azul** is the primary/interactive color, **celeste** the
-highlight, and **flag-red** is reserved for destructive/reject. Data tables stay a dark azul-navy for
-focus. Inter for everything; subtle lift-on-hover (translateY + azul-tinted shadow). Dense,
-table-driven, function-first.
+**Light, airy, elevated.** A white/glass side-rail and frosted top bar (azul active-pill nav) frame a
+cool `#f6f8fa` workspace where every surface — tables, forms, stat cards — sits in an **elevated white
+card** (hairline border, `rounded-2xl`, soft layered ink shadow). **Azul** is the primary/interactive
+color, **celeste** the highlight, **flag-family red** destructive. Generous spacing, restrained motion,
+AA throughout. Function-first but premium — the opposite of a dense dark dashboard.
 
 ## Color tokens
 
-Central MUI theme (`theme.js`) drives the light content + all MUI defaults; `--admin-*` CSS vars
-(`style.css`) drive the CSS-Module chrome. Keep both in sync.
+Central MUI theme drives content + MUI defaults; `--admin-*` CSS vars drive the CSS-Module chrome.
 
 | Role | Value | Use |
 |------|-------|-----|
-| Chrome (sidebar/navbar) | `#0a2540` (`--admin-chrome`) | dark azul app rail + top bar |
-| Chrome deep (login/gradients) | `#08213c` (`--admin-chrome-2`) | login bg, deep-azul gradients |
-| On-chrome text | `#ffffff` / `rgba(255,255,255,.7)` | text/icons on dark chrome |
 | Page background | `#f6f8fa` (`--admin-bg`) | cool content area |
-| Surface (cards/inputs) | `#ffffff` (`--admin-surface`) | panels on the content bg |
-| Ink / primary text | `#141a22` (`--admin-ink`) | body/foreground |
-| Muted text / borders | `#5a6472` / `#e2e6eb` (`--admin-muted` / `--admin-border`) | secondary text, hairlines |
-| **Primary — azul** | `#0a56a8` (`--admin-primary`, light `#1d6fb8`) | primary actions, active nav, links, focus |
-| **Celeste** | `#4ea6dc` (`--admin-celeste`) | highlights, secondary accent, sub-nav active |
-| Secondary tint | `#e7f2fb` (`--admin-secondary-tint`) | soft azul surfaces (search pill, chips) |
-| **Success (approve)** | `#1f9d57` (`--admin-success`) | approved / positive status |
-| **Danger (reject) — flag-red** | `#c42032` (`--admin-danger`) | reject, destructive, errors |
-| Warning | `#f59e0b` (`--admin-warning`) | pending / caution status |
-| Table head / row / hover | `#12314f` / `#0f2942` / `#1a3d5f` | dark azul-navy data table (`ui/Table/styles.js`) |
-| Hover glow | `rgba(10,86,168,.18)` (`--admin-glow`) | button lift shadow |
+| Surface | `#ffffff` (`--admin-surface`) | cards, chrome, inputs |
+| Surface-muted | `#eef2f6` (`--admin-surface-muted`) | hover, search field, inactive pills |
+| Ink / text | `#141a22` (`--admin-ink`) / muted `#5a6472` (`--admin-muted`) | body / secondary |
+| Border | `#e2e6eb` (`--admin-border`) | hairlines |
+| **Primary — azul** | `#0a56a8` (`--admin-primary`, light `#1d6fb8`) | actions, active nav, links, focus |
+| **Celeste** | `#4ea6dc` (`--admin-celeste`) | highlights, secondary accent |
+| Secondary tint | `#e7f2fb` (`--admin-secondary-tint`, text `#123b5e`) | soft azul surfaces |
+| Active nav pill | bg `rgba(10,86,168,.08)` (`--admin-active-bg`), fg `#0a56a8` (`--admin-active-fg`) | sidebar active item |
+| **Approve** | `#1f9d57` (`--admin-success`) | approved / positive |
+| **Reject / destructive** | `#b3261e` (`--admin-danger`, MUI `error`) | reject, delete, errors |
+| Warning | `#f59e0b` (`--admin-warning`) | pending / caution |
+| Shadows | `--admin-shadow-card` / `--admin-shadow-soft` / `--admin-glass-shadow` | elevation (soft, ink-tinted) |
 
-WCAG-AA verified: white on chrome ~15.5:1, ink on content ~16:1, azul on white ~7.2:1, white on
-flag-red ~5.8:1, table white-on-row ~14.8:1.
-
-## Typography
-
-**Inter** everywhere (`theme.js` `typography.fontFamily` + `body` in `style.css`; fallbacks
-ui-sans-serif, system-ui, "Segoe UI"). Single family; buttons `textTransform: none`, weight 600. No
-serif/display split (that's the frontend).
+WCAG-AA: ink on surface ~17:1, azul on white ~7.2:1, white on azul ~7.2:1, white on reject-red ~6:1,
+muted on surface ~5.5:1.
 
 ## Component patterns
 
-- **Theme first:** MUI components inherit azul primary / celeste secondary / flag-red error, light
-  backgrounds, rounded buttons, azul focus rings, and azul/`success` Stepper icons from `theme.js` —
-  prefer `color="primary|secondary|error"` over hardcoded colors.
-- **Buttons:** rounded (`borderRadius: 999`), azul contained by default; global hover lift
-  (`translateY(-1px)` + azul glow) from `style.css`. Reject/destructive = `color="error"` (flag-red).
-- **Chrome:** `layouts/AdminLayout` = `Sidebar` + `Navbar` on `--admin-chrome`; active nav item is an
-  azul gradient, sub-nav active is celeste. Login is a deep-azul card with light-text inputs.
-- **Tables:** shared `components/ui/Table/` wrapper around `react-data-table-component` — dark
-  azul-navy theme, azul pagination, server-side pagination, selectable rows, debounced search,
-  skeleton loading. Primary data surface.
-- **Styling approach:** theme + inline `sx` + CSS Modules referencing `var(--admin-*)`. Sanitize any
-  injected HTML with `dompurify`.
+- **Theme first:** MUI components inherit azul primary / celeste secondary / flag-red error, elevated
+  white `Paper` (border + `rounded-2xl` + soft shadow), **pill buttons** (`hover:-translate-y`, azul
+  focus-visible outline), radius-8 inputs with azul focus, azul Stepper — prefer
+  `color="primary|secondary|error"` over hardcoded colors.
+- **`Panel`** (`components/Panel`): the elevated card wrapper (`compact`/`roomy`) + `SectionHeader`
+  (icon tile + title + muted description). Wrap page content / data tables / form containers in it.
+- **`PageHeader`** (`components/PageHeader`): ink title + optional description + right-aligned action.
+- **Chrome (light):** `Sidebar` = white rail, azul active pill, quiet muted icons, soft right shadow;
+  `Navbar` = frosted-white glass bar (azul wordmark, muted search/notification); `Login` = light
+  premium card on a cool/celeste gradient with an azul pill button.
+- **Tables:** `components/ui/Table/` — light theme (transparent head with muted uppercase labels,
+  hairline rows, soft `#f6f8fa` hover, light pill type-count tabs, azul checkbox/pagination), wrapped
+  in a `Panel`. Primary data surface.
 
 ## When building new admin UI
 
-1. Lean on the MUI theme (`color="primary|secondary|error"`); reach for `var(--admin-*)` in CSS
-   Modules. Avoid new hardcoded hexes.
-2. Inter only — no Cinzel/Montserrat (those are the frontend).
-3. Azul for primary/active, celeste for highlights, **flag-red for reject/destructive**, green for
-   approve, amber for pending.
-4. Tabular data → the shared `ui/Table` wrapper (server-side pagination + search).
+1. Lean on the theme (`color="primary|secondary|error"`) + `var(--admin-*)`; avoid new hardcoded hexes.
+2. Inter only. Wrap surfaces in `Panel`; head pages with `PageHeader`.
+3. Azul primary/active, celeste highlights, **flag-red reject/destructive**, green approve, amber pending.
+4. Tabular data → the shared `ui/Table` wrapper.
 5. **Never import or mirror `apps/web` tokens/components** — shared palette, separate system.

@@ -1,27 +1,45 @@
 :root {
-  /* Azul-flag admin tokens — consumed by CSS Modules across the dashboard.
-     Deep-azul chrome over cool light content; flag-red for destructive. */
-  --admin-chrome: #0a2540; /* sidebar / navbar (dark azul) */
-  --admin-chrome-2: #08213c; /* deeper azul (login bg, gradients) */
-  --admin-chrome-border: rgba(255, 255, 255, 0.1);
-  --admin-on-chrome: #ffffff;
-  --admin-on-chrome-muted: rgba(255, 255, 255, 0.7);
+  /* Azul-flag admin tokens — premium LIGHT aesthetic (mirrors apps/web).
+     Light glass chrome over cool content; flag-family red for destructive.
+     Consumed by CSS Modules across the dashboard. */
 
-  --admin-primary: #0a56a8; /* azul */
+  /* Light glass chrome (sidebar / navbar / login) */
+  --admin-chrome-surface: #ffffff;
+  --admin-chrome-glass: rgba(255, 255, 255, 0.8);
+  --admin-chrome-border: #e2e6eb;
+  --admin-on-chrome: #141a22;
+  --admin-on-chrome-muted: #5a6472;
+  --admin-active-bg: rgba(10, 86, 168, 0.08);
+  --admin-active-fg: #0a56a8;
+  --admin-hover-bg: rgba(238, 242, 246, 0.7);
+
+  /* Brand */
+  --admin-primary: #0a56a8;
   --admin-primary-2: #1d6fb8;
   --admin-celeste: #4ea6dc;
   --admin-secondary-tint: #e7f2fb;
+  --admin-secondary-fg: #123b5e;
 
-  --admin-bg: #f6f8fa; /* cool content bg */
+  /* Content surfaces */
+  --admin-bg: #f6f8fa;
   --admin-surface: #ffffff;
+  --admin-surface-muted: #eef2f6;
   --admin-ink: #141a22;
   --admin-muted: #5a6472;
   --admin-border: #e2e6eb;
 
+  /* Status */
   --admin-success: #1f9d57;
-  --admin-danger: #c42032; /* flag-red — reject / destructive */
+  --admin-danger: #b3261e;
   --admin-warning: #f59e0b;
 
+  /* Elevation (soft, layered, ink-tinted — never pure black) */
+  --admin-shadow-card: 0 28px 56px -40px rgba(20, 26, 34, 0.35),
+    0 10px 24px -20px rgba(20, 26, 34, 0.25);
+  --admin-shadow-soft: 0 18px 36px -28px rgba(20, 26, 34, 0.22),
+    0 6px 16px -14px rgba(20, 26, 34, 0.16);
+  --admin-glass-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.7),
+    0 2px 6px -2px rgba(20, 26, 34, 0.08), 0 24px 48px -26px rgba(20, 26, 34, 0.28);
   --admin-glow: rgba(10, 86, 168, 0.18);
 }
 
@@ -48,15 +66,14 @@ select {
   font-family: inherit;
 }
 
-button {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 24px var(--admin-glow);
-}
-
 a {
   color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

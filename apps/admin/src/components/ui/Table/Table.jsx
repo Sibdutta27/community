@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
+import Panel from "@components/Panel/Panel";
 import { customStyles } from "./styles";
 import './index.css';
 
@@ -167,6 +168,7 @@ const Table = (props) => {
   const typeCountActive = filterData.typeCount || '';
 
   return (
+    <Panel padding="compact">
     <div
       className={`table-container ${loading ? "table-loading" : ""} ${selectable ? "table-selectable" : ""}`}
     >
@@ -234,6 +236,7 @@ const Table = (props) => {
         />
       )}
     </div>
+    </Panel>
   );
 };
 

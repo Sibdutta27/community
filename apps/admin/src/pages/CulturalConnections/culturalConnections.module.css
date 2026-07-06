@@ -13,7 +13,7 @@
 
 .title {
     font-weight: 700 !important;
-    color: white;
+    color: var(--admin-ink);
 }
 
 .addButton {

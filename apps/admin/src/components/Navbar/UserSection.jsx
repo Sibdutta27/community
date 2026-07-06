@@ -17,7 +17,7 @@ const UserSectionSkeleton = () => {
                 gap: 1.5,
 
                 '& .MuiSkeleton-root': {
-                    bgcolor: 'rgba(255,255,255,0.12)',
+                    bgcolor: 'var(--admin-surface-muted)',
                 },
             }}
         >
@@ -65,7 +65,7 @@ const UserSection = () => {
             <Typography
                 variant="body2"
                 sx={{
-                    color: '#f87171',
+                    color: 'var(--admin-danger)',
                     fontWeight: 600,
                 }}
             >
@@ -112,7 +112,7 @@ const UserSection = () => {
                 <Typography
                     variant="body2"
                     sx={{
-                        color: '#fff',
+                        color: 'var(--admin-ink)',
                         fontWeight: 600,
                     }}
                 >
@@ -122,7 +122,7 @@ const UserSection = () => {
                 <Typography
                     variant="caption"
                     sx={{
-                        color: '#9ca3af',
+                        color: 'var(--admin-muted)',
                     }}
                 >
                     {role === 'ADMIN' ? 'Administrator' : 'User'}

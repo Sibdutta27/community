@@ -9,13 +9,13 @@
 /* CATEGORY CARD */
 
 .categoryCard {
-    background: #181A1B !important;
+    background: #ffffff !important;
 
     border-radius: 24px !important;
 
     padding: 28px !important;
 
-    border: 1px solid #aaaaaa;
+    border: 1px solid #5a6472;
 
     display: flex;
     flex-direction: column;
@@ -34,14 +34,14 @@
 
     padding-bottom: 18px;
 
-    border-bottom: 1px solid #aaaaaa;
+    border-bottom: 1px solid #5a6472;
 }
 
 .categoryTitle {
     font-size: 24px !important;
     font-weight: 700 !important;
 
-    color: white;
+    color: var(--admin-ink);
 }
 
 .categorySubTitle {
@@ -70,7 +70,7 @@
     border-radius: 20px;
 
     border:
-        1px dashed rgba(255, 255, 255, 0.2);
+        1px dashed rgba(20, 26, 34, 0.2);
 
     display: flex;
     flex-direction: column;
@@ -102,10 +102,10 @@
 
 .documentCard {
     background:
-        rgba(255, 255, 255, 0.02);
+        rgba(20, 26, 34, 0.02);
 
     border:
-        1px solid rgba(255, 255, 255, 0.08);
+        1px solid rgba(20, 26, 34, 0.08);
 
     border-radius: 22px;
 
@@ -145,7 +145,7 @@
     font-size: 18px !important;
     font-weight: 700 !important;
 
-    color: white;
+    color: var(--admin-ink);
 }
 
 .documentMeta {
@@ -196,9 +196,9 @@
 
 .previewBtn {
     border-color:
-        rgba(255, 255, 255, 0.15) !important;
+        rgba(20, 26, 34, 0.15) !important;
 
-    color: white !important;
+    color: var(--admin-ink) !important;
 }
 
 .approveBtn {

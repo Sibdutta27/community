@@ -1,61 +1,79 @@
+// Premium LIGHT react-data-table-component styles — lives inside a white Panel.
 export const customStyles = {
     table: {
         style: {
             backgroundColor: "transparent",
         },
-
     },
     headRow: {
         style: {
-            backgroundColor: "#12314f",
-            color: "#d1d5db",
-            fontSize: "14px",
+            backgroundColor: "transparent",
+            color: "#5a6472",
+            fontSize: "0.72rem",
             fontWeight: "600",
+            textTransform: "uppercase",
+            letterSpacing: "0.04em",
+            borderBottom: "1px solid #e2e6eb",
+            minHeight: "48px",
+        },
+    },
+    headCells: {
+        style: {
+            paddingLeft: "12px",
+            paddingRight: "12px",
         },
     },
     rows: {
         style: {
-            backgroundColor: "#0f2942",
-            color: "#ffffff",
-            // borderBottom: "1px solid #4b5563",
-            "&:hover": {
-                backgroundColor: "#1a3d5f",
+            backgroundColor: "transparent",
+            color: "#141a22",
+            fontSize: "0.9rem",
+            minHeight: "56px",
+            "&:not(:last-of-type)": {
+                borderBottom: "1px solid #eef2f6",
             },
-            "&:nth-child(odd)": {
-                opacity: "0.8"
+            "&:hover": {
+                backgroundColor: "#f6f8fa",
+                transition: "background-color 150ms ease",
             },
         },
     },
     cells: {
         style: {
-            padding: "8px",
+            paddingLeft: "12px",
+            paddingRight: "12px",
+            paddingTop: "10px",
+            paddingBottom: "10px",
         },
     },
     pagination: {
         style: {
-            backgroundColor: "#0f2942",
-            color: "#2d77e6",
-            borderTop: "1px solid #4b556364",
-            padding: "7px",
+            backgroundColor: "transparent",
+            color: "#5a6472",
+            borderTop: "1px solid #e2e6eb",
+            fontSize: "0.85rem",
+            padding: "10px 4px 2px",
         },
         pageButtonsStyle: {
-            backgroundColor: "#0a56a8", // Button background color
-            color: "#ffffff", // Button text/icon color
-            border: "none",
-            borderRadius: "4px",
-            padding: "6px 12px",
-            margin: "0 4px",
+            backgroundColor: "#ffffff",
+            color: "#0a56a8",
+            border: "1px solid #e2e6eb",
+            borderRadius: "8px",
+            padding: "6px 10px",
+            margin: "0 3px",
             cursor: "pointer",
-            fill: "#ffffff", // For SVG icons (e.g., Next/Previous arrows)
+            fill: "#0a56a8",
+            transition: "background-color 150ms ease",
             "&:hover:not(:disabled)": {
-                backgroundColor: "#1d6fb8", // Hover background color
+                backgroundColor: "#eef2f6",
             },
             "&:disabled": {
-                backgroundColor: "#4b5563", // Disabled button background
-                color: "#9ca3af", // Disabled button text/icon color
-                fill: "#9ca3af", // Disabled button SVG icon color
+                color: "#9ca3af",
+                fill: "#9ca3af",
                 cursor: "not-allowed",
+                backgroundColor: "#ffffff",
+                borderColor: "#eef2f6",
             },
         },
     },
-}
+};

@@ -15,9 +15,9 @@ const SearchSection = () => {
                 display: 'flex',
                 alignItems: 'center',
 
-                background: 'rgba(255, 255, 255, 0.5)',
+                background: 'var(--admin-surface-muted)',
 
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid var(--admin-border)',
 
                 borderRadius: 3,
 
@@ -29,7 +29,7 @@ const SearchSection = () => {
         >
             <Search
                 sx={{
-                    color: '#9ca3af',
+                    color: 'var(--admin-muted)',
                     mr: 1,
                 }}
             />
@@ -37,11 +37,11 @@ const SearchSection = () => {
             <InputBase
                 placeholder="Search..."
                 sx={{
-                    color: '#fff',
+                    color: 'var(--admin-ink)',
                     width: '100%',
 
                     '& input::placeholder': {
-                        color: '#9ca3af',
+                        color: 'var(--admin-muted)',
                         opacity: 1,
                     },
                 }}
