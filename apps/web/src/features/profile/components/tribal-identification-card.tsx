@@ -43,12 +43,12 @@ function Field({
 }>) {
   return (
     <div className="min-w-0">
-      <p className="text-muted-foreground text-[0.5rem] font-semibold tracking-[0.13em] uppercase">
+      <p className="text-muted-foreground text-[0.46rem] font-semibold tracking-[0.12em] uppercase">
         {label}
       </p>
       <p
         className={cn(
-          "text-foreground mt-0.5 truncate text-[0.8rem] leading-tight font-semibold",
+          "text-foreground truncate text-[0.74rem] leading-tight font-semibold",
           valueClassName,
         )}
       >
@@ -116,12 +116,13 @@ export function TribalIdentificationCard({
   const showPhoto = data.photoUrl && !hidePhotoForExport;
 
   return (
-    <div className="w-full max-w-[22rem] shrink-0 lg:w-[19rem] lg:max-w-none xl:w-[20rem]">
-      {/* Exported node — the ID card itself. */}
+    <div className="flex w-full max-w-[22rem] shrink-0 flex-col lg:w-[19rem] lg:max-w-none xl:w-[20rem]">
+      {/* Exported node — the ID card itself. Fills the row height on lg so it
+          matches the summary column beside it. */}
       <div
         ref={cardRef}
         aria-label={t("cardAria")}
-        className="border-primary/15 shadow-card-soft relative isolate overflow-hidden rounded-2xl border p-4"
+        className="border-primary/15 shadow-card-soft relative isolate flex flex-col overflow-hidden rounded-2xl border p-3.5 lg:flex-1"
         role="group"
         style={{ background: CARD_GRADIENT }}
       >
@@ -134,7 +135,7 @@ export function TribalIdentificationCard({
         {/* Header: logo + wordmark, status chip */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="border-border relative size-9 shrink-0 overflow-hidden rounded-full border bg-white p-0.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_3px_8px_-5px_rgba(20,26,34,0.35)]">
+            <div className="border-border relative size-8 shrink-0 overflow-hidden rounded-full border bg-white p-0.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_3px_8px_-5px_rgba(20,26,34,0.35)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 alt=""
@@ -144,16 +145,16 @@ export function TribalIdentificationCard({
               />
             </div>
             <div className="min-w-0">
-              <p className="text-secondary-foreground text-[0.52rem] font-semibold tracking-[0.12em] uppercase">
+              <p className="text-secondary-foreground text-[0.48rem] font-semibold tracking-[0.11em] uppercase">
                 {t("nation")}
               </p>
-              <h2 className="font-display text-primary text-[0.95rem] leading-tight font-bold tracking-[-0.02em] uppercase">
+              <h2 className="font-display text-primary text-[0.85rem] leading-tight font-bold tracking-[-0.02em] uppercase">
                 {t("title")}
               </h2>
             </div>
           </div>
 
-          <span className="bg-secondary text-secondary-foreground inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[0.55rem] font-semibold tracking-[0.06em] uppercase">
+          <span className="bg-secondary text-secondary-foreground inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[0.5rem] font-semibold tracking-[0.06em] uppercase">
             {data.isApproved ? (
               <>
                 <ShieldCheck aria-hidden="true" className="size-2.5" />
@@ -168,8 +169,8 @@ export function TribalIdentificationCard({
         </div>
 
         {/* Body: photo + stacked fields */}
-        <div className="mt-4 flex items-start gap-3">
-          <div className="border-border bg-secondary relative size-16 shrink-0 overflow-hidden rounded-lg border sm:size-20">
+        <div className="mt-3 flex items-start gap-3">
+          <div className="border-border bg-secondary relative size-14 shrink-0 overflow-hidden rounded-lg border sm:size-16">
             {showPhoto ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -181,17 +182,17 @@ export function TribalIdentificationCard({
                 src={data.photoUrl}
               />
             ) : (
-              <div className="text-secondary-foreground flex size-full items-center justify-center text-[1.4rem] font-semibold tracking-[-0.03em]">
+              <div className="text-secondary-foreground flex size-full items-center justify-center text-[1.2rem] font-semibold tracking-[-0.03em]">
                 {data.initials}
               </div>
             )}
           </div>
 
-          <div className="min-w-0 flex-1 space-y-2">
+          <div className="min-w-0 flex-1 space-y-1.5">
             <Field
               label={t("labels.fullName")}
               value={show(data.fullName)}
-              valueClassName="text-[0.88rem] whitespace-normal"
+              valueClassName="text-[0.8rem] whitespace-normal"
             />
             <Field label={t("labels.memberId")} value={show(data.memberId)} />
             <Field
@@ -201,7 +202,7 @@ export function TribalIdentificationCard({
           </div>
         </div>
 
-        <div className="mt-2 space-y-2">
+        <div className="mt-1.5 space-y-1.5">
           <Field label={t("labels.yucayeke")} value={show(data.yucayeke)} />
           <Field
             label={t("labels.enrollmentDate")}
@@ -210,18 +211,19 @@ export function TribalIdentificationCard({
           />
         </div>
 
-        {/* Footer: authorization + document number / CTA */}
-        <div className="border-border mt-3.5 flex items-end justify-between gap-2 border-t pt-3">
+        {/* Footer: authorization + document number / CTA — pinned to the
+            bottom so the card fills the matched column height. */}
+        <div className="border-border mt-3 flex items-end justify-between gap-2 border-t pt-2.5 lg:mt-auto">
           <div className="min-w-0">
-            <p className="text-muted-foreground text-[0.5rem] font-semibold tracking-[0.13em] uppercase">
+            <p className="text-muted-foreground text-[0.46rem] font-semibold tracking-[0.12em] uppercase">
               {t("authorizedBy")}
             </p>
-            <p className="text-foreground mt-0.5 flex items-center gap-1 text-[0.78rem] font-semibold">
+            <p className="text-foreground flex items-center gap-1 text-[0.72rem] font-semibold">
               {t("tribalCouncil")}
               {data.isApproved ? (
                 <ShieldCheck
                   aria-hidden="true"
-                  className="text-primary size-3"
+                  className="text-primary size-2.5"
                 />
               ) : null}
             </p>
@@ -229,20 +231,20 @@ export function TribalIdentificationCard({
 
           {data.isApproved ? (
             <div className="min-w-0 text-right">
-              <p className="text-muted-foreground text-[0.5rem] font-semibold tracking-[0.13em] uppercase">
+              <p className="text-muted-foreground text-[0.46rem] font-semibold tracking-[0.12em] uppercase">
                 {t("labels.documentNumber")}
               </p>
-              <p className="text-foreground mt-0.5 truncate text-[0.78rem] font-semibold">
+              <p className="text-foreground truncate text-[0.72rem] font-semibold">
                 {data.documentNumber}
               </p>
             </div>
           ) : data.status === "submitted" ? (
-            <span className="bg-secondary text-secondary-foreground shrink-0 rounded-full px-2.5 py-1 text-[0.64rem] font-semibold">
+            <span className="bg-secondary text-secondary-foreground shrink-0 rounded-full px-2.5 py-0.5 text-[0.6rem] font-semibold">
               {t("badges.pending")}
             </span>
           ) : (
             <Link
-              className="bg-emphasis text-emphasis-foreground focus-visible:ring-primary shrink-0 rounded-full px-3.5 py-1.5 text-[0.72rem] font-bold whitespace-nowrap shadow-[0_10px_18px_-12px_rgba(196,32,50,0.7)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:transform-none"
+              className="bg-emphasis text-emphasis-foreground focus-visible:ring-primary shrink-0 rounded-full px-3 py-1 text-[0.68rem] font-bold whitespace-nowrap shadow-[0_10px_18px_-12px_rgba(196,32,50,0.7)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:transform-none"
               href={ENROLL_HREF}
             >
               {data.status === "rejected"

@@ -55,7 +55,7 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
 
       {/* Summary (left) with the slim ID card lifted into the space to its
           right; on mobile the card stacks below, name-first. */}
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-6 xl:gap-8">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-stretch lg:justify-between lg:gap-6 xl:gap-8">
         <div className="flex min-w-0 flex-1 flex-col items-start gap-4 text-left lg:flex-row lg:items-center lg:gap-4 xl:gap-5">
           <ProfileAvatar
             name={profileViewData.copy.name}
