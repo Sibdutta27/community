@@ -67,8 +67,9 @@ model Enrollment {
   municipalityOfBirth String?
   countryOfBirth      String?
 
-  sex    Sex?
-  gender Gender?
+  sex                Sex?
+  gender             Gender?
+  genderSelfDescribe String? // free text when gender = SELF_DESCRIBE
 
   maritalStatus MaritalStatus?
   occupation    String?
@@ -109,23 +110,22 @@ enum EnrollmentStatus {
   REJECTED
 }
 
-// Gender enume
+// Gender enum — client spec 2026-07-08: Woman / Man / Two-Spirit (+ self-describe).
+// An Arawak-language term for Two-Spirit is pending from the client; add it here
+// (plus the web option arrays and en/es messages) when it arrives.
 enum Gender {
-  MALE
-  FEMALE
-  NON_BINARY
+  WOMAN
+  MAN
   TWO_SPIRIT
   SELF_DESCRIBE
-  PREFER_NOT_TO_SAY
-  OTHER
 }
 
-// Sex (biological) enum — from the Figma demographics step
+// Sex (biological) enum — client spec 2026-07-08: Female / Male / Intersex.
+// The field is optional; leaving it unset covers "prefer not to say".
 enum Sex {
   MALE
   FEMALE
   INTERSEX
-  PREFER_NOT_TO_SAY
 }
 
 // Marital status enume
@@ -185,6 +185,11 @@ model Ancestry {
   yucayeke       String?
   isBorikuaTaino Boolean?
 
+  // Admin-attested verification of indigenous ancestry (member edits reset it)
+  verificationStatus AncestryVerificationStatus @default(UNVERIFIED)
+  verifiedAt         DateTime?
+  verifiedByUserId   String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -192,6 +197,13 @@ model Ancestry {
 
   @@unique([enrollmentId, relation])
   @@index([enrollmentId])
+}
+
+// How an ancestry entry was verified as indigenous (e.g. mtDNA haplogroup vs documentary genealogy)
+enum AncestryVerificationStatus {
+  UNVERIFIED
+  VERIFIED_DNA
+  VERIFIED_GENEALOGY
 }
 
 // Ancestry relation enum — the six kinship slots captured across steps 2 & 3.
@@ -277,6 +289,10 @@ enum DocumentType {
   FAMILY_RECORD
   FAMILY_PHOTO
   ADDITIONAL_EVIDENCE
+
+  // Proof-of-identity slots (client 2026-07-08: any 2 of state ID / birth certificate / social security)
+  STATE_ID
+  SOCIAL_SECURITY_CARD
 
   // Figma document-evidence slots (kinship / ancestry proof)
   GENEALOGICAL_RECORDS
