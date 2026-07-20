@@ -1,10 +1,5 @@
 export type ProfileLineageTabValue =
-  | "overview"
-  | "kinship"
-  | "yucayeke"
-  | "documents"
-  | "activity"
-  | "settings";
+  "overview" | "kinship" | "yucayeke" | "documents" | "activity" | "settings";
 
 export type ProfileCopy = Readonly<{
   memberSince?: string;
@@ -27,6 +22,8 @@ export type ProfileKinshipAncestor = Readonly<{
   facts: readonly ProfileKinshipFact[];
   name: string;
   relation: string;
+  /** Admin-attested verification badge label; absent when unverified. */
+  verificationLabel?: string;
 }>;
 
 export type ProfileKinshipGroup = Readonly<{

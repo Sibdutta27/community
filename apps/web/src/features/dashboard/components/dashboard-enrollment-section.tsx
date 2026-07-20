@@ -141,7 +141,23 @@ export function DashboardEnrollmentSection() {
 
       const consents = consentResult.data ?? [];
 
-      if (consents.length === 0) {
+      // Consent persists: only re-open the dialog when a required active
+      // consent has not been accepted yet (covers newly published consents).
+      const enrollmentInfo = accountInfoQuery.data?.enrollment;
+      const acceptedConsentIds = new Set(
+        (enrollmentInfo?.consent ?? [])
+          .filter((consentRow) => consentRow.accepted)
+          .map((consentRow) => consentRow.id),
+      );
+      const pendingRequiredConsents = consents.filter(
+        (consent) => consent.required && !acceptedConsentIds.has(consent.id),
+      );
+
+      if (
+        consents.length === 0 ||
+        (enrollmentInfo?.consentAccepted &&
+          pendingRequiredConsents.length === 0)
+      ) {
         router.push(stepOneHref);
         return;
       }
@@ -231,8 +247,7 @@ export function DashboardEnrollmentSection() {
               className="border-border bg-surface-muted text-foreground mt-5 rounded-xl border px-4 py-3 text-sm font-medium"
               role="status"
             >
-              {accountInfoErrorMessage}{" "}
-              {t("enrollment.accountInfoErrorSuffix")}
+              {accountInfoErrorMessage} {t("enrollment.accountInfoErrorSuffix")}
             </div>
           ) : null}
 

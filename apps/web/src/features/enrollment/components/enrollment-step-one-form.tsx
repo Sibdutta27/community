@@ -27,6 +27,7 @@ import {
   useEnrollmentStepOneQuery,
   useEnrollmentStepOneSaveDraftMutation,
   useEnrollmentStepOneUpsertMutation,
+  useYucayekeOptionsQuery,
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
   createEnrollmentStepOneSchema,
@@ -87,6 +88,11 @@ export function EnrollmentStepOneForm() {
     label: t(`options.yesNo.${value}`),
     value,
   }));
+  // Official yucayeke list (backend-owned; proper nouns, not translated).
+  const yucayekeOptionsQuery = useYucayekeOptionsQuery();
+  const yucayekeOptions = (yucayekeOptionsQuery.data?.yucayekes ?? []).map(
+    (name) => ({ label: name, value: name }),
+  );
 
   const schema = useMemo(
     () => createEnrollmentStepOneSchema((key) => tValidation(key)),
@@ -115,6 +121,10 @@ export function EnrollmentStepOneForm() {
   const hasChildren = useWatch({
     control,
     name: "hasChildren",
+  });
+  const gender = useWatch({
+    control,
+    name: "gender",
   });
 
   useEffect(() => {
@@ -292,6 +302,15 @@ export function EnrollmentStepOneForm() {
             options={genderOptions}
             placeholder={t("stepOne.fields.gender.placeholder")}
           />
+          {gender === "SELF_DESCRIBE" ? (
+            <EnrollmentInputField
+              control={control}
+              label={t("stepOne.fields.genderSelfDescribe.label")}
+              name="genderSelfDescribe"
+              placeholder={t("stepOne.fields.genderSelfDescribe.placeholder")}
+              required
+            />
+          ) : null}
           <EnrollmentSelectField
             control={control}
             label={t("stepOne.fields.maritalStatus.label")}
@@ -319,12 +338,13 @@ export function EnrollmentStepOneForm() {
             options={identityOptions}
             placeholder={t("stepOne.yucayekeno.identity.placeholder")}
           />
-          <EnrollmentInputField
+          <EnrollmentSelectField
             control={control}
+            disabled={yucayekeUnknown}
             label={t("stepOne.yucayekeno.yucayeke.label")}
             name="yucayeke"
+            options={yucayekeOptions}
             placeholder={t("stepOne.yucayekeno.yucayeke.placeholder")}
-            readOnly={yucayekeUnknown}
           />
           <EnrollmentCheckboxField
             className="md:col-span-2"

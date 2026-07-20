@@ -71,6 +71,9 @@ const enrollmentStepFourSlotPolicies: Record<
 > = {
   PROFILE_PICTURE: imageSlotPolicy,
   USER_PHOTO: imageSlotPolicy,
+  STATE_ID: documentSlotPolicy,
+  BIRTH_CERTIFICATE: documentSlotPolicy,
+  SOCIAL_SECURITY_CARD: documentSlotPolicy,
   GENEALOGICAL_RECORDS: documentSlotPolicy,
   KINSHIP_LETTERS: documentSlotPolicy,
   ORAL_HISTORY: oralHistorySlotPolicy,
@@ -106,6 +109,45 @@ export const enrollmentStepFourUserPhotoCard = {
 } as const satisfies EnrollmentStepFourUploadSlot;
 
 /**
+ * Proof-of-identity slots (client 2026-07-08): single-file each; the member
+ * must upload at least MIN_IDENTITY_DOCUMENTS distinct types of the three
+ * before Step 4 can complete (`POST /enrollment/step4/next` enforces it too).
+ */
+export const enrollmentStepFourIdentityUploadSlots = [
+  {
+    id: "state_id",
+    documentType: "STATE_ID",
+    isSingle: true,
+    required: false,
+  },
+  {
+    id: "birth_certificate",
+    documentType: "BIRTH_CERTIFICATE",
+    isSingle: true,
+    required: false,
+  },
+  {
+    id: "social_security_card",
+    documentType: "SOCIAL_SECURITY_CARD",
+    isSingle: true,
+    required: false,
+  },
+] as const satisfies readonly EnrollmentStepFourUploadSlot[];
+
+export const MIN_IDENTITY_DOCUMENTS = 2;
+
+/**
+ * Distinct identity document types uploaded so far (the 2-of-3 counter).
+ */
+export function countUploadedIdentityDocuments(
+  documentMap: EnrollmentStepFourDocumentMap,
+): number {
+  return enrollmentStepFourIdentityUploadSlots.filter(
+    (slot) => documentMap[slot.documentType].length > 0,
+  ).length;
+}
+
+/**
  * Optional multi-file supporting-evidence slots for the kinship / ancestry
  * proof, matching the backend document types exactly.
  */
@@ -138,6 +180,7 @@ export const enrollmentStepFourEvidenceUploadSlots = [
 
 export type EnrollmentStepFourUploadSlotId =
   | typeof enrollmentStepFourUserPhotoCard.id
+  | (typeof enrollmentStepFourIdentityUploadSlots)[number]["id"]
   | (typeof enrollmentStepFourEvidenceUploadSlots)[number]["id"];
 
 export type EnrollmentStepFourDocumentMap = Record<
@@ -149,6 +192,9 @@ function createEmptyDocumentMap(): EnrollmentStepFourDocumentMap {
   return {
     PROFILE_PICTURE: [],
     USER_PHOTO: [],
+    STATE_ID: [],
+    BIRTH_CERTIFICATE: [],
+    SOCIAL_SECURITY_CARD: [],
     GENEALOGICAL_RECORDS: [],
     KINSHIP_LETTERS: [],
     ORAL_HISTORY: [],

@@ -40,8 +40,15 @@ export function ProfileKinshipPanel({
                       <p className="text-foreground min-w-0 truncate text-[12px] font-semibold sm:text-[13px]">
                         {ancestor.name}
                       </p>
-                      <span className="bg-secondary text-secondary-foreground shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap sm:text-[11px]">
-                        {ancestor.relation}
+                      <span className="flex shrink-0 items-center gap-1.5">
+                        {ancestor.verificationLabel ? (
+                          <span className="bg-primary/10 text-primary border-primary/20 rounded-full border px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap sm:text-[11px]">
+                            {ancestor.verificationLabel}
+                          </span>
+                        ) : null}
+                        <span className="bg-secondary text-secondary-foreground rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap sm:text-[11px]">
+                          {ancestor.relation}
+                        </span>
                       </span>
                     </div>
 

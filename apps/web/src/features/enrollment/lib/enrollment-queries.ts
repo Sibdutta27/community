@@ -41,6 +41,7 @@ type ConsentAcceptResponse = Record<string, unknown>;
 
 export const enrollmentQueryKeys = {
   activeConsents: ["enrollment", "consent", "active"] as const,
+  yucayekeOptions: ["enrollment", "yucayekes"] as const,
   stepOneDemographics: ["enrollment", "step1", "demographics"] as const,
   stepTwoMaternalKinship: ["enrollment", "step2", "maternal-kinship"] as const,
   stepThreePaternalKinship: [
@@ -132,14 +133,35 @@ export function useEnrollmentStepOneSaveDraftMutation() {
 
   return useMutation({
     mutationFn: (payload: EnrollmentStepOneSaveDraftRequest) =>
-      requestJson<EnrollmentSaveDraftResponse, EnrollmentStepOneSaveDraftRequest>(
-        "/api/enrollment/step1/save-draft",
+      requestJson<
+        EnrollmentSaveDraftResponse,
+        EnrollmentStepOneSaveDraftRequest
+      >("/api/enrollment/step1/save-draft", {
+        method: "POST",
+        body: payload,
+        fallbackMessage: t("stepOneDraftSave"),
+      }),
+  });
+}
+
+/**
+ * Official yucayeke names for the step-1 select — a single backend-owned
+ * list (placeholder until the client's official list lands).
+ */
+export function useYucayekeOptionsQuery(enabled = true) {
+  const t = useTranslations("errors");
+
+  return useQuery({
+    queryKey: enrollmentQueryKeys.yucayekeOptions,
+    queryFn: () =>
+      requestJson<Readonly<{ yucayekes: readonly string[] }>>(
+        "/api/enrollment/yucayekes",
         {
-          method: "POST",
-          body: payload,
-          fallbackMessage: t("stepOneDraftSave"),
+          fallbackMessage: t("stepOneLoad"),
         },
       ),
+    enabled,
+    staleTime: 60 * 60 * 1000,
   });
 }
 
@@ -179,14 +201,14 @@ export function useEnrollmentStepTwoSaveDraftMutation() {
 
   return useMutation({
     mutationFn: (payload: EnrollmentStepTwoSaveDraftRequest) =>
-      requestJson<EnrollmentSaveDraftResponse, EnrollmentStepTwoSaveDraftRequest>(
-        "/api/enrollment/step2/save-draft",
-        {
-          method: "POST",
-          body: payload,
-          fallbackMessage: t("stepTwoDraftSave"),
-        },
-      ),
+      requestJson<
+        EnrollmentSaveDraftResponse,
+        EnrollmentStepTwoSaveDraftRequest
+      >("/api/enrollment/step2/save-draft", {
+        method: "POST",
+        body: payload,
+        fallbackMessage: t("stepTwoDraftSave"),
+      }),
   });
 }
 
@@ -337,10 +359,13 @@ export function useEnrollmentStepFourNextMutation() {
 
   return useMutation({
     mutationFn: () =>
-      requestJson<EnrollmentStepFourNextResponse>("/api/enrollment/step4/next", {
-        method: "POST",
-        fallbackMessage: t("stepFourNext"),
-      }),
+      requestJson<EnrollmentStepFourNextResponse>(
+        "/api/enrollment/step4/next",
+        {
+          method: "POST",
+          fallbackMessage: t("stepFourNext"),
+        },
+      ),
   });
 }
 

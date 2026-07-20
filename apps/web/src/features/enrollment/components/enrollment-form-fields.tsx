@@ -64,6 +64,7 @@ type EnrollmentDateFieldProps<TFieldValues extends FieldValues> =
 type EnrollmentSelectFieldProps<TFieldValues extends FieldValues> =
   SharedFieldProps<TFieldValues> &
     Readonly<{
+      disabled?: boolean;
       /** Short helper shown as an ⓘ info tooltip beside the label. */
       labelInfo?: string;
       options: readonly { label: string; value: string }[];
@@ -312,6 +313,7 @@ export function EnrollmentDateField<TFieldValues extends FieldValues>({
 export function EnrollmentSelectField<TFieldValues extends FieldValues>({
   className,
   control,
+  disabled = false,
   label,
   labelInfo,
   name,
@@ -327,6 +329,7 @@ export function EnrollmentSelectField<TFieldValues extends FieldValues>({
         <FormItem className={cn(fieldContainerClassName, className)}>
           <FieldLabel info={labelInfo} label={label} required={required} />
           <Select
+            disabled={disabled}
             onOpenChange={(nextOpen) => {
               if (!nextOpen) {
                 field.onBlur();

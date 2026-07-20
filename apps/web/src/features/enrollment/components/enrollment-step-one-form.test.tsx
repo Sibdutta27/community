@@ -28,6 +28,10 @@ vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
   },
   useAccountInfoQuery: () => ({ data: undefined }),
   useEnrollmentStepOneQuery: () => ({ data: undefined, error: null }),
+  useYucayekeOptionsQuery: () => ({
+    data: { yucayekes: ["Guaynía", "Otoao"] },
+    error: null,
+  }),
   useEnrollmentStepOneUpsertMutation: () => ({
     mutateAsync: upsertMutateAsync,
     isPending: false,
@@ -138,7 +142,9 @@ describe("EnrollmentStepOneForm — demographics only", () => {
     // Field labels + placeholders translate.
     expect(screen.getByText("Nombre")).toBeInTheDocument();
     expect(screen.getByText("Fecha de nacimiento")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Escriba su nombre")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Escriba su nombre"),
+    ).toBeInTheDocument();
     // Info tooltips translate.
     expect(screen.getByTitle("Sexo asignado al nacer")).toBeInTheDocument();
     // Yes/No radio options translate (enum values stay untouched).

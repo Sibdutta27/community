@@ -543,6 +543,10 @@
           "info": "Identidad de género",
           "placeholder": "Seleccione su género"
         },
+        "genderSelfDescribe": {
+          "label": "Describa su género",
+          "placeholder": "Escriba el término que describe su género"
+        },
         "maritalStatus": {
           "label": "Estado civil",
           "placeholder": "Seleccione su estado civil"
@@ -561,7 +565,7 @@
         },
         "yucayeke": {
           "label": "Yucayeke",
-          "placeholder": "Escriba su Yucayeke"
+          "placeholder": "Seleccione su Yucayeke"
         },
         "yucayekeUnknown": "No conozco mi Yucayeke",
         "hasChildren": "¿Tiene hijos?",
@@ -570,19 +574,15 @@
     },
     "options": {
       "sex": {
-        "MALE": "Masculino",
         "FEMALE": "Femenino",
-        "INTERSEX": "Intersexual",
-        "PREFER_NOT_TO_SAY": "Prefiero no decirlo"
+        "MALE": "Masculino",
+        "INTERSEX": "Intersexual"
       },
       "gender": {
-        "MALE": "Masculino",
-        "FEMALE": "Femenino",
-        "NON_BINARY": "No binario",
+        "WOMAN": "Mujer",
+        "MAN": "Hombre",
         "TWO_SPIRIT": "Dos Espíritus",
-        "SELF_DESCRIBE": "Prefiero describirme",
-        "PREFER_NOT_TO_SAY": "Prefiero no decirlo",
-        "OTHER": "Otro"
+        "SELF_DESCRIBE": "Prefiero describirlo"
       },
       "maritalStatus": {
         "SINGLE": "Soltero(a)",
@@ -684,6 +684,18 @@
         "dna_testing": {
           "title": "Pruebas de ADN",
           "description": "Resultados de pruebas de ADN que respalden su ascendencia, si están disponibles."
+        },
+        "state_id": {
+          "title": "Identificación estatal",
+          "description": "Una copia clara de su identificación estatal o licencia de conducir emitida por el gobierno."
+        },
+        "birth_certificate": {
+          "title": "Certificado de nacimiento",
+          "description": "Una copia de su certificado de nacimiento oficial."
+        },
+        "social_security_card": {
+          "title": "Tarjeta de seguro social",
+          "description": "Una copia de su tarjeta de seguro social."
         }
       },
       "clickToUpload": "Haga clic para subir",
@@ -696,8 +708,11 @@
       "noFilesUploaded": "Todavía no se han subido archivos.",
       "uploadSuccess": "{slot} se subió correctamente.",
       "photoMissing": "Todavía falta su foto. Súbala antes de continuar.",
-      "missingRequired": "Falta un documento requerido: su foto",
-      "refreshNotice": "Actualice la página e intente de nuevo antes de completar el paso 4."
+      "missingRequired": "Faltan documentos requeridos: su foto y al menos 2 de los 3 documentos de identidad.",
+      "refreshNotice": "Actualice la página e intente de nuevo antes de completar el paso 4.",
+      "proofOfIdentity": "Prueba de identidad",
+      "proofOfIdentityHint": "Suba al menos {min} de los 3 documentos a continuación para probar que usted es la persona que solicita ({uploaded} de {min} subidos).",
+      "identityMissing": "Por favor suba al menos {min} de los 3 documentos de identidad (identificación estatal, certificado de nacimiento, tarjeta de seguro social) antes de continuar."
     },
     "confirmation": {
       "intro": "Firme con su nombre legal completo para confirmar que la información de su solicitud es verdadera y está completa. Al enviarla, su solicitud pasa al concilio para su revisión.",
@@ -741,7 +756,8 @@
       "agreeToSubmitRequired": "Debe aceptar el envío de su información.",
       "agreeToTermsRequired": "Debe aceptar los términos de servicio.",
       "emptyFile": "Seleccione un archivo que no esté vacío.",
-      "fileNotAccepted": "Este espacio acepta archivos {formats} de hasta {maxSize}."
+      "fileNotAccepted": "Este espacio acepta archivos {formats} de hasta {maxSize}.",
+      "genderSelfDescribeRequired": "Por favor describa su género o elija otra opción."
     }
   },
   "dashboard": {
@@ -898,7 +914,11 @@
         "borikuaTaino": "Borikua Taíno"
       },
       "yes": "Sí",
-      "no": "No"
+      "no": "No",
+      "verification": {
+        "VERIFIED_DNA": "Verificado — ADN",
+        "VERIFIED_GENEALOGY": "Verificado — Genealogía"
+      }
     },
     "yucayeke": {
       "title": "Yucayeke",
@@ -995,6 +1015,9 @@
       "types": {
         "profilePicture": "Foto de perfil",
         "userPhoto": "Su foto",
+        "stateId": "Identificación estatal",
+        "birthCertificate": "Certificado de nacimiento",
+        "socialSecurityCard": "Tarjeta de seguro social",
         "genealogicalRecords": "Registros genealógicos",
         "kinshipLetters": "Cartas de parentesco",
         "oralHistory": "Historia oral",

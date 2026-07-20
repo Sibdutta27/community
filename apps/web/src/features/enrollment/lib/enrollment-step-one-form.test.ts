@@ -25,7 +25,8 @@ function buildValidFormValues(): EnrollmentStepOneFormValues {
     municipalityOfBirth: "San Juan",
     countryOfBirth: "Puerto Rico",
     sex: "FEMALE",
-    gender: "FEMALE",
+    gender: "WOMAN",
+    genderSelfDescribe: "",
     maritalStatus: "DOMESTIC_PARTNERSHIP",
     occupation: "Teacher",
     identity: "TAINO",
@@ -37,25 +38,47 @@ function buildValidFormValues(): EnrollmentStepOneFormValues {
 }
 
 describe("enrollmentStepOneSchema (flat demographics contract)", () => {
-  it("exposes the four uppercase sex values (labels live in the catalog)", () => {
+  it("exposes the three uppercase sex values (labels live in the catalog)", () => {
     expect([...enrollmentStepOneSexValues]).toEqual([
-      "MALE",
       "FEMALE",
+      "MALE",
       "INTERSEX",
-      "PREFER_NOT_TO_SAY",
     ]);
   });
 
-  it("exposes the seven uppercase gender values", () => {
+  it("exposes the four uppercase gender values", () => {
     expect([...enrollmentStepOneGenderValues]).toEqual([
-      "MALE",
-      "FEMALE",
-      "NON_BINARY",
+      "WOMAN",
+      "MAN",
       "TWO_SPIRIT",
       "SELF_DESCRIBE",
-      "PREFER_NOT_TO_SAY",
-      "OTHER",
     ]);
+  });
+
+  it("requires the self-describe text only when gender is SELF_DESCRIBE", () => {
+    const values = buildValidFormValues();
+
+    expect(
+      enrollmentStepOneSchema.safeParse({
+        ...values,
+        gender: "SELF_DESCRIBE",
+        genderSelfDescribe: "",
+      }).success,
+    ).toBe(false);
+    expect(
+      enrollmentStepOneSchema.safeParse({
+        ...values,
+        gender: "SELF_DESCRIBE",
+        genderSelfDescribe: "Guaitiao",
+      }).success,
+    ).toBe(true);
+    expect(
+      enrollmentStepOneSchema.safeParse({
+        ...values,
+        gender: "WOMAN",
+        genderSelfDescribe: "",
+      }).success,
+    ).toBe(true);
   });
 
   it("includes DOMESTIC_PARTNERSHIP in the marital-status values", () => {
@@ -106,12 +129,10 @@ describe("enrollmentStepOneSchema (flat demographics contract)", () => {
       enrollmentStepOneSchema.safeParse({ ...values, lastName: "" }).success,
     ).toBe(false);
     expect(
-      enrollmentStepOneSchema.safeParse({ ...values, dateOfBirth: "" })
-        .success,
+      enrollmentStepOneSchema.safeParse({ ...values, dateOfBirth: "" }).success,
     ).toBe(false);
     expect(
-      enrollmentStepOneSchema.safeParse({ ...values, cityOfBirth: "" })
-        .success,
+      enrollmentStepOneSchema.safeParse({ ...values, cityOfBirth: "" }).success,
     ).toBe(false);
     expect(
       enrollmentStepOneSchema.safeParse({ ...values, municipalityOfBirth: "" })
@@ -147,6 +168,7 @@ describe("getEnrollmentStepOneDefaultValues (flat prefill)", () => {
       countryOfBirth: "Puerto Rico",
       sex: "FEMALE",
       gender: "TWO_SPIRIT",
+      genderSelfDescribe: null,
       maritalStatus: "SINGLE",
       occupation: "Teacher",
       identity: "KALINAGO",
@@ -165,6 +187,7 @@ describe("getEnrollmentStepOneDefaultValues (flat prefill)", () => {
       countryOfBirth: "Puerto Rico",
       sex: "FEMALE",
       gender: "TWO_SPIRIT",
+      genderSelfDescribe: "",
       maritalStatus: "SINGLE",
       occupation: "Teacher",
       identity: "KALINAGO",
@@ -187,6 +210,7 @@ describe("getEnrollmentStepOneDefaultValues (flat prefill)", () => {
       countryOfBirth: "",
       sex: "",
       gender: "",
+      genderSelfDescribe: "",
       maritalStatus: "",
       occupation: "",
       identity: "",
@@ -210,7 +234,7 @@ describe("mapEnrollmentStepOneFormToPayload (flat backend contract)", () => {
       municipalityOfBirth: "San Juan",
       countryOfBirth: "Puerto Rico",
       sex: "FEMALE",
-      gender: "FEMALE",
+      gender: "WOMAN",
       maritalStatus: "DOMESTIC_PARTNERSHIP",
       occupation: "Teacher",
       identity: "TAINO",
@@ -237,6 +261,7 @@ describe("mapEnrollmentStepOneFormToPayload (flat backend contract)", () => {
 
     expect(payload.sex).toBeUndefined();
     expect(payload.gender).toBeUndefined();
+    expect(payload.genderSelfDescribe).toBeUndefined();
     expect(payload.maritalStatus).toBeUndefined();
     expect(payload.occupation).toBeUndefined();
     expect(payload.identity).toBeUndefined();
@@ -331,6 +356,8 @@ describe("mapEnrollmentStepOneFormToDraftPayload — partial draft (omit empty)"
       buildValidFormValues(),
     );
 
-    expect(payload).toEqual(mapEnrollmentStepOneFormToPayload(buildValidFormValues()));
+    expect(payload).toEqual(
+      mapEnrollmentStepOneFormToPayload(buildValidFormValues()),
+    );
   });
 });

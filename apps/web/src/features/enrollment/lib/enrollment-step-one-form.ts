@@ -13,21 +13,22 @@ import type {
 
 const dateInputPattern = /^\d{4}-\d{2}-\d{2}$/;
 
+// Client spec 2026-07-08: Female / Male / Intersex. The field is optional —
+// leaving it unselected covers "prefer not to say".
 export const enrollmentStepOneSexValues = [
-  "MALE",
   "FEMALE",
+  "MALE",
   "INTERSEX",
-  "PREFER_NOT_TO_SAY",
 ] as const;
 
+// Client spec 2026-07-08: Woman / Man / Two-Spirit (+ self-describe). When the
+// client provides the Arawak-language term for Two-Spirit, extend this array,
+// the Prisma Gender enum and the en/es `enrollment.options.gender` messages.
 export const enrollmentStepOneGenderValues = [
-  "MALE",
-  "FEMALE",
-  "NON_BINARY",
+  "WOMAN",
+  "MAN",
   "TWO_SPIRIT",
   "SELF_DESCRIBE",
-  "PREFER_NOT_TO_SAY",
-  "OTHER",
 ] as const;
 
 export const enrollmentStepOneMaritalStatusValues = [
@@ -60,6 +61,7 @@ export type EnrollmentStepOneValidationKey =
   | "cityOfBirthRequired"
   | "municipalityOfBirthRequired"
   | "countryOfBirthRequired"
+  | "genderSelfDescribeRequired"
   | "invalidDate"
   | "invalidOption";
 
@@ -103,27 +105,41 @@ export function createEnrollmentStepOneSchema(
       return isValid(parsedDate) && format(parsedDate, "yyyy-MM-dd") === value;
     }, t("invalidDate"));
 
-  return z.object({
-    firstName: requiredString("firstNameRequired"),
-    lastName: requiredString("lastNameRequired"),
-    dateOfBirth: requiredDateString("dateOfBirthRequired"),
-    cityOfBirth: requiredString("cityOfBirthRequired"),
-    municipalityOfBirth: requiredString("municipalityOfBirthRequired"),
-    countryOfBirth: requiredString("countryOfBirthRequired"),
-    sex: createOptionalSelectionSchema(enrollmentStepOneSexValues),
-    gender: createOptionalSelectionSchema(enrollmentStepOneGenderValues),
-    maritalStatus: createOptionalSelectionSchema(
-      enrollmentStepOneMaritalStatusValues,
-    ),
-    occupation: optionalString,
-    identity: createOptionalSelectionSchema(enrollmentStepOneIdentityValues),
-    yucayeke: optionalString,
-    yucayekeUnknown: z.boolean(),
-    hasChildren: createOptionalSelectionSchema(enrollmentStepOneYesNoValues),
-    hasMinorChildren: createOptionalSelectionSchema(
-      enrollmentStepOneYesNoValues,
-    ),
-  });
+  return z
+    .object({
+      firstName: requiredString("firstNameRequired"),
+      lastName: requiredString("lastNameRequired"),
+      dateOfBirth: requiredDateString("dateOfBirthRequired"),
+      cityOfBirth: requiredString("cityOfBirthRequired"),
+      municipalityOfBirth: requiredString("municipalityOfBirthRequired"),
+      countryOfBirth: requiredString("countryOfBirthRequired"),
+      sex: createOptionalSelectionSchema(enrollmentStepOneSexValues),
+      gender: createOptionalSelectionSchema(enrollmentStepOneGenderValues),
+      genderSelfDescribe: optionalString,
+      maritalStatus: createOptionalSelectionSchema(
+        enrollmentStepOneMaritalStatusValues,
+      ),
+      occupation: optionalString,
+      identity: createOptionalSelectionSchema(enrollmentStepOneIdentityValues),
+      yucayeke: optionalString,
+      yucayekeUnknown: z.boolean(),
+      hasChildren: createOptionalSelectionSchema(enrollmentStepOneYesNoValues),
+      hasMinorChildren: createOptionalSelectionSchema(
+        enrollmentStepOneYesNoValues,
+      ),
+    })
+    .superRefine((values, ctx) => {
+      if (
+        normalizeSelectionValue(values.gender) === "SELF_DESCRIBE" &&
+        !values.genderSelfDescribe.trim()
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["genderSelfDescribe"],
+          message: t("genderSelfDescribeRequired"),
+        });
+      }
+    });
 }
 
 export type EnrollmentStepOneFormValues = z.infer<
@@ -239,6 +255,7 @@ export function getEnrollmentStepOneDefaultValues(
       stepOneData?.gender,
       enrollmentStepOneGenderValues,
     ),
+    genderSelfDescribe: readString(stepOneData?.genderSelfDescribe),
     maritalStatus: normalizeKnownSelection(
       stepOneData?.maritalStatus,
       enrollmentStepOneMaritalStatusValues,
@@ -271,6 +288,10 @@ function buildStepOneOptionalPayloadFields(
     values.gender,
     enrollmentStepOneGenderValues,
   ) as EnrollmentGenderValue | undefined;
+  const genderSelfDescribe =
+    gender === "SELF_DESCRIBE"
+      ? toOptionalString(values.genderSelfDescribe)
+      : undefined;
   const maritalStatus = resolveOptionalSelection(
     values.maritalStatus,
     enrollmentStepOneMaritalStatusValues,
@@ -297,6 +318,7 @@ function buildStepOneOptionalPayloadFields(
   return {
     ...(sex ? { sex } : {}),
     ...(gender ? { gender } : {}),
+    ...(genderSelfDescribe ? { genderSelfDescribe } : {}),
     ...(maritalStatus ? { maritalStatus } : {}),
     ...(occupation ? { occupation } : {}),
     ...(identity ? { identity } : {}),

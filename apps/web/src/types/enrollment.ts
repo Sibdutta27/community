@@ -39,6 +39,9 @@ export type AccountEnrollmentConsent = Readonly<{
 export type EnrollmentDocumentType =
   | "PROFILE_PICTURE"
   | "USER_PHOTO"
+  | "STATE_ID"
+  | "BIRTH_CERTIFICATE"
+  | "SOCIAL_SECURITY_CARD"
   | "GENEALOGICAL_RECORDS"
   | "KINSHIP_LETTERS"
   | "ORAL_HISTORY"
@@ -155,33 +158,16 @@ export type AccountInfoResponse = Readonly<{
 
 export type ProfileResponse = AccountInfoResponse;
 
-export type EnrollmentSexValue =
-  | "MALE"
-  | "FEMALE"
-  | "INTERSEX"
-  | "PREFER_NOT_TO_SAY";
+export type EnrollmentSexValue = "FEMALE" | "MALE" | "INTERSEX";
 
 export type EnrollmentGenderValue =
-  | "MALE"
-  | "FEMALE"
-  | "NON_BINARY"
-  | "TWO_SPIRIT"
-  | "SELF_DESCRIBE"
-  | "PREFER_NOT_TO_SAY"
-  | "OTHER";
+  "WOMAN" | "MAN" | "TWO_SPIRIT" | "SELF_DESCRIBE";
 
 export type EnrollmentMaritalStatusValue =
-  | "SINGLE"
-  | "MARRIED"
-  | "DIVORCED"
-  | "WIDOWED"
-  | "DOMESTIC_PARTNERSHIP";
+  "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED" | "DOMESTIC_PARTNERSHIP";
 
 export type EnrollmentIdentityValue =
-  | "ARAWAK"
-  | "KALINAGO"
-  | "GARIFUNA"
-  | "TAINO";
+  "ARAWAK" | "KALINAGO" | "GARIFUNA" | "TAINO";
 
 /**
  * Step 1 — Demographics. Flat body matching the backend
@@ -196,6 +182,7 @@ export type EnrollmentStepOneUpsertRequest = Readonly<{
   countryOfBirth: string;
   sex?: EnrollmentSexValue;
   gender?: EnrollmentGenderValue;
+  genderSelfDescribe?: string;
   maritalStatus?: EnrollmentMaritalStatusValue;
   occupation?: string;
   identity?: EnrollmentIdentityValue;
@@ -215,6 +202,7 @@ export type EnrollmentStepOnePrefillResponse = Readonly<{
   countryOfBirth?: string | null;
   sex?: string | null;
   gender?: string | null;
+  genderSelfDescribe?: string | null;
   maritalStatus?: string | null;
   occupation?: string | null;
   identity?: string | null;
@@ -254,6 +242,9 @@ export type EnrollmentAncestryInput = Readonly<{
   isBorikuaTaino?: boolean;
 }>;
 
+export type EnrollmentAncestryVerificationStatus =
+  "UNVERIFIED" | "VERIFIED_DNA" | "VERIFIED_GENEALOGY";
+
 /** A persisted Ancestry row as returned by the step 2/3 prefill endpoints. */
 export type EnrollmentAncestrySummary = Readonly<{
   name?: string | null;
@@ -262,6 +253,8 @@ export type EnrollmentAncestrySummary = Readonly<{
   municipality?: string | null;
   yucayeke?: string | null;
   isBorikuaTaino?: boolean | null;
+  verificationStatus?: EnrollmentAncestryVerificationStatus | null;
+  verifiedAt?: string | null;
 }>;
 
 /** Step 2 — Maternal Kinship (`POST /enrollment/step2/upsert`). */

@@ -60,6 +60,9 @@ const fallbackRegionalMembers = profileConfig.regionalMembers;
 const documentTypeLabelKeys = {
   PROFILE_PICTURE: "documents.types.profilePicture",
   USER_PHOTO: "documents.types.userPhoto",
+  STATE_ID: "documents.types.stateId",
+  BIRTH_CERTIFICATE: "documents.types.birthCertificate",
+  SOCIAL_SECURITY_CARD: "documents.types.socialSecurityCard",
   GENEALOGICAL_RECORDS: "documents.types.genealogicalRecords",
   KINSHIP_LETTERS: "documents.types.kinshipLetters",
   ORAL_HISTORY: "documents.types.oralHistory",
@@ -307,11 +310,11 @@ function hasAncestorContent(
 
   return Boolean(
     readText(ancestor.name) ||
-      readText(ancestor.municipality) ||
-      readText(ancestor.yucayeke) ||
-      readText(ancestor.nationality) ||
-      readText(ancestor.dateOfBirth) ||
-      typeof ancestor.isBorikuaTaino === "boolean",
+    readText(ancestor.municipality) ||
+    readText(ancestor.yucayeke) ||
+    readText(ancestor.nationality) ||
+    readText(ancestor.dateOfBirth) ||
+    typeof ancestor.isBorikuaTaino === "boolean",
   );
 }
 
@@ -382,6 +385,15 @@ function mapKinshipGroupAncestors(
       facts: buildAncestorFacts(t, ancestor),
       name: readText(ancestor.name) || emptyValueDash,
       relation: t(labelKey),
+      // Positive badges only — UNVERIFIED renders nothing.
+      ...(ancestor.verificationStatus === "VERIFIED_DNA" ||
+      ancestor.verificationStatus === "VERIFIED_GENEALOGY"
+        ? {
+            verificationLabel: t(
+              `kinship.verification.${ancestor.verificationStatus}`,
+            ),
+          }
+        : {}),
     });
   }
 
@@ -428,6 +440,9 @@ function createEmptyDocumentMap(): DocumentMap {
   return {
     PROFILE_PICTURE: [],
     USER_PHOTO: [],
+    STATE_ID: [],
+    BIRTH_CERTIFICATE: [],
+    SOCIAL_SECURITY_CARD: [],
     GENEALOGICAL_RECORDS: [],
     KINSHIP_LETTERS: [],
     ORAL_HISTORY: [],
@@ -737,8 +752,7 @@ function mapYucayekeData(
       },
       {
         label: t("yucayeke.facts.birthMunicipality"),
-        value:
-          readText(personalInfo?.municipalityOfBirth) || missingValueLabel,
+        value: readText(personalInfo?.municipalityOfBirth) || missingValueLabel,
       },
       {
         label: t("yucayeke.facts.birthCountry"),
@@ -837,7 +851,8 @@ function mapDocumentsData(
       name: getDocumentDisplayName(t, document.fileName),
       size: formatDocumentFileSize(document.fileSize),
       status:
-        toDocumentStatusLabel(t, document.status) || t("documentStatus.pending"),
+        toDocumentStatusLabel(t, document.status) ||
+        t("documentStatus.pending"),
       uploadedAt:
         formatDateLabel(document.uploadedAt) || t("summary.unknownDate"),
       url: document.url,
@@ -1078,9 +1093,7 @@ function mapSettingsData({
         label: t("settings.preferences.smsNotifications.label"),
       },
       {
-        description: t(
-          "settings.preferences.documentReviewAlerts.description",
-        ),
+        description: t("settings.preferences.documentReviewAlerts.description"),
         enabled: pendingDocumentsCount > 0,
         label: t("settings.preferences.documentReviewAlerts.label"),
       },

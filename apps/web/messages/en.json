@@ -543,6 +543,10 @@
           "info": "Gender identity",
           "placeholder": "Select your gender"
         },
+        "genderSelfDescribe": {
+          "label": "Describe your gender",
+          "placeholder": "Enter the term that describes your gender"
+        },
         "maritalStatus": {
           "label": "Marital Status",
           "placeholder": "Select marital status"
@@ -561,7 +565,7 @@
         },
         "yucayeke": {
           "label": "Yucayeke",
-          "placeholder": "Enter your Yucayeke"
+          "placeholder": "Select your Yucayeke"
         },
         "yucayekeUnknown": "I don't know my Yucayeke",
         "hasChildren": "Do you have children?",
@@ -570,19 +574,15 @@
     },
     "options": {
       "sex": {
-        "MALE": "Male",
         "FEMALE": "Female",
-        "INTERSEX": "Intersex",
-        "PREFER_NOT_TO_SAY": "Prefer not to say"
+        "MALE": "Male",
+        "INTERSEX": "Intersex"
       },
       "gender": {
-        "MALE": "Male",
-        "FEMALE": "Female",
-        "NON_BINARY": "Non-binary",
+        "WOMAN": "Woman",
+        "MAN": "Man",
         "TWO_SPIRIT": "Two-Spirit",
-        "SELF_DESCRIBE": "Self-describe",
-        "PREFER_NOT_TO_SAY": "Prefer not to say",
-        "OTHER": "Other"
+        "SELF_DESCRIBE": "Self-describe"
       },
       "maritalStatus": {
         "SINGLE": "Single",
@@ -684,6 +684,18 @@
         "dna_testing": {
           "title": "DNA Testing",
           "description": "DNA test results that support your ancestry, if available."
+        },
+        "state_id": {
+          "title": "State ID",
+          "description": "A clear copy of your government-issued state ID or driver’s license."
+        },
+        "birth_certificate": {
+          "title": "Birth Certificate",
+          "description": "A copy of your official birth certificate."
+        },
+        "social_security_card": {
+          "title": "Social Security Card",
+          "description": "A copy of your social security card."
         }
       },
       "clickToUpload": "Click to upload",
@@ -696,8 +708,11 @@
       "noFilesUploaded": "No files uploaded yet.",
       "uploadSuccess": "{slot} uploaded successfully.",
       "photoMissing": "Your photo is still missing. Please upload it before continuing.",
-      "missingRequired": "Missing required document: Your Photo",
-      "refreshNotice": "Please refresh and try again before completing Step 4."
+      "missingRequired": "Missing required documents: your photo and at least 2 of the 3 identity documents.",
+      "refreshNotice": "Please refresh and try again before completing Step 4.",
+      "proofOfIdentity": "Proof of Identity",
+      "proofOfIdentityHint": "Upload at least {min} of the 3 documents below to prove you are the person applying ({uploaded} of {min} uploaded).",
+      "identityMissing": "Please upload at least {min} of the 3 identity documents (state ID, birth certificate, social security card) before continuing."
     },
     "confirmation": {
       "intro": "Sign with your full legal name to confirm that the information in your application is true and complete. Submitting sends your application to the council for review.",
@@ -741,7 +756,8 @@
       "agreeToSubmitRequired": "You must agree to submit your information.",
       "agreeToTermsRequired": "You must agree to the terms of service.",
       "emptyFile": "Please choose a non-empty file.",
-      "fileNotAccepted": "This slot accepts {formats} files up to {maxSize}."
+      "fileNotAccepted": "This slot accepts {formats} files up to {maxSize}.",
+      "genderSelfDescribeRequired": "Please describe your gender or choose another option."
     }
   },
   "dashboard": {
@@ -898,7 +914,11 @@
         "borikuaTaino": "Borikua Taíno"
       },
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "verification": {
+        "VERIFIED_DNA": "Verified — DNA",
+        "VERIFIED_GENEALOGY": "Verified — Genealogy"
+      }
     },
     "yucayeke": {
       "title": "Yucayeke",
@@ -995,6 +1015,9 @@
       "types": {
         "profilePicture": "Profile Picture",
         "userPhoto": "Your Photo",
+        "stateId": "State ID",
+        "birthCertificate": "Birth Certificate",
+        "socialSecurityCard": "Social Security Card",
         "genealogicalRecords": "Genealogical Records",
         "kinshipLetters": "Kinship Letters",
         "oralHistory": "Oral History",

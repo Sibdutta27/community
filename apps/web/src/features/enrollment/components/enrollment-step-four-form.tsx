@@ -19,13 +19,16 @@ import {
 } from "@/features/enrollment/lib/enrollment-queries";
 import {
   buildEnrollmentStepFourDocumentMap,
+  countUploadedIdentityDocuments,
   enrollmentStepFourEvidenceUploadSlots,
+  enrollmentStepFourIdentityUploadSlots,
   enrollmentStepFourUserPhotoCard,
   formatEnrollmentDocumentFileSize,
   formatEnrollmentDocumentStatus,
   getEnrollmentDocumentDisplayName,
   getEnrollmentStepFourFileValidationError,
   getEnrollmentStepFourSlotPolicy,
+  MIN_IDENTITY_DOCUMENTS,
   type EnrollmentStepFourSlotPolicy,
   type EnrollmentStepFourUploadSlotId,
 } from "@/features/enrollment/lib/enrollment-step-four-form";
@@ -37,6 +40,7 @@ import type { EnrollmentDocumentRecord } from "@/types/enrollment";
  */
 type UploadSlot =
   | typeof enrollmentStepFourUserPhotoCard
+  | (typeof enrollmentStepFourIdentityUploadSlots)[number]
   | (typeof enrollmentStepFourEvidenceUploadSlots)[number];
 
 type UploadTarget = Readonly<{
@@ -178,7 +182,12 @@ export function EnrollmentStepFourForm() {
   );
 
   const userPhotoDocument = documentMap.USER_PHOTO[0] ?? null;
-  const hasMandatoryDocuments = Boolean(userPhotoDocument);
+  const uploadedIdentityDocumentCount =
+    countUploadedIdentityDocuments(documentMap);
+  const hasRequiredIdentityDocuments =
+    uploadedIdentityDocumentCount >= MIN_IDENTITY_DOCUMENTS;
+  const hasMandatoryDocuments =
+    Boolean(userPhotoDocument) && hasRequiredIdentityDocuments;
 
   const isListLoading = documentListQuery.isPending && !documentListQuery.data;
 
@@ -247,7 +256,11 @@ export function EnrollmentStepFourForm() {
       const result = await stepFourNextMutation.mutateAsync();
 
       if (!result.success) {
-        setErrorMessage(t("stepFour.photoMissing"));
+        setErrorMessage(
+          result.error === "missing_identity_documents"
+            ? t("stepFour.identityMissing", { min: MIN_IDENTITY_DOCUMENTS })
+            : t("stepFour.photoMissing"),
+        );
         return;
       }
 
@@ -356,6 +369,65 @@ export function EnrollmentStepFourForm() {
               )}
             </div>
           </section>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-foreground text-[1.2rem] font-semibold tracking-tight sm:text-[1.35rem]">
+          {t("stepFour.proofOfIdentity")}
+          <span className="text-foreground"> *</span>
+        </h2>
+        <p className="text-muted-foreground mt-2 max-w-3xl text-[0.9rem] leading-7">
+          {t("stepFour.proofOfIdentityHint", {
+            min: MIN_IDENTITY_DOCUMENTS,
+            uploaded: uploadedIdentityDocumentCount,
+          })}
+        </p>
+        <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5 xl:grid-cols-3">
+          {enrollmentStepFourIdentityUploadSlots.map((slot) => {
+            const slotDocument = documentMap[slot.documentType][0] ?? null;
+            const slotPolicy = getEnrollmentStepFourSlotPolicy(
+              slot.documentType,
+            );
+            const isUploading =
+              uploadMutation.isPending && activeUploadSlotId === slot.id;
+
+            return (
+              <section
+                className="border-border bg-surface rounded-2xl border px-5 py-5 sm:px-6 sm:py-6"
+                key={slot.id}
+              >
+                <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
+                  {t(`stepFour.slots.${slot.id}.title`)}
+                </h3>
+                <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
+                  {t(`stepFour.slots.${slot.id}.description`)}
+                </p>
+
+                <UploadDropArea
+                  disabled={uploadMutation.isPending}
+                  onChange={createInputChangeHandler({ slot })}
+                  onOpen={openPicker}
+                  policy={slotPolicy}
+                  refSetter={(element) => {
+                    inputRefs.current[slot.id] = element;
+                  }}
+                  slotId={slot.id}
+                  uploading={isUploading}
+                />
+
+                <div className="mt-4">
+                  {slotDocument ? (
+                    <UploadedDocumentRow document={slotDocument} />
+                  ) : (
+                    <p className="text-muted-foreground text-[0.8rem]">
+                      {t("stepFour.noFileUploaded")}
+                    </p>
+                  )}
+                </div>
+              </section>
+            );
+          })}
         </div>
       </section>
 
