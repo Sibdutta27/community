@@ -45,6 +45,7 @@ export class AdminEnrollmentStep1Service {
 
                 sex                : enrollment.sex,
                 gender             : enrollment.gender,
+                genderSelfDescribe : enrollment.genderSelfDescribe,
 
                 maritalStatus      : enrollment.maritalStatus,
                 occupation         : enrollment.occupation,
