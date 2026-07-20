@@ -1,11 +1,16 @@
 import { test, expect } from "@playwright/test";
-import { hasAdminCreds, loginAdmin } from "../../fixtures/auth";
+import {
+  emailField,
+  hasAdminCreds,
+  loginAdmin,
+  passwordField,
+} from "../../fixtures/auth";
 
 test.describe("admin panel", () => {
   test("login page renders", async ({ page }) => {
     await page.goto("/login");
-    await expect(page.getByLabel(/email/i)).toBeVisible();
-    await expect(page.getByLabel(/password/i)).toBeVisible();
+    await expect(emailField(page)).toBeVisible();
+    await expect(passwordField(page)).toBeVisible();
     await expect(
       page.getByRole("button", { name: /sign in|log ?in|continue/i }),
     ).toBeVisible();
@@ -14,7 +19,7 @@ test.describe("admin panel", () => {
   test("protected route redirects to /login when unauthenticated", async ({
     page,
   }) => {
-    await page.goto("/enrollments");
+    await page.goto("/enrollments/all");
     await expect(page).toHaveURL(/\/login/);
   });
 
@@ -28,10 +33,11 @@ test.describe("admin panel", () => {
       await loginAdmin(page);
     });
 
+    // NOTE: /dashboard is intentionally absent — it's an unrouted stub;
+    // enrollments live under /enrollments/{all,submitted,approved,rejected}.
     const routes = [
-      "/dashboard",
       "/users",
-      "/enrollments",
+      "/enrollments/all",
       "/cultural-connections",
       "/consents",
       "/services",
@@ -49,7 +55,7 @@ test.describe("admin panel", () => {
     }
 
     test("enrollments list shows a data table", async ({ page }) => {
-      await page.goto("/enrollments", { waitUntil: "networkidle" });
+      await page.goto("/enrollments/all", { waitUntil: "networkidle" });
       // react-data-table-component renders a table/grid structure.
       await expect(
         page.locator("table, [role=table], [role=grid]").first(),

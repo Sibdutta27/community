@@ -24,11 +24,31 @@ export function hasAdminCreds() {
   return Boolean(adminCreds.email && adminCreds.password);
 }
 
+/**
+ * Textbox-role locators keep this working across both login forms: the member
+ * form's "Show password" toggle also matches getByLabel(/password/i) (strict-
+ * mode violation), and the redesigned admin form labels fields via placeholder
+ * text instead of <label> elements.
+ */
+function emailField(page: Page) {
+  return page.getByRole("textbox", { name: /email/i }).or(
+    page.getByPlaceholder(/email/i),
+  ).first();
+}
+
+function passwordField(page: Page) {
+  return page
+    .locator('input[type="password"]')
+    .first();
+}
+
 async function fillCredentials(page: Page, email: string, password: string) {
-  await page.getByLabel(/email/i).fill(email);
-  await page.getByLabel(/password/i).fill(password);
+  await emailField(page).fill(email);
+  await passwordField(page).fill(password);
   await page.getByRole("button", { name: /sign in|log ?in|continue/i }).click();
 }
+
+export { emailField, passwordField };
 
 /** Sign in to the member frontend; lands on the dashboard. */
 export async function loginMember(page: Page) {

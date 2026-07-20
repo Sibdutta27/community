@@ -12,6 +12,12 @@
     "baseline:update": "playwright test --update-snapshots",
     "install:browsers": "playwright install --with-deps"
   },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
     "dotenv": "^16.6.1"

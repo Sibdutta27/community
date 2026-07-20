@@ -1,11 +1,16 @@
 import { test, expect } from "@playwright/test";
-import { hasMemberCreds, loginMember } from "../../fixtures/auth";
+import {
+  emailField,
+  hasMemberCreds,
+  loginMember,
+  passwordField,
+} from "../../fixtures/auth";
 
 test.describe("member auth", () => {
   test("sign-in page renders a login form", async ({ page }) => {
     await page.goto("/sign-in");
-    await expect(page.getByLabel(/email/i)).toBeVisible();
-    await expect(page.getByLabel(/password/i)).toBeVisible();
+    await expect(emailField(page)).toBeVisible();
+    await expect(passwordField(page)).toBeVisible();
     await expect(
       page.getByRole("button", { name: /sign in|log ?in|continue/i }),
     ).toBeVisible();
@@ -13,9 +18,9 @@ test.describe("member auth", () => {
 
   test("sign-up page renders", async ({ page }) => {
     await page.goto("/sign-up");
-    await expect(page.getByLabel(/email/i)).toBeVisible();
+    await expect(emailField(page)).toBeVisible();
     // Sign-up has Password + Confirm Password; match the first to avoid strict-mode.
-    await expect(page.getByLabel(/password/i).first()).toBeVisible();
+    await expect(passwordField(page)).toBeVisible();
   });
 
   test("protected route redirects unauthenticated users to sign-in", async ({
