@@ -23,6 +23,9 @@ export function useSignInMutation() {
         body: payload,
         fallbackMessage:
           "Unable to reach the sign-in service. Please try again in a moment.",
+        // A 401 here means invalid credentials — surface it on the form
+        // instead of triggering the session-expiry redirect.
+        redirectOnUnauthorized: false,
       }),
   });
 }
@@ -37,6 +40,7 @@ export function useSignUpMutation() {
           body: payload,
           fallbackMessage:
             "Unable to reach the registration service. Please try again in a moment.",
+          redirectOnUnauthorized: false,
         },
       ),
   });
@@ -48,6 +52,7 @@ export function useLogoutMutation() {
       requestJson<LogoutResponse>("/api/auth/logout", {
         method: "POST",
         fallbackMessage: "Unable to sign out right now. Please try again.",
+        redirectOnUnauthorized: false,
       }),
   });
 }
