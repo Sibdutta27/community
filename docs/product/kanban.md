@@ -22,10 +22,10 @@ DTOs ↔ types ↔ BFF in sync.
 - **Ready (Phase 0):** F1, F2, F3, F4
 - **Backlog (Phase 1, after F2+F4):** L1–L5, E1, E5, E6, E7, E8, E9, B1, B2, B3, C1, A1
 - **Backlog (Phase 2):** V (integrate/verify/deploy)
-- **Blocked (2026-07-08 sync, needs client input):** S3• (official yucayeke list + map from BTF), S2• (Arawak Two-Spirit term from Priscilla — ship extensible without it)
-- **Ready (2026-07-08 sync):** S1, S2, S3 (mechanism w/ placeholder list), S4, S5, S6
+- **Blocked (2026-07-08 sync, needs client input):** S3-list• (swap placeholder `OFFICIAL_YUCAYEKES` for the official list + map from BTF), S2-term• (add the Arawak Two-Spirit term from Priscilla to Gender enum + option arrays + en/es messages)
+- **Ready (2026-07-08 sync):** S6 (merge btf-testing → main + prod backup/migrate/env)
 - **In progress:** F1
-- **Done:** S0
+- **Done:** S0, S1, S2, S3 (mechanism, placeholder list), S4, S5
 
 ---
 
