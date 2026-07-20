@@ -3,6 +3,7 @@ import { Ancestry, Consent, Contact, Enrollment, EnrollmentStep, User } from '@/
 import { EnrollmentStatus } from '@/generated/prisma/enums';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { mapAncestryOut } from './common/utils/ancestry.util';
+import { hasRequiredIdentityDocuments, REQUIRED_DOCUMENT_TYPES } from './step4/step4.utils';
 import { DocumentService } from '../document/document.service';
 
 // The backend tracks enrollment steps 1-4 (created in startEnrollment); the
@@ -232,8 +233,9 @@ export class EnrollmentService {
                 municipalityOfBirth: enrollment.municipalityOfBirth,
                 countryOfBirth     : enrollment.countryOfBirth,
 
-                sex   : enrollment.sex,
-                gender: enrollment.gender,
+                sex               : enrollment.sex,
+                gender            : enrollment.gender,
+                genderSelfDescribe: enrollment.genderSelfDescribe,
 
                 maritalStatus: enrollment.maritalStatus,
                 occupation   : enrollment.occupation,
@@ -279,8 +281,9 @@ export class EnrollmentService {
         const enrollment = await this.database.enrollment.findFirst({
             where: { userId },
             include: {
-                steps  : true,
-                consent: {
+                steps    : true,
+                documents: true,
+                consent  : {
                     include: {
                         consent: true,
                     },
@@ -314,6 +317,20 @@ export class EnrollmentService {
 
         if (!allStepsCompleted) {
             throw new BadRequestException('All enrollment steps must be completed to complete enrollment');
+        }
+
+        // Re-validate documents at submit time — step 4 may have passed before
+        // a document was deleted, so completion re-checks the same rules.
+        const hasAllRequiredDocs = REQUIRED_DOCUMENT_TYPES.every(requiredType =>
+            enrollment.documents.some(doc => doc.type === requiredType),
+        );
+
+        if (!hasAllRequiredDocs) {
+            throw new BadRequestException('missing_required_documents');
+        }
+
+        if (!hasRequiredIdentityDocuments(enrollment.documents)) {
+            throw new BadRequestException('missing_identity_documents');
         }
 
         // Require the confirmation e-signature

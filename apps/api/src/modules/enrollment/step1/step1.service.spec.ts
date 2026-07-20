@@ -1,4 +1,4 @@
-import { EnrollmentStatus, Sex } from '@/generated/prisma/enums';
+import { EnrollmentStatus, Gender, Sex } from '@/generated/prisma/enums';
 import { Step1Service } from './step1.service';
 
 describe('Step1Service.upsert (demographics only — no contact/address/emergency)', () => {
@@ -13,7 +13,7 @@ describe('Step1Service.upsert (demographics only — no contact/address/emergenc
         municipalityOfBirth: 'Ponce',
         countryOfBirth: 'Puerto Rico',
         sex: 'FEMALE',
-        gender: 'FEMALE',
+        gender: 'WOMAN',
         maritalStatus: 'SINGLE',
         occupation: 'Teacher',
         identity: 'TAINO',
@@ -89,6 +89,42 @@ describe('Step1Service.upsert (demographics only — no contact/address/emergenc
         expect(written).not.toHaveProperty('educationLevel');
         expect(written).not.toHaveProperty('languagesSpoken');
         expect(written).not.toHaveProperty('specialSkills');
+    });
+
+    it('persists the self-describe text only when gender is SELF_DESCRIBE', async () => {
+        const { service, enrollment } = buildService();
+
+        await service.upsert(userId, {
+            ...input,
+            gender: 'SELF_DESCRIBE',
+            genderSelfDescribe: 'Guaitiao',
+        } as never);
+
+        const written = Object.assign(
+            {},
+            ...enrollment.update.mock.calls.map((c) => c[0].data),
+        );
+
+        expect(written.gender).toBe(Gender.SELF_DESCRIBE);
+        expect(written.genderSelfDescribe).toBe('Guaitiao');
+    });
+
+    it('clears the self-describe text when gender is not SELF_DESCRIBE', async () => {
+        const { service, enrollment } = buildService();
+
+        await service.upsert(userId, {
+            ...input,
+            gender: 'WOMAN',
+            genderSelfDescribe: 'stale text',
+        } as never);
+
+        const written = Object.assign(
+            {},
+            ...enrollment.update.mock.calls.map((c) => c[0].data),
+        );
+
+        expect(written.gender).toBe(Gender.WOMAN);
+        expect(written.genderSelfDescribe).toBeNull();
     });
 });
 

@@ -4,6 +4,7 @@ import { DatabaseService } from '@/database/database.service';
 import { EnrollmentStepService } from '@/modules/enrollment/common/services/enrollmentStep.service';
 import { buildStep1DraftData, mapGender, mapIdentity, mapMaritalStatus, mapSex } from './step1.utils';
 import { Step1, Step1SaveDraft } from './interface/step1.interface';
+import { Gender } from '@/generated/prisma/enums';
 
 @Injectable()
 export class Step1Service {
@@ -51,6 +52,9 @@ export class Step1Service {
 
                     sex                : mapSex(step1Input.sex),
                     gender             : mapGender(step1Input.gender),
+                    genderSelfDescribe : mapGender(step1Input.gender) === Gender.SELF_DESCRIBE
+                        ? (step1Input.genderSelfDescribe ?? null)
+                        : null,
 
                     maritalStatus      : mapMaritalStatus(step1Input.maritalStatus),
                     occupation         : step1Input.occupation,
@@ -140,6 +144,7 @@ export class Step1Service {
 
             sex                : enrollment.sex,
             gender             : enrollment.gender,
+            genderSelfDescribe : enrollment.genderSelfDescribe,
 
             maritalStatus      : enrollment.maritalStatus,
             occupation         : enrollment.occupation,

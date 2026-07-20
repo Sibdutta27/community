@@ -31,7 +31,7 @@ describe('Step3Service.upsert (paternal kinship → Ancestry rows)', () => {
     };
 
     function buildService() {
-        const ancestry = { upsert: jest.fn().mockResolvedValue({}) };
+        const ancestry = { upsert: jest.fn().mockResolvedValue({}), findUnique: jest.fn().mockResolvedValue(null) };
         const tx = {
             enrollment: {
                 findFirst: jest.fn().mockResolvedValue({
@@ -110,7 +110,7 @@ describe('Step3Service.saveDraft (partial draft — saves without completing)', 
     const enrollmentId = 'enrollment-1';
 
     function buildService() {
-        const ancestry = { upsert: jest.fn().mockResolvedValue({}) };
+        const ancestry = { upsert: jest.fn().mockResolvedValue({}), findUnique: jest.fn().mockResolvedValue(null) };
         const tx = {
             enrollment: {
                 findFirst: jest.fn().mockResolvedValue({

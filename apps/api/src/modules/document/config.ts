@@ -54,6 +54,18 @@ export const DOCUMENT_TYPE_POLICIES: Partial<Record<DocumentType, DocumentPolicy
         allowedMime: ORAL_HISTORY_MIME_TYPES,
         maxSize: 100 * MB,
     },
+    [DocumentType.STATE_ID]: {
+        allowedMime: DOCUMENT_MIME_TYPES,
+        maxSize: 10 * MB,
+    },
+    [DocumentType.BIRTH_CERTIFICATE]: {
+        allowedMime: DOCUMENT_MIME_TYPES,
+        maxSize: 10 * MB,
+    },
+    [DocumentType.SOCIAL_SECURITY_CARD]: {
+        allowedMime: DOCUMENT_MIME_TYPES,
+        maxSize: 10 * MB,
+    },
 };
 
 /**
@@ -73,6 +85,11 @@ export const SINGLE_FILE_TYPES: DocumentType[] = [
     DocumentType.PROFILE_PICTURE,
 
     DocumentType.USER_PHOTO,
+
+    // Proof-of-identity slots — any 2 of 3 are required to finish Step 4
+    DocumentType.STATE_ID,
+    DocumentType.BIRTH_CERTIFICATE,
+    DocumentType.SOCIAL_SECURITY_CARD,
 ];
 
 // Arrays categorizing document types that can have multiple files.

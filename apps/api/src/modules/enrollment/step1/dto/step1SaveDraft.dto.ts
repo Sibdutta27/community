@@ -4,11 +4,14 @@ import {
     IsBoolean,
     IsDate,
     IsEnum,
+    IsIn,
+    ValidateIf,
 } from 'class-validator';
 
 import { Type } from 'class-transformer';
 
 import { Gender, Identity, MaritalStatus, Sex } from '@/generated/prisma/enums';
+import { OFFICIAL_YUCAYEKES } from '@/modules/enrollment/common/config/yucayeke.config';
 
 /**
  * Step 1 — Demographics partial draft ("Save & finish later").
@@ -49,6 +52,11 @@ export class Step1SaveDraftDto {
     @IsOptional()
     gender?: Gender;
 
+    // Drafts never hard-require it, but validate the shape whenever provided
+    @IsString()
+    @IsOptional()
+    genderSelfDescribe?: string;
+
     @IsEnum(MaritalStatus)
     @IsOptional()
     maritalStatus?: MaritalStatus;
@@ -61,8 +69,9 @@ export class Step1SaveDraftDto {
     @IsOptional()
     identity?: Identity;
 
-    @IsString()
-    @IsOptional()
+    // Restricted to the official list (skipped when the member marks it unknown)
+    @ValidateIf((o) => !o.yucayekeUnknown && o.yucayeke !== undefined && o.yucayeke !== null && o.yucayeke !== '')
+    @IsIn([...OFFICIAL_YUCAYEKES])
     yucayeke?: string;
 
     @IsBoolean()

@@ -3,25 +3,25 @@ import { Gender, Identity, MaritalStatus, Sex } from "@/generated/prisma/enums";
 
 /**
  * GENDER_MAP: A mapping of string values from the DTO to the corresponding enum values in the database.
+ * Client spec 2026-07-08: Woman / Man / Two-Spirit / Self-describe. When the client
+ * sends the Arawak-language term for Two-Spirit, add the enum value + this map entry
+ * (plus the web option arrays and en/es messages).
  */
 const GENDER_MAP = {
-    MALE             : Gender.MALE,
-    FEMALE           : Gender.FEMALE,
-    NON_BINARY       : Gender.NON_BINARY,
-    TWO_SPIRIT       : Gender.TWO_SPIRIT,
-    SELF_DESCRIBE    : Gender.SELF_DESCRIBE,
-    PREFER_NOT_TO_SAY: Gender.PREFER_NOT_TO_SAY,
-    OTHER            : Gender.OTHER,
+    WOMAN        : Gender.WOMAN,
+    MAN          : Gender.MAN,
+    TWO_SPIRIT   : Gender.TWO_SPIRIT,
+    SELF_DESCRIBE: Gender.SELF_DESCRIBE,
 };
 
 /**
  * SEX_MAP: A mapping of string values from the DTO to the corresponding Sex enum values in the database.
+ * The field is optional — leaving it unset covers "prefer not to say".
  */
 const SEX_MAP = {
-    MALE             : Sex.MALE,
-    FEMALE           : Sex.FEMALE,
-    INTERSEX         : Sex.INTERSEX,
-    PREFER_NOT_TO_SAY: Sex.PREFER_NOT_TO_SAY,
+    MALE    : Sex.MALE,
+    FEMALE  : Sex.FEMALE,
+    INTERSEX: Sex.INTERSEX,
 };
 
 /**
@@ -115,6 +115,23 @@ export function mapIdentity(identityStr: string | undefined | null): Identity | 
     return identity;
 }
 /**
+ * buildGenderSelfDescribeDraft: the free text is only meaningful alongside
+ * SELF_DESCRIBE — changing gender to any other value clears it; omitting both
+ * fields leaves it untouched (draft semantics).
+ */
+function buildGenderSelfDescribeDraft(gender: string | undefined, genderSelfDescribe: string | undefined) {
+    if (gender !== undefined && mapGender(gender) !== Gender.SELF_DESCRIBE) {
+        return { genderSelfDescribe: null };
+    }
+
+    if (genderSelfDescribe !== undefined) {
+        return { genderSelfDescribe };
+    }
+
+    return {};
+}
+
+/**
  * buildStep1DraftData: builds the partial Enrollment update payload for a
  * Step 1 draft save — only the fields present on the input are included, so
  * an omitted field never overwrites a previously saved value.
@@ -128,6 +145,7 @@ export function buildStep1DraftData(input: {
     countryOfBirth?: string;
     sex?: string;
     gender?: string;
+    genderSelfDescribe?: string;
     maritalStatus?: string;
     occupation?: string;
     identity?: string;
@@ -145,6 +163,7 @@ export function buildStep1DraftData(input: {
         ...(input.countryOfBirth      !== undefined ? { countryOfBirth     : input.countryOfBirth } : {}),
         ...(input.sex                 !== undefined ? { sex                : mapSex(input.sex) } : {}),
         ...(input.gender              !== undefined ? { gender             : mapGender(input.gender) } : {}),
+        ...buildGenderSelfDescribeDraft(input.gender, input.genderSelfDescribe),
         ...(input.maritalStatus       !== undefined ? { maritalStatus      : mapMaritalStatus(input.maritalStatus) } : {}),
         ...(input.occupation          !== undefined ? { occupation         : input.occupation } : {}),
         ...(input.identity            !== undefined ? { identity           : mapIdentity(input.identity) } : {}),

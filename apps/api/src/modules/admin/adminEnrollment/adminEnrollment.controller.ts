@@ -1,14 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseEnumPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '@/modules/auth/guards/auth.guard';
 import { AdminEnrollmentService } from './adminEnrollment.service';
 import { AdminAuthGuard } from '../guard/adminAuth.guard';
-import { EnrollmentStatus } from '@/generated/prisma/enums';
+import { AncestryRelation, EnrollmentStatus } from '@/generated/prisma/enums';
+import { CurrentUser } from '@/common/decorators/currentUser.decorator';
 import { AdminEnrollmentStep4Service } from './services/adminEnrollmentStep4.service';
 import { AdminEnrollmentStep3Service } from './services/adminEnrollmentStep3.service';
 import { AdminEnrollmentStep2Service } from './services/adminEnrollmentStep2.service';
 import { AdminEnrollmentStep1Service } from './services/adminEnrollmentStep1.service';
 import { VerifyDocumentDto } from './dto/verifyDocument.dto';
 import { VerifyEnrollmentDto } from './dto/verifyEnrollment.dto';
+import { VerifyAncestryDto } from './dto/verifyAncestry.dto';
 
 
 @Controller('admin/enrollment')
@@ -140,6 +142,39 @@ export class AdminEnrollmentController {
         @Param('enrollmentId') enrollmentId: string,
     ) {
         return this.adminEnrollmentStep4Service.getStep4(enrollmentId);
+    }
+
+    /**
+     * Get the consent acceptance summary for an enrollment
+     */
+    @Get('consents/:enrollmentId')
+    async getConsents(
+        @Param('enrollmentId') enrollmentId: string,
+    ) {
+        return this.adminEnrollmentService.getConsents(enrollmentId);
+    }
+
+    /**
+     * Set the admin-attested verification status of an ancestry entry
+     */
+    @Patch('/:enrollmentId/ancestry/:relation/verification')
+    async verifyAncestry(
+        @Param('enrollmentId') enrollmentId: string,
+
+        @Param('relation', new ParseEnumPipe(AncestryRelation))
+        relation: AncestryRelation,
+
+        @Body()
+        body: VerifyAncestryDto,
+
+        @CurrentUser('id') adminUserId: string,
+    ) {
+        return this.adminEnrollmentService.verifyAncestry(
+            enrollmentId,
+            relation,
+            body.status,
+            adminUserId,
+        );
     }
 
     /**

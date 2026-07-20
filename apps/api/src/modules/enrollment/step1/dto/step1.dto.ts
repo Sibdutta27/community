@@ -5,11 +5,14 @@ import {
     IsBoolean,
     IsDate,
     IsEnum,
+    IsIn,
+    ValidateIf,
 } from 'class-validator';
 
 import { Type } from 'class-transformer';
 
 import { Gender, Identity, MaritalStatus, Sex } from '@/generated/prisma/enums';
+import { OFFICIAL_YUCAYEKES } from '@/modules/enrollment/common/config/yucayeke.config';
 
 /**
  * Step 1 — Demographics (flat).
@@ -50,6 +53,12 @@ export class Step1Dto {
     @IsOptional()
     gender?: Gender;
 
+    // Required when gender = SELF_DESCRIBE; validated whenever provided
+    @ValidateIf((o) => o.gender === Gender.SELF_DESCRIBE || o.genderSelfDescribe !== undefined)
+    @IsString()
+    @IsNotEmpty()
+    genderSelfDescribe?: string;
+
     @IsEnum(MaritalStatus)
     @IsOptional()
     maritalStatus?: MaritalStatus;
@@ -62,8 +71,9 @@ export class Step1Dto {
     @IsOptional()
     identity?: Identity;
 
-    @IsString()
-    @IsOptional()
+    // Restricted to the official list (skipped when the member marks it unknown)
+    @ValidateIf((o) => !o.yucayekeUnknown && o.yucayeke !== undefined && o.yucayeke !== null && o.yucayeke !== '')
+    @IsIn([...OFFICIAL_YUCAYEKES])
     yucayeke?: string;
 
     @IsBoolean()

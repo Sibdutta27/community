@@ -76,10 +76,12 @@ export class AccountService {
         }
 
         return {
-            id            : enrollment?.id,
-            steps         : enrollment?.steps,
-            status        : enrollment?.status,
-            personalInfo  : enrollment?.personalInfo,
+            id             : enrollment?.id,
+            steps          : enrollment?.steps,
+            status         : enrollment?.status,
+            personalInfo   : enrollment?.personalInfo,
+            consentAccepted: enrollment?.consentAccepted,
+            consent        : enrollment?.consent,
         }
     }
 

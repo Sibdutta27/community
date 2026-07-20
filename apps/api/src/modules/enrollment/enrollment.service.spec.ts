@@ -1,5 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { EnrollmentStatus } from '@/generated/prisma/enums';
+import { DocumentType, EnrollmentStatus } from '@/generated/prisma/enums';
 import { EnrollmentService } from './enrollment.service';
 
 describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () => {
@@ -26,6 +26,11 @@ describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () =
             consent: [
                 { accepted: true, consent: { required: true } },
                 { accepted: true, consent: { required: false } },
+            ],
+            documents: [
+                { type: DocumentType.USER_PHOTO },
+                { type: DocumentType.STATE_ID },
+                { type: DocumentType.BIRTH_CERTIFICATE },
             ],
             ...overrides,
         };
@@ -169,6 +174,55 @@ describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () =
         ).rejects.toThrow(
             'All enrollment steps must be completed to complete enrollment',
         );
+        expect(database.enrollment.update).not.toHaveBeenCalled();
+    });
+
+    it('throws when the mandatory photo document is missing', async () => {
+        const { service, database } = buildService(
+            buildDraftEnrollment({
+                documents: [
+                    { type: DocumentType.STATE_ID },
+                    { type: DocumentType.BIRTH_CERTIFICATE },
+                ],
+            }),
+        );
+
+        await expect(
+            service.completeEnrollment(userId, signature),
+        ).rejects.toThrow('missing_required_documents');
+        expect(database.enrollment.update).not.toHaveBeenCalled();
+    });
+
+    it('throws when fewer than 2 of the 3 identity documents are present', async () => {
+        const { service, database } = buildService(
+            buildDraftEnrollment({
+                documents: [
+                    { type: DocumentType.USER_PHOTO },
+                    { type: DocumentType.STATE_ID },
+                ],
+            }),
+        );
+
+        await expect(
+            service.completeEnrollment(userId, signature),
+        ).rejects.toThrow('missing_identity_documents');
+        expect(database.enrollment.update).not.toHaveBeenCalled();
+    });
+
+    it('accepts duplicate files of one identity type only when a second distinct type exists', async () => {
+        const { service, database } = buildService(
+            buildDraftEnrollment({
+                documents: [
+                    { type: DocumentType.USER_PHOTO },
+                    { type: DocumentType.STATE_ID },
+                    { type: DocumentType.STATE_ID },
+                ],
+            }),
+        );
+
+        await expect(
+            service.completeEnrollment(userId, signature),
+        ).rejects.toThrow('missing_identity_documents');
         expect(database.enrollment.update).not.toHaveBeenCalled();
     });
 

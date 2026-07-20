@@ -10,6 +10,7 @@ export interface Step1Demographics {
 
   sex?: string;
   gender?: string;
+  genderSelfDescribe?: string;
 
   maritalStatus?: string;
   occupation?: string;

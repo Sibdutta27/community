@@ -5,7 +5,12 @@ import { DocumentService } from '@/modules/document/document.service';
 
 import { IGetEnrollmentsQuery } from './interfaces/getEnrollment.interface';
 import { Prisma } from '@/generated/prisma/client';
-import { DocumentType, EnrollmentStatus } from '@/generated/prisma/enums';
+import {
+    AncestryRelation,
+    AncestryVerificationStatus,
+    DocumentType,
+    EnrollmentStatus,
+} from '@/generated/prisma/enums';
 
 @Injectable()
 export class AdminEnrollmentService {
@@ -189,6 +194,89 @@ export class AdminEnrollmentService {
             APPROVED: totalApproved,
             REJECTED: totalRejected,
         };
+    }
+
+    /**
+     * Get the consent acceptance summary for an enrollment
+     */
+    public async getConsents(enrollmentId: string) {
+
+        const enrollment = await this.database.enrollment.findUnique({
+            where: {
+                id: enrollmentId,
+            },
+
+            include: {
+                consent: {
+                    include: {
+                        consent: true,
+                    },
+                },
+            },
+        });
+
+        if (!enrollment) {
+            throw new NotFoundException(
+                'Enrollment not found',
+            );
+        }
+
+        return {
+            consentAccepted: enrollment.consentAccepted,
+
+            consents: enrollment.consent.map((c) => ({
+                id: c.consent.id,
+                key: c.consent.key,
+                version: c.consent.version,
+                title: c.consent.title,
+                required: c.consent.required,
+                accepted: c.accepted,
+                acceptedAt: c.acceptedAt,
+            })),
+        };
+    }
+
+    /**
+     * Set the admin-attested verification status of an ancestry entry
+     */
+    public async verifyAncestry(
+        enrollmentId: string,
+        relation: AncestryRelation,
+        status: AncestryVerificationStatus,
+        adminUserId: string,
+    ) {
+
+        const ancestry = await this.database.ancestry.findUnique({
+            where: {
+                enrollmentId_relation: {
+                    enrollmentId,
+                    relation,
+                },
+            },
+        });
+
+        if (!ancestry) {
+            throw new NotFoundException(
+                'Ancestry entry not found',
+            );
+        }
+
+        const isVerified = status !== AncestryVerificationStatus.UNVERIFIED;
+
+        return this.database.ancestry.update({
+            where: {
+                enrollmentId_relation: {
+                    enrollmentId,
+                    relation,
+                },
+            },
+
+            data: {
+                verificationStatus: status,
+                verifiedAt: isVerified ? new Date() : null,
+                verifiedByUserId: isVerified ? adminUserId : null,
+            },
+        });
     }
 
     /**
