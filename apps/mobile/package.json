@@ -1,5 +1,5 @@
 {
-  "name": "@community/mobile",
+  "name": "@yucayekeconnect/mobile",
   "version": "0.0.0",
   "private": true,
   "description": "Placeholder for the Community mobile app (planned roadmap item — not yet implemented). No build/lint/typecheck scripts yet, so Turborepo skips it."

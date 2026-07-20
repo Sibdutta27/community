@@ -1,4 +1,4 @@
-# apps/webWeb
+# apps/web — YucayekeConnect member app
 
 Frontend project for a community platform built with Next.js.
 
