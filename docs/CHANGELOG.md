@@ -27,9 +27,12 @@ All notable changes to the Community monorepo are recorded here, categorized by
 - [repo/tooling] Package identities renamed to yucayekeconnect (`yucayekeconnect-monorepo`, `yucayekeconnect-server`, `yucayekeconnect-web`, `@yucayekeconnect/*`); cookies + domain strings unchanged; Render dashboard filter commands must follow — package.json
 - [repo/tooling] apps/api + apps/admin get their own lint-staged blocks (root fallback had no eslint config and blocked commits; api code files are a documented no-op) — apps/api/package.json
 
-### Fixed
+### Fixed (2026-07-08 sync)
 
 - [web/auth] Expired/invalid sessions now log out and redirect to /sign-in instead of rendering "unauthorized — showing fallback profile values": middleware treats an expired JWT cookie as unauthenticated and clears it; the fetcher logs out on any 401 from authenticated calls (auth forms opt out) — apps/web/middleware.ts
+
+### Added
+
 - [repo/docs] App→Domain categorization map — docs/architecture/categories.yaml
 - [repo/docs] As-built product PRD — docs/product/PRD.md
 - [repo/docs] Admin design-system doc — docs/design-system-admin.md
