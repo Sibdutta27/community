@@ -41,18 +41,19 @@ src/
 
 ## Auth
 
-- JWT lives in the **`community_auth_token` cookie**. `middleware.ts` guards `/dashboard` and
-  `/my-profile` (redirects to `/sign-in?next=…`) and bounces authed users away from `/sign-in`,
-  `/sign-up`.
+- JWT lives in the **`community_auth_token` cookie**. `middleware.ts` guards `/dashboard`,
+  `/my-profile`, and `/yucayeke/map` (redirects to `/sign-in?next=…`) and bounces authed users
+  away from `/sign-in`, `/sign-up`.
 - Server components read the session via `src/lib/auth-session.ts` —
   `getSessionUser()` (React `cache`) / `getRequiredSessionUser()` (redirects if absent).
   JWT decode helpers in `src/lib/auth.ts`.
 
 ## Styling tokens (see design-system.md for the full story)
 
-CSS vars in `src/styles/tokens.css`, exposed to Tailwind v4 via `@theme inline`. Fonts in
-`src/styles/fonts.ts`: **Cinzel** (`--font-display`), **Montserrat** (`--font-body`),
-**Lato** (`--font-body-alt`). SCSS modules use the `@include up(<bp>)` mixin from
+CSS vars in `src/styles/tokens.css`, exposed to Tailwind v4 via `@theme inline` — currently the
+**azul-led Puerto-Rican-flag palette** (`--primary` deep azul, `--emphasis` restrained flag red).
+Fonts in `src/styles/fonts.ts`: **Inter** for everything (the `cinzel`/`montserrat`/`lato`
+exports are compatibility aliases that resolve to Inter). SCSS modules use the `@include up(<bp>)` mixin from
 `styles/scss/abstracts/_breakpoints.scss` (sm 40 / md 48 / lg 64 / xl 80 / 2xl 96 rem).
 
 ## Run

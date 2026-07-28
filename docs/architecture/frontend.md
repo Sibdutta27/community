@@ -10,15 +10,38 @@ Route groups under `src/app/`:
 - **`(public)`** — `/`, `about`, `community`, `contact`, `services`, `yucayeke`, plus policy pages
   (cookie/privacy/terms, enrollment). Wrapped in `SiteShell` (PublicNavbar + PublicFooter).
 - **`(auth)`** — `sign-in`, `sign-up`.
-- **`(protected)`** — `dashboard`, `enrollment/step-1..4`, `my-profile`, `profile`.
+- **`(protected)`** — `dashboard`, `enrollment/step-1..4`, `my-profile`, `profile`,
+  `yucayeke/map` (interactive territory map).
 - **`api/`** — Next route handlers acting as a BFF (auth, enrollment, events, services, documents,
   profile, consent) that forward to the NestJS backend.
 
 `middleware.ts` (`src/middleware.ts`):
-- Protects `/dashboard`, `/my-profile` → redirect to `/sign-in?next=…` if no
+
+- Protects `/dashboard`, `/my-profile`, `/yucayeke/map` → redirect to `/sign-in?next=…` if no
   `community_auth_token` cookie.
 - Redirects authed users away from `/sign-in`, `/sign-up` → `DEFAULT_POST_LOGIN_PATH`.
-- `matcher: ["/dashboard/:path*", "/my-profile/:path*", "/sign-in", "/sign-up"]`.
+- `matcher: ["/dashboard/:path*", "/my-profile/:path*", "/yucayeke/map/:path*", "/yucayeke/map",
+"/sign-in", "/sign-up"]`.
+
+## Yucayeke territory map (`features/yucayeke/`)
+
+The feature folder serves BOTH the public marketing page (`(public)/yucayeke`) and the
+protected member map (`(protected)/yucayeke/map` + the profile "Your Yucayeke" card):
+
+- `content/territories.ts` — canonical territory table: single source of truth joining the
+  backend `OFFICIAL_YUCAYEKES` names, the GeoJSON `yucayeque` keys, and display spellings,
+  with cacique, municipalities, and `confirmed`/`oralTradition` status. Resolve enrollment
+  values with `resolveTerritory()` (diacritic/case-insensitive); never string-compare names.
+- `lib/geometry.ts` — pure Web-Mercator projection + path building (no map library);
+  `buildTerritoryShapes()` merges the nine "Bieque" island polygons into one territory.
+- `lib/yucayeke-map-queries.ts` — fetches the static asset `public/geo/yucayeke-boundaries.json`
+  (simplified contractor GeoJSON, cached forever client-side).
+- `components/` — `BorikenMap` (token-colored SVG, `interactive`/`preview` variants,
+  keyboard-accessible paths with `data-territory` hooks), `TerritoryInfoCard`,
+  `TerritoryList` (focusable peer of the map), `YucayekeMapPageContent`,
+  `YourYucayekeCard` (profile card; degrades assigned → unknown → unassigned → unmapped).
+- i18n namespace `yucayekeMap` in `messages/{en,es}.json` (territory descriptions per slug).
+- Source GIS data + caveats: `data/gis/yucayekeno-ecological-communities/README.md`.
 
 ## Data layer
 

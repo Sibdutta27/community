@@ -97,7 +97,7 @@ domains:
       - apps/admin/src/api/eventCat.api.js
 
   profile:
-    desc: "Member profile, dashboard, account info, photo upload, user records."
+    desc: "Member profile, dashboard, account info, photo upload, user records, yucayeke territory map (protected /yucayeke/map + profile Your Yucayeke card)."
     docs: [docs/architecture/backend.md, docs/architecture/frontend.md]
     backend:
       - apps/api/src/modules/profile
@@ -107,8 +107,11 @@ domains:
       - apps/web/src/app/(protected)/my-profile
       - apps/web/src/app/(protected)/profile
       - apps/web/src/app/(protected)/dashboard
+      - apps/web/src/app/(protected)/yucayeke
       - apps/web/src/features/profile
       - apps/web/src/features/dashboard
+      - apps/web/src/features/yucayeke # member map experience (feature shared with marketing-content's public page)
+      - apps/web/public/geo
       - apps/web/src/app/api/profile
       - apps/web/src/app/api/account
     admin:
