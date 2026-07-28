@@ -64,7 +64,7 @@ export function YucayekeMapPageContent() {
       variants={fadeInUpContainer}
       initial="hidden"
       animate="visible"
-      className="mx-auto w-full max-w-6xl px-0 pt-20 pb-10 sm:px-2"
+      className="mx-auto w-full max-w-6xl px-0 pt-28 pb-10 sm:px-2"
     >
       <motion.header variants={fadeInUpItem} className="max-w-3xl">
         <h1 className="text-foreground text-[1.7rem] leading-[1.05] font-semibold tracking-tight sm:text-[2rem] lg:text-[2.3rem]">
