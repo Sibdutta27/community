@@ -82,13 +82,21 @@ generated with GDAL/pyogrio + shapely. Property names normalized to lowercase.
 
 ## Integration notes (Community platform)
 
-- Serve `yucayeque-boundaries.simplified.geojson` + `caciques.geojson` as static assets for an
-  interactive map (MapLibre GL / Leaflet — no key needed with OSM or self-hosted tiles).
+**Shipped (2026-07-28):** `yucayeque-boundaries.simplified.geojson` is copied to
+`apps/web/public/geo/yucayeke-boundaries.json` and rendered as a token-colored inline SVG
+(no map library — pure Web-Mercator projection in
+`apps/web/src/features/yucayeke/lib/geometry.ts`) at the protected `/yucayeke/map` route
+and in the profile "Your Yucayeke" card. Territory names are reconciled with the backend's
+`OFFICIAL_YUCAYEKES` list in `apps/web/src/features/yucayeke/content/territories.ts` —
+resolve any recorded value through `resolveTerritory()`, never by string comparison.
+
+Still open:
+
 - Territory affiliation: point-in-polygon of a member's address (or municipio centroid via
-  `pr-municipios-tiger.geojson` join) → yucayeke. Could back an `Enrollment` field or a
-  community-directory map view.
-- If boundaries become queryable (e.g. "which yucayeke am I in?" endpoint), load the GeoJSON
+  `pr-municipios-tiger.geojson` join) → yucayeke, to auto-suggest an `Enrollment` value.
+- If boundaries become queryable server-side ("which yucayeke am I in?"), load the GeoJSON
   into Postgres/PostGIS or do point-in-polygon in Node (`@turf/boolean-point-in-polygon`).
-- Repo-size note: the two GDBs are ~55 MB (mostly the nationwide TIGER layer). Before
-  committing, consider Git LFS, or dropping `Yucayeques_v1.gdb` and the TIGER layer since
-  `geojson/` preserves everything needed.
+- Repo-size: this folder is committed as-is (~60 MB; one 48 MB `.gdbtable` inside the
+  canonical GDB is the nationwide TIGER layer). If history weight becomes a problem, the
+  prune candidates are `Yucayeques_v1.gdb` and that TIGER layer — `geojson/` already
+  preserves everything the app needs.
