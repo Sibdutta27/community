@@ -8,7 +8,7 @@ import {
   SIGN_UP_PATH,
 } from "@/lib/auth";
 
-const protectedPaths = ["/dashboard", "/my-profile"];
+const protectedPaths = ["/dashboard", "/my-profile", "/yucayeke/map"];
 
 function isProtectedPath(pathname: string) {
   return protectedPaths.some(
@@ -66,5 +66,12 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/my-profile/:path*", "/sign-in", "/sign-up"],
+  matcher: [
+    "/dashboard/:path*",
+    "/my-profile/:path*",
+    "/yucayeke/map/:path*",
+    "/yucayeke/map",
+    "/sign-in",
+    "/sign-up",
+  ],
 };

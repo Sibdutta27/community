@@ -81,26 +81,14 @@ export type ProfileYucayekeFact = Readonly<{
   value: string;
 }>;
 
-export type ProfileYucayekeMetric = Readonly<{
-  helper: string;
-  label: string;
-  value: string;
-}>;
-
-export type ProfileYucayekeCircleMember = Readonly<{
-  detail: string;
-  name: string;
-  role: string;
-}>;
-
 export type ProfileYucayekeData = Readonly<{
-  circles: readonly ProfileYucayekeCircleMember[];
   communityName: string;
+  /** Raw enrollment value — resolved to a canonical territory by the map feature. */
+  declaredYucayeke: string | null;
   description: string;
-  metrics: readonly ProfileYucayekeMetric[];
-  rhythm: readonly ProfileYucayekeFact[];
   territoryFacts: readonly ProfileYucayekeFact[];
   title: string;
+  yucayekeUnknown: boolean;
 }>;
 
 export type ProfileDocumentsMetric = Readonly<{
@@ -331,66 +319,10 @@ export const profileConfig = {
     title: "Overview",
   },
   yucayeke: {
-    circles: [
-      {
-        detail: "Arecibo, Puerto Rico",
-        name: "Carmen María Rodríguez Torres",
-        role: "You",
-      },
-      {
-        detail: "Arecibo, Puerto Rico",
-        name: "María Elena Torres Rivera",
-        role: "Mother",
-      },
-      {
-        detail: "Arecibo, Puerto Rico",
-        name: "Ana Isabel Rivera Colón",
-        role: "Maternal Grandmother",
-      },
-    ],
     communityName: "Yucayeke Guainía",
+    declaredYucayeke: null,
     description:
       "Your Yucayeke profile connects your territory, family line, and enrollment progress in one place.",
-    metrics: [
-      {
-        helper: "Enrollment tasks completed",
-        label: "Completed Steps",
-        value: "2 / 4",
-      },
-      {
-        helper: "Recorded kinship entries",
-        label: "Ancestors Recorded",
-        value: "2",
-      },
-      {
-        helper: "Submitted supporting files",
-        label: "Documents",
-        value: "4",
-      },
-      {
-        helper: "Required consents accepted",
-        label: "Consents",
-        value: "2 / 2",
-      },
-    ],
-    rhythm: [
-      {
-        label: "Profile Status",
-        value: "Draft",
-      },
-      {
-        label: "Primary Contact",
-        value: "carmen.maria@example.com",
-      },
-      {
-        label: "Identity",
-        value: "Taíno",
-      },
-      {
-        label: "Last Update",
-        value: "Community circle planning in progress",
-      },
-    ],
     territoryFacts: [
       {
         label: "Birth City",
@@ -410,6 +342,7 @@ export const profileConfig = {
       },
     ],
     title: "Yucayeke",
+    yucayekeUnknown: false,
   },
   documents: {
     categories: [

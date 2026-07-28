@@ -649,102 +649,19 @@ function mapYucayekeData(
 ): ProfileYucayekeData {
   const enrollment = accountInfo?.enrollment;
   const personalInfo = enrollment?.personalInfo;
-  const stepState = getResolvedStepState(accountInfo);
-  const completedSteps = getCompletedStepsLabel(stepState);
-  const totalDocuments = getDocumentCount(enrollment?.documents);
-  const recordedAncestors = countRecordedAncestors(t, accountInfo);
-  const kinshipData = mapKinshipData(t, accountInfo);
   const declaredYucayeke = readText(personalInfo?.yucayeke);
   const communityName = declaredYucayeke
     ? t("yucayeke.communityName", { name: declaredYucayeke })
     : personalInfo?.yucayekeUnknown
       ? t("yucayeke.unknownCommunity")
       : t("yucayeke.defaultCommunity");
-  const requiredConsents = (enrollment?.consent ?? []).filter(
-    (consent) => consent.required,
-  );
-  const acceptedRequiredConsentsCount = requiredConsents.filter(
-    (consent) => consent.accepted,
-  ).length;
-  const contactMethod =
-    formatPhoneLabel(enrollment?.contact?.phoneNumber) ||
-    readText(enrollment?.contact?.email) ||
-    readText(accountInfo?.user?.email);
-  const statusLabel = resolveEnrollmentStatus(t, accountInfo);
   const missingValueLabel = t("summary.notProvided");
-  const municipalityFactLabel = t("kinship.facts.municipality");
-  const nationalityFactLabel = t("kinship.facts.nationality");
-
-  const circles = [
-    {
-      detail: resolveLocation(accountInfo) || missingValueLabel,
-      name:
-        buildFullName([personalInfo?.firstName, personalInfo?.lastName]) ||
-        readText(accountInfo?.user?.name) ||
-        t("summary.memberFallback"),
-      role: t("yucayeke.you"),
-    },
-    ...kinshipData.groups.flatMap((group) =>
-      group.ancestors.map((ancestor) => ({
-        detail:
-          ancestor.facts.find((fact) => fact.label === municipalityFactLabel)
-            ?.value ??
-          ancestor.facts.find((fact) => fact.label === nationalityFactLabel)
-            ?.value ??
-          missingValueLabel,
-        name: ancestor.name,
-        role: ancestor.relation,
-      })),
-    ),
-  ];
 
   return {
-    circles,
     communityName,
+    declaredYucayeke: declaredYucayeke || null,
     description: t("yucayeke.description"),
-    metrics: [
-      {
-        helper: t("yucayeke.metrics.completedSteps.helper"),
-        label: t("yucayeke.metrics.completedSteps.label"),
-        value: completedSteps,
-      },
-      {
-        helper: t("yucayeke.metrics.ancestorsRecorded.helper"),
-        label: t("yucayeke.metrics.ancestorsRecorded.label"),
-        value: String(recordedAncestors),
-      },
-      {
-        helper: t("yucayeke.metrics.documents.helper"),
-        label: t("yucayeke.metrics.documents.label"),
-        value: String(totalDocuments),
-      },
-      {
-        helper: t("yucayeke.metrics.consents.helper"),
-        label: t("yucayeke.metrics.consents.label"),
-        value: `${acceptedRequiredConsentsCount} / ${requiredConsents.length}`,
-      },
-    ],
-    rhythm: [
-      {
-        label: t("yucayeke.facts.profileStatus"),
-        value: statusLabel,
-      },
-      {
-        label: t("yucayeke.facts.primaryContact"),
-        value: contactMethod || missingValueLabel,
-      },
-      {
-        label: t("yucayeke.facts.identity"),
-        value: toStatusLabel(personalInfo?.identity) || missingValueLabel,
-      },
-      {
-        label: t("yucayeke.facts.lastUpdate"),
-        value:
-          formatDateLabel(accountInfo?.lastUpdatedAt) ||
-          formatDateLabel(accountInfo?.user?.updatedAt) ||
-          missingValueLabel,
-      },
-    ],
+    yucayekeUnknown: Boolean(personalInfo?.yucayekeUnknown),
     territoryFacts: [
       {
         label: t("yucayeke.facts.birthCity"),

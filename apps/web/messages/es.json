@@ -1292,6 +1292,102 @@
       }
     }
   },
+  "yucayekeMap": {
+    "title": "Yucayekes de Borikén",
+    "subtitle": "Los territorios ancestrales del pueblo taíno de Borikén. Selecciona un territorio en el mapa o en la lista para conocerlo.",
+    "mapAriaLabel": "Mapa interactivo de los territorios yucayeke de Borikén",
+    "listAriaLabel": "Lista de territorios",
+    "disclaimer": "Los límites territoriales son reconstrucciones interpretativas a partir de fuentes históricas y orales — no son líneas de agrimensura.",
+    "status": {
+      "confirmed": "Documentado históricamente",
+      "oralTradition": "Tradición oral"
+    },
+    "labels": {
+      "cacique": "Cacique {name}",
+      "municipalities": "Municipios actuales",
+      "notMapped": "Aún sin cartografiar",
+      "yourTerritory": "Tu yucayeke",
+      "yourTerritoryChip": "Tu yucayeke: {name}",
+      "selectPrompt": "Selecciona un territorio en el mapa o en la lista para leer sobre él."
+    },
+    "profileCard": {
+      "title": "Tu Yucayeke",
+      "explore": "Explora los territorios",
+      "unknown": "Marcaste tu yucayeke como desconocido — explora el mapa y las historias de los territorios para ayudarte a encontrar tu conexión.",
+      "unassigned": "Aún no hay yucayeke registrado. Completa tu inscripción para declararlo.",
+      "completeEnrollment": "Completar inscripción"
+    },
+    "states": {
+      "loading": "Cargando territorios…",
+      "error": "No se pudo cargar el mapa de territorios.",
+      "retry": "Intentar de nuevo"
+    },
+    "territories": {
+      "aymaco": {
+        "description": "Territorio del noroeste alrededor de las actuales Aguadilla y Aguada, sede del cacique Aymamón — uno de los yucayekes confirmados de la época del contacto."
+      },
+      "abacoa": {
+        "description": "Territorio del cacique Arasibo a lo largo del Río Grande de Arecibo, extendiéndose aproximadamente desde Quebradillas hasta Arecibo."
+      },
+      "sibuco": {
+        "description": "Territorio de la costa norte sobre el Río Cibuco, alrededor de la actual Vega Baja, dirigido por el cacique Guacabo."
+      },
+      "toa": {
+        "description": "Tierras fértiles del Río Toa cerca de Vega Alta y Dorado bajo el cacique Aramaná, un centro temprano del cultivo de yuca."
+      },
+      "bayamon": {
+        "description": "Territorio del cacique Majagua en la cuenca del río Bayamón, cubriendo el actual Bayamón y la región de Toa Alta y Toa Baja."
+      },
+      "guaynabo": {
+        "description": "Atribuido al cacique Mabó alrededor del actual Guaynabo. Los registros tempranos son debatidos, por lo que se mantiene como tradición oral pendiente de investigación."
+      },
+      "hamanio": {
+        "description": "Territorio de Yuisa de Loíza, una de las pocas cacicas registradas de Borikén, en la desembocadura del Río Grande de Loíza."
+      },
+      "canaibon": {
+        "description": "Tierras del cacique Canóbana a lo largo del Río Canóvanas, alrededor de los actuales Canóvanas y Río Grande."
+      },
+      "dacuao": {
+        "description": "Territorio del este alrededor de Naguabo y Ceiba, registrado como Daguao en las crónicas tempranas."
+      },
+      "macao": {
+        "description": "Territorio del sureste del cacique Humacao, cuyo nombre sobrevive en el municipio actual."
+      },
+      "guayaney": {
+        "description": "Territorio costero del sureste del cacique Guaraca, alrededor de los actuales Patillas y Maunabo."
+      },
+      "guayama": {
+        "description": "Territorio del sur del cacique Guamaní, alrededor de los actuales Guayama y Salinas."
+      },
+      "guania": {
+        "description": "Sede del cacique supremo Agüeybaná, extendiéndose por el suroeste desde Cabo Rojo hacia Ponce — el cacicazgo más influyente de Borikén al momento del contacto."
+      },
+      "yaguecax": {
+        "description": "Territorio del oeste del cacique Urayoán en el valle del río Yagüez, alrededor de los actuales Mayagüez y Añasco."
+      },
+      "otao": {
+        "description": "Corazón montañoso del cacique Guarionex alrededor de Utuado y Lares, hogar de importantes centros ceremoniales de la cordillera."
+      },
+      "guajataca": {
+        "description": "Territorio vinculado al cacique Mabodamaca alrededor de Quebradillas e Isabela — preservado principalmente por tradición oral mientras la confirmación histórica sigue pendiente."
+      },
+      "jatobonico": {
+        "description": "Territorio montañoso central del cacique Orocobix a lo largo del alto Río Jatibonico, alrededor de Orocovis, Barranquitas y Coamo."
+      },
+      "turabo": {
+        "description": "Territorio del cacique Caguax en el valle del Turabo — la actual Caguas lleva su nombre."
+      },
+      "bieque": {
+        "description": "El territorio insular de Vieques y Culebra, recordado por el cacique Cacimar, quien lideró la resistencia desde las islas."
+      },
+      "hayuya": {
+        "description": "Territorio montañoso del cacique Hayuya en la región del actual Jayuya, donde el topónimo persiste — se mantiene como tradición oral pendiente de confirmación."
+      },
+      "loquillo": {
+        "description": "Territorio del noreste asociado al cacique Loquillo cerca de la sierra de Luquillo — se mantiene como tradición oral pendiente de confirmación."
+      }
+    }
+  },
   "services": {
     "hero": {
       "badge": "Recursos para Miembros",

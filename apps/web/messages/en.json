@@ -1292,6 +1292,102 @@
       }
     }
   },
+  "yucayekeMap": {
+    "title": "Yucayekes of Borikén",
+    "subtitle": "The ancestral territories of the Taíno people of Borikén. Select a territory on the map or in the list to learn about it.",
+    "mapAriaLabel": "Interactive map of the yucayeke territories of Borikén",
+    "listAriaLabel": "Territory list",
+    "disclaimer": "Territory boundaries are interpretive reconstructions from historical and oral sources — not survey lines.",
+    "status": {
+      "confirmed": "Historically documented",
+      "oralTradition": "Oral tradition"
+    },
+    "labels": {
+      "cacique": "Cacique {name}",
+      "municipalities": "Present-day municipalities",
+      "notMapped": "Not yet mapped",
+      "yourTerritory": "Your yucayeke",
+      "yourTerritoryChip": "Your yucayeke: {name}",
+      "selectPrompt": "Select a territory on the map or in the list to read about it."
+    },
+    "profileCard": {
+      "title": "Your Yucayeke",
+      "explore": "Explore the territories",
+      "unknown": "You marked your yucayeke as unknown — explore the map and territory histories to help find your connection.",
+      "unassigned": "No yucayeke recorded yet. Complete your enrollment to declare one.",
+      "completeEnrollment": "Complete enrollment"
+    },
+    "states": {
+      "loading": "Loading territories…",
+      "error": "The territory map could not be loaded.",
+      "retry": "Try again"
+    },
+    "territories": {
+      "aymaco": {
+        "description": "Northwestern territory around present-day Aguadilla and Aguada, seat of cacique Aymamón — one of the confirmed yucayekes of the contact era."
+      },
+      "abacoa": {
+        "description": "Territory of cacique Arasibo along the Río Grande de Arecibo, spanning roughly from Quebradillas to Arecibo."
+      },
+      "sibuco": {
+        "description": "North-coast territory on the Río Cibuco around present-day Vega Baja, led by cacique Guacabo."
+      },
+      "toa": {
+        "description": "Fertile lands of the Río Toa near Vega Alta and Dorado under cacique Aramaná, an early center of cassava cultivation."
+      },
+      "bayamon": {
+        "description": "Territory of cacique Majagua in the Bayamón river basin, covering present-day Bayamón and the Toa Alta–Toa Baja region."
+      },
+      "guaynabo": {
+        "description": "Attributed to cacique Mabó around present-day Guaynabo. Early records are debated, so it is held as oral tradition pending further research."
+      },
+      "hamanio": {
+        "description": "Territory of Yuisa of Loíza, one of the few recorded female caciques of Borikén, at the mouth of the Río Grande de Loíza."
+      },
+      "canaibon": {
+        "description": "Lands of cacique Canóbana along the Río Canóvanas, around present-day Canóvanas and Río Grande."
+      },
+      "dacuao": {
+        "description": "Eastern territory around Naguabo and Ceiba, recorded as Daguao in the early chronicles."
+      },
+      "macao": {
+        "description": "Southeastern territory of cacique Humacao, whose name survives in the present-day municipality."
+      },
+      "guayaney": {
+        "description": "Southeastern coastal territory of cacique Guaraca, around present-day Patillas and Maunabo."
+      },
+      "guayama": {
+        "description": "Southern territory of cacique Guamaní, around present-day Guayama and Salinas."
+      },
+      "guania": {
+        "description": "Seat of the paramount cacique Agüeybaná, spanning the southwest from Cabo Rojo toward Ponce — the most influential cacicazgo of Borikén at the time of contact."
+      },
+      "yaguecax": {
+        "description": "Western territory of cacique Urayoán in the Yagüez river valley, around present-day Mayagüez and Añasco."
+      },
+      "otao": {
+        "description": "Mountain heartland of cacique Guarionex around Utuado and Lares, home to major ceremonial centers of the cordillera."
+      },
+      "guajataca": {
+        "description": "Territory linked to cacique Mabodamaca around Quebradillas and Isabela — preserved chiefly through oral tradition while historical confirmation is pending."
+      },
+      "jatobonico": {
+        "description": "Central mountain territory of cacique Orocobix along the upper Río Jatibonico, around Orocovis, Barranquitas, and Coamo."
+      },
+      "turabo": {
+        "description": "Territory of cacique Caguax in the Turabo valley — present-day Caguas carries his name."
+      },
+      "bieque": {
+        "description": "The island territory of Vieques and Culebra, remembered for cacique Cacimar, who led resistance from the offshore islands."
+      },
+      "hayuya": {
+        "description": "Mountain territory of cacique Hayuya in the present-day Jayuya region, where the toponym persists — held as oral tradition pending confirmation."
+      },
+      "loquillo": {
+        "description": "Northeastern territory associated with cacique Loquillo near the Luquillo range — held as oral tradition pending confirmation."
+      }
+    }
+  },
   "services": {
     "hero": {
       "badge": "Member Resources",
