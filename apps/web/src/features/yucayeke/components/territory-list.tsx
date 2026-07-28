@@ -47,6 +47,12 @@ export function TerritoryList({
               type="button"
               aria-current={isSelected || undefined}
               data-territory-slug={territory.slug}
+              // Selection must commit on pointerdown: hovering a row swaps
+              // the info card above this list, which changes its height and
+              // shifts the row out from under the cursor before mouseup —
+              // the browser then never dispatches `click` on the button.
+              // `click` stays for keyboard activation (Enter/Space).
+              onPointerDown={() => onSelect(territory)}
               onClick={() => onSelect(territory)}
               onMouseEnter={() => onHover?.(territory)}
               onMouseLeave={() => onHover?.(null)}
