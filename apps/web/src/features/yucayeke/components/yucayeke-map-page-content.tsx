@@ -9,7 +9,7 @@ import Link from "next/link";
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { Button } from "@/components/ui/button";
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
-import { useProfileInfoQuery } from "@/features/profile/lib/profile-queries";
+import { useOptionalProfileInfoQuery } from "@/features/profile/lib/profile-queries";
 
 import { resolveTerritory, type Territory } from "../content/territories";
 import { buildTerritoryShapes } from "../lib/geometry";
@@ -22,11 +22,15 @@ import { TerritoryList } from "./territory-list";
  * Full interactive territory-map experience: SVG map + synced focusable
  * list + reading panel. The member's declared yucayeke (from enrollment)
  * highlights in `--primary` and its info card opens by default.
+ *
+ * This is the centrepiece of the PUBLIC `/yucayeke` page, so it must
+ * degrade cleanly with no session — hence the optional profile query
+ * (the redirecting one would bounce signed-out visitors to /sign-in).
  */
 export function YucayekeMapPageContent() {
   const t = useTranslations("yucayekeMap");
   const geometryQuery = useYucayekeGeometryQuery();
-  const profileQuery = useProfileInfoQuery();
+  const profileQuery = useOptionalProfileInfoQuery();
 
   const personalInfo = profileQuery.data?.enrollment?.personalInfo;
   const ownTerritory = resolveTerritory(personalInfo?.yucayeke);
@@ -64,12 +68,14 @@ export function YucayekeMapPageContent() {
       variants={fadeInUpContainer}
       initial="hidden"
       animate="visible"
-      className="mx-auto w-full max-w-6xl px-0 pt-28 pb-10 sm:px-2"
+      className="mx-auto w-full max-w-6xl px-4 pt-4 pb-10 sm:px-6"
     >
+      {/* h2, not h1: this section now sits under the page hero on
+          /yucayeke rather than being its own route. */}
       <motion.header variants={fadeInUpItem} className="max-w-3xl">
-        <h1 className="text-foreground text-[1.7rem] leading-[1.05] font-semibold tracking-tight sm:text-[2rem] lg:text-[2.3rem]">
-          {t("title")}
-        </h1>
+        <h2 className="text-foreground text-[1.7rem] leading-[1.05] font-semibold tracking-tight sm:text-[2rem]">
+          {t("labels.exploreHeading")}
+        </h2>
         <p className="text-muted-foreground mt-2 text-[0.88rem] leading-5 sm:text-[0.95rem]">
           {t("subtitle")}
         </p>

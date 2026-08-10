@@ -41,7 +41,7 @@ describe("YourYucayekeCard", () => {
     expect(screen.getByText("Cacique Agüeybaná")).toBeDefined();
     expect(
       screen.getByRole("link", { name: "Explore the territories" }),
-    ).toHaveProperty("href", expect.stringContaining("/yucayeke/map"));
+    ).toHaveProperty("href", expect.stringContaining("/yucayeke"));
   });
 
   it("shows help-finding framing when yucayeke is unknown", () => {

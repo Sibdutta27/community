@@ -84,7 +84,13 @@ export function BorikenMap({
             className={cn(
               "transition-[fill,stroke] duration-150",
               isInteractive &&
-                "cursor-pointer focus-visible:stroke-[var(--ring)] focus-visible:stroke-2 focus-visible:outline-none",
+                // `outline-none` must apply to plain :focus too, not only
+                // :focus-visible — a mouse click sets :focus without
+                // :focus-visible, and the UA then paints its default
+                // rectangle around the path's bounding box. That black box
+                // is what reads as "a square border round the territory".
+                // Keyboard focus stays visible via the stroke below.
+                "cursor-pointer outline-none focus:outline-none focus-visible:stroke-[var(--ring)] focus-visible:stroke-2 focus-visible:outline-none",
             )}
             {...(isInteractive
               ? {

@@ -1,6 +1,8 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { cn } from "@/lib/utils";
@@ -100,6 +102,14 @@ export function TerritoryInfoCard({
           ))}
         </ul>
       </div>
+
+      <Link
+        href={`/yucayeke/${territory.slug}`}
+        className="text-primary mt-4 inline-flex items-center gap-1 text-[0.83rem] font-semibold hover:underline"
+      >
+        {t("labels.readMore", { name: territory.displayName })}
+        <ArrowRight aria-hidden="true" className="size-3.5" />
+      </Link>
     </SurfaceCard>
   );
 }

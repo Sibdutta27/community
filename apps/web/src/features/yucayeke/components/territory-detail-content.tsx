@@ -164,7 +164,7 @@ export function TerritoryDetailContent({
 
           {territory.geometryKey ? (
             <Button asChild size="sm" variant="outline" className="mt-4">
-              <Link href="/yucayeke/map">{t("openMap")}</Link>
+              <Link href="/yucayeke">{t("openMap")}</Link>
             </Button>
           ) : null}
 

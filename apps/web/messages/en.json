@@ -1341,7 +1341,9 @@
       "notMapped": "Not yet mapped",
       "yourTerritory": "Your yucayeke",
       "yourTerritoryChip": "Your yucayeke: {name}",
-      "selectPrompt": "Select a territory on the map or in the list to read about it."
+      "selectPrompt": "Select a territory on the map or in the list to read about it.",
+      "readMore": "Read about {name}",
+      "exploreHeading": "Explore the territories"
     },
     "profileCard": {
       "title": "Your Yucayeke",

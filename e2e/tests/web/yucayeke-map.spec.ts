@@ -3,13 +3,13 @@ import { hasMemberCreds, loginMember } from "../../fixtures/auth";
 
 /**
  * Yucayeke territory map: profile "Your Yucayeke" card + the interactive
- * /yucayeke/map page. Own-territory assertions are conditional on the test
+ * /yucayeke page. Own-territory assertions are conditional on the test
  * member actually having a declared yucayeke, so the suite stays green for
  * unassigned accounts too.
  */
 test.describe("yucayeke map", () => {
   test("redirects unauthenticated visitors to sign-in", async ({ page }) => {
-    await page.goto("/yucayeke/map");
+    await page.goto("/yucayeke");
     await expect(page).toHaveURL(/\/sign-in/);
   });
 
@@ -39,7 +39,7 @@ test.describe("yucayeke map", () => {
     test("map page renders all territories and supports reading about them", async ({
       page,
     }) => {
-      await page.goto("/yucayeke/map");
+      await page.goto("/yucayeke");
 
       // 19 mapped territory shapes (Bieque's nine islands merged into one).
       await expect(page.locator("path[data-territory]")).toHaveCount(19);
@@ -71,7 +71,7 @@ test.describe("yucayeke map", () => {
     test("declared yucayeke highlights on the map when assigned", async ({
       page,
     }) => {
-      await page.goto("/yucayeke/map");
+      await page.goto("/yucayeke");
 
       const chip = page.getByText(/^Your yucayeke: /);
       if ((await chip.count()) === 0) {

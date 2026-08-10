@@ -103,7 +103,7 @@ export function YourYucayekeCard({
               size="sm"
               variant={territory ? "primary" : "outline"}
             >
-              <Link href="/yucayeke/map">{t("profileCard.explore")}</Link>
+              <Link href="/yucayeke">{t("profileCard.explore")}</Link>
             </Button>
             {!territory && !yucayekeUnknown ? (
               <Button asChild size="sm" variant="secondary">

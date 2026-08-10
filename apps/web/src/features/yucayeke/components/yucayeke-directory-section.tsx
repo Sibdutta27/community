@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
 import { useOptionalProfileInfoQuery } from "@/features/profile/lib/profile-queries";
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -116,11 +115,8 @@ export function YucayekeDirectorySection() {
           ))}
         </div>
 
-        <motion.div variants={fadeInUpItem} className="mt-8">
-          <Button asChild variant="outline">
-            <Link href="/yucayeke/map">{t("openMap")}</Link>
-          </Button>
-        </motion.div>
+        {/* No "open the map" CTA: the map is directly above this on the
+            same page now, so it would link to where the reader already is. */}
       </div>
     </motion.section>
   );
