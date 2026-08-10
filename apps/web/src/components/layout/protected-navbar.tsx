@@ -30,13 +30,28 @@ import { useLogoutMutation } from "@/features/auth/lib/auth-mutations";
 import type { AuthUser } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "My Profile", href: "/profile" },
-  { label: "Yucayeke", href: "/yucayeke" },
-  { label: "Community", href: "/community" },
-  { label: "Services", href: "/services" },
-] as const;
+type NavLink = Readonly<{ label: string; href: string }>;
+type NavItem =
+  | (NavLink & { kind: "link" })
+  | Readonly<{ kind: "menu"; label: string; items: readonly NavLink[] }>;
+
+/**
+ * "My Profile" is deliberately absent: it already lives in the account
+ * menu under the member's own name, and listing it twice made the bar
+ * longer for no navigational gain.
+ */
+const navItems: readonly NavItem[] = [
+  { kind: "link", label: "Dashboard", href: "/dashboard" },
+  { kind: "link", label: "Yucayeke", href: "/yucayeke" },
+  {
+    kind: "menu",
+    label: "Programs",
+    items: [
+      { label: "Community", href: "/community" },
+      { label: "Services", href: "/services" },
+    ],
+  },
+];
 
 function isActivePath(pathname: string, href: string) {
   if (href === "/") {
@@ -74,8 +89,43 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
   const logoutMutation = useLogoutMutation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [openMenuLabel, setOpenMenuLabel] = useState<string | null>(null);
   const profileMenuRef = useRef<HTMLDivElement | null>(null);
   const profileTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const navRef = useRef<HTMLElement | null>(null);
+
+  // Grouped nav menus dismiss like the account menu does: click away, or Esc.
+  useEffect(() => {
+    if (!openMenuLabel) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const targetNode = event.target as Node | null;
+
+      if (
+        navRef.current &&
+        targetNode &&
+        !navRef.current.contains(targetNode)
+      ) {
+        setOpenMenuLabel(null);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenMenuLabel(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [openMenuLabel]);
 
   useEffect(() => {
     if (!isProfileMenuOpen) {
@@ -146,8 +196,74 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
             <BrandMark compact showSubtitle={false} />
           </Link>
 
-          <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
+          <nav
+            aria-label="Main"
+            className="hidden items-center gap-1 lg:flex"
+            ref={navRef}
+          >
             {navItems.map((item) => {
+              if (item.kind === "menu") {
+                // A grouped section reads as active whenever the reader is on
+                // any of its destinations.
+                const isActive = item.items.some((child) =>
+                  isActivePath(pathname, child.href),
+                );
+                const isOpen = openMenuLabel === item.label;
+
+                return (
+                  <div className="relative" key={item.label}>
+                    <button
+                      aria-controls={`nav-menu-${item.label.toLowerCase()}`}
+                      aria-expanded={isOpen}
+                      aria-haspopup="menu"
+                      className={cn(
+                        desktopNavLinkClass(isActive),
+                        "inline-flex cursor-pointer items-center gap-1",
+                      )}
+                      onClick={() =>
+                        setOpenMenuLabel(isOpen ? null : item.label)
+                      }
+                      type="button"
+                    >
+                      {item.label}
+                      <ChevronDown
+                        aria-hidden="true"
+                        className={cn(
+                          "size-3.5 transition-transform",
+                          isOpen && "rotate-180",
+                        )}
+                      />
+                    </button>
+
+                    {isOpen ? (
+                      <div
+                        aria-label={item.label}
+                        id={`nav-menu-${item.label.toLowerCase()}`}
+                        role="menu"
+                        className="border-border/70 bg-surface/95 supports-backdrop-filter:bg-surface/90 absolute top-[calc(100%+0.75rem)] left-0 w-48 rounded-2xl border p-2 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_2px_8px_-4px_rgba(20,26,34,0.1),0_24px_44px_-24px_rgba(20,26,34,0.3)] backdrop-blur-xl"
+                      >
+                        {item.items.map((child) => (
+                          <Link
+                            key={child.href}
+                            aria-current={
+                              isActivePath(pathname, child.href)
+                                ? "page"
+                                : undefined
+                            }
+                            className={dropdownItemClass}
+                            href={child.href}
+                            role="menuitem"
+                            onClick={() => setOpenMenuLabel(null)}
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              }
+
               const isActive = isActivePath(pathname, item.href);
 
               return (
@@ -290,6 +406,35 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
 
             <nav aria-label="Main" className="mt-4 grid gap-1">
               {navItems.map((item) => {
+                // No nested disclosure on mobile — the panel is already a
+                // drawer, so a group just becomes a labelled section.
+                if (item.kind === "menu") {
+                  return (
+                    <div className="grid gap-1" key={item.label}>
+                      <p className="text-muted-foreground px-4 pt-3 pb-1 text-[11px] font-semibold tracking-[0.12em] uppercase">
+                        {item.label}
+                      </p>
+                      {item.items.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          aria-current={
+                            isActivePath(pathname, child.href)
+                              ? "page"
+                              : undefined
+                          }
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={mobileNavLinkClass(
+                            isActivePath(pathname, child.href),
+                          )}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  );
+                }
+
                 const isActive = isActivePath(pathname, item.href);
 
                 return (

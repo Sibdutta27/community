@@ -1,7 +1,6 @@
 import { YucayekeConnectSection } from "@/features/yucayeke/components/yucayeke-connect-section";
 import { YucayekeDirectorySection } from "@/features/yucayeke/components/yucayeke-directory-section";
 import { YucayekeMapPageContent } from "@/features/yucayeke/components/yucayeke-map-page-content";
-import { YourYucayekeBand } from "@/features/yucayeke/components/your-yucayeke-band";
 
 /**
  * `/yucayeke` IS the interactive territory map — that experience used to
@@ -19,7 +18,6 @@ import { YourYucayekeBand } from "@/features/yucayeke/components/your-yucayeke-b
 export function YucayekePageContent() {
   return (
     <main className="bg-background pt-28">
-      <YourYucayekeBand />
       <YucayekeMapPageContent />
       <YucayekeDirectorySection />
       <YucayekeConnectSection />

@@ -136,16 +136,50 @@ describe("ProtectedNavbar", () => {
   it("keeps the app navigation links", () => {
     renderWithIntl(<ProtectedNavbar user={user} />);
 
-    for (const label of [
-      "Dashboard",
-      "My Profile",
-      "Yucayeke",
-      "Community",
-      "Services",
-    ]) {
+    for (const label of ["Dashboard", "Yucayeke"]) {
       expect(
         screen.getAllByRole("link", { name: label }).length,
       ).toBeGreaterThan(0);
     }
+
+    // Profile is reachable from the account menu, not duplicated in the bar.
+    expect(screen.queryByRole("link", { name: "My Profile" })).toBeNull();
+  });
+
+  it("groups Community and Services behind the Programs menu", () => {
+    renderWithIntl(<ProtectedNavbar user={user} />);
+
+    // Collapsed by default — that is the point of grouping them.
+    expect(screen.queryByRole("link", { name: "Community" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Services" })).toBeNull();
+
+    const trigger = screen.getByRole("button", { name: "Programs" });
+    expect(trigger).toHaveAttribute("aria-haspopup", "menu");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(trigger);
+
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    const menu = screen.getByRole("menu", { name: "Programs" });
+    expect(trigger).toHaveAttribute("aria-controls", menu.id);
+    // Menu children are menuitems, not plain links — that role overrides the
+    // implicit one, so query them as such.
+    expect(
+      screen.getByRole("menuitem", { name: "Community" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("menuitem", { name: "Services" }),
+    ).toBeInTheDocument();
+  });
+
+  it("closes the Programs menu on Escape", () => {
+    renderWithIntl(<ProtectedNavbar user={user} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Programs" }));
+    expect(screen.getByRole("menu", { name: "Programs" })).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(screen.queryByRole("menu", { name: "Programs" })).toBeNull();
   });
 });
