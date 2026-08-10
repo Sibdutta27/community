@@ -53,6 +53,15 @@ jobs:
         with:
           node-version: 24
 
+      # `vercel build` sees the workspace root's pnpm-lock.yaml and shells
+      # out to pnpm, which the runner does not ship — without this it dies
+      # with `spawn pnpm ENOENT`.
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.29.2 --activate
+          pnpm --version
+
       - name: Select the project for this branch
         run: |
           if [ "${GITHUB_REF_NAME}" = "testing-prod" ]; then
