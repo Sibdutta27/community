@@ -109,8 +109,10 @@ export function YucayekeMapPageContent() {
       ) : null}
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        {/* Deliberately card-less: the territory outlines ARE the border,
+            so wrapping the map in a bordered surface boxes the island. */}
         <motion.div variants={fadeInUpItem} className="min-w-0">
-          <SurfaceCard padding="compact" tone="elevated">
+          <div className="p-1 sm:p-2">
             {geometryQuery.isPending ? (
               <div
                 aria-label={t("states.loading")}
@@ -145,7 +147,7 @@ export function YucayekeMapPageContent() {
             <p className="text-muted-foreground mt-3 text-[12px] leading-[1.15rem]">
               {t("disclaimer")}
             </p>
-          </SurfaceCard>
+          </div>
         </motion.div>
 
         <motion.aside

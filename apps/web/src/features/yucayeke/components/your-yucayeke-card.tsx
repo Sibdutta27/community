@@ -46,7 +46,9 @@ export function YourYucayekeCard({
       data-testid="your-yucayeke-card"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-        <div className="bg-background border-border min-w-0 flex-1 overflow-hidden rounded-xl border p-2 sm:max-w-[46%]">
+        {/* No container chrome: the island silhouette is its own outline,
+            so a border here would read as a box around the territory. */}
+        <div className="min-w-0 flex-1 overflow-hidden p-2 sm:max-w-[46%]">
           {shapes.length > 0 ? (
             <BorikenMap
               variant="preview"
