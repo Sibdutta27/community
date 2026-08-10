@@ -156,14 +156,8 @@ export function YucayekeMapPageContent() {
           </div>
         </motion.div>
 
-        <motion.aside
-          variants={fadeInUpItem}
-          className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-24 lg:self-start"
-        >
-          <TerritoryInfoCard
-            territory={hovered ?? selected}
-            isOwnTerritory={(hovered ?? selected)?.slug === ownTerritory?.slug}
-          />
+        {/* Row 1, right: the territory list sits beside the map. */}
+        <motion.aside variants={fadeInUpItem} className="min-w-0">
           <SurfaceCard padding="compact">
             <TerritoryList
               selectedSlug={selected?.slug ?? null}
@@ -173,6 +167,14 @@ export function YucayekeMapPageContent() {
             />
           </SurfaceCard>
         </motion.aside>
+
+        {/* Row 2: the reading panel spans the full width, under both. */}
+        <motion.div variants={fadeInUpItem} className="min-w-0 lg:col-span-2">
+          <TerritoryInfoCard
+            territory={hovered ?? selected}
+            isOwnTerritory={(hovered ?? selected)?.slug === ownTerritory?.slug}
+          />
+        </motion.div>
       </div>
     </motion.section>
   );
