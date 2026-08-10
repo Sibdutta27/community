@@ -68,14 +68,14 @@ export function YucayekeMapPageContent() {
       variants={fadeInUpContainer}
       initial="hidden"
       animate="visible"
-      className="mx-auto w-full max-w-6xl px-4 pt-4 pb-10 sm:px-6"
+      className="mx-auto w-full max-w-6xl px-4 pb-10 sm:px-6"
     >
-      {/* h2, not h1: this section now sits under the page hero on
-          /yucayeke rather than being its own route. */}
+      {/* h1: with the hero removed this is the page's top-level heading,
+          so the document outline would otherwise start at h2. */}
       <motion.header variants={fadeInUpItem} className="max-w-3xl">
-        <h2 className="text-foreground text-[1.7rem] leading-[1.05] font-semibold tracking-tight sm:text-[2rem]">
+        <h1 className="text-foreground text-[1.7rem] leading-[1.05] font-semibold tracking-tight sm:text-[2rem]">
           {t("labels.exploreHeading")}
-        </h2>
+        </h1>
         <p className="text-muted-foreground mt-2 text-[0.88rem] leading-5 sm:text-[0.95rem]">
           {t("subtitle")}
         </p>
