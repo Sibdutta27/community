@@ -118,12 +118,14 @@ export function TribalIdentificationCard({
   const showPhoto = data.photoUrl && !hidePhotoForExport;
 
   return (
-    <div className="flex w-full max-w-[26rem] shrink-0 flex-col lg:w-[23rem] lg:max-w-none xl:w-[25rem]">
+    // Width/height come from the deck that owns both faces, so the two
+    // stay dimensionally identical through the flip.
+    <div className="flex h-full w-full flex-col">
       {/* Exported node — the ID card itself, in a landscape real-ID shape. */}
       <div
         ref={cardRef}
         aria-label={t("cardAria")}
-        className="border-primary/15 shadow-card-soft relative isolate flex flex-col overflow-hidden rounded-2xl border p-3.5"
+        className="border-primary/15 shadow-card-soft relative isolate flex flex-1 flex-col overflow-hidden rounded-2xl border p-3.5"
         role="group"
         style={{ background: CARD_GRADIENT }}
       >

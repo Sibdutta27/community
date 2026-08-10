@@ -1163,6 +1163,26 @@
         "generating": "Generando…",
         "error": "No se pudo generar el archivo. Inténtalo de nuevo."
       }
+    },
+    "deck": {
+      "srLabel": "Tarjetas de identidad",
+      "showId": "Mostrar la identificación tribal",
+      "showYucayeke": "Mostrar tu yucayeque",
+      "faceId": "Identificación tribal",
+      "faceYucayeke": "Tu yucayeque"
+    },
+    "yucayekeCard": {
+      "eyebrow": "Territorio ancestral",
+      "title": "Yucayeque",
+      "caciqueLabel": "Cacique",
+      "municipalitiesLabel": "Municipios actuales",
+      "explore": "Explorar los yucayeques",
+      "learnMore": "Conocer {name}",
+      "unassigned": "Aún no has declarado un yucayeque.",
+      "unassignedCta": "Completa tu inscripción",
+      "unknown": "Registrado como desconocido.",
+      "notMapped": "Aún no cartografiado",
+      "cardAria": "Tu yucayeque ancestral"
     }
   },
   "consent": {

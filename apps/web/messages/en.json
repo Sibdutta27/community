@@ -1163,6 +1163,26 @@
         "generating": "Generating…",
         "error": "Couldn't generate the file. Please try again."
       }
+    },
+    "deck": {
+      "srLabel": "Identity cards",
+      "showId": "Show tribal ID",
+      "showYucayeke": "Show your yucayeke",
+      "faceId": "Tribal ID",
+      "faceYucayeke": "Your yucayeke"
+    },
+    "yucayekeCard": {
+      "eyebrow": "Ancestral territory",
+      "title": "Yucayeke",
+      "caciqueLabel": "Cacique",
+      "municipalitiesLabel": "Present-day",
+      "explore": "Explore the yucayekes",
+      "learnMore": "Learn about {name}",
+      "unassigned": "No yucayeke declared yet.",
+      "unassignedCta": "Complete your enrollment",
+      "unknown": "Recorded as unknown.",
+      "notMapped": "Not yet mapped",
+      "cardAria": "Your ancestral yucayeke"
     }
   },
   "consent": {

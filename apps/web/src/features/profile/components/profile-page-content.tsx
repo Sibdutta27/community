@@ -9,7 +9,7 @@ import type { AuthUser } from "@/lib/auth";
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileLineageSection } from "./profile-lineage-section";
 import { ProfileSummary } from "./profile-summary";
-import { TribalIdentificationCard } from "./tribal-identification-card";
+import { IdentityCardDeck } from "./identity-card-deck";
 import { buildIdCardData } from "../lib/id-card-data";
 import { useProfileInfoQuery } from "../lib/profile-queries";
 import { buildProfileViewData } from "../lib/profile-view-data";
@@ -75,7 +75,11 @@ export function ProfilePageContent({ user }: Readonly<{ user: AuthUser }>) {
           />
         </div>
 
-        <TribalIdentificationCard data={idCardData} />
+        <IdentityCardDeck
+          idCardData={idCardData}
+          yucayekeUnknown={profileViewData.yucayekeData.yucayekeUnknown}
+          yucayekeValue={profileViewData.yucayekeData.declaredYucayeke}
+        />
       </div>
 
       <ProfileLineageSection
