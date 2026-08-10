@@ -1290,6 +1290,39 @@
           "ctaLabel": "Contact"
         }
       }
+    },
+    "directory": {
+      "eyebrow": "Ancestral territories of Borikén",
+      "title": "The Yucayekes",
+      "subtitle": "Twenty-one ancestral territories, their caciques, and the lands they held. Boundaries are interpretive reconstructions from historical and oral sources — not survey lines.",
+      "countLabel": "{count} territories",
+      "filterConfirmed": "Historically documented",
+      "filterOral": "Oral tradition",
+      "filterAll": "All",
+      "openMap": "Explore the interactive map",
+      "srHeading": "Territory directory"
+    },
+    "territory": {
+      "backToDirectory": "All yucayekes",
+      "caciqueLabel": "Cacique",
+      "municipalitiesLabel": "Municipalities today",
+      "alsoKnownAs": "Also known as",
+      "locatorHeading": "Where it sits in Borikén",
+      "notMapped": "No boundary delivered yet",
+      "openMap": "See it on the interactive map",
+      "yoursBadge": "Your yucayeke",
+      "provenanceConfirmed": "Historically documented in the signed Yucayekeno Report (May 2025).",
+      "provenanceOral": "Held in oral tradition; boundaries and attribution are not yet confirmed by the documentary record.",
+      "prosePendingTitle": "Fuller history in progress",
+      "prosePendingBody": "Long-form history for this yucayeke is still being gathered with community historians. What appears above is drawn from the canonical territory record.",
+      "metaDescription": "{name} — ancestral yucayeke of Borikén, seat of cacique {cacique}."
+    },
+    "yourBand": {
+      "title": "Your yucayeke",
+      "cta": "Read about {name}",
+      "unassigned": "You haven't declared a yucayeke yet.",
+      "unassignedCta": "Complete your enrollment",
+      "unknown": "You marked your yucayeke as unknown. You can update this in your enrollment at any time."
     }
   },
   "yucayekeMap": {

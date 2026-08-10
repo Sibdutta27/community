@@ -1290,6 +1290,39 @@
           "ctaLabel": "Contacto"
         }
       }
+    },
+    "directory": {
+      "eyebrow": "Territorios ancestrales de Borikén",
+      "title": "Los Yucayeques",
+      "subtitle": "Veintiún territorios ancestrales, sus caciques y las tierras que ocuparon. Los límites son reconstrucciones interpretativas de fuentes históricas y orales, no líneas de agrimensura.",
+      "countLabel": "{count} territorios",
+      "filterConfirmed": "Documentado históricamente",
+      "filterOral": "Tradición oral",
+      "filterAll": "Todos",
+      "openMap": "Explorar el mapa interactivo",
+      "srHeading": "Directorio de territorios"
+    },
+    "territory": {
+      "backToDirectory": "Todos los yucayeques",
+      "caciqueLabel": "Cacique",
+      "municipalitiesLabel": "Municipios actuales",
+      "alsoKnownAs": "También conocido como",
+      "locatorHeading": "Su ubicación en Borikén",
+      "notMapped": "Aún no se ha entregado el límite",
+      "openMap": "Verlo en el mapa interactivo",
+      "yoursBadge": "Tu yucayeque",
+      "provenanceConfirmed": "Documentado históricamente en el Informe Yucayekeno firmado (mayo de 2025).",
+      "provenanceOral": "Conservado en la tradición oral; los límites y la atribución aún no están confirmados por el registro documental.",
+      "prosePendingTitle": "Historia ampliada en preparación",
+      "prosePendingBody": "La historia extensa de este yucayeque aún se recopila junto a historiadores de la comunidad. Lo anterior proviene del registro canónico de territorios.",
+      "metaDescription": "{name} — yucayeque ancestral de Borikén, sede del cacique {cacique}."
+    },
+    "yourBand": {
+      "title": "Tu yucayeque",
+      "cta": "Leer sobre {name}",
+      "unassigned": "Todavía no has declarado un yucayeque.",
+      "unassignedCta": "Completa tu inscripción",
+      "unknown": "Marcaste tu yucayeque como desconocido. Puedes actualizarlo en tu inscripción cuando quieras."
     }
   },
   "yucayekeMap": {

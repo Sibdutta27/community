@@ -23,21 +23,31 @@ const numberFormatter = new Intl.NumberFormat("en-US");
 
 export function YucayekeHero({ stats }: YucayekeHeroProps) {
   const t = useTranslations("yucayeke.hero");
+  const tDirectory = useTranslations("yucayeke.directory");
 
   return (
     <PageHeroSection containerClassName={sharedStyles.sectionContainer}>
+      <motion.p
+        className="text-muted-foreground text-[11px] font-semibold tracking-[0.14em] uppercase"
+        variants={fadeInUpItem}
+      >
+        {tDirectory("eyebrow")}
+      </motion.p>
+
+      {/* The page is the directory of all 21 territories now, not a single
+          yucayeke — per-territory copy lives at /yucayeke/[slug]. */}
       <motion.h1
         className="text-foreground mt-4 max-w-4xl text-4xl font-semibold tracking-tight sm:mt-5 sm:text-5xl lg:mt-6 lg:text-6xl"
         variants={fadeInUpItem}
       >
-        Yucayeke <span className={sharedStyles.gradientText}>Guainía</span>
+        <span className={sharedStyles.gradientText}>{tDirectory("title")}</span>
       </motion.h1>
 
       <motion.p
         className="text-muted-foreground mt-6 max-w-3xl text-base leading-7 sm:text-lg"
         variants={fadeInUpItem}
       >
-        {t("subtitle")}
+        {tDirectory("subtitle")}
       </motion.p>
 
       <motion.div
