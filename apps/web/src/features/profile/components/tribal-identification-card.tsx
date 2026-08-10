@@ -125,7 +125,7 @@ export function TribalIdentificationCard({
       <div
         ref={cardRef}
         aria-label={t("cardAria")}
-        className="border-primary/15 shadow-card-soft relative isolate flex flex-1 flex-col overflow-hidden rounded-2xl border p-3.5"
+        className="border-primary/15 shadow-card-soft relative isolate flex flex-col overflow-hidden rounded-2xl border p-3.5"
         role="group"
         style={{ background: CARD_GRADIENT }}
       >
