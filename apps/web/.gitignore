@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# admin SPA bundle staged here by the NAS delivery packaging script
+# (see feat/nas-delivery). Build output, not source: it is a copy of
+# apps/admin's Vite build and would drift the moment apps/admin changes.
+# On Vercel the admin is deployed as its own project, and the /backend
+# proxy this bundle depends on is inert there, so it is never needed.
+public/admin/
