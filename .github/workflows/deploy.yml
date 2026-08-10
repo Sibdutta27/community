@@ -1,0 +1,73 @@
+name: Deploy to Vercel
+
+# Vercel's native Git integration needs the Vercel GitHub App installed on
+# the repository owner's account, which this repo does not currently have.
+# Building here and uploading with `vercel deploy --prebuilt` gives the same
+# push-to-deploy behaviour with no such requirement.
+#
+#   btf-testing  -> btf-testing{,-admin,-api}.vercel.app
+#   testing-prod -> yucayekeconnect{,-admin,-api}.vercel.app
+#
+# Requires one repository secret: VERCEL_TOKEN (Vercel -> Account Settings ->
+# Tokens). Project/org IDs are not secret.
+
+on:
+  push:
+    branches: [btf-testing, testing-prod]
+  workflow_dispatch:
+
+concurrency:
+  # Never let two deploys of the same branch race to production.
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      # One app's failure shouldn't strand the other two half-deployed.
+      fail-fast: false
+      matrix:
+        include:
+          - app: web
+            dir: apps/web
+            btf_project_id: prj_TU3RTerSRCsLB3FDjPhSpVIgEhKv
+            prod_project_id: prj_exadr4xDqTWxnqjjGcsusMtlYQg3
+          - app: admin
+            dir: apps/admin
+            btf_project_id: prj_MXAiRpV5PHmp032iwZ6HFfdGXMyL
+            prod_project_id: prj_LMq0rQuUXEc3bvmu3fSeEPnoZ47D
+          - app: api
+            dir: apps/api
+            btf_project_id: prj_5xVZBbrMNgX7V51xhW8C04sNtErl
+            prod_project_id: prj_M43IcUWvdd3g80zhTkyyAtGr0Guc
+
+    env:
+      VERCEL_ORG_ID: team_xCnkqPforUkJLziL70llBl3p
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Select the project for this branch
+        run: |
+          if [ "${GITHUB_REF_NAME}" = "testing-prod" ]; then
+            echo "VERCEL_PROJECT_ID=${{ matrix.prod_project_id }}" >> "$GITHUB_ENV"
+          else
+            echo "VERCEL_PROJECT_ID=${{ matrix.btf_project_id }}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Deploy ${{ matrix.app }}
+        working-directory: ${{ matrix.dir }}
+        run: |
+          set -euo pipefail
+          npm i -g vercel@latest
+          # Each app deploys from its own directory (no `workspace:` deps),
+          # matching how these projects are configured on Vercel.
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --prod --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
