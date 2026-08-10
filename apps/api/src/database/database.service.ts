@@ -6,9 +6,16 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class DatabaseService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
     constructor(private configService: ConfigService) {
-        const adapter = new PrismaPg({
-            connectionString: configService.getOrThrow<string>('DATABASE_URL'),
-        });
+        // Prisma schema-qualifies every generated query, so neither the
+        // `?schema=` URL param nor a role-level `search_path` can redirect
+        // it — the adapter has to be told explicitly. `DATABASE_SCHEMA`
+        // selects the deployment lane (unset => `public`, i.e. unchanged).
+        const schema = configService.get<string>('DATABASE_SCHEMA')?.trim();
+
+        const adapter = new PrismaPg(
+            { connectionString: configService.getOrThrow<string>('DATABASE_URL') },
+            schema ? { schema } : undefined,
+        );
 
         super({ adapter });
     }

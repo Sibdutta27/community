@@ -10,9 +10,15 @@ import { seedEventCategory } from "./event/eventCategory.seed";
 import { seedEvent } from "./event/event.seed";
 
 // Initialize the Prisma client with the PostgreSQL adapter.
-const adapter = new PrismaPg({
-    connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL!,
-});
+// Prisma schema-qualifies its SQL, so the target schema must be passed
+// explicitly — otherwise a seed aimed at another lane silently writes to
+// `public`. Unset => `public`, i.e. unchanged.
+const seedSchema = process.env.DATABASE_SCHEMA?.trim();
+
+const adapter = new PrismaPg(
+    { connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL! },
+    seedSchema ? { schema: seedSchema } : undefined,
+);
 
 // Create a new Prisma client instance using the adapter.
 export const prisma = new PrismaClient({ adapter });
