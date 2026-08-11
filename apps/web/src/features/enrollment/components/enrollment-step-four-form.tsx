@@ -28,6 +28,7 @@ import {
   getEnrollmentDocumentDisplayName,
   getEnrollmentStepFourFileValidationError,
   getEnrollmentStepFourSlotPolicy,
+  getMissingIdentityDocumentError,
   MIN_IDENTITY_DOCUMENTS,
   type EnrollmentStepFourSlotPolicy,
   type EnrollmentStepFourUploadSlotId,
@@ -184,10 +185,12 @@ export function EnrollmentStepFourForm() {
   const userPhotoDocument = documentMap.USER_PHOTO[0] ?? null;
   const uploadedIdentityDocumentCount =
     countUploadedIdentityDocuments(documentMap);
-  const hasRequiredIdentityDocuments =
-    uploadedIdentityDocumentCount >= MIN_IDENTITY_DOCUMENTS;
+  // Mirrors the backend rule: the government ID is required outright, on top
+  // of the 2-distinct-types minimum.
+  const missingIdentityDocumentError =
+    getMissingIdentityDocumentError(documentMap);
   const hasMandatoryDocuments =
-    Boolean(userPhotoDocument) && hasRequiredIdentityDocuments;
+    Boolean(userPhotoDocument) && missingIdentityDocumentError === null;
 
   const isListLoading = documentListQuery.isPending && !documentListQuery.data;
 
@@ -256,11 +259,15 @@ export function EnrollmentStepFourForm() {
       const result = await stepFourNextMutation.mutateAsync();
 
       if (!result.success) {
-        setErrorMessage(
-          result.error === "missing_identity_documents"
-            ? t("stepFour.identityMissing", { min: MIN_IDENTITY_DOCUMENTS })
-            : t("stepFour.photoMissing"),
-        );
+        if (result.error === "missing_state_id") {
+          setErrorMessage(t("stepFour.stateIdMissing"));
+        } else if (result.error === "missing_identity_documents") {
+          setErrorMessage(
+            t("stepFour.identityMissing", { min: MIN_IDENTITY_DOCUMENTS }),
+          );
+        } else {
+          setErrorMessage(t("stepFour.photoMissing"));
+        }
         return;
       }
 
@@ -399,6 +406,9 @@ export function EnrollmentStepFourForm() {
               >
                 <h3 className="text-foreground text-[1.35rem] leading-tight font-semibold tracking-tight">
                   {t(`stepFour.slots.${slot.id}.title`)}
+                  {slot.required ? (
+                    <span className="text-foreground"> *</span>
+                  ) : null}
                 </h3>
                 <p className="text-muted-foreground mt-2 text-[0.9rem] leading-7">
                   {t(`stepFour.slots.${slot.id}.description`)}

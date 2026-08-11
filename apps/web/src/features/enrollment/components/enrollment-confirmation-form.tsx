@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, PenLine } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -31,8 +31,10 @@ import {
 import {
   createEnrollmentConfirmationSchema,
   getEnrollmentConfirmationDefaultValues,
+  getEnrollmentSubmitDocumentErrorKey,
   mapEnrollmentConfirmationFormToPayload,
   type EnrollmentConfirmationFormValues,
+  type EnrollmentSubmitDocumentErrorKey,
 } from "@/features/enrollment/lib/enrollment-confirmation-form";
 
 export function EnrollmentConfirmationForm() {
@@ -69,8 +71,15 @@ export function EnrollmentConfirmationForm() {
     setError,
   } = form;
 
+  // A submit-time document rejection is the one server error the member can
+  // fix themselves, so it renders localized copy plus a link back to Step 4
+  // instead of the raw backend code.
+  const [documentErrorKey, setDocumentErrorKey] =
+    useState<EnrollmentSubmitDocumentErrorKey | null>(null);
+
   const onSubmit = async (values: EnrollmentConfirmationFormValues) => {
     clearErrors("root");
+    setDocumentErrorKey(null);
 
     try {
       await completeEnrollmentMutation.mutateAsync(
@@ -81,10 +90,16 @@ export function EnrollmentConfirmationForm() {
       });
       router.push("/enrollment/success");
     } catch (error) {
+      const submitDocumentErrorKey = getEnrollmentSubmitDocumentErrorKey(error);
+
+      setDocumentErrorKey(submitDocumentErrorKey);
       setError("root", {
         type: "server",
-        message:
-          error instanceof Error ? error.message : tErrors("enrollmentSubmit"),
+        message: submitDocumentErrorKey
+          ? tErrors(submitDocumentErrorKey)
+          : error instanceof Error
+            ? error.message
+            : tErrors("enrollmentSubmit"),
       });
     }
   };
@@ -99,6 +114,17 @@ export function EnrollmentConfirmationForm() {
         {errors.root?.message ? (
           <div className="border-border bg-surface-muted text-foreground rounded-xl border px-4 py-3 text-sm font-medium sm:px-5">
             {errors.root.message}
+            {documentErrorKey ? (
+              <>
+                {" "}
+                <Link
+                  className="font-medium underline underline-offset-4"
+                  href="/enrollment/step-4"
+                >
+                  {t("steps.4.title")}
+                </Link>
+              </>
+            ) : null}
           </div>
         ) : null}
 

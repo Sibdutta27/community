@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   Alert,
+  Box,
   Button,
   Chip,
   CircularProgress,
@@ -52,6 +53,26 @@ const DOCUMENT_TITLES = {
   ORAL_HISTORY: "Oral History",
   DNA_TESTING: "DNA Testing",
 };
+
+/**
+ * Documents the member-facing enrollment refuses to submit without: the photo
+ * and — since the client's 2026-07-20 request — a government-issued ID.
+ *
+ * Approval gating deliberately does NOT enforce the ID (that would hard-block
+ * every application submitted under the old 2-of-3 rule and stall the review
+ * queue), so a legacy application missing one is surfaced here as a warning
+ * for the reviewer to act on.
+ */
+const REQUIRED_DOCUMENT_TYPES = ["USER_PHOTO", "STATE_ID"];
+
+/** Normalizes the single-vs-multi upload shape returned by the API. */
+function getGroupDocuments(group) {
+  if (group.isSingle) {
+    return group.documents ? [group.documents] : [];
+  }
+
+  return group.documents || [];
+}
 
 export default function EnrollmentStep4Review({ enrollmentId }) {
   const queryClient = useQueryClient();
@@ -136,18 +157,39 @@ export default function EnrollmentStep4Review({ enrollmentId }) {
     return <Alert severity="error">Failed to load documents</Alert>;
   }
 
+  /**
+   * Required types with nothing uploaded — the reviewer's headline warning.
+   */
+  const missingRequiredTypes = REQUIRED_DOCUMENT_TYPES.filter((type) => {
+    const group = data.find((item) => item.type === type);
+
+    return !group || getGroupDocuments(group).length === 0;
+  });
+
   return (
     <div className={styles.container}>
+      {missingRequiredTypes.length > 0 && (
+        <Alert severity="warning" sx={{ borderRadius: "16px" }}>
+          Missing required{" "}
+          {missingRequiredTypes.length > 1 ? "documents" : "document"}:{" "}
+          <strong>
+            {missingRequiredTypes
+              .map((type) => DOCUMENT_TITLES[type])
+              .join(", ")}
+          </strong>
+          . Applications submitted before the government-ID requirement took
+          effect may be missing one — confirm with the applicant before
+          approving.
+        </Alert>
+      )}
+
       {data.map((group) => {
         if (!DOCUMENT_TYPES.includes(group.type)) {
           return;
         }
 
-        const documents = group.isSingle
-          ? group.documents
-            ? [group.documents]
-            : []
-          : group.documents;
+        const documents = getGroupDocuments(group);
+        const isRequired = REQUIRED_DOCUMENT_TYPES.includes(group.type);
 
         return (
           <Paper key={group.type} className={styles.categoryCard}>
@@ -163,20 +205,37 @@ export default function EnrollmentStep4Review({ enrollmentId }) {
                 </Typography>
               </div>
 
-              <Chip
-                label={group.isSingle ? "Single Upload" : "Multiple Uploads"}
-                className={styles.typeChip}
-              />
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                {isRequired && (
+                  <Chip
+                    label="Required"
+                    color="error"
+                    variant="outlined"
+                    sx={{ fontWeight: 700 }}
+                  />
+                )}
+
+                <Chip
+                  label={group.isSingle ? "Single Upload" : "Multiple Uploads"}
+                  className={styles.typeChip}
+                />
+              </Box>
             </div>
 
             {/* EMPTY */}
-            {documents.length === 0 && (
-              <div className={styles.emptyBox}>
-                <InsertDriveFile />
+            {documents.length === 0 &&
+              (isRequired ? (
+                <Alert severity="warning" sx={{ borderRadius: "16px" }}>
+                  No {DOCUMENT_TITLES[group.type]} uploaded — this document is
+                  required for enrollment.
+                </Alert>
+              ) : (
+                <div className={styles.emptyBox}>
+                  <InsertDriveFile />
 
-                <Typography>No document uploaded</Typography>
-              </div>
-            )}
+                  <Typography>No document uploaded</Typography>
+                </div>
+              ))}
 
             {/* DOCUMENTS */}
             <div className={styles.documentsGrid}>

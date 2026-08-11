@@ -27,6 +27,11 @@ All notable changes to the Community monorepo are recorded here, categorized by
 
 - [web/marketing-content] Stale 4-step, maternal-only enrollment process copy corrected everywhere: the `/enrollment` + home process cards now map `enrollmentStepDefinitions` (5 cards incl. Paternal Kinship, "Create Account" demoted to a prerequisite line), and the lineage-records checklist, eligibility/benefits FAQ, sign-up panel, enrollment hero subtitle and the root CLAUDE.md domain summary all name maternal AND paternal kinship / five steps. Anti-drift regression test asserts card count + titles equal `enrollmentStepDefinitions` — apps/web/src/features/home/components/home-enrollment-process-section.tsx
 
+### Changed (2026-07-20 sync)
+
+- [backend+web+admin/documents] Government ID mandatory at enrollment: `STATE_ID` is now required _in addition to_ the 2-distinct-types minimum (valid = government ID + birth certificate or social security card). New `REQUIRED_IDENTITY_DOCUMENT_TYPES` + `getMissingIdentityDocumentError` return the specific `missing_state_id` code from step-4 next AND `completeEnrollment`; web mirrors the rule (asterisk on the ID card, Next gated, step-5 submit errors localized with a link back to step 4); admin Step-4 review gets Required chips + warning alerts. Admin **approval** gating intentionally left on the old rule so already-submitted applications are not hard-blocked — apps/api/src/modules/enrollment/step4/step4.utils.ts
+- [backend/documents] One-off manual backfill reopens step 4 on DRAFT enrollments already marked complete without a `STATE_ID`, so those members are not stranded on a 400 at submit (not wired into `seed.ts`) — apps/api/prisma/scripts/reopen-step4-without-state-id.ts
+
 ### Changed (2026-07-08 sync)
 
 - [backend+web/enrollment] Sex options per client spec: Female / Male / Intersex (optional field covers "prefer not to say"); existing `PREFER_NOT_TO_SAY` rows → NULL — apps/api/prisma/schema.prisma

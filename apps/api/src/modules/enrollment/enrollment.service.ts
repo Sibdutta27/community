@@ -3,7 +3,7 @@ import { Ancestry, Consent, Contact, Enrollment, EnrollmentStep, User } from '@/
 import { EnrollmentStatus } from '@/generated/prisma/enums';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { mapAncestryOut } from './common/utils/ancestry.util';
-import { hasRequiredIdentityDocuments, REQUIRED_DOCUMENT_TYPES } from './step4/step4.utils';
+import { getMissingIdentityDocumentError, REQUIRED_DOCUMENT_TYPES } from './step4/step4.utils';
 import { DocumentService } from '../document/document.service';
 
 // The backend tracks enrollment steps 1-4 (created in startEnrollment); the
@@ -329,8 +329,12 @@ export class EnrollmentService {
             throw new BadRequestException('missing_required_documents');
         }
 
-        if (!hasRequiredIdentityDocuments(enrollment.documents)) {
-            throw new BadRequestException('missing_identity_documents');
+        // A government ID is mandatory on top of the 2-distinct-types minimum,
+        // so the specific code tells the member which rule they tripped.
+        const missingIdentityDocumentError = getMissingIdentityDocumentError(enrollment.documents);
+
+        if (missingIdentityDocumentError) {
+            throw new BadRequestException(missingIdentityDocumentError);
         }
 
         // Require the confirmation e-signature

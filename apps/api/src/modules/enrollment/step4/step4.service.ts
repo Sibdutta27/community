@@ -3,7 +3,7 @@ import { Document, EnrollmentStatus, Prisma } from '@/generated/prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EnrollmentStepService } from '@/modules/enrollment/common/services/enrollmentStep.service';
 import { isArray } from 'class-validator';
-import { hasRequiredIdentityDocuments, REQUIRED_DOCUMENT_TYPES } from './step4.utils';
+import { getMissingIdentityDocumentError, REQUIRED_DOCUMENT_TYPES } from './step4.utils';
 
 @Injectable()
 export class Step4Service {
@@ -85,11 +85,14 @@ export class Step4Service {
             };
         }
 
-        // Proof of identity: at least 2 of 3 (state ID / birth certificate / social security)
-        if (!hasRequiredIdentityDocuments(documents)) {
+        // Proof of identity: a state ID is mandatory, plus at least 2 distinct
+        // types of the three (state ID / birth certificate / social security).
+        const missingIdentityDocumentError = getMissingIdentityDocumentError(documents);
+
+        if (missingIdentityDocumentError) {
             return {
                 success: false,
-                error: 'missing_identity_documents'
+                error: missingIdentityDocumentError
             };
         }
 
