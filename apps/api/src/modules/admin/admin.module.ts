@@ -6,6 +6,7 @@ import { AdminCulturalConnectionModule } from './adminCulturalConnection/adminCu
 import { AdminConsentModule } from './adminConsent/adminConsent.module';
 import { AdminServiceModule } from './adminService/adminService.module';
 import { AdminEventModule } from './adminEvent/adminEvent.module';
+import { AdminFeedbackModule } from './adminFeedback/adminFeedback.module';
 
 @Module({
     imports: [
@@ -15,7 +16,8 @@ import { AdminEventModule } from './adminEvent/adminEvent.module';
         AdminCulturalConnectionModule,
         AdminConsentModule,
         AdminServiceModule,
-        AdminEventModule
+        AdminEventModule,
+        AdminFeedbackModule
     ],
 })
 export class AdminModule {}

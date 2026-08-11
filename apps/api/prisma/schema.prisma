@@ -557,6 +557,11 @@ model Feedback {
   attachmentMimeType String?
   attachmentSize     Int?
 
+  // Triage state. Everything lands as NEW; staff work the queue down from
+  // there. `updatedAt` doubles as "when the status last moved" because the
+  // status is the only field the admin surface ever writes.
+  status FeedbackStatus @default(NEW)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -564,4 +569,19 @@ model Feedback {
 
   @@index([userId])
   @@index([createdAt])
+  // The triage queue is always "one status, newest first".
+  @@index([status, createdAt])
+}
+
+// Triage lane for a feedback submission.
+//
+// RESOLVED and DECLINED are both terminal but deliberately distinct: a
+// closed-beta queue is full of duplicates, questions and out-of-scope wishes,
+// and filing those as RESOLVED would inflate the "we fixed it" count and hide
+// how much real work actually shipped.
+enum FeedbackStatus {
+  NEW // Untouched — nobody has looked at it yet.
+  IN_REVIEW // A staff member has picked it up.
+  RESOLVED // Acted on.
+  DECLINED // Reviewed and consciously closed without action.
 }

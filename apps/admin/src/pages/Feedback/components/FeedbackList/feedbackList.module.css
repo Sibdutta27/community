@@ -1,0 +1,74 @@
+.feedbackLink {
+  display: block;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.feedbackLink:hover .message {
+  text-decoration: underline;
+}
+
+.message {
+  color: var(--admin-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.submitter {
+  color: var(--admin-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.anonymous {
+  color: var(--admin-muted);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.email {
+  color: var(--admin-muted);
+  font-size: 12px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date {
+  color: var(--admin-muted);
+  white-space: nowrap;
+}
+
+.pageUrl {
+  font-family: monospace !important;
+  font-size: 12px !important;
+  color: var(--admin-active-fg);
+  background-color: var(--admin-active-bg);
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(10, 86, 168, 0.2);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusFilter {
+  min-width: 190px;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.errorText {
+  color: var(--admin-danger);
+}

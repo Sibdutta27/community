@@ -5,17 +5,17 @@ Vite 6 + React 19 (plain **JS/JSX**), MUI v9. See
 
 ## Layout (`src/`)
 
-| Path | Responsibility |
-|------|----------------|
-| `main.jsx` | Entry; `BrowserRouter`, `QueryClientProvider`, `ToastContainer` |
-| `api/client.js` | axios instance (base `VITE_API_URL`); request interceptor adds bearer, response interceptor redirects on 401 |
-| `api/*.api.js` | per-resource calls: auth, user, enrollment, event, eventCat, service, serviceCat, consent, culturalConnection, account |
-| `routes/AppRoutes.jsx` | route table |
-| `routes/ProtectedRoutes.jsx` | localStorage `token` guard |
-| `layouts/AdminLayout/` | Sidebar + Navbar + `<Outlet/>` |
-| `pages/` | Login, Users, Enrollments, Services, Events, Consents, CulturalConnections, ServiceCategories, EventCategories, Dashboard |
-| `components/` | Navbar, Sidebar, StatCard, `ui/Table` (rdt wrapper), `ui/Checkbox` |
-| `hooks/` | useDebounceState, useDebouncedFunction, useSearch, useThrottle |
+| Path                         | Responsibility                                                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `main.jsx`                   | Entry; `BrowserRouter`, `QueryClientProvider`, `ToastContainer`                                                           |
+| `api/client.js`              | axios instance (base `VITE_API_URL`); request interceptor adds bearer, response interceptor redirects on 401              |
+| `api/*.api.js`               | per-resource calls: auth, user, enrollment, event, eventCat, service, serviceCat, consent, culturalConnection, account    |
+| `routes/AppRoutes.jsx`       | route table                                                                                                               |
+| `routes/ProtectedRoutes.jsx` | localStorage `token` guard                                                                                                |
+| `layouts/AdminLayout/`       | Sidebar + Navbar + `<Outlet/>`                                                                                            |
+| `pages/`                     | Login, Users, Enrollments, Services, Events, Consents, CulturalConnections, ServiceCategories, EventCategories, Dashboard |
+| `components/`                | Navbar, Sidebar, StatCard, `ui/Table` (rdt wrapper), `ui/Checkbox`                                                        |
+| `hooks/`                     | useDebounceState, useDebouncedFunction, useSearch, useThrottle                                                            |
 
 Vite aliases: `@`, `@components`, `@pages`, `@hooks`, `@utils`, `@assets`, `@theme`.
 
@@ -27,6 +27,8 @@ redirects to `/users`. Resource pages follow `list / create / edit/:id`:
 - `/users`, `/enrollments/{all,submitted,approved,rejected,approval/:id}`
 - `/cultural-connections`, `/consents`, `/services`, `/service-categories`,
   `/events`, `/event-categories` (each with create + edit/:id).
+- `/feedback` (triage queue, filterable by status) + `/feedback/:id` (read-only detail with a
+  status control — feedback is member-authored, so there is no create/edit).
 
 ## Auth
 

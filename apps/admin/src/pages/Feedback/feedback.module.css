@@ -1,0 +1,23 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  font-weight: 700 !important;
+  color: var(--admin-ink);
+}
+
+.subtitle {
+  margin-top: 4px !important;
+  color: var(--admin-muted);
+  max-width: 46rem;
+}

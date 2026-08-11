@@ -1,0 +1,65 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.title {
+  font-weight: 700 !important;
+  color: var(--admin-ink);
+}
+
+.message {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--admin-ink);
+  line-height: 1.6;
+}
+
+.metaLabel {
+  color: var(--admin-muted);
+  font-size: 12px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.metaValue {
+  color: var(--admin-ink);
+  overflow-wrap: anywhere;
+}
+
+.anonymous {
+  color: var(--admin-muted);
+  font-style: italic;
+}
+
+.mono {
+  font-family: monospace !important;
+  font-size: 12px !important;
+  overflow-wrap: anywhere;
+}
+
+.pageLink {
+  color: var(--admin-active-fg);
+  overflow-wrap: anywhere;
+}
+
+.attachmentPreview {
+  max-width: 100%;
+  max-height: 420px;
+  border-radius: 12px;
+  border: 1px solid var(--admin-border);
+  display: block;
+}
+
+.errorText {
+  color: var(--admin-danger);
+}

@@ -56,7 +56,10 @@ User 1───1 Enrollment 1───1 Contact
 - **EventRegistration** — eventId, userId.
 - **Feedback** — in-app report / work order: `message` (Text), `pageUrl`, `locale`, `userAgent?`,
   optional `userId` (**nullable — signed-out visitors may submit**), optional attachment
-  (`attachmentKey/Name/MimeType/Size`), `createdAt`. Indexed on `[userId]` and `[createdAt]`.
+  (`attachmentKey/Name/MimeType/Size`), `status` (`FeedbackStatus`, default `NEW`), `createdAt`.
+  Indexed on `[userId]`, `[createdAt]` and `[status, createdAt]` (the triage queue).
+  `updatedAt` doubles as "when the status last moved" — the status is the only field the admin
+  surface writes.
 
 ## Enums
 
@@ -76,5 +79,6 @@ User 1───1 Enrollment 1───1 Contact
 | `ServiceStatus`    | ACTIVE, INACTIVE, CLOSED                                                                                  |
 | `ActionType`       | INTERNAL, EXTERNAL, MODAL, NONE                                                                           |
 | `LocationType`     | PHYSICAL, VIRTUAL                                                                                         |
+| `FeedbackStatus`   | NEW, IN_REVIEW, RESOLVED, DECLINED (DECLINED = read and closed without action)                            |
 
 Migrations in `apps/api/prisma/migrations/`; seed data in `prisma/seed/`.
