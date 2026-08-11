@@ -34,10 +34,12 @@ function renderCard(props: {
 }
 
 describe("YourYucayekeCard", () => {
-  it("shows the resolved territory for the API spelling Guaynía", () => {
+  // Regression: "Guaynía" is the superseded API spelling and is still held by
+  // real enrollment rows, so it must keep resolving to the corrected name.
+  it("resolves the superseded API spelling Guaynía to the corrected name", () => {
     renderCard({ yucayekeValue: "Guaynía", yucayekeUnknown: false });
 
-    expect(screen.getByText("Guanía")).toBeDefined();
+    expect(screen.getByText("Wainia")).toBeDefined();
     expect(screen.getByText("Cacique Agüeybaná")).toBeDefined();
     expect(
       screen.getByRole("link", { name: "Explore the territories" }),

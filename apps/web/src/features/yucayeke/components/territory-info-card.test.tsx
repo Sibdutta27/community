@@ -12,7 +12,7 @@ describe("TerritoryInfoCard", () => {
       <TerritoryInfoCard territory={getTerritoryBySlug("guania")} />,
     );
 
-    expect(screen.getByText("Guanía")).toBeDefined();
+    expect(screen.getByText("Wainia")).toBeDefined();
     expect(screen.getByText("Cacique Agüeybaná")).toBeDefined();
     expect(screen.getByText("Historically documented")).toBeDefined();
     expect(screen.getByText("Ponce")).toBeDefined();

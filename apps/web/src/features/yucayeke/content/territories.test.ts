@@ -11,12 +11,12 @@ import {
 } from "./territories";
 
 /**
- * Fixture copy of the backend's official list — the values the enrollment
- * step-1 select can write into `Enrollment.yucayeke`. Source of truth:
- * apps/api/src/modules/enrollment/common/config/yucayeke.config.ts
- * (keep in sync until the backend Yucayeke table lands).
+ * The SUPERSEDED official list, as it stood before the client's 2026-07-20
+ * Arawakan corrections. Retained deliberately: these values are still held by
+ * real `Enrollment.yucayeke` rows, so every one of them must keep resolving.
+ * The current list is asserted against the client's CSV further down.
  */
-const OFFICIAL_YUCAYEKES = [
+const LEGACY_OFFICIAL_YUCAYEKES = [
   "Abacoa",
   "Aymaco",
   "Arasibo",
@@ -138,7 +138,7 @@ describe("territories content table", () => {
   });
 
   it("resolves every OFFICIAL_YUCAYEKES value", () => {
-    for (const apiName of OFFICIAL_YUCAYEKES) {
+    for (const apiName of LEGACY_OFFICIAL_YUCAYEKES) {
       expect(resolveTerritory(apiName), apiName).not.toBeNull();
     }
   });
@@ -221,5 +221,126 @@ describe("territories content table", () => {
   it("marks unmapped official territories for graceful UI fallback", () => {
     expect(resolveTerritory("Hayuya")?.geometryKey).toBeNull();
     expect(resolveTerritory("Loquillo")?.geometryKey).toBeNull();
+  });
+});
+
+/** Minimal RFC-4180 reader — the client's notes column contains commas and newlines. */
+function parseCsv(text: string): Record<string, string>[] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let quoted = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if (quoted) {
+      if (ch === '"' && text[i + 1] === '"') {
+        field += '"';
+        i += 1;
+      } else if (ch === '"') {
+        quoted = false;
+      } else {
+        field += ch;
+      }
+    } else if (ch === '"') {
+      quoted = true;
+    } else if (ch === ",") {
+      row.push(field);
+      field = "";
+    } else if (ch === "\n") {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    } else if (ch !== "\r") {
+      field += ch;
+    }
+  }
+  if (field || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
+
+  const [header, ...body] = rows;
+  return body
+    .filter((r) => r.some((c) => c !== ""))
+    .map((r) => Object.fromEntries(header.map((h, i) => [h, r[i] ?? ""])));
+}
+
+const namingCsv = parseCsv(
+  readFileSync(
+    join(process.cwd(), "../../data/naming/yucayeke-names/yucayeke-names.csv"),
+    "utf8",
+  ),
+).filter((r) => r.slug !== "_generic");
+
+describe("client naming sheet parity", () => {
+  it("covers every territory the client's sheet names", () => {
+    expect(namingCsv).toHaveLength(18);
+
+    for (const row of namingCsv) {
+      const territory = TERRITORIES.find((t) => t.slug === row.slug);
+      expect(
+        territory,
+        `no territory for CSV slug "${row.slug}"`,
+      ).toBeDefined();
+      expect(territory?.legalName).toBe(row.legalName);
+      // The rule: primary display name is the legal name minus the prefix.
+      expect(territory?.displayName).toBe(
+        row.legalName.replace("Yukayeke ", "").trim(),
+      );
+    }
+  });
+
+  it("leaves territories absent from the sheet without a legal name", () => {
+    const offRegister = TERRITORIES.filter((t) => t.legalName === null).map(
+      (t) => t.slug,
+    );
+
+    // Retained on purpose — see data/naming/yucayeke-names/README.md.
+    expect(offRegister).toEqual(["guajataca", "hayuya", "loquillo"]);
+  });
+});
+
+describe("alias resolution safety", () => {
+  // `buildLookup` keeps the FIRST territory on a normalized-key collision and
+  // says nothing, so a duplicated spelling would silently route one
+  // territory's members to another. This turns that into a red test.
+  it("never lets two territories claim the same normalized alias", () => {
+    const owners = new Map<string, string>();
+    const clashes: string[] = [];
+
+    for (const territory of TERRITORIES) {
+      const candidates = [
+        territory.slug,
+        territory.legalName ?? "",
+        territory.displayName,
+        territory.geometryKey ?? "",
+        ...territory.apiNames,
+        ...territory.altNames,
+        ...territory.legacyNames,
+      ].filter(Boolean);
+
+      for (const candidate of new Set(candidates.map(normalizeTerritoryName))) {
+        const owner = owners.get(candidate);
+        if (owner && owner !== territory.slug) {
+          clashes.push(
+            `"${candidate}" claimed by ${owner} and ${territory.slug}`,
+          );
+        }
+        owners.set(candidate, territory.slug);
+      }
+    }
+
+    expect(clashes).toEqual([]);
+  });
+
+  it("still resolves every superseded official spelling", () => {
+    for (const name of LEGACY_OFFICIAL_YUCAYEKES) {
+      expect(
+        resolveTerritory(name),
+        `"${name}" no longer resolves`,
+      ).not.toBeNull();
+    }
   });
 });
