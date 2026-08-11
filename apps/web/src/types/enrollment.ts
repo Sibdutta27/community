@@ -318,10 +318,15 @@ export type EnrollmentStepFourNextResponse = Readonly<{
   error?: string;
 }>;
 
+/**
+ * Step 5 sends the e-signature ONLY. Consent is collected once, at
+ * `/enrollment/start`; the backend derives and persists
+ * `Enrollment.agreedToTerms` from a valid signature over an enrollment whose
+ * required consents are all accepted.
+ */
 export type EnrollmentCompleteRequest = Readonly<{
   signatureName: string;
   signatureDate: string;
-  agreedToTerms: boolean;
 }>;
 
 export type EnrollmentCompleteResponse = Readonly<{

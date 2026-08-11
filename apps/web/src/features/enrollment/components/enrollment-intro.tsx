@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import type { LucideIcon } from "lucide-react";
 
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Bookmark,
   Clock3,
@@ -15,11 +17,21 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ConsentChecklist } from "@/features/enrollment/components/consent-checklist";
 import { EnrollmentStepFooter } from "@/features/enrollment/components/enrollment-step-layout";
 import { EnrollmentStepSection } from "@/features/enrollment/components/enrollment-step-section";
 import { enrollmentStepDefinitions } from "@/features/enrollment/config/enrollment-steps";
+import {
+  accountQueryKeys,
+  enrollmentQueryKeys,
+  useAcceptEnrollmentConsentsMutation,
+  useAccountInfoQuery,
+  useActiveConsentsQuery,
+  useStartEnrollmentMutation,
+} from "@/features/enrollment/lib/enrollment-queries";
 import type { EnrollmentStepFourUploadSlot } from "@/features/enrollment/lib/enrollment-step-four-form";
 
 import {
@@ -66,11 +78,98 @@ const enrollmentIntroHowItWorksItems = [
  * Built only from the existing enrollment primitives (`EnrollmentStepSection`
  * for the bands, `EnrollmentStepFooter` for the action row) — no new visual
  * primitives.
+ *
+ * This is also the app's SINGLE consent surface. When a required consent is
+ * still pending, the final band renders the `ConsentChecklist` and the CTA
+ * accepts before entering step 1; once consent is on record the band is gone
+ * and the CTA is a plain link. Step 5 shows a read-only summary of what was
+ * agreed to here rather than asking again.
  */
 export function EnrollmentIntro() {
   const t = useTranslations("enrollment.intro");
   const tSteps = useTranslations("enrollment.steps");
   const tSlots = useTranslations("enrollment.stepFour.slots");
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const accountInfoQuery = useAccountInfoQuery();
+  const activeConsentsQuery = useActiveConsentsQuery(true);
+  const acceptConsentsMutation = useAcceptEnrollmentConsentsMutation();
+  const startEnrollmentMutation = useStartEnrollmentMutation();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const activeConsents = activeConsentsQuery.data ?? [];
+  const enrollmentInfo = accountInfoQuery.data?.enrollment;
+
+  const acceptedConsentIds = useMemo(
+    () =>
+      (enrollmentInfo?.consent ?? [])
+        .filter((consentRow) => consentRow.accepted)
+        .map((consentRow) => consentRow.id),
+    [enrollmentInfo],
+  );
+
+  // Ticks made in THIS session. Until the member touches a box the selection
+  // simply mirrors what the server already has on record, so consents accepted
+  // earlier render pre-checked without an effect syncing state to the query.
+  const [touchedConsentIds, setTouchedConsentIds] = useState<
+    readonly string[] | null
+  >(null);
+  const selectedConsentIds = touchedConsentIds ?? acceptedConsentIds;
+
+  const hasPendingRequiredConsent = activeConsents.some(
+    (consent) => consent.required && !acceptedConsentIds.includes(consent.id),
+  );
+  // Ask only when there is something left to ask for: an enrollment that has
+  // never consented, or a newly published required consent.
+  const needsConsent =
+    activeConsents.length > 0 &&
+    (!enrollmentInfo?.consentAccepted || hasPendingRequiredConsent);
+  const hasAcceptedAllRequired = activeConsents.every(
+    (consent) => !consent.required || selectedConsentIds.includes(consent.id),
+  );
+  const isSubmittingConsent =
+    acceptConsentsMutation.isPending || startEnrollmentMutation.isPending;
+
+  const handleToggleConsent = (consentId: string) => {
+    setErrorMessage(null);
+    setTouchedConsentIds((current) => {
+      const base = current ?? acceptedConsentIds;
+
+      return base.includes(consentId)
+        ? base.filter((selectedId) => selectedId !== consentId)
+        : [...base, consentId];
+    });
+  };
+
+  const handleAcceptAndContinue = async () => {
+    if (!hasAcceptedAllRequired) {
+      setErrorMessage(t("consent.errors.acceptRequired"));
+      return;
+    }
+
+    setErrorMessage(null);
+
+    try {
+      // `POST /consent/accept` needs an enrollment to attach to. Guarded on
+      // `hasEnrollment` because `startEnrollment` resets a non-DRAFT
+      // enrollment back to DRAFT — never call it for an existing one.
+      if (!accountInfoQuery.data?.hasEnrollment) {
+        await startEnrollmentMutation.mutateAsync();
+      }
+
+      await acceptConsentsMutation.mutateAsync({ acceptRequired: true });
+
+      queryClient.invalidateQueries({ queryKey: accountQueryKeys.info });
+      queryClient.invalidateQueries({
+        queryKey: enrollmentQueryKeys.activeConsents,
+      });
+      router.push("/enrollment/step-1");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : t("consent.errors.save"),
+      );
+    }
+  };
 
   return (
     <>
@@ -190,10 +289,53 @@ export function EnrollmentIntro() {
         ))}
       </EnrollmentStepSection>
 
+      {/* The app's ONE consent ask. It sits last, after the member has read what
+          the application involves, and gates entry into step 1 — which is what
+          `ConsentAcceptedGuard` enforces server-side on every enrollment and
+          document write. */}
+      {needsConsent ? (
+        <EnrollmentStepSection
+          className="mt-9 sm:mt-10"
+          description={t("consent.description")}
+          icon={ShieldCheck}
+          title={t("consent.title")}
+        >
+          {errorMessage ? (
+            <div
+              className="border-destructive/20 bg-destructive/10 text-destructive rounded-xl border px-4 py-3 text-sm font-medium md:col-span-2"
+              role="alert"
+            >
+              {errorMessage}
+            </div>
+          ) : null}
+
+          <ConsentChecklist
+            activeConsents={activeConsents}
+            isSubmitting={isSubmittingConsent}
+            onToggleConsent={handleToggleConsent}
+            selectedConsentIds={selectedConsentIds}
+          />
+        </EnrollmentStepSection>
+      ) : null}
+
       <EnrollmentStepFooter backHref="/dashboard">
-        <Button asChild className="min-w-[12rem]" size="lg">
-          <Link href="/enrollment/step-1">{t("cta")}</Link>
-        </Button>
+        {needsConsent ? (
+          <Button
+            className="min-w-[12rem]"
+            disabled={!hasAcceptedAllRequired}
+            loading={isSubmittingConsent}
+            loadingText={t("consent.saving")}
+            size="lg"
+            type="button"
+            onClick={handleAcceptAndContinue}
+          >
+            {t("consent.cta")}
+          </Button>
+        ) : (
+          <Button asChild className="min-w-[12rem]" size="lg">
+            <Link href="/enrollment/step-1">{t("cta")}</Link>
+          </Button>
+        )}
       </EnrollmentStepFooter>
     </>
   );

@@ -10,6 +10,8 @@ const stepStateRef: {
   current: Partial<Record<"1" | "2" | "3" | "4" | "5", boolean>>;
 } = { current: {} };
 
+const consentRef: { current: Record<string, unknown>[] } = { current: [] };
+
 function setStepState(
   stepState: Partial<Record<"1" | "2" | "3" | "4" | "5", boolean>>,
 ) {
@@ -33,6 +35,11 @@ vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
         ...stepStateRef.current,
       },
       enrollmentStatus: "DRAFT",
+      enrollment: {
+        status: "DRAFT",
+        consentAccepted: true,
+        consent: consentRef.current,
+      },
     },
     isPending: false,
   }),
@@ -43,9 +50,9 @@ vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
 }));
 
 import { EnrollmentConfirmationForm } from "@/features/enrollment/components/enrollment-confirmation-form";
-import { withIntl } from "@/test/i18n";
+import { withIntl, type TestLocale } from "@/test/i18n";
 
-function renderForm() {
+function renderForm(locale: TestLocale = "en") {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -55,6 +62,7 @@ function renderForm() {
       <QueryClientProvider client={queryClient}>
         <EnrollmentConfirmationForm />
       </QueryClientProvider>,
+      locale,
     ),
   );
 }
@@ -66,6 +74,17 @@ describe("EnrollmentConfirmationForm", () => {
     mutateAsyncMock.mockResolvedValue({ success: true });
     // Default: everything the submit requires (steps 1-4) is complete.
     setStepState({ "1": true, "2": true, "3": true, "4": true });
+    consentRef.current = [
+      {
+        id: "consent-1",
+        key: "accuracy_declaration",
+        version: 1,
+        title: "Accuracy Declaration",
+        accepted: true,
+        acceptedAt: "2026-07-08T00:00:00.000Z",
+        required: true,
+      },
+    ];
   });
 
   it("enables Submit and shows no missing-step notice when steps 1-4 are complete", () => {
@@ -100,23 +119,53 @@ describe("EnrollmentConfirmationForm", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders the e-signature fields and both agreements", () => {
+  it("renders the e-signature fields under a declaration reaffirming the terms", () => {
     renderForm();
 
     expect(screen.getByText("Sign your full legal name")).toBeInTheDocument();
     expect(screen.getByText("Date")).toBeInTheDocument();
+
+    // The declaration is what carries the terms attestation now — sign-up never
+    // persists one, so this paragraph plus the signature IS the legal record.
+    const declaration = document.querySelector(
+      "[data-slot='enrollment-confirmation-declaration']",
+    );
+    expect(declaration).not.toBeNull();
+    expect(declaration).toHaveTextContent(/electronic signature/i);
     expect(
-      screen.getByText("I agree to submit my information"),
-    ).toBeInTheDocument();
+      screen.getByRole("link", { name: "Terms of Service" }),
+    ).toHaveAttribute("href", "/terms-of-service");
     expect(
-      screen.getByText("I agree to the terms of service"),
-    ).toBeInTheDocument();
+      screen.getByRole("link", { name: "Privacy Policy" }),
+    ).toHaveAttribute("href", "/privacy-policy");
+
     expect(
       screen.getByRole("button", { name: /submit application/i }),
     ).toBeInTheDocument();
   });
 
-  it("blocks submission until the name and both checkboxes are provided", async () => {
+  it("asks for NO consent — the checkboxes moved to the one consent surface", () => {
+    renderForm();
+
+    // The whole point of the change: step 5 is a signature, not a third ask.
+    expect(screen.queryAllByRole("checkbox")).toHaveLength(0);
+    expect(
+      screen.queryByText("I agree to submit my information"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("I agree to the terms of service"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows the already-accepted consents read-only instead of re-asking", () => {
+    renderForm();
+
+    expect(screen.getByText("Consents you accepted")).toBeInTheDocument();
+    expect(screen.getByText("Accuracy Declaration")).toBeInTheDocument();
+    expect(screen.getByText(/Accepted/)).toBeInTheDocument();
+  });
+
+  it("blocks submission until the signature name is provided", async () => {
     const user = userEvent.setup();
     renderForm();
 
@@ -127,17 +176,11 @@ describe("EnrollmentConfirmationForm", () => {
     expect(
       await screen.findByText("Please sign with your full legal name."),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText("You must agree to submit your information."),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("You must agree to the terms of service."),
-    ).toBeInTheDocument();
     expect(mutateAsyncMock).not.toHaveBeenCalled();
     expect(pushMock).not.toHaveBeenCalled();
   });
 
-  it("submits the e-signature and routes to the success screen", async () => {
+  it("submits the e-signature alone and routes to the success screen", async () => {
     const user = userEvent.setup();
     renderForm();
 
@@ -145,19 +188,15 @@ describe("EnrollmentConfirmationForm", () => {
       screen.getByPlaceholderText("Full legal name"),
       "Anani Guarocuya",
     );
-    await user.click(screen.getByText("I agree to submit my information"));
-    await user.click(screen.getByText("I agree to the terms of service"));
     await user.click(
       screen.getByRole("button", { name: /submit application/i }),
     );
 
     await waitFor(() => {
-      expect(mutateAsyncMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          signatureName: "Anani Guarocuya",
-          agreedToTerms: true,
-        }),
-      );
+      expect(mutateAsyncMock).toHaveBeenCalledWith({
+        signatureName: "Anani Guarocuya",
+        signatureDate: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      });
     });
     await waitFor(() => {
       expect(pushMock).toHaveBeenCalledWith("/enrollment/success");

@@ -271,12 +271,19 @@ export class EnrollmentService {
 
     /**
      * Complete the enrollment: persists the confirmation e-signature
-     * (signatureName / signatureDate / agreedToTerms) and sets the status to SUBMITTED.
+     * (signatureName / signatureDate) and sets the status to SUBMITTED.
      * This is only allowed if all required consents are accepted and every step is completed.
+     *
+     * Consent is asked ONCE, at the start of the flow. `agreedToTerms` is therefore
+     * DERIVED here rather than re-collected at step 5: a valid e-signature over an
+     * enrollment whose required consents (including the seeded `accuracy_declaration`
+     * and `data_privacy_agreement`) are all accepted IS the terms attestation. The
+     * caller-supplied `agreedToTerms` is accepted for deploy-skew compatibility and
+     * deliberately ignored.
      */
     public async completeEnrollment(
         userId   : string,
-        signature: { signatureName: string; signatureDate: string; agreedToTerms: boolean },
+        signature: { signatureName: string; signatureDate: string; agreedToTerms?: boolean },
     ) {
         const enrollment = await this.database.enrollment.findFirst({
             where: { userId },
@@ -338,10 +345,6 @@ export class EnrollmentService {
         }
 
         // Require the confirmation e-signature
-        if (!signature.agreedToTerms) {
-            throw new BadRequestException('You must agree to the terms of service to complete enrollment');
-        }
-
         const signatureName = signature.signatureName?.trim();
 
         if (!signatureName) {
@@ -354,15 +357,25 @@ export class EnrollmentService {
             throw new BadRequestException('A valid signature date is required to complete enrollment');
         }
 
-        // Persist the e-signature and update enrollment status to SUBMITTED
+        // Persist the e-signature and update enrollment status to SUBMITTED.
+        //
+        // `agreedToTerms: true` is DERIVED, not echoed back from the client: we only
+        // reach this line once every required consent is accepted (checked above) AND
+        // the member has signed with a valid name and date. That combination is the
+        // terms-of-service attestation, and this row remains the platform's only
+        // stored ToS record — sign-up never persists one.
+        //
+        // `consentAccepted` is deliberately NOT written here. `/enrollment/complete`
+        // sits behind `ConsentAcceptedGuard`, which 403s unless the flag is already
+        // true, and nothing in this method can clear it — so the write could only
+        // ever be a no-op restating what the guard proved.
         await this.database.enrollment.update({
             where: { id: enrollment.id },
             data: {
-                status         : EnrollmentStatus.SUBMITTED,
-                consentAccepted: true,
+                status       : EnrollmentStatus.SUBMITTED,
                 signatureName,
                 signatureDate,
-                agreedToTerms  : signature.agreedToTerms,
+                agreedToTerms: true,
             },
         });
 

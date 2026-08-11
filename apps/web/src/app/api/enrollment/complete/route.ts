@@ -23,13 +23,14 @@ export async function POST(request: Request) {
     .json()
     .catch(() => null)) as EnrollmentCompleteRequest | null;
 
+  // The e-signature is the whole payload — consent was collected once at
+  // `/enrollment/start`, and the backend derives `agreedToTerms` from it.
   if (
     !body ||
     typeof body !== "object" ||
     typeof body.signatureName !== "string" ||
     body.signatureName.trim().length === 0 ||
-    typeof body.signatureDate !== "string" ||
-    body.agreedToTerms !== true
+    typeof body.signatureDate !== "string"
   ) {
     return NextResponse.json(
       { message: "A valid enrollment confirmation payload is required." },
