@@ -72,26 +72,33 @@ domains:
     admin: []
 
   services:
-    desc: "Service catalog + categories + member registration; admin CRUD."
-    docs: [docs/architecture/backend.md]
-    backend: [apps/api/src/modules/service]
+    desc: "Service (\"Programs\" in admin copy) catalog + categories + member registration; admin CRUD + registrant roster/CSV."
+    docs: [docs/architecture/backend.md, docs/architecture/admin-panel.md]
+    backend:
+      - apps/api/src/modules/service
+      - apps/api/src/modules/admin/adminService
     web:
       - apps/web/src/app/(public)/services
       - apps/web/src/features/services
       - apps/web/src/app/api/services
     admin:
       - apps/admin/src/pages/Services
+      - apps/admin/src/pages/Services/ServiceRegistrations
       - apps/admin/src/pages/ServiceCategories
       - apps/admin/src/api/service.api.js
       - apps/admin/src/api/serviceCat.api.js
 
   events:
-    desc: "Event catalog + categories + member registration; admin CRUD."
-    docs: [docs/architecture/backend.md]
-    backend: [apps/api/src/modules/event]
+    desc: "Event catalog + categories + member registration; admin CRUD, month calendar, registrant roster/CSV."
+    docs: [docs/architecture/backend.md, docs/architecture/admin-panel.md]
+    backend:
+      - apps/api/src/modules/event
+      - apps/api/src/modules/admin/adminEvent
     web: [apps/web/src/app/api/events]
     admin:
       - apps/admin/src/pages/Events
+      - apps/admin/src/pages/Events/components/EventCalendar
+      - apps/admin/src/pages/Events/EventRegistrations
       - apps/admin/src/pages/EventCategories
       - apps/admin/src/api/event.api.js
       - apps/admin/src/api/eventCat.api.js
@@ -152,12 +159,17 @@ domains:
       - apps/admin/src/api/feedback.api.js
 
   admin-management:
-    desc: "Backend admin CRUD surface + admin-panel shell (layout/nav)."
+    desc: "Backend admin CRUD surface + admin-panel shell (layout/nav/section bar) + roster CSV export."
     docs: [docs/architecture/admin-panel.md]
-    backend: [apps/api/src/modules/admin]
+    backend:
+      - apps/api/src/modules/admin
+      - apps/api/src/common/utils/csv.util.ts # shared CSV writer (quoting, BOM, formula-injection)
     admin:
       - apps/admin/src/pages
       - apps/admin/src/layouts
+      - apps/admin/src/components/SectionNav # section bar: route links + local view toggle
+      - apps/admin/src/components/Registrants # shared registrant table + CSV export button
+      - apps/admin/src/utils/downloadFile.util.js
 
   marketing-content:
     desc: "Public/marketing pages (no domain backend): about, community, yucayeke, contact, landing, policies."

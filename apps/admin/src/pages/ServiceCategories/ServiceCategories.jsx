@@ -1,44 +1,43 @@
-import React from 'react';
+import { Link } from "react-router-dom";
 
-import ServiceCategoryList from './components/ServiceCategoryList.jsx/ServiceCategoryList';
+import { Box, Button } from "@mui/material";
 
-import { Link } from 'react-router-dom';
+import AddIcon from "@mui/icons-material/Add";
 
-import {
-    Box,
-    Button,
-    Typography,
-} from '@mui/material';
+import PageHeader from "@components/PageHeader/PageHeader";
+import SectionNav from "@components/SectionNav/SectionNav";
 
-import AddIcon from '@mui/icons-material/Add';
+import ServiceCategoryList from "./components/ServiceCategoryList.jsx/ServiceCategoryList";
 
-import styles from './serviceCategories.module.css';
+import { SERVICE_SECTION_ITEMS } from "../Services/sections";
 
+/**
+ * Program categories — the same surface as Programs, one tab over, so staff
+ * setting up a new program never have to go hunting for where categories live.
+ */
 const ServiceCategories = () => {
-    return (
-        <section className={styles.page}>
-            <Box className={styles.header}>
-                <Typography
-                    variant="h4"
-                    className={styles.title}
-                >
-                    Service Categories
-                </Typography>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+      <PageHeader
+        title="Program Categories"
+        description="How programs are grouped for members. Every program belongs to one."
+        action={
+          <Button
+            variant="contained"
+            component={Link}
+            to="/service-categories/create"
+            startIcon={<AddIcon />}
+          >
+            Add Category
+          </Button>
+        }
+      />
 
-                <Button
-                    variant="contained"
-                    component={Link}
-                    to="/service-categories/create"
-                    startIcon={<AddIcon />}
-                    className={styles.addButton}
-                >
-                    Add Service Category
-                </Button>
-            </Box>
+      <SectionNav items={SERVICE_SECTION_ITEMS} />
 
-            <ServiceCategoryList/>
-        </section>
-    );
+      <ServiceCategoryList />
+    </Box>
+  );
 };
 
 export default ServiceCategories;

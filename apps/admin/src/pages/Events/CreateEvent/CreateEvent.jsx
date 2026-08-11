@@ -2,6 +2,8 @@
 
 import { useForm } from 'react-hook-form';
 
+import { Link, useSearchParams } from 'react-router-dom';
+
 import { z } from 'zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,6 +20,8 @@ import {
 import { useMutation } from '@tanstack/react-query';
 
 import { toast } from 'react-toastify';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import {
     createEvent,
@@ -109,7 +113,30 @@ const createEventSchema = z.object({
         .optional(),
 });
 
+/**
+ * Turn a `?date=YYYY-MM-DD` from the calendar into the value a
+ * `datetime-local` input wants. Clicking the 12th should open the form on the
+ * 12th; the hour is left at a plain 18:00 evening default rather than
+ * midnight, which is never when anything actually happens.
+ */
+function startFromDateParam(dateParam) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateParam || '')) {
+        return '';
+    }
+
+    return `${dateParam}T18:00`;
+}
+
 const CreateEvent = () => {
+
+    /**
+     * The calendar links here with the day it was clicked on.
+     */
+    const [searchParams] = useSearchParams();
+
+    const presetStart = startFromDateParam(
+        searchParams.get('date'),
+    );
 
     // Hooks for getl all event category
     const {
@@ -147,7 +174,7 @@ const CreateEvent = () => {
 
             categoryId: '',
 
-            startDateTime: '',
+            startDateTime: presetStart,
             endDateTime: '',
 
             locationType: 'PHYSICAL',
@@ -219,6 +246,18 @@ const CreateEvent = () => {
 
     return (
         <section className={styles.page}>
+
+            <Button
+                component={Link}
+                to="/events"
+                startIcon={<ArrowBackIcon />}
+                sx={{
+                    alignSelf: 'flex-start',
+                    color: 'text.secondary',
+                }}
+            >
+                Back to events
+            </Button>
 
             <Typography
                 variant="h4"

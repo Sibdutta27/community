@@ -2,7 +2,9 @@
 
 import { useEffect } from 'react';
 
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+
+import GroupsIcon from '@mui/icons-material/Groups';
 
 import {
     Controller,
@@ -304,12 +306,33 @@ const EditEvent = () => {
     return (
         <section className={styles.page}>
 
-            <Typography
-                variant="h4"
-                className={styles.title}
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 2,
+                }}
             >
-                Edit Event
-            </Typography>
+                <Typography
+                    variant="h4"
+                    className={styles.title}
+                >
+                    Edit Event
+                </Typography>
+
+                {/* The roster is one click from the event, so staff arriving
+                    from the calendar can go straight to who signed up. */}
+                <Button
+                    component={Link}
+                    to={`/events/${id}/registrations`}
+                    variant="outlined"
+                    startIcon={<GroupsIcon />}
+                >
+                    Registrants
+                </Button>
+            </Box>
 
             <Paper className={styles.formContainer}>
 

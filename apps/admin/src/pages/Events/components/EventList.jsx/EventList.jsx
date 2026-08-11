@@ -1,9 +1,9 @@
 import { useCallback, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
+
 import useDebounceState from "@/hooks/useDebounceState";
 
 import Table, { TableCell } from "@/components/ui/Table/Table";
-
-import { Link } from "react-router-dom";
 
 import { useEvents, useEventCategory } from "./hooks.js";
 
@@ -11,12 +11,13 @@ import {
     Typography,
     Box,
     Button,
+    Chip,
     TextField,
     InputAdornment,
-    TextareaAutosize
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
+import GroupsIcon from "@mui/icons-material/Groups";
 
 import CategorySelect from "../CategorySelect/CategorySelect.jsx";
 import { formatWords } from "@/utils/formatWord.util.js";
@@ -24,8 +25,11 @@ import { formatWords } from "@/utils/formatWord.util.js";
 import styles from "./eventList.module.css";
 
 /**
- * Event list components.
- * @returns
+ * Event list — the alternate view to the calendar, kept for the jobs a
+ * calendar is bad at: scanning, searching and comparing many events at once.
+ *
+ * Columns are typographic rather than a row of disabled textareas, so the
+ * table reads as the same product as the rest of the panel.
  */
 const EventList = () => {
 
@@ -65,7 +69,6 @@ const EventList = () => {
     const {
         data: EventCategoryData,
         isFetching: EventCategoryFetching,
-        error: EventCategoryFetchingError,
         refetch: refetchEventCategory,
     } = useEventCategory({});
 
@@ -91,7 +94,7 @@ const EventList = () => {
     const realtimeFilter = [
         {
             name: "categories",
-            render: (updateFilter, filterValue) => (
+            render: (updateFilter) => (
                 <Box key='categories'>
                     <CategorySelect
                         key="categories"
@@ -140,216 +143,179 @@ const EventList = () => {
      */
     const columns = [
         {
-            name: "Title",
-            minWidth: "300px",
+            name: "Event",
+            minWidth: "280px",
+            grow: 2,
             cell: (row) => (
-                // <TableCell title="Key">
-                <TextareaAutosize
-                    value={row.title}
-                    disabled
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
+                <TableCell title={row.title}>
+                    <Box sx={{ minWidth: 0, py: 0.5 }}>
+                        <Box
+                            component={Link}
+                            to={`/events/edit/${row.id}`}
+                            sx={{
+                                display: "block",
+                                fontWeight: 600,
+                                fontSize: "0.88rem",
+                                color: "text.primary",
+                                textDecoration: "none",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                "&:hover": { color: "primary.main" },
+                            }}
+                        >
+                            {row.title}
+                        </Box>
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                mt: 0.25,
+                                color: "text.secondary",
+                                fontSize: "0.78rem",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                            }}
+                        >
+                            {row.description || "No description"}
+                        </Typography>
+                    </Box>
+                </TableCell>
             ),
         },
         {
             name: "Category",
-            minWidth: "300px",
+            minWidth: "150px",
             cell: (row) => (
-                // <TableCell title="Key">
-                <TextareaAutosize
-                    value={row?.category?.name}
-                    disabled
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
+                <TableCell title="Category">
+                    <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary" }}
+                    >
+                        {row?.category?.name || "—"}
+                    </Typography>
+                </TableCell>
             ),
         },
         {
-            name: "Description",
-            minWidth: "300px",
+            name: "When",
+            minWidth: "200px",
             cell: (row) => (
-                // <TableCell title="Title">
-                <TextareaAutosize
-                    value={row.description || '-'}
-                    disabled
-                    minRows={1}
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
-            ),
-        },
-        {
-            name: "Start Time",
-            minWidth: "190px",
-            cell: (row) => (
-                <TableCell title="Start Time">
-                    <Box className={styles.lastActiveContainer}>
-                        <Box />
-
+                <TableCell title="When">
+                    <Box sx={{ minWidth: 0 }}>
                         <Typography
                             variant="body2"
-                            className={styles.lastActiveText}
+                            sx={{ fontWeight: 600, color: "text.primary" }}
                         >
                             {row.startDateTime
                                 ? new Date(row.startDateTime).toLocaleString()
-                                : "-"}
+                                : "—"}
                         </Typography>
+
+                        {row.endDateTime && (
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: "text.secondary",
+                                    fontSize: "0.78rem",
+                                }}
+                            >
+                                until {new Date(row.endDateTime).toLocaleString()}
+                            </Typography>
+                        )}
                     </Box>
                 </TableCell>
             ),
         },
         {
-            name: "End Time",
-            minWidth: "190px",
+            name: "Where",
+            minWidth: "200px",
             cell: (row) => (
-                <TableCell title="End Time">
-                    <Box className={styles.lastActiveContainer}>
-                        <Box />
+                <TableCell title="Where">
+                    <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.primary",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {row.locationType === 'VIRTUAL'
+                                ? (row.meetingUrl || 'Online')
+                                : (row.location || '—')}
+                        </Typography>
 
                         <Typography
                             variant="body2"
-                            className={styles.lastActiveText}
+                            sx={{
+                                color: "text.secondary",
+                                fontSize: "0.78rem",
+                            }}
                         >
-                            {row.endDateTime
-                                ? new Date(row.endDateTime).toLocaleString()
-                                : "-"}
+                            {formatWords(row.locationType)}
                         </Typography>
                     </Box>
                 </TableCell>
             ),
         },
         {
-            name: "Location",
-            minWidth: "300px",
-            cell: (row) => (
-                // <TableCell title="Title">
-                <TextareaAutosize
-                    value={row.location || '-'}
-                    disabled
-                    minRows={1}
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
-            ),
-        },
-        {
-            name: "Location Type",
-            minWidth: "150px",
-            cell: (row) => (
-                <TableCell title="Location Type">
-                    <Typography
-                        variant="body2"
-                        className={styles.name}
-                        sx={{paddingLeft: 3}}
-                    >
-                        {formatWords(row.locationType) || '-'}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Meeting Url",
-            minWidth: "300px",
-            cell: (row) => (
-                <TextareaAutosize
-                    value={row.meetingUrl || '-'}
-                    disabled
-                    minRows={1}
-                    className={styles.keyTextarea}
-                />
-            ),
-        },
-        {
-            name: "External Url",
-            minWidth: "300px",
-            cell: (row) => (
-                <TextareaAutosize
-                    value={row.externalUrl || '-'}
-                    disabled
-                    minRows={1}
-                    className={styles.keyTextarea}
-                />
-            ),
-        },
-        {
-            name: "Max Capacity",
-            minWidth: "150px",
-            cell: (row) => (
-                <TableCell title="Max Capacity">
-                    <Typography
-                        variant="body2"
-                        className={styles.name}
-                        sx={{paddingLeft: 3}}
-                    >
-                        {row.maxCapacity || '0'}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Registrations",
-            minWidth: "150px",
-            cell: (row) => (
-                <TableCell title="Registrations">
-                    <Typography
-                        variant="body2"
-                        className={styles.name}
-                        sx={{paddingLeft: 3}}
-                    >
-                        {row._count.registrations || '0'}
-                    </Typography>
-                </TableCell>
-            ),
+            name: "Registrants",
+            minWidth: "165px",
+            cell: (row) => {
+                const registrations = row._count?.registrations ?? 0;
+
+                return (
+                    <TableCell title="Registrants">
+                        <Button
+                            component={Link}
+                            to={`/events/${row.id}/registrations`}
+                            size="small"
+                            variant="outlined"
+                            startIcon={<GroupsIcon />}
+                        >
+                            {row.maxCapacity
+                                ? `${registrations} / ${row.maxCapacity}`
+                                : registrations}
+                        </Button>
+                    </TableCell>
+                );
+            },
         },
         {
             name: "Featured",
-            minWidth: "150px",
+            width: "140px",
             cell: (row) => (
-                <TableCell title="Required">
-                    <Typography
-                        variant="body2"
-                        className={
-                            row.isFeatured
-                                ? styles.active
-                                : styles.notActive
-                        }
-                    >
-                        {row.isFeatured ? 'Featured' : 'Not Featured'}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Created At",
-            minWidth: "190px",
-            cell: (row) => (
-                <TableCell title="Created At">
-                    <Box className={styles.lastActiveContainer}>
-                        <Box />
-
+                <TableCell title="Featured">
+                    {row.isFeatured ? (
+                        <Chip
+                            size="small"
+                            variant="outlined"
+                            color="secondary"
+                            label="Featured"
+                        />
+                    ) : (
                         <Typography
                             variant="body2"
-                            className={styles.lastActiveText}
+                            sx={{ color: "text.secondary" }}
                         >
-                            {row.createdAt
-                                ? new Date(row.createdAt).toLocaleString()
-                                : "-"}
+                            —
                         </Typography>
-                    </Box>
+                    )}
                 </TableCell>
             ),
         },
         {
             name: "Edit",
-            // minWidth: "300px",
+            width: "110px",
             cell: (row) => (
                 <TableCell title="Edit">
                     <Button
                         component={Link}
                         to={`/events/edit/${row.id}`}
+                        size="small"
                         variant="contained"
-                        className={styles.editButton}
                     >
                         Edit
                     </Button>
@@ -358,7 +324,7 @@ const EventList = () => {
         },
     ];
 
-    if (EventFetchingError, EventCategoryFetchingError) {
+    if (EventFetchingError) {
         return (
             <Box className={styles.errorContainer}>
                 <Typography variant="h6" className={styles.errorText}>
@@ -380,22 +346,20 @@ const EventList = () => {
     }
 
     return (
-        <>
-            <Table
-                data={EventData?.data}
-                columns={columns}
-                loading={
-                    EventFetching ||
-                    EventCategoryFetching
-                }
-                defaultRowsParPage={10}
-                perPageOption={[10, 20, 30, 50, 100]}
-                totalRows={EventData?.count}
-                realtimeFilter={realtimeFilter}
-                bulkActionComponent={null}
-                handleChange={handleFilter}
-            />
-        </>
+        <Table
+            data={EventData?.data}
+            columns={columns}
+            loading={
+                EventFetching ||
+                EventCategoryFetching
+            }
+            defaultRowsParPage={10}
+            perPageOption={[10, 20, 30, 50, 100]}
+            totalRows={EventData?.count}
+            realtimeFilter={realtimeFilter}
+            bulkActionComponent={null}
+            handleChange={handleFilter}
+        />
     );
 };
 

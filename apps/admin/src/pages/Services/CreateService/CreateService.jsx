@@ -273,7 +273,7 @@ const CreateService = () => {
                 variant="h4"
                 className={styles.title}
             >
-                Create Service
+                Create Program
             </Typography>
 
             <Paper className={styles.formContainer}>
@@ -564,7 +564,7 @@ const CreateService = () => {
                         {
                             isPending
                                 ? 'Creating...'
-                                : 'Create Service'
+                                : 'Create Program'
                         }
 
                     </Button>

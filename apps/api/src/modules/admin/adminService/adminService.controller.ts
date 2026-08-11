@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Header, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
+import type { Response } from 'express';
 import { JwtAuthGuard } from '@/modules/auth/guards/auth.guard';
 import { AdminServiceService } from './adminService.service';
 import { AdminAuthGuard } from '../guard/adminAuth.guard';
@@ -7,6 +8,7 @@ import { EditServiceCategoryDto } from './dto/editServiceCategory.dto';
 import { ServiceStatus } from '@/generated/prisma/enums';
 import { CreateServiceDto } from './dto/createService.dto';
 import { EditServiceDto } from './dto/editService.dto';
+import { GetServiceRegistrationsDto } from './dto/getServiceRegistrations.dto';
 
 
 @Controller('admin/service')
@@ -100,6 +102,49 @@ export class AdminServiceController {
             id,
             dto,
         );
+    }
+
+    /**
+     * Get who registered for a program, paginated.
+     *
+     * Declared before `:id` so the two-segment path wins over the single
+     * parameter route regardless of how the router orders them.
+     */
+    @Get(':id/registrations')
+    async getServiceRegistrations(
+        @Param('id') id: string,
+
+        @Query() query: GetServiceRegistrationsDto,
+    ) {
+        return this.adminServiceService.getServiceRegistrations(
+            id,
+            {
+                page: query.page || 1,
+                limit: query.limit || 10,
+                search: query.search,
+            },
+        );
+    }
+
+    /**
+     * Download the full registrant roster as CSV
+     */
+    @Get(':id/registrations/export')
+    @Header('Content-Type', 'text/csv; charset=utf-8')
+    async exportServiceRegistrations(
+        @Param('id') id: string,
+
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const { filename, csv } =
+            await this.adminServiceService.exportServiceRegistrations(id);
+
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="${filename}"`,
+        );
+
+        return csv;
     }
 
     /**

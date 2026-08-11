@@ -7,6 +7,26 @@ import { UpdateEventCategoryInterface } from './interfaces/updateEventCategory.i
 import { GetEventsInterface } from './interfaces/getEvents.interface';
 import { CreateEventInterface } from './interfaces/createEvent.interface';
 import { UpdateEventInterface } from './interfaces/updateEvent.interface';
+import { GetEventRegistrationsInterface } from './interfaces/getEventRegistrations.interface';
+import { GetEventCalendarInterface } from './interfaces/getEventCalendar.interface';
+import { csvFilenameSlug, toCsv } from '@/common/utils/csv.util';
+
+/**
+ * A month grid drawn as whole weeks spans at most six weeks, and no single
+ * screen can usefully render more events than this. The cap keeps one runaway
+ * month from returning the whole table.
+ */
+export const EVENT_CALENDAR_MAX = 500;
+
+/**
+ * Columns of the registrant CSV, in the order staff read them.
+ */
+export const EVENT_REGISTRANT_CSV_HEADERS = [
+    'Member ID',
+    'Name',
+    'Email',
+    'Registered At',
+];
 
 
 @Injectable()
@@ -565,6 +585,286 @@ export class AdminEventService {
         return {
             success: true,
             message: 'Event updated successfully',
+        };
+    }
+
+    /**
+     * Get every event that starts inside a window, for the month calendar.
+     *
+     * Deliberately unpaginated: a calendar cell has to show all of that day's
+     * events or it lies about the day. The window is the caller's visible grid
+     * (a month padded out to whole weeks), and `EVENT_CALENDAR_MAX` is the
+     * backstop.
+     */
+    async getEventCalendar(
+        query: GetEventCalendarInterface,
+    ) {
+
+        const from = new Date(query.from);
+        const to = new Date(query.to);
+
+        if (
+            Number.isNaN(from.getTime())
+            || Number.isNaN(to.getTime())
+        ) {
+            throw new BadRequestException(
+                'Invalid calendar window',
+            );
+        }
+
+        if (to < from) {
+            throw new BadRequestException(
+                'Calendar window must end after it starts',
+            );
+        }
+
+        const where: Prisma.EventWhereInput = {
+            startDateTime: {
+                gte: from,
+                lt: to,
+            },
+
+            ...(query.categoryId && {
+                categoryId: query.categoryId,
+            }),
+        };
+
+        const events = await this.database.event.findMany({
+            where,
+
+            take: EVENT_CALENDAR_MAX,
+
+            orderBy: {
+                startDateTime: 'asc',
+            },
+
+            select: {
+                id: true,
+                title: true,
+
+                startDateTime: true,
+                endDateTime: true,
+
+                locationType: true,
+                location: true,
+
+                maxCapacity: true,
+                isFeatured: true,
+
+                category: {
+                    select: {
+                        id: true,
+                        key: true,
+                        name: true,
+                    },
+                },
+
+                _count: {
+                    select: {
+                        registrations: true,
+                    },
+                },
+            },
+        });
+
+        return {
+            data: events,
+            count: events.length,
+        };
+    }
+
+    /**
+     * Get who registered for an event — paginated, newest sign-up first.
+     */
+    async getEventRegistrations(
+        eventId: string,
+        query: GetEventRegistrationsInterface,
+    ) {
+
+        const event = await this.requireEvent(eventId);
+
+        const page = query.page || 1;
+        const limit = query.limit || 10;
+
+        const skip = (page - 1) * limit;
+
+        const where = this.buildRegistrationWhere(
+            eventId,
+            query.search,
+        );
+
+        const [registrations, count] = await Promise.all([
+
+            this.database.eventRegistration.findMany({
+                where,
+
+                skip,
+                take: limit,
+
+                orderBy: {
+                    createdAt: 'desc',
+                },
+
+                select: {
+                    id: true,
+                    createdAt: true,
+
+                    user: {
+                        select: {
+                            id: true,
+                            publicId: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
+                },
+            }),
+
+            this.database.eventRegistration.count({
+                where,
+            }),
+        ]);
+
+        return {
+            event: {
+                id: event.id,
+                title: event.title,
+                startDateTime: event.startDateTime,
+                maxCapacity: event.maxCapacity,
+            },
+
+            data: registrations.map((row) => ({
+                id: row.id,
+                registeredAt: row.createdAt,
+
+                member: row.user,
+            })),
+
+            count,
+        };
+    }
+
+    /**
+     * Export the whole registrant roster as CSV.
+     *
+     * Unpaginated on purpose — the point of the export is to hand staff the
+     * complete list, so paging it would defeat it.
+     */
+    async exportEventRegistrations(
+        eventId: string,
+    ) {
+
+        const event = await this.requireEvent(eventId);
+
+        const registrations =
+            await this.database.eventRegistration.findMany({
+                where: {
+                    eventId,
+                },
+
+                orderBy: {
+                    createdAt: 'asc',
+                },
+
+                select: {
+                    createdAt: true,
+
+                    user: {
+                        select: {
+                            publicId: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
+                },
+            });
+
+        const csv = toCsv(
+            EVENT_REGISTRANT_CSV_HEADERS,
+
+            registrations.map((row) => [
+                row.user?.publicId ?? '',
+                row.user?.name ?? '',
+                row.user?.email ?? '',
+                row.createdAt,
+            ]),
+        );
+
+        return {
+            filename: `${csvFilenameSlug(event.title)}-registrations.csv`,
+            csv,
+        };
+    }
+
+    /**
+     * Load an event or say so — shared by both registrant reads so a bad id
+     * is a 404 rather than an empty roster that looks like "nobody signed up".
+     */
+    private async requireEvent(eventId: string) {
+
+        const event = await this.database.event.findUnique({
+            where: {
+                id: eventId,
+            },
+
+            select: {
+                id: true,
+                title: true,
+                startDateTime: true,
+                maxCapacity: true,
+            },
+        });
+
+        if (!event) {
+            throw new NotFoundException(
+                'Event not found',
+            );
+        }
+
+        return event;
+    }
+
+    /**
+     * Registrant search — over the member's name, email and member ID, which
+     * are the three things staff have in hand when somebody asks "am I on the
+     * list?".
+     */
+    private buildRegistrationWhere(
+        eventId: string,
+        search?: string,
+    ): Prisma.EventRegistrationWhereInput {
+
+        if (!search) {
+            return { eventId };
+        }
+
+        return {
+            eventId,
+
+            user: {
+                OR: [
+                    {
+                        name: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+
+                    {
+                        email: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+
+                    {
+                        publicId: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                ],
+            },
         };
     }
 }

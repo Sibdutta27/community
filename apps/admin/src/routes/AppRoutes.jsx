@@ -22,6 +22,7 @@ import EditConsent from "@/pages/Consents/EditConsent/EditConsent.jsx";
 import Services from "@/pages/Services/Services.jsx";
 import CreateService from "@/pages/Services/CreateService/CreateService.jsx";
 import EditService from "@/pages/Services/EditService/EditService.jsx";
+import ServiceRegistrations from "@/pages/Services/ServiceRegistrations/ServiceRegistrations.jsx";
 
 import ServiceCategories from "@/pages/ServiceCategories/ServiceCategories.jsx";
 import CreateServiceCategory from "@/pages/ServiceCategories/CreateServiceCategory/CreateServiceCategory.jsx";
@@ -30,6 +31,7 @@ import EditServiceCategory from "@/pages/ServiceCategories/EditServiceCategory/E
 import Events from "@/pages/Events/Events.jsx";
 import CreateEvent from "@/pages/Events/CreateEvent/CreateEvent.jsx";
 import EditEvent from "@/pages/Events/EditEvent/EditEvent.jsx";
+import EventRegistrations from "@/pages/Events/EventRegistrations/EventRegistrations.jsx";
 
 import EventCategories from "@/pages/EventCategories/EventCategories.jsx";
 import CreateEventCategory from "@/pages/EventCategories/CreateEventCategory/CreateEventCategory.jsx";
@@ -97,6 +99,10 @@ export default function AppRoutes() {
         <Route path="services" element={<Services />} />
         <Route path="/services/create" element={<CreateService />} />
         <Route path="/services/edit/:id" element={<EditService />} />
+        <Route
+          path="/services/:id/registrations"
+          element={<ServiceRegistrations />}
+        />
 
         {/* Service Categories */}
         <Route path="service-categories" element={<ServiceCategories />} />
@@ -113,6 +119,10 @@ export default function AppRoutes() {
         <Route path="events" element={<Events />} />
         <Route path="/events/create" element={<CreateEvent />} />
         <Route path="/events/edit/:id" element={<EditEvent />} />
+        <Route
+          path="/events/:id/registrations"
+          element={<EventRegistrations />}
+        />
 
         {/* Event Categories */}
         <Route path="event-categories" element={<EventCategories />} />

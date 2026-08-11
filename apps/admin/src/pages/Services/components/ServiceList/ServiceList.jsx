@@ -1,9 +1,9 @@
 import { useCallback, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
+
 import useDebounceState from "@/hooks/useDebounceState";
 
 import Table, { TableCell } from "@/components/ui/Table/Table";
-
-import { Link } from "react-router-dom";
 
 import { useServices, useServiceCategory } from "./hooks.js";
 
@@ -11,20 +11,31 @@ import {
     Typography,
     Box,
     Button,
+    Chip,
+    MenuItem,
     TextField,
     InputAdornment,
-    TextareaAutosize
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
+import GroupsIcon from "@mui/icons-material/Groups";
+
+import CategorySelect from "../CategorySelect/CategorySelect.jsx";
+
+import {
+    SERVICE_STATUSES,
+    serviceStatusColor,
+    serviceStatusLabel,
+} from "../../serviceStatus.util.js";
 
 import styles from "./serviceList.module.css";
-import CategorySelect from "../CategorySelect/CategorySelect.jsx";
-import { formatWords } from "@/utils/formatWord.util.js";
 
 /**
- * Service list components.
- * @returns
+ * Program list.
+ *
+ * Columns are typographic rather than a row of disabled textareas, and the two
+ * things staff actually scan for lead: whether the program is live, and how
+ * many people signed up.
  */
 const ServiceList = () => {
 
@@ -35,6 +46,7 @@ const ServiceList = () => {
         page: 1,
         limit: 10,
         search: "",
+        status: "",
     });
 
     /**
@@ -64,7 +76,6 @@ const ServiceList = () => {
     const {
         data: ServiceCategoryData,
         isFetching: ServiceCategoryFetching,
-        error: ServiceCategoryFetchingError,
         refetch: refetchServiceCategory,
     } = useServiceCategory({});
 
@@ -78,6 +89,7 @@ const ServiceList = () => {
                 page,
                 limit: rowsPerPage,
                 search: filter.search || "",
+                status: filter.status || "",
                 categoryId: filter.categoryId,
             }));
         },
@@ -90,7 +102,7 @@ const ServiceList = () => {
     const realtimeFilter = [
         {
             name: "categories",
-            render: (updateFilter, filterValue) => (
+            render: (updateFilter) => (
                 <Box key="categories" >
                     <CategorySelect
                         key="categories"
@@ -102,12 +114,37 @@ const ServiceList = () => {
             ),
         },
         {
+            name: "status",
+            render: (updateFilter, filterValue) => (
+                <TextField
+                    key="statusFilter"
+                    name="status"
+                    select
+                    size="small"
+                    label="Status"
+                    value={filterValue || ""}
+                    onChange={(e) =>
+                        updateFilter(e.target.name, e.target.value)
+                    }
+                    sx={{ minWidth: 180 }}
+                >
+                    <MenuItem value="">All statuses</MenuItem>
+
+                    {SERVICE_STATUSES.map((status) => (
+                        <MenuItem key={status.value} value={status.value}>
+                            {status.label}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            ),
+        },
+        {
             name: "search",
             render: (updateFilter, filterValue) => (
                 <TextField
                     key="searchField"
                     name="search"
-                    placeholder="Search Service..."
+                    placeholder="Search Program..."
                     size="small"
                     value={filterValue || ""}
                     onChange={(e) =>
@@ -139,206 +176,159 @@ const ServiceList = () => {
      */
     const columns = [
         {
-            name: "Name",
-            minWidth: "300px",
+            name: "Program",
+            minWidth: "280px",
+            grow: 2,
             cell: (row) => (
-                // <TableCell title="Key">
-                <TextareaAutosize
-                    value={row.name}
-                    disabled
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
-            ),
-        },
-        {
-            name: "Category",
-            minWidth: "300px",
-            cell: (row) => (
-                // <TableCell title="Key">
-                <TextareaAutosize
-                    value={row?.category?.name}
-                    disabled
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
-            ),
-        },
-        {
-            name: "Description",
-            minWidth: "300px",
-            cell: (row) => (
-                // <TableCell title="Title">
-                <TextareaAutosize
-                    value={row.description || '-'}
-                    disabled
-                    minRows={2}
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
-            ),
-        },
-        {
-            name: "Status",
-            minWidth: "150px",
-            cell: (row) => (
-                <TableCell title="Status">
-                    <Typography
-                        variant="body2"
-                        className={
-                            row.status == 'ACTIVE'
-                                ? styles.active
-                                : styles.notActive
-                        }
-                    >
-                        {formatWords(row.status)}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Location",
-            minWidth: "300px",
-            cell: (row) => (
-                // <TableCell title="Title">
-                <TextareaAutosize
-                    value={row.location || '-'}
-                    disabled
-                    minRows={2}
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
-            ),
-        },
-        {
-            name: "Phone",
-            minWidth: "300px",
-            cell: (row) => (
-                // <TableCell title="Content">
-                <TextareaAutosize
-                    value={row.phone || '-'}
-                    disabled
-                    minRows={2}
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
-            ),
-        },
-        {
-            name: "Email",
-            minWidth: "300px",
-            cell: (row) => (
-                // <TableCell title="Content">
-                <TextareaAutosize
-                    value={row.email || '-'}
-                    disabled
-                    minRows={2}
-                    className={styles.keyTextarea}
-                />
-                // </TableCell>
-            ),
-        },
-        {
-            name: "Action Type",
-            minWidth: "150px",
-            cell: (row) => (
-                <TableCell title="Action Type">
-                    <Typography
-                        variant="body2"
-                        className={styles.name}
-                    >
-                        {formatWords(row.actionType) || '-'}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Action Label",
-            minWidth: "300px",
-            cell: (row) => (
-                <TextareaAutosize
-                    value={row.actionLabel || '-'}
-                    disabled
-                    minRows={2}
-                    className={styles.keyTextarea}
-                />
-            ),
-        },
-        {
-            name: "Action Url",
-            minWidth: "300px",
-            cell: (row) => (
-                <TextareaAutosize
-                    value={row.actionUrl || '-'}
-                    disabled
-                    minRows={2}
-                    className={styles.keyTextarea}
-                />
-            ),
-        },
-         {
-            name: "Registrations",
-            minWidth: "150px",
-            cell: (row) => (
-                <TableCell title="Registrations">
-                    <Typography
-                        variant="body2"
-                        className={styles.name}
-                        sx={{paddingLeft: 3}}
-                    >
-                        {row._count.registrations || '0'}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Featured",
-            minWidth: "150px",
-            cell: (row) => (
-                <TableCell title="Required">
-                    <Typography
-                        variant="body2"
-                        className={
-                            row.isFeatured
-                                ? styles.active
-                                : styles.notActive
-                        }
-                    >
-                        {row.isFeatured ? 'Featured' : 'Not Featured'}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Created At",
-            minWidth: "190px",
-            cell: (row) => (
-                <TableCell title="Created At">
-                    <Box className={styles.lastActiveContainer}>
-                        <Box />
+                <TableCell title={row.name}>
+                    <Box sx={{ minWidth: 0, py: 0.5 }}>
+                        <Box
+                            component={Link}
+                            to={`/services/edit/${row.id}`}
+                            sx={{
+                                display: "block",
+                                fontWeight: 600,
+                                fontSize: "0.88rem",
+                                color: "text.primary",
+                                textDecoration: "none",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                "&:hover": { color: "primary.main" },
+                            }}
+                        >
+                            {row.name}
+                        </Box>
 
                         <Typography
                             variant="body2"
-                            className={styles.lastActiveText}
+                            sx={{
+                                mt: 0.25,
+                                color: "text.secondary",
+                                fontSize: "0.78rem",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                            }}
                         >
-                            {row.createdAt
-                                ? new Date(row.createdAt).toLocaleString()
-                                : "-"}
+                            {row.description || "No description"}
                         </Typography>
                     </Box>
                 </TableCell>
             ),
         },
         {
+            name: "Category",
+            minWidth: "150px",
+            cell: (row) => (
+                <TableCell title="Category">
+                    <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary" }}
+                    >
+                        {row?.category?.name || "—"}
+                    </Typography>
+                </TableCell>
+            ),
+        },
+        {
+            name: "Status",
+            width: "150px",
+            cell: (row) => (
+                <TableCell title="Status">
+                    <Chip
+                        size="small"
+                        variant="outlined"
+                        color={serviceStatusColor(row.status)}
+                        label={serviceStatusLabel(row.status)}
+                    />
+                </TableCell>
+            ),
+        },
+        {
+            name: "Registrants",
+            minWidth: "150px",
+            cell: (row) => (
+                <TableCell title="Registrants">
+                    <Button
+                        component={Link}
+                        to={`/services/${row.id}/registrations`}
+                        size="small"
+                        variant="outlined"
+                        startIcon={<GroupsIcon />}
+                    >
+                        {row._count?.registrations ?? 0}
+                    </Button>
+                </TableCell>
+            ),
+        },
+        {
+            name: "Contact",
+            minWidth: "220px",
+            cell: (row) => (
+                <TableCell title="Contact">
+                    <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.primary",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {row.location || "—"}
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.secondary",
+                                fontSize: "0.78rem",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {[row.phone, row.email]
+                                .filter(Boolean)
+                                .join(" · ") || "No contact details"}
+                        </Typography>
+                    </Box>
+                </TableCell>
+            ),
+        },
+        {
+            name: "Featured",
+            width: "140px",
+            cell: (row) => (
+                <TableCell title="Featured">
+                    {row.isFeatured ? (
+                        <Chip
+                            size="small"
+                            variant="outlined"
+                            color="secondary"
+                            label="Featured"
+                        />
+                    ) : (
+                        <Typography
+                            variant="body2"
+                            sx={{ color: "text.secondary" }}
+                        >
+                            —
+                        </Typography>
+                    )}
+                </TableCell>
+            ),
+        },
+        {
             name: "Edit",
-            // minWidth: "300px",
+            width: "110px",
             cell: (row) => (
                 <TableCell title="Edit">
                     <Button
                         component={Link}
                         to={`/services/edit/${row.id}`}
+                        size="small"
                         variant="contained"
-                        className={styles.editButton}
                     >
                         Edit
                     </Button>
@@ -347,7 +337,7 @@ const ServiceList = () => {
         },
     ];
 
-    if (ServiceFetchingError, ServiceCategoryFetchingError) {
+    if (ServiceFetchingError) {
         return (
             <Box className={styles.errorContainer}>
                 <Typography variant="h6" className={styles.errorText}>
@@ -369,22 +359,20 @@ const ServiceList = () => {
     }
 
     return (
-        <>
-            <Table
-                data={ServiceData?.data}
-                columns={columns}
-                loading={
-                    ServiceFetching ||
-                    ServiceCategoryFetching
-                }
-                defaultRowsParPage={10}
-                perPageOption={[10, 20, 30, 50, 100]}
-                totalRows={ServiceData?.count}
-                realtimeFilter={realtimeFilter}
-                bulkActionComponent={null}
-                handleChange={handleFilter}
-            />
-        </>
+        <Table
+            data={ServiceData?.data}
+            columns={columns}
+            loading={
+                ServiceFetching ||
+                ServiceCategoryFetching
+            }
+            defaultRowsParPage={10}
+            perPageOption={[10, 20, 30, 50, 100]}
+            totalRows={ServiceData?.count}
+            realtimeFilter={realtimeFilter}
+            bulkActionComponent={null}
+            handleChange={handleFilter}
+        />
     );
 };
 

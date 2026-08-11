@@ -1,44 +1,43 @@
-import React from 'react';
+import { Link } from "react-router-dom";
 
-import EventCategoryList from './components/EventCategoryList.jsx/EventCategoryList';
+import { Box, Button } from "@mui/material";
 
-import { Link } from 'react-router-dom';
+import AddIcon from "@mui/icons-material/Add";
 
-import {
-    Box,
-    Button,
-    Typography,
-} from '@mui/material';
+import PageHeader from "@components/PageHeader/PageHeader";
+import SectionNav from "@components/SectionNav/SectionNav";
 
-import AddIcon from '@mui/icons-material/Add';
+import EventCategoryList from "./components/EventCategoryList.jsx/EventCategoryList";
 
-import styles from './eventCategories.module.css';
+import { EVENT_SECTION_ITEMS } from "../Events/sections";
 
+/**
+ * Event categories — the same surface as Events, one tab over, so staff
+ * setting up a new event never have to go hunting for where categories live.
+ */
 const EventCategories = () => {
-    return (
-        <section className={styles.page}>
-            <Box className={styles.header}>
-                <Typography
-                    variant="h4"
-                    className={styles.title}
-                >
-                    Event Categories
-                </Typography>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+      <PageHeader
+        title="Event Categories"
+        description="How events are grouped for members. Every event belongs to one."
+        action={
+          <Button
+            variant="contained"
+            component={Link}
+            to="/event-categories/create"
+            startIcon={<AddIcon />}
+          >
+            Add Category
+          </Button>
+        }
+      />
 
-                <Button
-                    variant="contained"
-                    component={Link}
-                    to="/event-categories/create"
-                    startIcon={<AddIcon />}
-                    className={styles.addButton}
-                >
-                    Add Event Category
-                </Button>
-            </Box>
+      <SectionNav items={EVENT_SECTION_ITEMS} />
 
-            <EventCategoryList/>
-        </section>
-    );
+      <EventCategoryList />
+    </Box>
+  );
 };
 
 export default EventCategories;
