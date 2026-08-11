@@ -86,22 +86,25 @@
       "title": "How to Enroll with the Taíno Nation of Borikén",
       "subtitle": "Our enrollment process is designed to be simple, respectful, and thorough. Follow these steps to begin your journey toward official tribal membership.",
       "stepLabel": "Step",
+      "prerequisite": {
+        "label": "Before you start",
+        "description": "Create your account and verify your email address. Once you sign in and accept the enrollment consents, the five steps below open in your dashboard."
+      },
       "steps": {
-        "account": {
-          "title": "Create Account",
-          "description": "Sign up with your email and create a secure password to access the enrollment portal."
+        "1": {
+          "description": "Provide your basic details — name, date of birth, contact information, and addresses."
         },
-        "personalInfo": {
-          "title": "Personal Information",
-          "description": "Provide your basic details including name, date of birth, and contact information."
+        "2": {
+          "description": "Document your mother and maternal grandparents with names, dates, and places of birth."
         },
-        "maternalLineage": {
-          "title": "Maternal Lineage",
-          "description": "Document your maternal ancestry with names, dates, and places of birth for your lineage."
+        "3": {
+          "description": "Document your father and paternal grandparents the same way."
         },
-        "documents": {
-          "title": "Upload Documents",
-          "description": "Submit supporting documents such as birth certificates, family records, and lineage proof."
+        "4": {
+          "description": "Upload your photo, proof of identity, and any records that support your kinship claim."
+        },
+        "5": {
+          "description": "Review everything, sign, and submit your application for council review."
         }
       },
       "needs": {
@@ -116,8 +119,8 @@
             "description": "Your official birth certificate (certified copy)"
           },
           "lineageRecords": {
-            "title": "Maternal Lineage Records",
-            "description": "Birth certificates for mother, grandmother, great-grandmother (if available)"
+            "title": "Maternal & Paternal Lineage Records",
+            "description": "Birth certificates for your mother, your father, and their parents on both sides (if available)"
           },
           "supportingDocs": {
             "title": "Supporting Documentation",
@@ -253,7 +256,7 @@
       "items": {
         "eligibility": {
           "question": "Who is eligible to enroll in the Taíno Nation?",
-          "answer": "Taíno descendants who can provide personal identification and documentation supporting their maternal lineage are eligible to begin the enrollment process. If you are still gathering records, you can review the requirements first and prepare your materials before submitting."
+          "answer": "Taíno descendants who can provide personal identification and documentation supporting their maternal and paternal kinship are eligible to begin the enrollment process. If you are still gathering records, you can review the requirements first and prepare your materials before submitting."
         },
         "timeline": {
           "question": "How long does the enrollment process take?",
@@ -265,7 +268,7 @@
         },
         "benefits": {
           "question": "What benefits do enrolled members receive?",
-          "answer": "Enrolled members can access their Tribal ID, document maternal lineage, connect with their assigned Yucayeke, use the secure document vault, and explore member services such as health, legal, educational, and community support resources."
+          "answer": "Enrolled members can access their Tribal ID, document their maternal and paternal kinship, connect with their assigned Yucayeke, use the secure document vault, and explore member services such as health, legal, educational, and community support resources."
         },
         "fee": {
           "question": "Is there a fee to enroll?",
@@ -436,7 +439,7 @@
         "steps": {
           "createAccount": "Create your account and verify your email address",
           "completeApplication": "Complete your enrollment application with personal and lineage information",
-          "uploadDocuments": "Upload supporting documents to verify your maternal lineage",
+          "uploadDocuments": "Upload your photo, proof of identity, and documents supporting your maternal and paternal kinship",
           "review": "Our review team will carefully examine your application",
           "receiveId": "Receive your Tribal ID and Yukayeke assignment upon approval"
         },
@@ -462,9 +465,55 @@
       "kicker": "Tribal Citizenship",
       "title": "Enrollment Application",
       "stepOf": "Step {step} of {total}",
+      "overviewLabel": "Overview",
       "back": "Back",
       "saveFinishLater": "Save & finish later",
       "saveFinishLaterAria": "Save and finish later"
+    },
+    "intro": {
+      "metaTitle": "Before You Begin",
+      "heading": "Before you begin",
+      "description": "A short introduction to the Nation you are enrolling with, the five steps of the application, and what to have on hand before you start.",
+      "nation": {
+        "title": "Who you are enrolling with",
+        "description": "The community your application is addressed to.",
+        "paragraph1": "You are applying for citizenship with the Taíno Nation of Borikén. This platform was created to give descendants a respectful way to document lineage, reconnect with ancestral heritage, and participate in a living Indigenous community.",
+        "paragraph2": "It is more than a records system. It is a sovereign digital home where identity, family history, and community participation are centered around Taíno values rather than generic administrative tools. Your enrollment records your kinship with the Nation and, once approved, connects you to your Yucayeke."
+      },
+      "steps": {
+        "title": "What the application asks for",
+        "description": "The application has five steps. You can move between them in any order and return as often as you need."
+      },
+      "documents": {
+        "title": "What you'll need",
+        "description": "Gathering these before you start makes the last step much faster. Only your photo is required to move past the document step.",
+        "required": "Required",
+        "optional": "Optional",
+        "identityNote": "You must upload at least {min} of the three proof-of-identity documents above to confirm you are the person applying."
+      },
+      "how": {
+        "title": "How it works",
+        "description": "What to expect before, during, and after you submit.",
+        "items": {
+          "time": {
+            "title": "About 20 to 30 minutes",
+            "description": "That is the time to complete the application if you have your records to hand."
+          },
+          "saveLater": {
+            "title": "Save and finish later",
+            "description": "Your answers are saved as a draft, so you can stop at any point and pick the application back up from your dashboard."
+          },
+          "review": {
+            "title": "Council review",
+            "description": "After you sign and submit, the council reviews your application and supporting documents. You will be notified once a decision has been made."
+          },
+          "data": {
+            "title": "Where your information lives",
+            "description": "Your information is encrypted and stored on secure sovereign servers. Access is limited to authorized reviewers, and your data is not shared with third parties."
+          }
+        }
+      },
+      "cta": "Start Step 1"
     },
     "stepper": {
       "listLabel": "Enrollment steps",
@@ -739,7 +788,7 @@
     },
     "hero": {
       "title": "Begin Your Journey to Official Taíno Nation Membership",
-      "subtitle": "Learn how enrollment works, what documents you will need, and the key questions members ask before starting their application."
+      "subtitle": "Learn how the five-step application works, what documents you will need, and the key questions members ask before starting."
     },
     "validation": {
       "firstNameRequired": "First name is required",

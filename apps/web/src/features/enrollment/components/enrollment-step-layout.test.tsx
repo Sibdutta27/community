@@ -118,15 +118,16 @@ describe("EnrollmentStepLayout — folder tabs + elevated card", () => {
     expect(screen.getByText("Datos demográficos")).toBeInTheDocument();
   });
 
-  it("routes Back to the dashboard on step 1 and to the previous step afterwards", () => {
+  it("routes Back to the enrollment overview on step 1 and to the previous step afterwards", () => {
     const { unmount } = render(
       <EnrollmentStepLayout step={1}>
         <p>Body</p>
       </EnrollmentStepLayout>,
     );
+    // The overview now sits between the dashboard and step 1.
     expect(screen.getByRole("link", { name: /back/i })).toHaveAttribute(
       "href",
-      "/dashboard",
+      "/enrollment/start",
     );
     unmount();
 
@@ -138,6 +139,63 @@ describe("EnrollmentStepLayout — folder tabs + elevated card", () => {
     expect(screen.getByRole("link", { name: /back/i })).toHaveAttribute(
       "href",
       "/enrollment/step-2",
+    );
+  });
+});
+
+describe("EnrollmentStepLayout — step 0 (the enrollment overview)", () => {
+  it("labels the utility row 'Overview' instead of 'Step N of 5'", () => {
+    render(
+      <EnrollmentStepLayout step={0}>
+        <p>Intro body</p>
+      </EnrollmentStepLayout>,
+    );
+
+    expect(screen.getByText("Overview")).toBeInTheDocument();
+    expect(screen.queryByText(/step \d+ of 5/i)).toBeNull();
+  });
+
+  it("renders the given heading verbatim — no '0. ' numeric prefix", () => {
+    render(
+      <EnrollmentStepLayout
+        description="What to expect."
+        heading="Before you begin"
+        step={0}
+      >
+        <p>Intro body</p>
+      </EnrollmentStepLayout>,
+    );
+
+    const heading = screen.getByRole("heading", { level: 1 });
+    expect(heading).toHaveTextContent("Before you begin");
+    expect(heading.textContent).not.toMatch(/^0\./);
+    expect(screen.getByText("What to expect.")).toBeInTheDocument();
+    expect(getStepCard()).toContainElement(heading);
+  });
+
+  it("keeps the five folder tabs visible with no active tab — seeing the steps is part of the introduction", () => {
+    render(
+      <EnrollmentStepLayout step={0}>
+        <p>Intro body</p>
+      </EnrollmentStepLayout>,
+    );
+
+    // 5 tabs + Back.
+    expect(screen.getAllByRole("link")).toHaveLength(6);
+    expect(document.querySelector("[aria-current='step']")).toBeNull();
+    expect(document.querySelectorAll("[data-state='active']")).toHaveLength(0);
+  });
+
+  it("routes Back to the dashboard", () => {
+    render(
+      <EnrollmentStepLayout step={0}>
+        <p>Intro body</p>
+      </EnrollmentStepLayout>,
+    );
+
+    expect(screen.getByRole("link", { name: /back/i })).toHaveAttribute(
+      "href",
+      "/dashboard",
     );
   });
 });

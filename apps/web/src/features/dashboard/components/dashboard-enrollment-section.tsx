@@ -16,6 +16,7 @@ import {
 } from "@/features/dashboard/lib/enrollment-queries";
 import {
   buildDashboardEnrollmentSteps,
+  enrollmentOverviewHref,
   resolveEnrollmentStepState,
 } from "@/features/enrollment/config/enrollment-steps";
 
@@ -72,7 +73,12 @@ export function DashboardEnrollmentSection() {
     },
   );
   const stepOne = enrollmentSteps.find((step) => step.step === 1);
-  const stepOneHref = stepOne?.href ?? "/enrollment/step-1";
+  // First-timers land on the enrollment overview (who they are enrolling with,
+  // what the five steps ask for, what to have to hand); members who already
+  // completed step 1 go straight to the form so returning costs no extra click.
+  const stepOneHref = resolvedStepState?.["1"]
+    ? (stepOne?.href ?? "/enrollment/step-1")
+    : enrollmentOverviewHref;
   const activeConsents = activeConsentsQuery.data ?? [];
   const accountInfoErrorMessage =
     !accountInfoQuery.data && accountInfoQuery.error instanceof Error

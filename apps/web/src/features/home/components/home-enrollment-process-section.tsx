@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
+import { enrollmentStepDefinitions } from "@/features/enrollment/config/enrollment-steps";
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -17,13 +18,6 @@ const warmStepTone = {
   bubbleClassName: "border-border bg-surface-muted border",
   numberClassName: "text-foreground",
 } as const;
-
-const enrollmentSteps = [
-  { step: "1", id: "account" },
-  { step: "2", id: "personalInfo" },
-  { step: "3", id: "maternalLineage" },
-  { step: "4", id: "documents" },
-] as const;
 
 const needItems = [
   {
@@ -48,6 +42,10 @@ const tipIds = ["saveProgress", "scanQuality", "review"] as const;
 
 export function HomeEnrollmentProcessSection() {
   const t = useTranslations("home.process");
+  // Card titles come from the same catalog the in-app flow reads, and the
+  // cards themselves are driven by `enrollmentStepDefinitions` — so the
+  // marketing promise can never drift from the application members meet.
+  const tStepTitles = useTranslations("enrollment.steps");
 
   return (
     <motion.section
@@ -83,16 +81,39 @@ export function HomeEnrollmentProcessSection() {
           </motion.p>
         </div>
 
+        {/* Creating an account is a PREREQUISITE, not a step of the
+            application — keeping it out of the cards is what makes the card
+            count equal the real step count. */}
         <motion.div
-          className="mt-11 grid gap-x-4 gap-y-9 md:grid-cols-2 md:gap-4 xl:grid-cols-4"
+          className="border-border bg-surface-muted mx-auto mt-8 max-w-3xl rounded-2xl border px-4 py-3.5 text-left sm:px-5"
+          variants={fadeInUpItem}
+        >
+          <p className="text-muted-foreground text-[0.7rem] font-semibold tracking-[0.2em] uppercase">
+            {t("prerequisite.label")}
+          </p>
+          <p className="text-muted-foreground mt-1.5 text-sm leading-6">
+            {t("prerequisite.description")}
+          </p>
+        </motion.div>
+
+        <motion.div
+          className={cn(
+            "mt-11 grid gap-x-4 gap-y-9 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-5",
+            // Five cards over an even column count leaves a lone card on the
+            // last row; at `md` (2 cols) center that orphan at half width so
+            // it does not read as a broken grid. `lg` (3 cols) ends 3 + 2 and
+            // `xl` (5 cols) is a single row, so both reset it.
+            "md:[&>*:last-child]:col-span-2 md:[&>*:last-child]:mx-auto md:[&>*:last-child]:w-[calc(50%-0.5rem)]",
+            "lg:[&>*:last-child]:col-span-1 lg:[&>*:last-child]:w-auto",
+          )}
           variants={fadeInUpContainer}
         >
-          {enrollmentSteps.map((card) => (
+          {enrollmentStepDefinitions.map((definition) => (
             <HomeEnrollmentStepCard
-              key={card.step}
-              step={card.step}
-              title={t(`steps.${card.id}.title`)}
-              description={t(`steps.${card.id}.description`)}
+              key={definition.step}
+              step={String(definition.step)}
+              title={tStepTitles(`${definition.step}.title`)}
+              description={t(`steps.${definition.step}.description`)}
               tone={warmStepTone}
             />
           ))}
