@@ -86,22 +86,25 @@
       "title": "Cómo Inscribirte en la Nación Taíno de Borikén",
       "subtitle": "Nuestro proceso de inscripción está diseñado para ser sencillo, respetuoso y completo. Sigue estos pasos para comenzar tu camino hacia la membresía tribal oficial.",
       "stepLabel": "Paso",
+      "prerequisite": {
+        "label": "Antes de empezar",
+        "description": "Crea tu cuenta y verifica tu email. Una vez inicies sesión y aceptes los consentimientos de inscripción, los cinco pasos de abajo se abren en tu panel."
+      },
       "steps": {
-        "account": {
-          "title": "Crea tu Cuenta",
-          "description": "Regístrate con tu email y crea una contraseña segura para acceder al portal de inscripción."
+        "1": {
+          "description": "Provee tus datos básicos: nombre, fecha de nacimiento, información de contacto y direcciones."
         },
-        "personalInfo": {
-          "title": "Información Personal",
-          "description": "Provee tus datos básicos, incluyendo nombre, fecha de nacimiento e información de contacto."
+        "2": {
+          "description": "Documenta a tu madre y a tus abuelos maternos con nombres, fechas y lugares de nacimiento."
         },
-        "maternalLineage": {
-          "title": "Linaje Materno",
-          "description": "Documenta tu ascendencia materna con los nombres, fechas y lugares de nacimiento de tu linaje."
+        "3": {
+          "description": "Documenta a tu padre y a tus abuelos paternos de la misma manera."
         },
-        "documents": {
-          "title": "Sube tus Documentos",
-          "description": "Somete documentos de apoyo como certificados de nacimiento, récords familiares y evidencia de linaje."
+        "4": {
+          "description": "Sube tu foto, tu prueba de identidad y cualquier récord que respalde tu reclamo de parentesco."
+        },
+        "5": {
+          "description": "Revisa todo, firma y somete tu solicitud para la revisión del concilio."
         }
       },
       "needs": {
@@ -116,8 +119,8 @@
             "description": "Tu certificado de nacimiento oficial (copia certificada)"
           },
           "lineageRecords": {
-            "title": "Récords de Linaje Materno",
-            "description": "Certificados de nacimiento de tu madre, abuela y bisabuela (si están disponibles)"
+            "title": "Récords de Linaje Materno y Paterno",
+            "description": "Certificados de nacimiento de tu madre, tu padre y los padres de ambos (si están disponibles)"
           },
           "supportingDocs": {
             "title": "Documentación de Apoyo",
@@ -253,7 +256,7 @@
       "items": {
         "eligibility": {
           "question": "¿Quién es elegible para inscribirse en la Nación Taíno?",
-          "answer": "Los descendientes taínos que puedan proveer identificación personal y documentación que apoye su linaje materno son elegibles para comenzar el proceso de inscripción. Si todavía estás reuniendo tus récords, puedes revisar primero los requisitos y preparar tus materiales antes de someter la solicitud."
+          "answer": "Los descendientes taínos que puedan proveer identificación personal y documentación que apoye su parentesco materno y paterno son elegibles para comenzar el proceso de inscripción. Si todavía estás reuniendo tus récords, puedes revisar primero los requisitos y preparar tus materiales antes de someter la solicitud."
         },
         "timeline": {
           "question": "¿Cuánto tiempo toma el proceso de inscripción?",
@@ -265,7 +268,7 @@
         },
         "benefits": {
           "question": "¿Qué beneficios reciben los miembros inscritos?",
-          "answer": "Los miembros inscritos pueden acceder a su Identificación Tribal, documentar su linaje materno, conectarse con su Yucayeke asignado, usar la bóveda segura de documentos y explorar servicios para miembros como recursos de salud, legales, educativos y de apoyo comunitario."
+          "answer": "Los miembros inscritos pueden acceder a su Identificación Tribal, documentar su parentesco materno y paterno, conectarse con su Yucayeke asignado, usar la bóveda segura de documentos y explorar servicios para miembros como recursos de salud, legales, educativos y de apoyo comunitario."
         },
         "fee": {
           "question": "¿Hay que pagar para inscribirse?",
@@ -436,7 +439,7 @@
         "steps": {
           "createAccount": "Cree su cuenta y verifique su correo electrónico",
           "completeApplication": "Complete su solicitud de inscripción con su información personal y de linaje",
-          "uploadDocuments": "Suba los documentos de apoyo para verificar su linaje materno",
+          "uploadDocuments": "Suba su foto, su prueba de identidad y los documentos que respalden su parentesco materno y paterno",
           "review": "Nuestro equipo de revisión examinará cuidadosamente su solicitud",
           "receiveId": "Reciba su Identificación Tribal y su asignación de Yukayeke al ser aprobada"
         },
@@ -462,9 +465,55 @@
       "kicker": "Ciudadanía Tribal",
       "title": "Solicitud de Inscripción",
       "stepOf": "Paso {step} de {total}",
+      "overviewLabel": "Resumen",
       "back": "Atrás",
       "saveFinishLater": "Guardar y terminar más tarde",
       "saveFinishLaterAria": "Guardar y terminar más tarde"
+    },
+    "intro": {
+      "metaTitle": "Antes de comenzar",
+      "heading": "Antes de comenzar",
+      "description": "Una breve introducción a la Nación con la que se inscribe, los cinco pasos de la solicitud y lo que debe tener a la mano antes de empezar.",
+      "nation": {
+        "title": "Con quién se está inscribiendo",
+        "description": "La comunidad a la que va dirigida su solicitud.",
+        "paragraph1": "Usted está solicitando la ciudadanía con la Nación Taíno de Borikén. Esta plataforma fue creada para darles a los descendientes una manera respetuosa de documentar su linaje, reconectarse con su herencia ancestral y participar en una comunidad indígena viva.",
+        "paragraph2": "Es más que un sistema de récords. Es un hogar digital soberano donde la identidad, la historia familiar y la participación comunitaria giran en torno a los valores taínos y no a herramientas administrativas genéricas. Su inscripción documenta su parentesco con la Nación y, una vez aprobada, lo conecta con su Yucayeke."
+      },
+      "steps": {
+        "title": "Qué le pide la solicitud",
+        "description": "La solicitud tiene cinco pasos. Puede moverse entre ellos en el orden que prefiera y regresar cuantas veces necesite."
+      },
+      "documents": {
+        "title": "Qué va a necesitar",
+        "description": "Reunir esto antes de empezar hace el último paso mucho más rápido. Solo su foto es obligatoria para pasar del paso de documentos.",
+        "required": "Obligatorio",
+        "optional": "Opcional",
+        "identityNote": "Debe subir al menos {min} de los tres documentos de prueba de identidad de arriba para confirmar que usted es la persona que solicita."
+      },
+      "how": {
+        "title": "Cómo funciona",
+        "description": "Qué esperar antes, durante y después de enviar su solicitud.",
+        "items": {
+          "time": {
+            "title": "Alrededor de 20 a 30 minutos",
+            "description": "Ese es el tiempo para completar la solicitud si tiene sus récords a la mano."
+          },
+          "saveLater": {
+            "title": "Guardar y terminar más tarde",
+            "description": "Sus respuestas se guardan como borrador, así que puede detenerse en cualquier momento y retomar la solicitud desde su panel."
+          },
+          "review": {
+            "title": "Revisión del concilio",
+            "description": "Luego de firmar y enviar, el concilio revisa su solicitud y sus documentos de apoyo. Se le notificará una vez se tome una decisión."
+          },
+          "data": {
+            "title": "Dónde se guarda su información",
+            "description": "Su información se cifra y se almacena en servidores soberanos seguros. El acceso está limitado a los revisores autorizados y sus datos no se comparten con terceros."
+          }
+        }
+      },
+      "cta": "Comenzar el paso 1"
     },
     "stepper": {
       "listLabel": "Pasos de la inscripción",
@@ -739,7 +788,7 @@
     },
     "hero": {
       "title": "Comience su camino hacia la membresía oficial de la Nación Taíno",
-      "subtitle": "Conozca cómo funciona la inscripción, qué documentos necesitará y las preguntas más comunes que hacen los miembros antes de comenzar su solicitud."
+      "subtitle": "Conozca cómo funciona la solicitud de cinco pasos, qué documentos necesitará y las preguntas más comunes que hacen los miembros antes de comenzar."
     },
     "validation": {
       "firstNameRequired": "El nombre es obligatorio",

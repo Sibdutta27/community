@@ -5,11 +5,11 @@ monorepo**: the three apps live under `apps/*` and share one root install. Run `
 once at the root; drive tasks with Turborepo (`pnpm build|dev|lint|typecheck`, or
 `pnpm --filter <app> <script>`). Shared packages go under `packages/*`.
 
-| App | Stack | Role |
-|-----|-------|------|
-| [`apps/api/`](./apps/api/CLAUDE.md) | NestJS 11 + Prisma 7 (Postgres), JWT, S3/MinIO | REST API — the single source of truth |
-| [`apps/web/`](./apps/web/CLAUDE.md) | Next.js 16 (App Router) + React 19, Tailwind v4, shadcn/ui | Member-facing app (public + authenticated) |
-| [`apps/admin/`](./apps/admin/CLAUDE.md) | Vite 6 + React 19, MUI v9 | Internal admin dashboard |
+| App                                     | Stack                                                      | Role                                       |
+| --------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
+| [`apps/api/`](./apps/api/CLAUDE.md)     | NestJS 11 + Prisma 7 (Postgres), JWT, S3/MinIO             | REST API — the single source of truth      |
+| [`apps/web/`](./apps/web/CLAUDE.md)     | Next.js 16 (App Router) + React 19, Tailwind v4, shadcn/ui | Member-facing app (public + authenticated) |
+| [`apps/admin/`](./apps/admin/CLAUDE.md) | Vite 6 + React 19, MUI v9                                  | Internal admin dashboard                   |
 
 Both frontends talk to the same backend API.
 
@@ -46,9 +46,11 @@ admin panel or vice-versa.
 ## Domain model in one breath
 
 A `User` has one `Enrollment` (status `DRAFT → SUBMITTED → APPROVED/REJECTED`). Enrollment is a
-4-step flow (basic info/contact/addresses → … → maternal lineage + cultural connections →
-documents). Consent must be accepted (gated by `ConsentAcceptedGuard`) before document/enrollment
-writes. Users also register for `Service`s and `Event`s. Files live in S3/MinIO as `Document`s.
+5-step flow — demographics → maternal kinship → paternal kinship → documents → confirmation
+(review, sign, submit); an introduction page at `/enrollment/start` precedes step 1. The steps are
+declared once in `apps/web/src/features/enrollment/config/enrollment-steps.ts` — derive from it
+rather than restating the flow. Consent must be accepted (gated by `ConsentAcceptedGuard`) before
+document/enrollment writes. Users also register for `Service`s and `Event`s. Files live in S3/MinIO as `Document`s.
 
 ## Working on a change request
 
@@ -62,12 +64,12 @@ writes. Users also register for `Service`s and `Event`s. Files live in S3/MinIO 
 
 ## Skills (where each lives)
 
-| Skill | Scope | Purpose |
-|-------|-------|---------|
-| `community-kb` | project (`.claude/skills/`) | refresh architecture docs + `categories.yaml`; `drift` flags stale docs/PRD; `record` to memory |
-| `change-router` | project | `locate` a change to files; `log` it to the changelog |
-| `create-prd` | global (`~/.claude/skills/`) | author a vertical-slice PRD (used for `docs/product/PRD.md`) |
-| `style-guide` | global | `check`/`refresh` the design-system docs (owns `docs/design-system*.md`) |
+| Skill           | Scope                        | Purpose                                                                                         |
+| --------------- | ---------------------------- | ----------------------------------------------------------------------------------------------- |
+| `community-kb`  | project (`.claude/skills/`)  | refresh architecture docs + `categories.yaml`; `drift` flags stale docs/PRD; `record` to memory |
+| `change-router` | project                      | `locate` a change to files; `log` it to the changelog                                           |
+| `create-prd`    | global (`~/.claude/skills/`) | author a vertical-slice PRD (used for `docs/product/PRD.md`)                                    |
+| `style-guide`   | global                       | `check`/`refresh` the design-system docs (owns `docs/design-system*.md`)                        |
 
 Rule of thumb: durable, shareable facts → these in-repo docs; run-specific gotchas/preferences →
 private memory. Design-system docs are owned by `style-guide`; the PRD by `create-prd`; the

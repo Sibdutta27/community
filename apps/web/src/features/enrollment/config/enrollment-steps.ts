@@ -110,6 +110,15 @@ export const enrollmentStepDefinitions = [
 
 export const enrollmentTotalSteps = enrollmentStepDefinitions.length;
 
+/**
+ * The pre-flight introduction that sits between the dashboard and step 1.
+ * It is deliberately NOT a step definition — it has no form, no completion
+ * state and no folder tab; it only borrows the step layout (see
+ * `EnrollmentStepLayout`, which treats `step === 0` as the overview).
+ */
+export const enrollmentOverviewStep = 0;
+export const enrollmentOverviewHref = "/enrollment/start";
+
 export const enrollmentProgressStages = enrollmentStepDefinitions.map(
   ({ step, progressTitle, progressDescription }) => ({
     step,

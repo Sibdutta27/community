@@ -14,6 +14,8 @@ import {
 } from "@/features/enrollment/components/enrollment-save-draft-context";
 import { EnrollmentStepper } from "@/features/enrollment/components/enrollment-stepper";
 import {
+  enrollmentOverviewHref,
+  enrollmentOverviewStep,
   enrollmentTotalSteps,
   getEnrollmentStepDefinition,
   resolveEnrollmentStepState,
@@ -23,15 +25,31 @@ import { cn } from "@/lib/utils";
 
 type EnrollmentStepLayoutProps = Readonly<{
   children: ReactNode;
+  /**
+   * Card sub-heading. Defaults to the step definition's description; pass it
+   * explicitly for the overview (`step={0}`), which has no definition.
+   */
+  description?: string;
+  /**
+   * Card heading. Defaults to `"N. {step heading}"`; an explicit heading is
+   * rendered verbatim (no numeric prefix) — used by the overview.
+   */
+  heading?: string;
+  /**
+   * `0` = the pre-flight overview at `/enrollment/start`; `1`–`5` = the form
+   * steps. On the overview the utility row shows an "Overview" label instead
+   * of "Step N of 5" and the stepper renders with no active tab, so the five
+   * steps read as part of the introduction.
+   */
   step: number;
 }>;
 
 /**
- * Shared shell for the five enrollment step pages, styled as a manila
- * folder: a light utility row (Back pill + "Step N of 5"), then the
- * folder-tab stepper attached to an elevated `bg-surface` card that holds
- * the step heading, description, and form. The active tab and the card
- * share the same surface and merge seamlessly (see EnrollmentStepper).
+ * Shared shell for the enrollment overview + the five step pages, styled as a
+ * manila folder: a light utility row (Back pill + "Step N of 5", or "Overview"
+ * on step 0), then the folder-tab stepper attached to an elevated `bg-surface`
+ * card that holds the heading, description, and body. The active tab and the
+ * card share the same surface and merge seamlessly (see EnrollmentStepper).
  * The tab row + card animate in as one unit via EnrollmentStepEntrance —
  * all motion is isolated there and in `lib/motion.ts`.
  *
@@ -82,13 +100,30 @@ function EnrollmentSaveDraftHeaderAction() {
 
 function EnrollmentStepLayoutContent({
   children,
+  description,
+  heading,
   step,
 }: EnrollmentStepLayoutProps) {
   const t = useTranslations("enrollment");
   const accountInfoQuery = useAccountInfoQuery();
   const stepState = resolveEnrollmentStepState(accountInfoQuery.data);
   const definition = getEnrollmentStepDefinition(step);
-  const backHref = step > 1 ? `/enrollment/step-${step - 1}` : "/dashboard";
+  const isOverview = step === enrollmentOverviewStep;
+  // The overview sits between the dashboard and step 1, so step 1 falls back
+  // to it rather than jumping straight out of the flow.
+  const backHref = isOverview
+    ? "/dashboard"
+    : step > 1
+      ? `/enrollment/step-${step - 1}`
+      : enrollmentOverviewHref;
+  const cardHeading =
+    heading ??
+    (definition
+      ? `${definition.step}. ${t(`steps.${definition.step}.heading`)}`
+      : null);
+  const cardDescription =
+    description ??
+    (definition ? t(`steps.${definition.step}.description`) : null);
 
   return (
     <div className="mx-auto w-full max-w-5xl pt-24 pb-16 sm:pt-28 lg:pt-32">
@@ -125,7 +160,9 @@ function EnrollmentStepLayoutContent({
         <div className="flex shrink-0 items-center gap-2 sm:gap-4">
           <EnrollmentSaveDraftHeaderAction />
           <p className="text-muted-foreground shrink-0 text-xs font-medium tracking-[0.08em] uppercase">
-            {t("layout.stepOf", { step, total: enrollmentTotalSteps })}
+            {isOverview
+              ? t("layout.overviewLabel")
+              : t("layout.stepOf", { step, total: enrollmentTotalSteps })}
           </p>
         </div>
       </header>
@@ -136,21 +173,23 @@ function EnrollmentStepLayoutContent({
         {/* Elevated form card the active folder tab merges into. Top-left
             corner stays square where the first tab attaches. */}
         <div
-          className="border-border bg-surface relative rounded-b-2xl rounded-tr-2xl border p-6 shadow-[0_28px_56px_-40px_rgba(20,26,34,0.35),0_10px_24px_-20px_rgba(20,26,34,0.25)] sm:p-8 lg:p-10"
+          className="border-border bg-surface relative rounded-tr-2xl rounded-b-2xl border p-6 shadow-[0_28px_56px_-40px_rgba(20,26,34,0.35),0_10px_24px_-20px_rgba(20,26,34,0.25)] sm:p-8 lg:p-10"
           data-slot="enrollment-step-card"
         >
-          {definition ? (
+          {cardHeading ? (
             <div className="max-w-3xl">
               <h1 className="text-foreground text-[1.55rem] leading-tight font-semibold tracking-tight sm:text-[1.9rem]">
-                {definition.step}. {t(`steps.${definition.step}.heading`)}
+                {cardHeading}
               </h1>
-              <p className="text-muted-foreground mt-2 text-[0.92rem] leading-6">
-                {t(`steps.${definition.step}.description`)}
-              </p>
+              {cardDescription ? (
+                <p className="text-muted-foreground mt-2 text-[0.92rem] leading-6">
+                  {cardDescription}
+                </p>
+              ) : null}
             </div>
           ) : null}
 
-          <div className={definition ? "mt-7 sm:mt-9" : undefined}>
+          <div className={cardHeading ? "mt-7 sm:mt-9" : undefined}>
             {children}
           </div>
         </div>

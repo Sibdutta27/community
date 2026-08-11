@@ -30,6 +30,7 @@ export function HomeEnrollmentStepCard({
   return (
     <motion.article
       className="border-border bg-surface shadow-card-soft relative rounded-2xl border px-4.5 pt-[2.7rem] pb-5.5 text-center sm:px-5 sm:pt-12 sm:pb-6"
+      data-slot="home-enrollment-step-card"
       variants={fadeInUpItem}
     >
       <div
