@@ -11,9 +11,8 @@ import { YucayekeMapPageContent } from "@/features/yucayeke/components/yucayeke-
  * to the same place. The page is public, so every client component here
  * degrades without a session.
  *
- * `pt-28` lives here rather than on a child because the first visible
- * section varies: the band renders only for signed-in members, so the
- * clearance for the floating navbar has to belong to the page itself.
+ * `pt-28` lives here rather than on a child because the page owns the
+ * clearance for the floating navbar.
  */
 export function YucayekePageContent() {
   return (
