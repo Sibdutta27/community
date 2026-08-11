@@ -661,7 +661,7 @@
       }
     },
     "stepFour": {
-      "intro": "Suba una foto clara de usted; es el único archivo requerido. Los registros genealógicos, las cartas de parentesco, la historia oral y las pruebas de ADN son evidencia de apoyo opcional para su reclamo de parentesco.",
+      "intro": "Suba una foto clara de usted y su prueba de identidad: se requiere una identificación emitida por el gobierno, junto con al menos otro documento de identidad. Los registros genealógicos, las cartas de parentesco, la historia oral y las pruebas de ADN son evidencia de apoyo opcional para su reclamo de parentesco.",
       "requiredDocument": "Documento requerido",
       "supportingEvidence": "Evidencia de apoyo",
       "slots": {
@@ -686,8 +686,8 @@
           "description": "Resultados de pruebas de ADN que respalden su ascendencia, si están disponibles."
         },
         "state_id": {
-          "title": "Identificación estatal",
-          "description": "Una copia clara de su identificación estatal o licencia de conducir emitida por el gobierno."
+          "title": "Identificación oficial",
+          "description": "Requerida. Una copia clara de su identificación estatal, licencia de conducir o pasaporte."
         },
         "birth_certificate": {
           "title": "Certificado de nacimiento",
@@ -708,11 +708,12 @@
       "noFilesUploaded": "Todavía no se han subido archivos.",
       "uploadSuccess": "{slot} se subió correctamente.",
       "photoMissing": "Todavía falta su foto. Súbala antes de continuar.",
-      "missingRequired": "Faltan documentos requeridos: su foto y al menos 2 de los 3 documentos de identidad.",
+      "missingRequired": "Faltan documentos requeridos: su foto, su identificación oficial y al menos otro documento de identidad.",
       "refreshNotice": "Actualice la página e intente de nuevo antes de completar el paso 4.",
       "proofOfIdentity": "Prueba de identidad",
-      "proofOfIdentityHint": "Suba al menos {min} de los 3 documentos a continuación para probar que usted es la persona que solicita ({uploaded} de {min} subidos).",
-      "identityMissing": "Por favor suba al menos {min} de los 3 documentos de identidad (identificación estatal, certificado de nacimiento, tarjeta de seguro social) antes de continuar."
+      "proofOfIdentityHint": "Su identificación oficial es requerida, más al menos otro documento a continuación: {min} en total ({uploaded} de {min} subidos).",
+      "identityMissing": "Por favor suba al menos {min} de los 3 documentos de identidad (identificación oficial, certificado de nacimiento, tarjeta de seguro social) antes de continuar.",
+      "stateIdMissing": "Se requiere una identificación oficial (identificación estatal, licencia de conducir o pasaporte). Súbala antes de continuar."
     },
     "confirmation": {
       "intro": "Firme con su nombre legal completo para confirmar que la información de su solicitud es verdadera y está completa. Al enviarla, su solicitud pasa al concilio para su revisión.",
@@ -1214,7 +1215,10 @@
     "documentConfirm": "El archivo se subió, pero no se pudo registrar. Inténtelo de nuevo.",
     "documentUpload": "No se pudo subir el documento seleccionado en este momento.",
     "stepFourNext": "No se pudo completar el paso de subida de documentos en este momento.",
-    "enrollmentSubmit": "No se pudo enviar su solicitud de inscripción en este momento."
+    "enrollmentSubmit": "No se pudo enviar su solicitud de inscripción en este momento.",
+    "missingStateId": "A su solicitud le falta una identificación oficial (identificación estatal, licencia de conducir o pasaporte). Es requerida antes de poder enviarla.",
+    "missingIdentityDocuments": "Su solicitud necesita al menos 2 documentos de identidad: su identificación oficial más un certificado de nacimiento o una tarjeta de seguro social.",
+    "missingRequiredDocuments": "A su solicitud le falta un documento requerido. Suba una foto clara de usted antes de enviarla."
   },
   "support": {
     "badge": "Estamos para Ayudarle",

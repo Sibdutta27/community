@@ -112,13 +112,17 @@ export const enrollmentStepFourUserPhotoCard = {
  * Proof-of-identity slots (client 2026-07-08): single-file each; the member
  * must upload at least MIN_IDENTITY_DOCUMENTS distinct types of the three
  * before Step 4 can complete (`POST /enrollment/step4/next` enforces it too).
+ *
+ * Client 2026-07-20 ("ID I think should be mandatory") added a second rule on
+ * top: the government ID is required outright, so `state_id.required` is true
+ * while the other two stay interchangeable.
  */
 export const enrollmentStepFourIdentityUploadSlots = [
   {
     id: "state_id",
     documentType: "STATE_ID",
     isSingle: true,
-    required: false,
+    required: true,
   },
   {
     id: "birth_certificate",
@@ -137,6 +141,16 @@ export const enrollmentStepFourIdentityUploadSlots = [
 export const MIN_IDENTITY_DOCUMENTS = 2;
 
 /**
+ * Mirrors the backend `REQUIRED_IDENTITY_DOCUMENT_TYPES` in
+ * `apps/api/src/modules/enrollment/step4/step4.utils.ts` — derived from the
+ * slot table so the asterisk on the card and the rule below cannot drift apart.
+ */
+export const REQUIRED_IDENTITY_DOCUMENT_TYPES =
+  enrollmentStepFourIdentityUploadSlots
+    .filter((slot) => slot.required)
+    .map((slot) => slot.documentType);
+
+/**
  * Distinct identity document types uploaded so far (the 2-of-3 counter).
  */
 export function countUploadedIdentityDocuments(
@@ -145,6 +159,46 @@ export function countUploadedIdentityDocuments(
   return enrollmentStepFourIdentityUploadSlots.filter(
     (slot) => documentMap[slot.documentType].length > 0,
   ).length;
+}
+
+/**
+ * The proof-of-identity rejection codes returned by the backend
+ * (`POST /enrollment/step4/next` and `POST /enrollment/complete`).
+ */
+export type EnrollmentIdentityDocumentError =
+  "missing_state_id" | "missing_identity_documents";
+
+/**
+ * Client-side twin of the backend `getMissingIdentityDocumentError`: the
+ * required government ID is checked FIRST so the member gets the specific
+ * message, then the 2-distinct-types minimum. Returns `null` when the uploaded
+ * set satisfies both rules.
+ */
+export function getMissingIdentityDocumentError(
+  documentMap: EnrollmentStepFourDocumentMap,
+): EnrollmentIdentityDocumentError | null {
+  const hasEveryRequiredType = REQUIRED_IDENTITY_DOCUMENT_TYPES.every(
+    (documentType) => documentMap[documentType].length > 0,
+  );
+
+  if (!hasEveryRequiredType) {
+    return "missing_state_id";
+  }
+
+  if (countUploadedIdentityDocuments(documentMap) < MIN_IDENTITY_DOCUMENTS) {
+    return "missing_identity_documents";
+  }
+
+  return null;
+}
+
+/**
+ * `true` when the uploaded set satisfies the full proof-of-identity rule.
+ */
+export function hasRequiredIdentityDocuments(
+  documentMap: EnrollmentStepFourDocumentMap,
+): boolean {
+  return getMissingIdentityDocumentError(documentMap) === null;
 }
 
 /**

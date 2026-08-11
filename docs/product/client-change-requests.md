@@ -110,7 +110,7 @@ Yucayeke naming
 Enrollment / questionnaire
 
 - [ ] Single point of consent, filled out once — **not implemented**: consent is asked three times (sign-up, pre-step-1 dialog, step 5). Decision: keep consent at the START (sensitive identity documents must not be collected before it) and delete the step-5 re-ask, which becomes a signature + read-only summary of what was already consented to
-- [ ] Government ID mandatory — **partial**: 2-of-3 identity docs shipped, but `STATE_ID` is optional, so birth certificate + social security card passes with no ID. Rule becomes "state ID **plus** at least one other"
+- [x] Government ID mandatory — **shipped**: `STATE_ID` is now required _in addition to_ the 2-distinct-types minimum, so a valid set is a government ID **plus** a birth certificate or social security card. Enforced in `step4.service.ts` and `completeEnrollment` (`missing_state_id`); admin approval gating deliberately unchanged so already-submitted applications are not hard-blocked — the reviewer sees a warning instead
 - [ ] Intro / description of the Nation inside the flow — **partial**: intro copy exists only on the public marketing page, and that copy is **stale** (claims 4 steps, maternal-only; the real flow is 5 steps with paternal kinship). Add an intro screen at `/enrollment/start` (**blocked on copy**: authoritative "what the Nation is" text must come from BTF)
 
 Beta testing / support

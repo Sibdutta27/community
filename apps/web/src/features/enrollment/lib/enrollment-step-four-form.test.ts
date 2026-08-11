@@ -2,12 +2,21 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildEnrollmentStepFourDocumentMap,
+  countUploadedIdentityDocuments,
   enrollmentStepFourEvidenceUploadSlots,
+  enrollmentStepFourIdentityUploadSlots,
   enrollmentStepFourUserPhotoCard,
   getEnrollmentStepFourFileValidationError,
   getEnrollmentStepFourSlotPolicy,
+  getMissingIdentityDocumentError,
+  hasRequiredIdentityDocuments,
+  MIN_IDENTITY_DOCUMENTS,
+  REQUIRED_IDENTITY_DOCUMENT_TYPES,
 } from "@/features/enrollment/lib/enrollment-step-four-form";
-import type { EnrollmentDocumentRecord } from "@/types/enrollment";
+import type {
+  EnrollmentDocumentRecord,
+  EnrollmentDocumentType,
+} from "@/types/enrollment";
 
 const MB = 1024 * 1024;
 
@@ -50,6 +59,23 @@ describe("enrollment step 4 upload slots", () => {
       "ORAL_HISTORY",
       "DNA_TESTING",
     ]);
+  });
+
+  it("marks only the government ID as required among the identity slots", () => {
+    expect(
+      enrollmentStepFourIdentityUploadSlots.map((slot) => [
+        slot.documentType,
+        slot.required,
+      ]),
+    ).toEqual([
+      ["STATE_ID", true],
+      ["BIRTH_CERTIFICATE", false],
+      ["SOCIAL_SECURITY_CARD", false],
+    ]);
+  });
+
+  it("mirrors the backend REQUIRED_IDENTITY_DOCUMENT_TYPES", () => {
+    expect(REQUIRED_IDENTITY_DOCUMENT_TYPES).toEqual(["STATE_ID"]);
   });
 
   it("no longer exposes the retired FAMILY_* slots", () => {
@@ -212,5 +238,90 @@ describe("buildEnrollmentStepFourDocumentMap", () => {
     expect(map.USER_PHOTO).toEqual([userPhoto]);
     expect(map.GENEALOGICAL_RECORDS).toEqual([record]);
     expect(map.KINSHIP_LETTERS).toEqual([]);
+  });
+});
+
+function buildMapWith(...documentTypes: EnrollmentDocumentType[]) {
+  return buildEnrollmentStepFourDocumentMap(
+    documentTypes.map((type) => ({
+      type,
+      isSingle: true,
+      documents: buildDocument({ id: `doc-${type}`, type }),
+    })),
+  );
+}
+
+describe("getMissingIdentityDocumentError — mirrors the backend rule", () => {
+  it("keeps the 2-distinct-types minimum", () => {
+    expect(MIN_IDENTITY_DOCUMENTS).toBe(2);
+  });
+
+  it("returns missing_state_id for an empty map", () => {
+    expect(getMissingIdentityDocumentError(buildMapWith())).toBe(
+      "missing_state_id",
+    );
+  });
+
+  // The headline case: this combination satisfied the old 2-of-3 rule.
+  it("rejects birth certificate + social security card with missing_state_id", () => {
+    expect(
+      getMissingIdentityDocumentError(
+        buildMapWith("BIRTH_CERTIFICATE", "SOCIAL_SECURITY_CARD"),
+      ),
+    ).toBe("missing_state_id");
+  });
+
+  it("returns missing_identity_documents for a lone government ID", () => {
+    expect(getMissingIdentityDocumentError(buildMapWith("STATE_ID"))).toBe(
+      "missing_identity_documents",
+    );
+  });
+
+  it.each([["BIRTH_CERTIFICATE"], ["SOCIAL_SECURITY_CARD"]] as const)(
+    "accepts the government ID plus %s",
+    (secondType) => {
+      expect(
+        getMissingIdentityDocumentError(buildMapWith("STATE_ID", secondType)),
+      ).toBeNull();
+    },
+  );
+
+  it("accepts all three identity documents", () => {
+    const map = buildMapWith(
+      "STATE_ID",
+      "BIRTH_CERTIFICATE",
+      "SOCIAL_SECURITY_CARD",
+    );
+
+    expect(getMissingIdentityDocumentError(map)).toBeNull();
+    expect(countUploadedIdentityDocuments(map)).toBe(3);
+  });
+
+  it("ignores non-identity uploads", () => {
+    expect(
+      getMissingIdentityDocumentError(
+        buildMapWith("USER_PHOTO", "GENEALOGICAL_RECORDS"),
+      ),
+    ).toBe("missing_state_id");
+  });
+
+  it("agrees with the hasRequiredIdentityDocuments wrapper", () => {
+    const combinations: EnrollmentDocumentType[][] = [
+      [],
+      ["STATE_ID"],
+      ["BIRTH_CERTIFICATE"],
+      ["BIRTH_CERTIFICATE", "SOCIAL_SECURITY_CARD"],
+      ["STATE_ID", "BIRTH_CERTIFICATE"],
+      ["STATE_ID", "SOCIAL_SECURITY_CARD"],
+      ["STATE_ID", "BIRTH_CERTIFICATE", "SOCIAL_SECURITY_CARD"],
+    ];
+
+    for (const types of combinations) {
+      const map = buildMapWith(...types);
+
+      expect(hasRequiredIdentityDocuments(map)).toBe(
+        getMissingIdentityDocumentError(map) === null,
+      );
+    }
   });
 });

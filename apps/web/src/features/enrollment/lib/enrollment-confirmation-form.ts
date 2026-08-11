@@ -60,6 +60,37 @@ export function getEnrollmentConfirmationDefaultValues(): EnrollmentConfirmation
   };
 }
 
+/**
+ * Document rejection codes `POST /enrollment/complete` throws verbatim as the
+ * BadRequest message, mapped to their `errors` catalog key. These are raw
+ * codes, not sentences — rendering one to the member is a bug, so the
+ * confirmation form translates them and links back to Step 4.
+ */
+const enrollmentSubmitDocumentErrorKeys = {
+  missing_state_id: "missingStateId",
+  missing_identity_documents: "missingIdentityDocuments",
+  missing_required_documents: "missingRequiredDocuments",
+} as const;
+
+export type EnrollmentSubmitDocumentErrorKey =
+  (typeof enrollmentSubmitDocumentErrorKeys)[keyof typeof enrollmentSubmitDocumentErrorKeys];
+
+/**
+ * The `errors.*` message key for a submit-time document rejection, or `null`
+ * when the failure is something else (network, validation, …).
+ */
+export function getEnrollmentSubmitDocumentErrorKey(
+  error: unknown,
+): EnrollmentSubmitDocumentErrorKey | null {
+  const code = error instanceof Error ? error.message.trim() : "";
+
+  return (
+    enrollmentSubmitDocumentErrorKeys[
+      code as keyof typeof enrollmentSubmitDocumentErrorKeys
+    ] ?? null
+  );
+}
+
 export function mapEnrollmentConfirmationFormToPayload(
   values: EnrollmentConfirmationFormValues,
 ): EnrollmentCompleteRequest {

@@ -209,6 +209,58 @@ describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () =
         expect(database.enrollment.update).not.toHaveBeenCalled();
     });
 
+    // Client 2026-07-20: a government ID is mandatory on top of the
+    // 2-distinct-types minimum, and the member is told so specifically.
+    it('throws missing_state_id when the two identity documents exclude the government ID', async () => {
+        const { service, database } = buildService(
+            buildDraftEnrollment({
+                documents: [
+                    { type: DocumentType.USER_PHOTO },
+                    { type: DocumentType.BIRTH_CERTIFICATE },
+                    { type: DocumentType.SOCIAL_SECURITY_CARD },
+                ],
+            }),
+        );
+
+        await expect(
+            service.completeEnrollment(userId, signature),
+        ).rejects.toThrow('missing_state_id');
+        expect(database.enrollment.update).not.toHaveBeenCalled();
+    });
+
+    it('throws missing_state_id when no identity document is uploaded at all', async () => {
+        const { service, database } = buildService(
+            buildDraftEnrollment({
+                documents: [{ type: DocumentType.USER_PHOTO }],
+            }),
+        );
+
+        await expect(
+            service.completeEnrollment(userId, signature),
+        ).rejects.toThrow('missing_state_id');
+        expect(database.enrollment.update).not.toHaveBeenCalled();
+    });
+
+    it('submits with the government ID plus a social security card', async () => {
+        const { service, database } = buildService(
+            buildDraftEnrollment({
+                documents: [
+                    { type: DocumentType.USER_PHOTO },
+                    { type: DocumentType.STATE_ID },
+                    { type: DocumentType.SOCIAL_SECURITY_CARD },
+                ],
+            }),
+        );
+
+        await expect(
+            service.completeEnrollment(userId, signature),
+        ).resolves.toEqual({
+            success: true,
+            message: 'Enrollment completed successfully',
+        });
+        expect(database.enrollment.update).toHaveBeenCalled();
+    });
+
     it('accepts duplicate files of one identity type only when a second distinct type exists', async () => {
         const { service, database } = buildService(
             buildDraftEnrollment({
