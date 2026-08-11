@@ -1,16 +1,16 @@
 # Community — Product Requirements Document (as-built)
 
-| | |
-|---|---|
-| **Status** | Draft (as-built) |
-| **Mode** | as-built |
-| **Date** | 2026-06-29 |
-| **Author** | Generated via `/create-prd as-built`, confirmed with product owner |
+|             |                                                                                                                                                                                                                                                          |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Status**  | Draft (as-built)                                                                                                                                                                                                                                         |
+| **Mode**    | as-built                                                                                                                                                                                                                                                 |
+| **Date**    | 2026-06-29                                                                                                                                                                                                                                               |
+| **Author**  | Generated via `/create-prd as-built`, confirmed with product owner                                                                                                                                                                                       |
 | **Related** | [`docs/architecture/backend.md`](../architecture/backend.md), [`frontend.md`](../architecture/frontend.md), [`admin-panel.md`](../architecture/admin-panel.md), [`docs/data-model.md`](../data-model.md), [`docs/design-system.md`](../design-system.md) |
 
 > This is a reverse-documented ("as-built") PRD describing the product as it exists
-> in the codebase today. *How it works* is grounded in the code; *why it exists and
-> who it serves* was confirmed with the product owner. Architecture specifics live in
+> in the codebase today. _How it works_ is grounded in the code; _why it exists and
+> who it serves_ was confirmed with the product owner. Architecture specifics live in
 > the linked docs and are not duplicated here.
 
 ## 1. Problem
@@ -55,8 +55,10 @@ visibility into their status. The community also wants a single place to offer m
 > Acceptance criteria use **WHEN `<condition>` THEN the system shall `<response>`**.
 
 ### FR-1 — Account registration & authentication
+
 As a prospective member, I want to register and sign in, so that I can start and
 return to my enrollment securely.
+
 - WHEN a visitor registers with a valid email and password THEN the system shall
   create a `User` (role member) and issue a JWT (`{ sub, email, role, publicId, name }`,
   1h expiry).
@@ -68,8 +70,10 @@ return to my enrollment securely.
   access token stored by the admin panel and authorize admin-only endpoints.
 
 ### FR-2 — Consent before data capture
+
 As the nation, I want explicit versioned consent before any personal/genealogical data
 is written, so that collection is lawful and policy-compliant.
+
 - WHEN a member attempts a document or enrollment write without an accepted active
   consent THEN the system shall block it (`ConsentAcceptedGuard`).
 - WHEN a member accepts the active consent THEN the system shall record an
@@ -78,8 +82,10 @@ is written, so that collection is lawful and policy-compliant.
   as the active template for subsequent acceptances.
 
 ### FR-3 — Multi-step enrollment with saved progress
+
 As a prospective member, I want to complete enrollment in steps and save as I go, so
 that I don't lose work and can finish later.
+
 - WHEN a member begins enrollment THEN the system shall create an `Enrollment` in
   `DRAFT` status linked to their `User`.
 - WHEN a member completes step 1–4 (basic/contact/addresses → … → maternal lineage +
@@ -91,8 +97,10 @@ that I don't lose work and can finish later.
 - WHILE an enrollment is `DRAFT` the system shall allow the member to edit it.
 
 ### FR-4 — Document upload & management
+
 As a prospective member, I want to upload supporting documents, so that staff can
 verify my eligibility.
+
 - WHEN a member uploads a file of an allowed type (JPEG, PNG, WebP, PDF) within the
   size limit (10MB) THEN the system shall store it in S3/MinIO and create a `Document`
   (status `PENDING`).
@@ -104,8 +112,10 @@ verify my eligibility.
   files (transactional S3 + DB handling).
 
 ### FR-5 — Staff review & enrollment decision
+
 As an enrollment officer, I want to review submitted enrollments with their documents
 and lineage, so that I can approve or reject membership.
+
 - WHEN an officer opens the enrollments list THEN the system shall allow filtering by
   status (e.g. SUBMITTED) and opening an enrollment detail view.
 - WHEN an officer approves an enrollment THEN the system shall set status to `APPROVED`.
@@ -114,16 +124,20 @@ and lineage, so that I can approve or reject membership.
   (PENDING/APPROVED/REJECTED).
 
 ### FR-6 — Member profile & dashboard
+
 As a member, I want a profile and dashboard, so that I can see my status and manage my
 information and documents.
+
 - WHEN a member opens the dashboard THEN the system shall show their enrollment status
   and relevant next steps.
 - WHEN a member updates profile info or uploads a profile photo THEN the system shall
   persist it to their `User`/profile and documents.
 
 ### FR-7 — Services (catalog + registration)
+
 As a member/community member, I want to browse and register for services, so that I can
 access community programs.
+
 - WHEN a visitor/member views services THEN the system shall list services by
   `ServiceCategory`.
 - WHEN a member registers for a service THEN the system shall create a
@@ -132,21 +146,26 @@ access community programs.
   persist it and reflect it in the catalog.
 
 ### FR-8 — Events (catalog + registration)
+
 As a member/community member, I want to browse and register for events, so that I can
 attend community gatherings.
+
 - WHEN a member registers for an event THEN the system shall create an
   `EventRegistration`.
 - WHEN an administrator creates/edits an event or category THEN the system shall
   persist it and reflect it in the listings.
 
 ### FR-9 — Administration of reference data
+
 As an administrator, I want to manage users, consents, and cultural connections, so
 that the platform's reference data stays correct.
+
 - WHEN an administrator manages cultural connections THEN the system shall support
   create/edit/list used by enrollment.
 - WHEN an administrator manages users THEN the system shall support listing and editing.
 
 ### Non-functional requirements
+
 - **NFR-1 (Auth & roles)** — JWT-based; members authenticate via httpOnly cookie,
   admins via bearer token; admin endpoints are guarded (`AdminAuthGuard`); tokens
   expire after 1h.
@@ -163,6 +182,7 @@ that the platform's reference data stays correct.
 ## 5. Solution overview
 
 Three applications over one REST API:
+
 - **Member frontend** (`apps/web`, Next.js 16): public/marketing pages, auth,
   consent, the 4-step enrollment flow, document upload, dashboard, profile, services,
   and events. Talks to the backend through its own BFF route handlers.
@@ -204,15 +224,15 @@ services and events.
 > onboarding. Each cuts data → API → UI and is independently demoable.
 
 1. **Auth slice** — register/login, JWT issue, cookie/bearer storage, protected-route
-   redirect. *Demo:* sign up, sign in, hit a protected page.
+   redirect. _Demo:_ sign up, sign in, hit a protected page.
 2. **Consent gate slice** — active consent template, acceptance record, guard on
-   personal-data writes. *Demo:* writes blocked until consent accepted.
+   personal-data writes. _Demo:_ writes blocked until consent accepted.
 3. **Enrollment draft slice** — create/edit DRAFT enrollment across the 4 steps with
-   saved progress. *Demo:* fill step 1, leave, return, continue.
+   saved progress. _Demo:_ fill step 1, leave, return, continue.
 4. **Documents slice** — typed upload to S3, single vs multi-file rules, listing.
-   *Demo:* upload a birth certificate (replaces) and family photos (appends).
+   _Demo:_ upload a birth certificate (replaces) and family photos (appends).
 5. **Submit + review slice** — submit DRAFT→SUBMITTED; admin list/filter/detail;
-   approve/reject. *Demo:* submit as member, decide as officer.
+   approve/reject. _Demo:_ submit as member, decide as officer.
 6. **Profile/dashboard slice** — status + profile edits + profile photo.
 7. **Services slice** — catalog by category + member registration + admin CRUD.
 8. **Events slice** — listings by category + member registration + admin CRUD.
@@ -227,13 +247,18 @@ services and events.
 
 - **Notifications** — is email/push notification (e.g. on status change, event
   reminders) in scope, planned, or intentionally absent? Not confirmed; treat as TBD.
-- **Service/Event access gating** — confirmed as a *mixture*: some are member
+- **Service/Event access gating** — confirmed as a _mixture_: some are member
   benefits/gatherings and some are broader community engagement not strictly gated to
   enrollment. Exact rules per service/event type to be specified if/when enforced.
 - **Roadmap surfaces** — a **PWA** and a **mobile app** are planned (driving the
   monorepo restructure); their feature scope is not yet defined.
+  **Deprioritised 2026-07-20** (client sync): the PWA is deferred on security
+  grounds — the web app stays the delivery surface, with the Google Play Store
+  revisited after validation. `apps/pwa` and `apps/mobile` remain inert
+  placeholders (no build scripts, so Turborepo skips them).
 
 ## Appendix
+
 - Architecture: [`backend.md`](../architecture/backend.md),
   [`frontend.md`](../architecture/frontend.md),
   [`admin-panel.md`](../architecture/admin-panel.md)

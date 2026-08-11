@@ -112,6 +112,7 @@ domains:
       - apps/web/src/features/dashboard
       - apps/web/src/features/yucayeke # member map experience (feature shared with marketing-content's public page)
       - apps/web/public/geo
+      - data/naming/yucayeke-names # BTF's official yucayeke names (CSV is the contract code reads)
       - apps/web/src/app/api/profile
       - apps/web/src/app/api/account
     admin:

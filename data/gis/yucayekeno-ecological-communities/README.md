@@ -71,7 +71,11 @@ generated with GDAL/pyogrio + shapely. Property names normalized to lowercase.
    as _unconfirmed_ — flag territory status in any UI (confirmed vs. oral-tradition).
 4. Mona/Amoná is in the report + alt layer but **not** in the primary boundaries layer.
 5. Diacritics/spellings vary between layers (Canaibón/Cayniabón/CAYNABON…). The report's
-   "Suggested Spelling" table is incomplete. Pick one canonical naming table before user-facing use.
+   "Suggested Spelling" table is incomplete. **Resolved 2026-07-20:** the canonical naming
+   table is now `data/naming/yucayeke-names/` (BTF's official Arawakan corrections), joined
+   to these layers via `geometryKey` in
+   `apps/web/src/features/yucayeke/content/territories.ts`. Note the GeoJSON `yucayeque`
+   values are deliberately left as delivered — the client corrected names, not the GIS export.
 6. No licensing/metadata shipped with the GDB; TIGER data is public domain.
 7. **Cacique seat points vs boundaries (contractor QA item):** 9 of the 18 `Caciques`
    points fall inside a _neighboring_ territory polygon in both boundary layers
