@@ -16,6 +16,7 @@ src/
   modules/
     auth/ user/ enrollment/    # enrollment has step1..step4 + common/
     document/ consent/ service/ event/ account/ profile/
+    feedback/                  # in-app feedback / work orders (optional auth)
     admin/                     # adminUser, adminEnrollment, adminConsent,
                                # adminCulturalConnection, adminService, adminEvent + guard/
 ```

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button";
+import { SupportFeedbackButton } from "@/components/shared/support-feedback-button";
 import { montserrat, poppins } from "@/styles/fonts";
 import { cn } from "@/lib/utils";
 
@@ -69,13 +69,10 @@ function SupportCardItem({ card }: Readonly<{ card: SupportCard }>) {
       </p>
 
       {card.kind === "chat" ? (
-        <Button
+        <SupportFeedbackButton
           className="mx-auto mt-4 min-w-28 text-[0.88rem]"
-          size="lg"
-          type="button"
-        >
-          {t("chat.cta")}
-        </Button>
+          label={t("chat.cta")}
+        />
       ) : (
         <div className="mt-auto pt-4">
           <a

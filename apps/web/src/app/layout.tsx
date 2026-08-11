@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
+import { FeedbackWidget } from "@/features/feedback/components/feedback-widget";
 import { AppProviders } from "@/providers/app-providers";
 import { cinzel, lato, montserrat } from "@/styles/fonts";
 
@@ -41,7 +42,13 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     >
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AppProviders>{children}</AppProviders>
+          <AppProviders>
+            {children}
+            {/* Root layout is the only tree shared by the public, auth and
+                protected route groups — mounting the feedback launcher here
+                keeps it reachable from every page. */}
+            <FeedbackWidget />
+          </AppProviders>
         </NextIntlClientProvider>
       </body>
     </html>
