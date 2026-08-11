@@ -33,7 +33,8 @@ describe("PublicNavbar", () => {
 
     const activeLink = screen.getByRole("link", { name: "About Us" });
     expect(activeLink).toHaveAttribute("aria-current", "page");
-    expect(activeLink).toHaveClass("text-primary", "bg-primary/8");
+    // The active section is marked by an azul baseline rule now, not a pill.
+    expect(activeLink).toHaveClass("text-primary", "after:bg-primary");
 
     const inactiveLink = screen.getByRole("link", { name: "Enrollment" });
     expect(inactiveLink).not.toHaveAttribute("aria-current");

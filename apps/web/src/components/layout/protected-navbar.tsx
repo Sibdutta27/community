@@ -288,26 +288,21 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
                 aria-expanded={isProfileMenuOpen}
                 aria-haspopup="menu"
                 aria-label="Account menu"
-                className="hover:bg-surface-muted/70 focus-visible:ring-ring focus-visible:ring-offset-surface flex cursor-pointer list-none items-center gap-3 rounded-full px-2 py-1.5 transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 lg:gap-2.5 lg:px-1.5 lg:py-1 xl:gap-3 xl:px-2 xl:py-1.5"
+                className="hover:bg-surface-muted/70 focus-visible:ring-ring focus-visible:ring-offset-surface flex cursor-pointer list-none items-center gap-2 rounded-lg px-1.5 py-1 transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 xl:gap-2.5 xl:px-2"
                 type="button"
                 onClick={() => setIsProfileMenuOpen((value) => !value)}
               >
                 <div
                   className={cn(
                     avatarBaseClass,
-                    "size-11 lg:size-10 lg:text-[0.82rem] xl:size-11 xl:text-sm",
+                    "size-8 text-[0.72rem] xl:size-9 xl:text-[0.78rem]",
                   )}
                 >
                   {getInitials(user.name)}
-                  <span
-                    className={cn(
-                      avatarBadgeClass,
-                      "size-4 lg:size-3.5 xl:size-4",
-                    )}
-                  >
+                  <span className={cn(avatarBadgeClass, "size-3 xl:size-3.5")}>
                     <ShieldCheck
                       aria-hidden="true"
-                      className="size-2.5 lg:size-2 xl:size-2.5"
+                      className="size-2 xl:size-2.5"
                     />
                   </span>
                 </div>
@@ -371,7 +366,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
             aria-controls="protected-mobile-menu"
             aria-expanded={isMobileMenuOpen}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            className="size-10 lg:hidden"
+            className="size-9 lg:hidden"
             size="icon"
             variant="ghost"
             onClick={() => setIsMobileMenuOpen((value) => !value)}
