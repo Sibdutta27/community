@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { Button } from "@/components/ui/button";
@@ -34,8 +33,6 @@ export function YucayekeMapPageContent() {
 
   const personalInfo = profileQuery.data?.enrollment?.personalInfo;
   const ownTerritory = resolveTerritory(personalInfo?.yucayeke);
-  const yucayekeUnknown = Boolean(personalInfo?.yucayekeUnknown);
-  const hasDeclared = Boolean(personalInfo?.yucayeke);
 
   const shapes = useMemo(
     () => (geometryQuery.data ? buildTerritoryShapes(geometryQuery.data) : []),
@@ -89,30 +86,9 @@ export function YucayekeMapPageContent() {
         ) : null}
       </motion.header>
 
-      {yucayekeUnknown && !hasDeclared ? (
-        <motion.p
-          variants={fadeInUpItem}
-          className="border-border bg-surface-muted text-foreground mt-4 max-w-3xl rounded-xl border px-4 py-3 text-[0.85rem] leading-5"
-        >
-          {t("profileCard.unknown")}
-        </motion.p>
-      ) : null}
-
-      {!yucayekeUnknown && !hasDeclared && profileQuery.isSuccess ? (
-        <motion.div
-          variants={fadeInUpItem}
-          className="border-border bg-surface-muted mt-4 flex max-w-3xl flex-col items-start gap-3 rounded-xl border px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <p className="text-foreground text-[0.85rem] leading-5">
-            {t("profileCard.unassigned")}
-          </p>
-          <Button asChild size="sm" variant="secondary">
-            <Link href="/enrollment">
-              {t("profileCard.completeEnrollment")}
-            </Link>
-          </Button>
-        </motion.div>
-      ) : null}
+      {/* No enrollment prompts here: /yucayeke is a public page about the
+          territories themselves, and the member's own standing is surfaced
+          on the profile's identity card instead. */}
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         {/* Deliberately card-less: the territory outlines ARE the border,
