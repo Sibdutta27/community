@@ -12,7 +12,7 @@ import {
 import { Type } from 'class-transformer';
 
 import { Gender, Identity, MaritalStatus, Sex } from '@/generated/prisma/enums';
-import { OFFICIAL_YUCAYEKES } from '@/modules/enrollment/common/config/yucayeke.config';
+import { ACCEPTED_YUCAYEKE_VALUES } from '@/modules/enrollment/common/config/yucayeke.config';
 
 /**
  * Step 1 — Demographics (flat).
@@ -73,7 +73,9 @@ export class Step1Dto {
 
     // Restricted to the official list (skipped when the member marks it unknown)
     @ValidateIf((o) => !o.yucayekeUnknown && o.yucayeke !== undefined && o.yucayeke !== null && o.yucayeke !== '')
-    @IsIn([...OFFICIAL_YUCAYEKES])
+    // Accepts superseded spellings too, so a draft holding an old value does
+    // not 400 on save; the service canonicalizes before writing.
+    @IsIn([...ACCEPTED_YUCAYEKE_VALUES])
     yucayeke?: string;
 
     @IsBoolean()

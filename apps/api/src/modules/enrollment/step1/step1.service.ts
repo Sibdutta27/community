@@ -1,4 +1,5 @@
 import { EnrollmentStatus } from '@/generated/prisma/enums';
+import { canonicalizeYucayeke } from '@/modules/enrollment/common/config/yucayeke.config';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '@/database/database.service';
 import { EnrollmentStepService } from '@/modules/enrollment/common/services/enrollmentStep.service';
@@ -60,7 +61,7 @@ export class Step1Service {
                     occupation         : step1Input.occupation,
 
                     identity           : mapIdentity(step1Input.identity),
-                    yucayeke           : step1Input.yucayeke,
+                    yucayeke           : canonicalizeYucayeke(step1Input.yucayeke),
                     yucayekeUnknown    : step1Input.yucayekeUnknown,
 
                     hasChildren        : step1Input.hasChildren,
@@ -150,7 +151,9 @@ export class Step1Service {
             occupation         : enrollment.occupation,
 
             identity           : enrollment.identity,
-            yucayeke           : enrollment.yucayeke,
+            // Canonicalize on READ as well: a legacy value matches no <select>
+            // option, renders blank, and is lost on the member's next save.
+            yucayeke           : canonicalizeYucayeke(enrollment.yucayeke),
             yucayekeUnknown    : enrollment.yucayekeUnknown,
 
             hasChildren        : enrollment.hasChildren,

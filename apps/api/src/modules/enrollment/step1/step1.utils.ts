@@ -1,4 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
+import { canonicalizeYucayeke } from '@/modules/enrollment/common/config/yucayeke.config';
 import { Gender, Identity, MaritalStatus, Sex } from "@/generated/prisma/enums";
 
 /**
@@ -167,7 +168,7 @@ export function buildStep1DraftData(input: {
         ...(input.maritalStatus       !== undefined ? { maritalStatus      : mapMaritalStatus(input.maritalStatus) } : {}),
         ...(input.occupation          !== undefined ? { occupation         : input.occupation } : {}),
         ...(input.identity            !== undefined ? { identity           : mapIdentity(input.identity) } : {}),
-        ...(input.yucayeke            !== undefined ? { yucayeke           : input.yucayeke } : {}),
+        ...(input.yucayeke            !== undefined ? { yucayeke           : canonicalizeYucayeke(input.yucayeke) } : {}),
         ...(input.yucayekeUnknown     !== undefined ? { yucayekeUnknown    : input.yucayekeUnknown } : {}),
         ...(input.hasChildren         !== undefined ? { hasChildren        : input.hasChildren } : {}),
         ...(input.hasMinorChildren    !== undefined ? { hasMinorChildren   : input.hasMinorChildren } : {}),
