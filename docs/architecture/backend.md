@@ -14,7 +14,7 @@ NestJS 11 + Prisma 7 (Postgres via `@prisma/adapter-pg`). See also
 | `config/s3.config.ts`          | `S3Client` factory (AWS virtual-host or MinIO path-style)                                                                                         |
 | `common/decorators/`           | `@CurrentUser()`, `@CurrentEnrollment()`                                                                                                          |
 | `common/s3/s3.service.ts`      | put / delete / signed-url (AWS SDK v3)                                                                                                            |
-| `common/utils/`                | `password.util.ts` (bcrypt, 12 rounds), formatters                                                                                                |
+| `common/utils/`                | `password.util.ts` (bcrypt, 12 rounds), `csv.util.ts` (every field quoted, UTF-8 BOM, `= + - @` defused), formatters                              |
 | `modules/auth/`                | register / login / admin-login, JWT strategy, `guards/{auth,optionalAuth}.guard.ts`                                                               |
 | `modules/user/`                | user lookup, profile photo upload, `guard/activity.guard.ts`                                                                                      |
 | `modules/enrollment/`          | `step1`–`step4` submodules + `common/` (config, guards, services, utils); `EnrollmentStepService` tracks completion                               |
@@ -92,6 +92,9 @@ including `/health`.
 | `GET /admin/enrollment[/submitted\|approved\|rejected\|status-counts]`, `/step-{1..4}/:id`, `/consents/:id` | Jwt, AdminAuthGuard                         | review queues + per-step detail                                                                 |
 | `PATCH /admin/enrollment/:id/verify`, `/:id/ancestry/:relation/verification`, `/documents/:id/verify`       | Jwt, AdminAuthGuard                         | approve/reject enrollment, attest ancestry, verify a document                                   |
 | `/admin/{user,consent,cultural-connection,service,event}/*`                                                 | Jwt, AdminAuthGuard                         | management CRUD                                                                                 |
+| `GET /admin/event/calendar?from&to&categoryId`                                                              | Jwt, AdminAuthGuard                         | **unpaginated** window, cap 500 (`EVENT_CALENDAR_MAX`); declared before `@Get(':id')`           |
+| `GET /admin/event/:id/registrations`, `…/registrations/export`                                              | Jwt, AdminAuthGuard                         | paginated roster `{ event, data, count }` (search name/email/publicId) + the full roster as CSV |
+| `GET /admin/service/:id/registrations`, `…/registrations/export`                                            | Jwt, AdminAuthGuard                         | same shape + per-row `status`; `registeredAt` = `ServiceRegistration.date` (no `createdAt`)     |
 
 ## Enrollment completion & consent
 

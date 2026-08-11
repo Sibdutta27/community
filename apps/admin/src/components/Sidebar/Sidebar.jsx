@@ -1,6 +1,6 @@
 import styles from "./Sidebar.module.css";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 import {
   Box,
@@ -27,10 +27,7 @@ import {
   Diversity3,
   FactCheck,
   Construction,
-  ViewList,
-  Category,
   Event,
-  EventNote,
   Feedback as FeedbackIcon,
 } from "@mui/icons-material";
 
@@ -82,39 +79,23 @@ const menuItems = [
     icon: <FactCheck />,
     path: "/consents",
   },
+  // Programs and Events are flat: each surface carries its own section bar
+  // (Programs | Categories), so the sidebar no longer duplicates the split.
+  // Programs and Events are flat: each surface carries its own section bar
+  // (Programs | Categories), so the sidebar no longer duplicates the split.
+  // `alsoActiveOn` keeps the rail lit while staff are on the categories tab —
+  // they have not left the section, only moved within it.
   {
-    label: "Service Directory",
+    label: "Programs",
     icon: <Construction />,
-    children: [
-      {
-        label: "Services",
-        icon: <ViewList />,
-        path: "/services",
-      },
-
-      {
-        label: "Service Categories",
-        icon: <Category />,
-        path: "/service-categories",
-      },
-    ],
+    path: "/services",
+    alsoActiveOn: ["/service-categories"],
   },
   {
-    label: "Event Directory",
+    label: "Events",
     icon: <Event />,
-    children: [
-      {
-        label: "Events",
-        icon: <EventNote />,
-        path: "/events",
-      },
-
-      {
-        label: "Event Categories",
-        icon: <Category />,
-        path: "/event-categories",
-      },
-    ],
+    path: "/events",
+    alsoActiveOn: ["/event-categories"],
   },
   {
     label: "Feedback",
@@ -126,6 +107,8 @@ const menuItems = [
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [openMenus, setOpenMenus] = useState({});
+
+  const { pathname } = useLocation();
 
   const toggleMenu = (menu) => {
     setOpenMenus((prev) => ({
@@ -207,6 +190,13 @@ export default function Sidebar() {
                 <ListItemButton
                   component={NavLink}
                   to={item.path}
+                  className={
+                    item.alsoActiveOn?.some((prefix) =>
+                      pathname.startsWith(prefix),
+                    )
+                      ? "active"
+                      : undefined
+                  }
                   sx={{
                     borderRadius: 3,
                     mb: 1,

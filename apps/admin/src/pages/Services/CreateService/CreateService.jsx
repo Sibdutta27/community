@@ -1,580 +1,463 @@
 // pages/Services/CreateService/CreateService.jsx
 
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 
-import { z } from 'zod';
+import { z } from "zod";
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-    Box,
-    Button,
-    MenuItem,
-    Paper,
-    TextField,
-    Typography,
-} from '@mui/material';
+  Box,
+  Button,
+  MenuItem,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
-import { createService } from '@/api/service.api';
+import { createService } from "@/api/service.api";
 
-import styles from './createService.module.css';
+import styles from "./createService.module.css";
 
-import { useServiceCategory } from '../components/ServiceList/hooks';
+import { useServiceCategory } from "../components/ServiceList/hooks";
 
-import CategorySelect from '../components/CategorySelect/CategorySelect';
+import CategorySelect from "../components/CategorySelect/CategorySelect";
 
 /**
  * Service status options
  */
 const STATUS_OPTIONS = [
-    {
-        label: 'Active',
-        value: 'ACTIVE',
-    },
+  {
+    label: "Active",
+    value: "ACTIVE",
+  },
 
-    {
-        label: 'Inactive',
-        value: 'INACTIVE',
-    },
+  {
+    label: "Inactive",
+    value: "INACTIVE",
+  },
 
-    {
-        label: 'Closed',
-        value: 'CLOSED',
-    },
+  {
+    label: "Closed",
+    value: "CLOSED",
+  },
 ];
 
 /**
  * Action type options
  */
 const ACTION_OPTIONS = [
-    {
-        label: 'Internal',
-        value: 'INTERNAL',
-    },
+  {
+    label: "Internal",
+    value: "INTERNAL",
+  },
 
-    {
-        label: 'External',
-        value: 'EXTERNAL',
-    },
+  {
+    label: "External",
+    value: "EXTERNAL",
+  },
 
-    {
-        label: 'Modal',
-        value: 'MODAL',
-    },
+  {
+    label: "Modal",
+    value: "MODAL",
+  },
 
-    {
-        label: 'None',
-        value: 'NONE',
-    },
+  {
+    label: "None",
+    value: "NONE",
+  },
 ];
 
 /**
  * Featured options
  */
 const FEATURED_OPTIONS = [
-    {
-        label: 'Featured',
-        value: true,
-    },
+  {
+    label: "Featured",
+    value: true,
+  },
 
-    {
-        label: 'Not Featured',
-        value: false,
-    },
+  {
+    label: "Not Featured",
+    value: false,
+  },
 ];
 
 /**
  * Validation schema
  */
 const createServiceSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
 
-    name: z
-        .string()
-        .min(2, 'Name must be at least 2 characters'),
+  description: z.string().optional(),
 
-    description: z
-        .string()
-        .optional(),
+  icon: z.string().optional(),
 
-    icon: z
-        .string()
-        .optional(),
+  categoryId: z.string().min(1, "Category is required"),
 
-    categoryId: z
-        .string()
-        .min(1, 'Category is required'),
+  status: z.enum(["ACTIVE", "INACTIVE", "CLOSED"]),
 
-    status: z.enum([
-        'ACTIVE',
-        'INACTIVE',
-        'CLOSED',
-    ]),
+  isFeatured: z.boolean(),
 
-    isFeatured: z.boolean(),
+  location: z.string().optional(),
 
-    location: z
-        .string()
-        .optional(),
+  phone: z.string().optional(),
 
-    phone: z
-        .string()
-        .optional(),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
 
-    email: z
-        .string()
-        .email('Invalid email')
-        .optional()
-        .or(z.literal('')),
+  actionType: z.enum(["INTERNAL", "EXTERNAL", "MODAL", "NONE"]),
 
-    actionType: z.enum([
-        'INTERNAL',
-        'EXTERNAL',
-        'MODAL',
-        'NONE',
-    ]),
+  actionLabel: z.string().optional(),
 
-    actionLabel: z
-        .string()
-        .optional(),
+  actionUrl: z.string().optional(),
 
-    actionUrl: z
-        .string()
-        .optional(),
+  actionRoute: z.string().optional(),
 
-    actionRoute: z
-        .string()
-        .optional(),
-
-    highlights: z
-        .string()
-        .optional(),
+  highlights: z.string().optional(),
 });
 
 const CreateService = () => {
+  /**
+   * Form
+   */
+  const {
+    register,
+    handleSubmit,
+
+    formState: { errors },
+
+    reset,
+    setValue,
+    watch,
+  } = useForm({
+    resolver: zodResolver(createServiceSchema),
+
+    defaultValues: {
+      name: "",
+      description: "",
+      icon: "",
+      categoryId: "",
+
+      status: "ACTIVE",
+
+      isFeatured: false,
+
+      location: "",
+      phone: "",
+      email: "",
+
+      actionType: "EXTERNAL",
+      actionLabel: "",
+      actionUrl: "",
+      actionRoute: "",
+
+      highlights: "",
+    },
+  });
+
+  /**
+   * Watch values
+   */
+  const featuredValue = watch("isFeatured");
 
-    /**
-     * Form
-     */
-    const {
-        register,
-        handleSubmit,
-
-        formState: {
-            errors,
-        },
-
-        reset,
-        setValue,
-        watch,
-    } = useForm({
-
-        resolver:
-            zodResolver(
-                createServiceSchema,
-            ),
-
-        defaultValues: {
-            name: '',
-            description: '',
-            icon: '',
-            categoryId: '',
-
-            status: 'ACTIVE',
-
-            isFeatured: false,
-
-            location: '',
-            phone: '',
-            email: '',
-
-            actionType: 'EXTERNAL',
-            actionLabel: '',
-            actionUrl: '',
-            actionRoute: '',
-
-            highlights: '',
-        },
-    });
-
-    /**
-     * Watch values
-     */
-    const featuredValue = watch('isFeatured');
-
-    // Hooks for getl all services category
-    const {
-        data: ServiceCategoryData,
-        isFetching: ServiceCategoryFetching,
-        error: ServiceCategoryFetchingError,
-        refetch: refetchServiceCategory,
-    } = useServiceCategory({});
-
-    /**
-     * Mutation
-     */
-    const {
-        mutateAsync,
-        isPending,
-    } = useMutation({
-        mutationFn: createService,
-    });
+  // Hooks for getl all services category
+  const {
+    data: ServiceCategoryData,
+    isFetching: ServiceCategoryFetching,
+    error: ServiceCategoryFetchingError,
+  } = useServiceCategory({});
 
-    /**
-     * Submit
-     */
-    const onSubmit = async (data) => {
+  /**
+   * Mutation
+   */
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: createService,
+  });
 
-        try {
+  /**
+   * Submit
+   */
+  const onSubmit = async (data) => {
+    try {
+      await mutateAsync({
+        ...data,
 
-            await mutateAsync({
+        highlights: data.highlights
+          ? data.highlights
+              .split(",")
+              .map((item) => item.trim())
+              .filter(Boolean)
+          : [],
+      });
 
-                ...data,
+      toast.success("Service created successfully.");
 
-                highlights:
-                    data.highlights
-                        ? data.highlights
-                            .split(',')
-                            .map((item) =>
-                                item.trim(),
-                            )
-                            .filter(Boolean)
-                        : [],
-            });
+      reset();
+    } catch (error) {
+      let message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to create service";
 
-            toast.success(
-                'Service created successfully.',
-            );
+      // toast.success("helloooo");
 
-            reset();
+      if (Array.isArray(message)) message = message.join(", ");
 
-        } catch (error) {
-            let message =
-                error.response?.data?.message
-                || error.message
-                || 'Failed to create service';
+      toast.error(message);
+    }
+  };
 
-                // toast.success("helloooo");
+  return (
+    <section className={styles.page}>
+      <Typography variant="h4" className={styles.title}>
+        Create Program
+      </Typography>
 
-            if ( Array.isArray(message) ) 
-                message = message.join(', ')
+      <Paper className={styles.formContainer}>
+        <Box
+          component="form"
 
-            toast.error(message);
-        }
-    };
+          onSubmit={handleSubmit(onSubmit)}
 
-    return (
-        <section className={styles.page}>
+          className={styles.form}
+        >
+          {/* NAME */}
+          <TextField
+            label="Service Name"
 
-            <Typography
-                variant="h4"
-                className={styles.title}
-            >
-                Create Service
-            </Typography>
+            fullWidth
 
-            <Paper className={styles.formContainer}>
+            {...register("name")}
 
-                <Box
-                    component="form"
+            error={!!errors.name}
 
-                    onSubmit={
-                        handleSubmit(onSubmit)
-                    }
+            helperText={errors.name?.message}
+          />
 
-                    className={styles.form}
-                >
+          {/* DESCRIPTION */}
+          <TextField
+            label="Description"
 
-                    {/* NAME */}
-                    <TextField
-                        label="Service Name"
+            multiline
 
-                        fullWidth
+            minRows={4}
 
-                        {...register('name')}
+            fullWidth
 
-                        error={!!errors.name}
+            {...register("description")}
 
-                        helperText={
-                            errors.name?.message
-                        }
-                    />
+            error={!!errors.description}
 
-                    {/* DESCRIPTION */}
-                    <TextField
-                        label="Description"
+            helperText={errors.description?.message}
+          />
 
-                        multiline
+          {/* ICON */}
+          <TextField
+            label="Icon"
 
-                        minRows={4}
+            placeholder="HealthAndSafety"
 
-                        fullWidth
+            fullWidth
 
-                        {...register('description')}
+            {...register("icon")}
 
-                        error={
-                            !!errors.description
-                        }
+            error={!!errors.icon}
 
-                        helperText={
-                            errors.description?.message
-                        }
-                    />
+            helperText={errors.icon?.message}
+          />
 
-                    {/* ICON */}
-                    <TextField
-                        label="Icon"
+          {/* CATEGORY ID */}
+          <CategorySelect
+            categorys={ServiceCategoryData?.data}
+            value={watch("categoryId")}
+            placeholder="Select Category"
+            hideAllCategoryOption={true}
+            onChange={(categoryId) =>
+              setValue("categoryId", categoryId, {
+                shouldValidate: true,
+              })
+            }
+            error={!!errors.categoryId}
+            helperText={errors.categoryId?.message}
+          />
 
-                        placeholder="HealthAndSafety"
+          {/* STATUS */}
+          <TextField
+            select
 
-                        fullWidth
+            label="Status"
 
-                        {...register('icon')}
+            fullWidth
 
-                        error={!!errors.icon}
+            defaultValue="ACTIVE"
 
-                        helperText={
-                            errors.icon?.message
-                        }
-                    />
+            {...register("status")}
 
-                    {/* CATEGORY ID */}
-                    <CategorySelect
-                        categorys={ServiceCategoryData?.data}
-                        value={watch('categoryId')}
-                        placeholder='Select Category'
-                        hideAllCategoryOption={true}
-                        onChange={(categoryId) =>
-                            setValue(
-                                'categoryId',
-                                categoryId,
-                                {
-                                    shouldValidate: true,
-                                },
-                            )
-                        }
-                        error={!!errors.categoryId}
-                        helperText={errors.categoryId?.message}
-                    />
+            error={!!errors.status}
 
-                    {/* STATUS */}
-                    <TextField
-                        select
+            helperText={errors.status?.message}
+          >
+            {STATUS_OPTIONS.map((item) => (
+              <MenuItem
+                key={item.value}
 
-                        label="Status"
+                value={item.value}
+              >
+                {item.label}
+              </MenuItem>
+            ))}
+          </TextField>
 
-                        fullWidth
+          {/* FEATURED */}
+          <TextField
+            select
 
-                        defaultValue="ACTIVE"
+            label="Featured"
 
-                        {...register('status')}
+            fullWidth
 
-                        error={!!errors.status}
+            value={featuredValue ? "true" : "false"}
 
-                        helperText={
-                            errors.status?.message
-                        }
-                    >
+            onChange={(e) => setValue("isFeatured", e.target.value === "true")}
+          >
+            {FEATURED_OPTIONS.map((item) => (
+              <MenuItem
+                key={item.label}
 
-                        {
-                            STATUS_OPTIONS.map((item) => (
-                                <MenuItem
-                                    key={item.value}
+                value={item.value.toString()}
+              >
+                {item.label}
+              </MenuItem>
+            ))}
+          </TextField>
 
-                                    value={item.value}
-                                >
-                                    {item.label}
-                                </MenuItem>
-                            ))
-                        }
+          {/* LOCATION */}
+          <TextField
+            label="Location"
 
-                    </TextField>
+            fullWidth
 
-                    {/* FEATURED */}
-                    <TextField
-                        select
+            {...register("location")}
+          />
 
-                        label="Featured"
+          {/* PHONE */}
+          <TextField
+            label="Phone"
 
-                        fullWidth
+            fullWidth
 
-                        value={
-                            featuredValue
-                                ? 'true'
-                                : 'false'
-                        }
+            {...register("phone")}
+          />
 
-                        onChange={(e) =>
-                            setValue(
-                                'isFeatured',
-                                e.target.value === 'true',
-                            )
-                        }
-                    >
+          {/* EMAIL */}
+          <TextField
+            label="Email"
 
-                        {
-                            FEATURED_OPTIONS.map((item) => (
-                                <MenuItem
-                                    key={item.label}
+            fullWidth
 
-                                    value={
-                                        item.value.toString()
-                                    }
-                                >
-                                    {item.label}
-                                </MenuItem>
-                            ))
-                        }
+            {...register("email")}
 
-                    </TextField>
+            error={!!errors.email}
 
-                    {/* LOCATION */}
-                    <TextField
-                        label="Location"
+            helperText={errors.email?.message}
+          />
 
-                        fullWidth
+          {/* ACTION TYPE */}
+          <TextField
+            select
 
-                        {...register('location')}
-                    />
+            label="Action Type"
 
-                    {/* PHONE */}
-                    <TextField
-                        label="Phone"
+            fullWidth
 
-                        fullWidth
+            defaultValue="EXTERNAL"
 
-                        {...register('phone')}
-                    />
+            {...register("actionType")}
 
-                    {/* EMAIL */}
-                    <TextField
-                        label="Email"
+            error={!!errors.actionType}
 
-                        fullWidth
+            helperText={errors.actionType?.message}
+          >
+            {ACTION_OPTIONS.map((item) => (
+              <MenuItem
+                key={item.value}
 
-                        {...register('email')}
+                value={item.value}
+              >
+                {item.label}
+              </MenuItem>
+            ))}
+          </TextField>
 
-                        error={!!errors.email}
+          {/* ACTION LABEL */}
+          <TextField
+            label="Action Label"
 
-                        helperText={
-                            errors.email?.message
-                        }
-                    />
+            placeholder="Schedule Appointment"
 
-                    {/* ACTION TYPE */}
-                    <TextField
-                        select
+            fullWidth
 
-                        label="Action Type"
+            {...register("actionLabel")}
+          />
 
-                        fullWidth
+          {/* ACTION URL */}
+          <TextField
+            label="Action URL"
 
-                        defaultValue="EXTERNAL"
+            placeholder="https://example.com"
 
-                        {...register('actionType')}
+            fullWidth
 
-                        error={
-                            !!errors.actionType
-                        }
+            {...register("actionUrl")}
+          />
 
-                        helperText={
-                            errors.actionType?.message
-                        }
-                    >
+          {/* ACTION ROUTE */}
+          <TextField
+            label="Action Route"
 
-                        {
-                            ACTION_OPTIONS.map((item) => (
-                                <MenuItem
-                                    key={item.value}
+            placeholder="/apply"
 
-                                    value={item.value}
-                                >
-                                    {item.label}
-                                </MenuItem>
-                            ))
-                        }
+            fullWidth
 
-                    </TextField>
+            {...register("actionRoute")}
+          />
 
-                    {/* ACTION LABEL */}
-                    <TextField
-                        label="Action Label"
+          {/* HIGHLIGHTS */}
+          <TextField
+            label="Highlights"
 
-                        placeholder="Schedule Appointment"
+            placeholder="24/7 Support, Certified Experts"
 
-                        fullWidth
+            multiline
 
-                        {...register('actionLabel')}
-                    />
+            minRows={3}
 
-                    {/* ACTION URL */}
-                    <TextField
-                        label="Action URL"
+            fullWidth
 
-                        placeholder="https://example.com"
+            {...register("highlights")}
 
-                        fullWidth
+            helperText="Separate highlights with commas"
+          />
 
-                        {...register('actionUrl')}
-                    />
+          <Button
+            type="submit"
 
-                    {/* ACTION ROUTE */}
-                    <TextField
-                        label="Action Route"
+            variant="contained"
 
-                        placeholder="/apply"
+            disabled={isPending}
 
-                        fullWidth
-
-                        {...register('actionRoute')}
-                    />
-
-                    {/* HIGHLIGHTS */}
-                    <TextField
-                        label="Highlights"
-
-                        placeholder="24/7 Support, Certified Experts"
-
-                        multiline
-
-                        minRows={3}
-
-                        fullWidth
-
-                        {...register('highlights')}
-
-                        helperText="Separate highlights with commas"
-                    />
-
-                    <Button
-                        type="submit"
-
-                        variant="contained"
-
-                        disabled={isPending}
-
-                        className={
-                            styles.submitButton
-                        }
-                    >
-
-                        {
-                            isPending
-                                ? 'Creating...'
-                                : 'Create Service'
-                        }
-
-                    </Button>
-
-                </Box>
-
-            </Paper>
-
-        </section>
-    );
+            className={styles.submitButton}
+          >
+            {isPending ? "Creating..." : "Create Program"}
+          </Button>
+        </Box>
+      </Paper>
+    </section>
+  );
 };
 
 export default CreateService;

@@ -1,743 +1,615 @@
 // pages/Services/EditService/EditService.jsx
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from "react-router-dom";
 
-import {
-    Controller,
-    useForm,
-} from 'react-hook-form';
+import GroupsIcon from "@mui/icons-material/Groups";
 
-import { z } from 'zod';
+import { Controller, useForm } from "react-hook-form";
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from "zod";
 
-import {
-    Box,
-    Button,
-    FormControl,
-    FormHelperText,
-    InputLabel,
-    MenuItem,
-    Paper,
-    Select,
-    TextField,
-    Typography,
-} from '@mui/material';
-
-import { toast } from 'react-toastify';
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-    useService,
-    useUpdateService,
-    useServiceCategory
-} from './hooks';
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 
-import CategorySelect from '../components/CategorySelect/CategorySelect';
+import { toast } from "react-toastify";
 
-import styles from './editService.module.css';
+import { useService, useUpdateService, useServiceCategory } from "./hooks";
+
+import CategorySelect from "../components/CategorySelect/CategorySelect";
+
+import styles from "./editService.module.css";
 
 /**
  * Status options
  */
 const STATUS_OPTIONS = [
-    {
-        label: 'Active',
-        value: 'ACTIVE',
-    },
+  {
+    label: "Active",
+    value: "ACTIVE",
+  },
 
-    {
-        label: 'Inactive',
-        value: 'INACTIVE',
-    },
+  {
+    label: "Inactive",
+    value: "INACTIVE",
+  },
 
-    {
-        label: 'Closed',
-        value: 'CLOSED',
-    },
+  {
+    label: "Closed",
+    value: "CLOSED",
+  },
 ];
 
 /**
  * Action type options
  */
 const ACTION_OPTIONS = [
-    {
-        label: 'Internal',
-        value: 'INTERNAL',
-    },
+  {
+    label: "Internal",
+    value: "INTERNAL",
+  },
 
-    {
-        label: 'External',
-        value: 'EXTERNAL',
-    },
+  {
+    label: "External",
+    value: "EXTERNAL",
+  },
 
-    {
-        label: 'Modal',
-        value: 'MODAL',
-    },
+  {
+    label: "Modal",
+    value: "MODAL",
+  },
 
-    {
-        label: 'None',
-        value: 'NONE',
-    },
+  {
+    label: "None",
+    value: "NONE",
+  },
 ];
 
 /**
  * Featured options
  */
 const FEATURED_OPTIONS = [
-    {
-        label: 'Featured',
-        value: true,
-    },
+  {
+    label: "Featured",
+    value: true,
+  },
 
-    {
-        label: 'Not Featured',
-        value: false,
-    },
+  {
+    label: "Not Featured",
+    value: false,
+  },
 ];
 
 /**
  * Validation schema
  */
 const schema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
 
-    name: z
-        .string()
-        .min(2, 'Name must be at least 2 characters'),
+  description: z.string().optional(),
 
-    description: z
-        .string()
-        .optional(),
+  icon: z.string().optional(),
 
-    icon: z
-        .string()
-        .optional(),
+  categoryId: z.string().min(1, "Category is required"),
 
-    categoryId: z
-        .string()
-        .min(1, 'Category is required'),
+  status: z.enum(["ACTIVE", "INACTIVE", "CLOSED"]),
 
-    status: z.enum([
-        'ACTIVE',
-        'INACTIVE',
-        'CLOSED',
-    ]),
+  isFeatured: z.boolean(),
 
-    isFeatured: z.boolean(),
+  location: z.string().optional(),
 
-    location: z
-        .string()
-        .optional(),
+  phone: z.string().optional(),
 
-    phone: z
-        .string()
-        .optional(),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
 
-    email: z
-        .string()
-        .email('Invalid email')
-        .optional()
-        .or(z.literal('')),
+  actionType: z.enum(["INTERNAL", "EXTERNAL", "MODAL", "NONE"]),
 
-    actionType: z.enum([
-        'INTERNAL',
-        'EXTERNAL',
-        'MODAL',
-        'NONE',
-    ]),
+  actionLabel: z.string().optional(),
 
-    actionLabel: z
-        .string()
-        .optional(),
+  actionUrl: z.string().optional(),
 
-    actionUrl: z
-        .string()
-        .optional(),
+  actionRoute: z.string().optional(),
 
-    actionRoute: z
-        .string()
-        .optional(),
-
-    highlights: z
-        .string()
-        .optional(),
+  highlights: z.string().optional(),
 });
 
 const EditService = () => {
+  const { id } = useParams();
 
-    const { id } = useParams();
+  /**
+   * Fetch service
+   */
+  const { data: serviceData } = useService(id);
 
-    /**
-     * Fetch service
-     */
-    const {
-        data: serviceData,
-    } = useService(id);
+  // Hooks for getl all services category
+  const {
+    data: ServiceCategoryData,
+    isFetching: ServiceCategoryFetching,
+    error: ServiceCategoryFetchingError,
+  } = useServiceCategory({});
 
-    // Hooks for getl all services category
-    const {
-        data: ServiceCategoryData,
-        isFetching: ServiceCategoryFetching,
-        error: ServiceCategoryFetchingError,
-        refetch: refetchServiceCategory,
-    } = useServiceCategory({});
+  /**
+   * Update mutation
+   */
+  const { mutateAsync: updateServiceMut, isPending: updatingService } =
+    useUpdateService();
 
-    /**
-     * Update mutation
-     */
-    const {
-        mutateAsync: updateServiceMut,
-        isPending: updatingService,
-    } = useUpdateService();
+  /**
+   * Form
+   */
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
 
-    /**
-     * Form
-     */
-    const {
-        control,
-        handleSubmit,
-        reset,
-        setValue,
-        watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
 
-        formState: {
-            errors,
+    defaultValues: {
+      name: "",
+      description: "",
+      icon: "",
+
+      categoryId: "",
+
+      status: "ACTIVE",
+
+      isFeatured: false,
+
+      location: "",
+      phone: "",
+      email: "",
+
+      actionType: "EXTERNAL",
+
+      actionLabel: "",
+      actionUrl: "",
+      actionRoute: "",
+
+      highlights: "",
+    },
+  });
+
+  /**
+   * Reset form
+   */
+  useEffect(() => {
+    if (serviceData) {
+      reset({
+        name: serviceData.name || "",
+
+        description: serviceData.description || "",
+
+        icon: serviceData.icon || "",
+
+        categoryId: serviceData.category.id || "",
+
+        status: serviceData.status || "ACTIVE",
+
+        isFeatured: serviceData.isFeatured ?? false,
+
+        location: serviceData.location || "",
+
+        phone: serviceData.phone || "",
+
+        email: serviceData.email || "",
+
+        actionType: serviceData.actionType || "EXTERNAL",
+
+        actionLabel: serviceData.actionLabel || "",
+
+        actionUrl: serviceData.actionUrl || "",
+
+        actionRoute: serviceData.actionRoute || "",
+
+        highlights: serviceData.highlights?.join(", ") || "",
+      });
+    }
+  }, [serviceData, reset]);
+
+  /**
+   * Submit
+   */
+  const onSubmit = async (data) => {
+    try {
+      await updateServiceMut({
+        id,
+
+        data: {
+          ...data,
+
+          highlights: data.highlights
+            ? data.highlights
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean)
+            : [],
         },
+      });
 
-    } = useForm({
+      toast.success("Service updated successfully");
+    } catch (error) {
+      let message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to update service";
 
-        resolver:
-            zodResolver(schema),
+      if (Array.isArray(message)) message = message.join(", ");
 
-        defaultValues: {
+      toast.error(message);
+    }
+  };
 
-            name: '',
-            description: '',
-            icon: '',
+  return (
+    <section className={styles.page}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 2,
+        }}
+      >
+        <Typography variant="h4" className={styles.title}>
+          Edit Program
+        </Typography>
 
-            categoryId: '',
+        {/* The roster is one click from the program, so staff can go
+                    straight to who signed up. */}
+        <Button
+          component={Link}
+          to={`/services/${id}/registrations`}
+          variant="outlined"
+          startIcon={<GroupsIcon />}
+        >
+          Registrants
+        </Button>
+      </Box>
 
-            status: 'ACTIVE',
+      <Paper className={styles.formContainer}>
+        <Box
+          component="form"
 
-            isFeatured: false,
+          onSubmit={handleSubmit(onSubmit)}
 
-            location: '',
-            phone: '',
-            email: '',
+          className={styles.form}
+        >
+          {/* NAME */}
+          <Controller
+            name="name"
 
-            actionType: 'EXTERNAL',
+            control={control}
 
-            actionLabel: '',
-            actionUrl: '',
-            actionRoute: '',
+            render={({ field }) => (
+              <TextField
+                {...field}
 
-            highlights: '',
-        },
-    });
+                label="Service Name"
 
-    /**
-     * Reset form
-     */
-    useEffect(() => {
+                fullWidth
 
-        if (serviceData) {
-            reset({
+                error={!!errors.name}
 
-                name: serviceData.name || '',
+                helperText={errors.name?.message}
+              />
+            )}
+          />
 
-                description: serviceData.description || '',
+          {/* DESCRIPTION */}
+          <Controller
+            name="description"
 
-                icon: serviceData.icon || '',
+            control={control}
 
-                categoryId: serviceData.category.id || '',
+            render={({ field }) => (
+              <TextField
+                {...field}
 
-                status: serviceData.status || 'ACTIVE',
+                label="Description"
 
-                isFeatured: serviceData.isFeatured ?? false,
+                multiline
 
-                location: serviceData.location || '',
+                minRows={4}
 
-                phone: serviceData.phone || '',
+                fullWidth
+              />
+            )}
+          />
 
-                email: serviceData.email || '',
+          {/* ICON */}
+          <Controller
+            name="icon"
 
-                actionType: serviceData.actionType || 'EXTERNAL',
+            control={control}
 
-                actionLabel: serviceData.actionLabel || '',
+            render={({ field }) => (
+              <TextField
+                {...field}
 
-                actionUrl: serviceData.actionUrl || '',
+                label="Icon"
 
-                actionRoute: serviceData.actionRoute || '',
+                fullWidth
+              />
+            )}
+          />
 
-                highlights: serviceData.highlights?.join(', ') || '',
-            });
-        }
+          {/* CATEGORY */}
+          <CategorySelect
+            categorys={ServiceCategoryData?.data}
+            value={watch("categoryId")}
+            placeholder="Select Category"
+            hideAllCategoryOption={true}
+            onChange={(categoryId) =>
+              setValue("categoryId", categoryId, {
+                shouldValidate: true,
+              })
+            }
 
-    }, [
-        serviceData,
-        reset,
-    ]);
+            error={!!errors.categoryId}
+          />
 
-    /**
-     * Submit
-     */
-    const onSubmit = async (data) => {
+          {/* STATUS */}
+          <Controller
+            name="status"
 
-        try {
+            control={control}
 
-            await updateServiceMut({
+            render={({ field }) => (
+              <FormControl
+                fullWidth
 
-                id,
+                error={!!errors.status}
+              >
+                <InputLabel>Status</InputLabel>
 
-                data: {
+                <Select
+                  {...field}
 
-                    ...data,
-
-                    highlights:
-                        data.highlights
-                            ? data.highlights
-                                .split(',')
-                                .map((item) =>
-                                    item.trim(),
-                                )
-                                .filter(Boolean)
-                            : [],
-                },
-            });
-
-            toast.success(
-                'Service updated successfully',
-            );
-
-        } catch (error) {
-
-            let message =
-                error.response?.data?.message
-                || error.message
-                || 'Failed to update service';
-
-            if (Array.isArray(message))
-                message = message.join(', ');
-
-            toast.error(message);
-        }
-    };
-
-    return (
-        <section className={styles.page}>
-
-            <Typography
-                variant="h4"
-                className={styles.title}
-            >
-                Edit Service
-            </Typography>
-
-            <Paper className={styles.formContainer}>
-
-                <Box
-                    component="form"
-
-                    onSubmit={
-                        handleSubmit(onSubmit)
-                    }
-
-                    className={styles.form}
+                  label="Status"
                 >
-
-                    {/* NAME */}
-                    <Controller
-                        name="name"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Service Name"
-
-                                fullWidth
-
-                                error={
-                                    !!errors.name
-                                }
-
-                                helperText={
-                                    errors.name?.message
-                                }
-                            />
-                        )}
-                    />
-
-                    {/* DESCRIPTION */}
-                    <Controller
-                        name="description"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Description"
-
-                                multiline
-
-                                minRows={4}
-
-                                fullWidth
-                            />
-                        )}
-                    />
-
-                    {/* ICON */}
-                    <Controller
-                        name="icon"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Icon"
-
-                                fullWidth
-                            />
-                        )}
-                    />
-
-                    {/* CATEGORY */}
-                    <CategorySelect
-                        categorys={ServiceCategoryData?.data}
-                        value={watch('categoryId')}
-                        placeholder='Select Category'
-                        hideAllCategoryOption={true}
-                        onChange={(categoryId) =>
-                            setValue(
-                                'categoryId',
-                                categoryId,
-                                {
-                                    shouldValidate: true,
-                                },
-                            )
-                        }
-
-                        error={
-                            !!errors.categoryId
-                        }
-                    />
-
-                    {/* STATUS */}
-                    <Controller
-                        name="status"
-
-                        control={control}
-
-                        render={({ field }) => (
-
-                            <FormControl
-                                fullWidth
-
-                                error={
-                                    !!errors.status
-                                }
-                            >
-
-                                <InputLabel>
-                                    Status
-                                </InputLabel>
-
-                                <Select
-                                    {...field}
-
-                                    label="Status"
-                                >
-
-                                    {
-                                        STATUS_OPTIONS.map((item) => (
-                                            <MenuItem
-                                                key={item.value}
-
-                                                value={item.value}
-                                            >
-                                                {item.label}
-                                            </MenuItem>
-                                        ))
-                                    }
-
-                                </Select>
-
-                                <FormHelperText>
-                                    {errors.status?.message}
-                                </FormHelperText>
-
-                            </FormControl>
-                        )}
-                    />
-
-                    {/* FEATURED */}
-                    <Controller
-                        name="isFeatured"
-
-                        control={control}
-
-                        render={({ field }) => (
-
-                            <FormControl fullWidth>
-
-                                <InputLabel>
-                                    Featured
-                                </InputLabel>
-
-                                <Select
-                                    value={
-                                        field.value
-                                            ? 'true'
-                                            : 'false'
-                                    }
-
-                                    label="Featured"
-
-                                    onChange={(e) =>
-                                        field.onChange(
-                                            e.target.value === 'true',
-                                        )
-                                    }
-                                >
-
-                                    {
-                                        FEATURED_OPTIONS.map((item) => (
-                                            <MenuItem
-                                                key={item.label}
-
-                                                value={
-                                                    item.value.toString()
-                                                }
-                                            >
-                                                {item.label}
-                                            </MenuItem>
-                                        ))
-                                    }
-
-                                </Select>
-
-                            </FormControl>
-                        )}
-                    />
-
-                    {/* LOCATION */}
-                    <Controller
-                        name="location"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Location"
-
-                                fullWidth
-                            />
-                        )}
-                    />
-
-                    {/* PHONE */}
-                    <Controller
-                        name="phone"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Phone"
-
-                                fullWidth
-                            />
-                        )}
-                    />
-
-                    {/* EMAIL */}
-                    <Controller
-                        name="email"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Email"
-
-                                fullWidth
-
-                                error={
-                                    !!errors.email
-                                }
-
-                                helperText={
-                                    errors.email?.message
-                                }
-                            />
-                        )}
-                    />
-
-                    {/* ACTION TYPE */}
-                    <Controller
-                        name="actionType"
-
-                        control={control}
-
-                        render={({ field }) => (
-
-                            <FormControl
-                                fullWidth
-
-                                error={
-                                    !!errors.actionType
-                                }
-                            >
-
-                                <InputLabel>
-                                    Action Type
-                                </InputLabel>
-
-                                <Select
-                                    {...field}
-
-                                    label="Action Type"
-                                >
-
-                                    {
-                                        ACTION_OPTIONS.map((item) => (
-                                            <MenuItem
-                                                key={item.value}
-
-                                                value={item.value}
-                                            >
-                                                {item.label}
-                                            </MenuItem>
-                                        ))
-                                    }
-
-                                </Select>
-
-                                <FormHelperText>
-                                    {errors.actionType?.message}
-                                </FormHelperText>
-
-                            </FormControl>
-                        )}
-                    />
-
-                    {/* ACTION LABEL */}
-                    <Controller
-                        name="actionLabel"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Action Label"
-
-                                fullWidth
-                            />
-                        )}
-                    />
-
-                    {/* ACTION URL */}
-                    <Controller
-                        name="actionUrl"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Action URL"
-
-                                fullWidth
-                            />
-                        )}
-                    />
-
-                    {/* ACTION ROUTE */}
-                    <Controller
-                        name="actionRoute"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Action Route"
-
-                                fullWidth
-                            />
-                        )}
-                    />
-
-                    {/* HIGHLIGHTS */}
-                    <Controller
-                        name="highlights"
-
-                        control={control}
-
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-
-                                label="Highlights"
-
-                                multiline
-
-                                minRows={3}
-
-                                fullWidth
-
-                                helperText="Separate highlights with commas"
-                            />
-                        )}
-                    />
-
-                    <Button
-                        type="submit"
-
-                        variant="contained"
-
-                        disabled={
-                            updatingService
-                        }
-
-                        className={
-                            styles.submitButton
-                        }
+                  {STATUS_OPTIONS.map((item) => (
+                    <MenuItem
+                      key={item.value}
+
+                      value={item.value}
                     >
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
 
-                        {
-                            updatingService
-                                ? 'Updating...'
-                                : 'Update Service'
-                        }
+                <FormHelperText>{errors.status?.message}</FormHelperText>
+              </FormControl>
+            )}
+          />
 
-                    </Button>
+          {/* FEATURED */}
+          <Controller
+            name="isFeatured"
 
-                </Box>
+            control={control}
 
-            </Paper>
+            render={({ field }) => (
+              <FormControl fullWidth>
+                <InputLabel>Featured</InputLabel>
 
-        </section>
-    );
+                <Select
+                  value={field.value ? "true" : "false"}
+
+                  label="Featured"
+
+                  onChange={(e) => field.onChange(e.target.value === "true")}
+                >
+                  {FEATURED_OPTIONS.map((item) => (
+                    <MenuItem
+                      key={item.label}
+
+                      value={item.value.toString()}
+                    >
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+
+          {/* LOCATION */}
+          <Controller
+            name="location"
+
+            control={control}
+
+            render={({ field }) => (
+              <TextField
+                {...field}
+
+                label="Location"
+
+                fullWidth
+              />
+            )}
+          />
+
+          {/* PHONE */}
+          <Controller
+            name="phone"
+
+            control={control}
+
+            render={({ field }) => (
+              <TextField
+                {...field}
+
+                label="Phone"
+
+                fullWidth
+              />
+            )}
+          />
+
+          {/* EMAIL */}
+          <Controller
+            name="email"
+
+            control={control}
+
+            render={({ field }) => (
+              <TextField
+                {...field}
+
+                label="Email"
+
+                fullWidth
+
+                error={!!errors.email}
+
+                helperText={errors.email?.message}
+              />
+            )}
+          />
+
+          {/* ACTION TYPE */}
+          <Controller
+            name="actionType"
+
+            control={control}
+
+            render={({ field }) => (
+              <FormControl
+                fullWidth
+
+                error={!!errors.actionType}
+              >
+                <InputLabel>Action Type</InputLabel>
+
+                <Select
+                  {...field}
+
+                  label="Action Type"
+                >
+                  {ACTION_OPTIONS.map((item) => (
+                    <MenuItem
+                      key={item.value}
+
+                      value={item.value}
+                    >
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+
+                <FormHelperText>{errors.actionType?.message}</FormHelperText>
+              </FormControl>
+            )}
+          />
+
+          {/* ACTION LABEL */}
+          <Controller
+            name="actionLabel"
+
+            control={control}
+
+            render={({ field }) => (
+              <TextField
+                {...field}
+
+                label="Action Label"
+
+                fullWidth
+              />
+            )}
+          />
+
+          {/* ACTION URL */}
+          <Controller
+            name="actionUrl"
+
+            control={control}
+
+            render={({ field }) => (
+              <TextField
+                {...field}
+
+                label="Action URL"
+
+                fullWidth
+              />
+            )}
+          />
+
+          {/* ACTION ROUTE */}
+          <Controller
+            name="actionRoute"
+
+            control={control}
+
+            render={({ field }) => (
+              <TextField
+                {...field}
+
+                label="Action Route"
+
+                fullWidth
+              />
+            )}
+          />
+
+          {/* HIGHLIGHTS */}
+          <Controller
+            name="highlights"
+
+            control={control}
+
+            render={({ field }) => (
+              <TextField
+                {...field}
+
+                label="Highlights"
+
+                multiline
+
+                minRows={3}
+
+                fullWidth
+
+                helperText="Separate highlights with commas"
+              />
+            )}
+          />
+
+          <Button
+            type="submit"
+
+            variant="contained"
+
+            disabled={updatingService}
+
+            className={styles.submitButton}
+          >
+            {updatingService ? "Updating..." : "Update Service"}
+          </Button>
+        </Box>
+      </Paper>
+    </section>
+  );
 };
 
 export default EditService;

@@ -7,6 +7,21 @@ import { EditServiceCategoryInterface } from './interfaces/editServiceCategory.i
 import { GetServicesQueryInterface } from './interfaces/getServices.interface';
 import { CreateServiceInterface } from './interfaces/createService.interface';
 import { EditServiceInterface } from './interfaces/editService.interface';
+import { GetServiceRegistrationsInterface } from './interfaces/getServiceRegistrations.interface';
+import { csvFilenameSlug, toCsv } from '@/common/utils/csv.util';
+
+/**
+ * Columns of the registrant CSV, in the order staff read them. Programs carry
+ * a per-registration status (the member module writes `REGISTERED`), so it is
+ * exported alongside the roster.
+ */
+export const SERVICE_REGISTRANT_CSV_HEADERS = [
+    'Member ID',
+    'Name',
+    'Email',
+    'Registered At',
+    'Status',
+];
 
 
 @Injectable()
@@ -577,6 +592,203 @@ export class AdminServiceService {
         return {
             success: true,
             message: 'Service updated successfully',
+        };
+    }
+
+    /**
+     * Get who registered for a program — paginated, newest sign-up first.
+     *
+     * `ServiceRegistration` has no `createdAt`; its `date` column is what the
+     * member module stamps at sign-up, so that is the registered-at we report.
+     */
+    async getServiceRegistrations(
+        serviceId: string,
+        query: GetServiceRegistrationsInterface,
+    ) {
+
+        const service = await this.requireService(serviceId);
+
+        const page = query.page || 1;
+        const limit = query.limit || 10;
+
+        const skip = (page - 1) * limit;
+
+        const where = this.buildRegistrationWhere(
+            serviceId,
+            query.search,
+        );
+
+        const [registrations, count] = await Promise.all([
+
+            this.database.serviceRegistration.findMany({
+                where,
+
+                skip,
+                take: limit,
+
+                orderBy: {
+                    date: 'desc',
+                },
+
+                select: {
+                    id: true,
+                    date: true,
+                    status: true,
+
+                    user: {
+                        select: {
+                            id: true,
+                            publicId: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
+                },
+            }),
+
+            this.database.serviceRegistration.count({
+                where,
+            }),
+        ]);
+
+        return {
+            service: {
+                id: service.id,
+                name: service.name,
+                status: service.status,
+            },
+
+            data: registrations.map((row) => ({
+                id: row.id,
+                registeredAt: row.date,
+                status: row.status,
+
+                member: row.user,
+            })),
+
+            count,
+        };
+    }
+
+    /**
+     * Export the whole registrant roster as CSV — unpaginated, because the
+     * point of the export is to hand staff the complete list.
+     */
+    async exportServiceRegistrations(
+        serviceId: string,
+    ) {
+
+        const service = await this.requireService(serviceId);
+
+        const registrations =
+            await this.database.serviceRegistration.findMany({
+                where: {
+                    serviceId,
+                },
+
+                orderBy: {
+                    date: 'asc',
+                },
+
+                select: {
+                    date: true,
+                    status: true,
+
+                    user: {
+                        select: {
+                            publicId: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
+                },
+            });
+
+        const csv = toCsv(
+            SERVICE_REGISTRANT_CSV_HEADERS,
+
+            registrations.map((row) => [
+                row.user?.publicId ?? '',
+                row.user?.name ?? '',
+                row.user?.email ?? '',
+                row.date,
+                row.status,
+            ]),
+        );
+
+        return {
+            filename: `${csvFilenameSlug(service.name)}-registrations.csv`,
+            csv,
+        };
+    }
+
+    /**
+     * Load a program or say so — a bad id has to be a 404 rather than an empty
+     * roster that reads like "nobody signed up".
+     */
+    private async requireService(serviceId: string) {
+
+        const service = await this.database.service.findUnique({
+            where: {
+                id: serviceId,
+            },
+
+            select: {
+                id: true,
+                name: true,
+                status: true,
+            },
+        });
+
+        if (!service) {
+            throw new NotFoundException(
+                'Service not found',
+            );
+        }
+
+        return service;
+    }
+
+    /**
+     * Registrant search — over the member's name, email and member ID, which
+     * are the three things staff have in hand at the front desk.
+     */
+    private buildRegistrationWhere(
+        serviceId: string,
+        search?: string,
+    ): Prisma.ServiceRegistrationWhereInput {
+
+        if (!search) {
+            return { serviceId };
+        }
+
+        return {
+            serviceId,
+
+            user: {
+                OR: [
+                    {
+                        name: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+
+                    {
+                        email: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+
+                    {
+                        publicId: {
+                            contains: search,
+                            mode: 'insensitive',
+                        },
+                    },
+                ],
+            },
         };
     }
 }
