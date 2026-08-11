@@ -1250,7 +1250,9 @@
       "showId": "Mostrar la identificación tribal",
       "showYucayeke": "Mostrar tu yukayeke",
       "faceId": "Identificación tribal",
-      "faceYucayeke": "Tu yukayeke"
+      "faceYucayeke": "Tu yukayeke",
+      "turnToYucayeke": "Voltear a tu yukayeke",
+      "turnToId": "Voltear a tu identificación"
     },
     "yucayekeCard": {
       "eyebrow": "Territorio ancestral",
