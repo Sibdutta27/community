@@ -105,6 +105,22 @@
         },
         "5": {
           "description": "Review everything, sign, and submit your application for council review."
+        },
+        "account": {
+          "title": "Create Account",
+          "description": "Sign up with your email and create a secure password to access the enrollment portal."
+        },
+        "personalInfo": {
+          "title": "Personal Information",
+          "description": "Provide your basic details including name, date of birth, and contact information."
+        },
+        "maternalLineage": {
+          "title": "Maternal Lineage",
+          "description": "Document your maternal ancestry with names, dates, and places of birth for your lineage."
+        },
+        "documents": {
+          "title": "Upload Documents",
+          "description": "Submit supporting documents such as birth certificates, family records, and lineage proof."
         }
       },
       "needs": {
@@ -1267,7 +1283,8 @@
     "enrollmentSubmit": "Unable to submit your enrollment application right now.",
     "missingStateId": "Your application is missing a government-issued ID (state ID, driver’s license, or passport). It is required before you can submit.",
     "missingIdentityDocuments": "Your application needs at least 2 identity documents — your government-issued ID plus a birth certificate or social security card.",
-    "missingRequiredDocuments": "Your application is missing a required document. Please upload a clear photo of yourself before submitting."
+    "missingRequiredDocuments": "Your application is missing a required document. Please upload a clear photo of yourself before submitting.",
+    "feedbackSubmit": "Unable to send your note right now. Please try again."
   },
   "support": {
     "badge": "We're Here to Help",
@@ -1279,9 +1296,9 @@
       "hours": "Mon-Fri: 9am - 6pm AST"
     },
     "chat": {
-      "title": "Chat in Forums",
-      "description": "Post your concern in forums",
-      "cta": "Start Chat"
+      "title": "Report an Issue",
+      "description": "Tell us what you're seeing",
+      "cta": "Open the Feedback Box"
     }
   },
   "contact": {
@@ -1601,6 +1618,40 @@
           "description": "Get guidance, support answers, and trusted help resources for platform and membership questions."
         }
       }
+    }
+  },
+  "feedback": {
+    "launcher": {
+      "open": "Share feedback",
+      "openAria": "Share feedback about this page",
+      "close": "Close feedback"
+    },
+    "panel": {
+      "title": "Tell us what you're seeing",
+      "subtitle": "Something not working, or an idea to make this better? Write it here — a real person on the team reads every note.",
+      "messageLabel": "What's happening?",
+      "messagePlaceholder": "For example: I tapped Continue on the enrollment page and nothing happened.",
+      "messageHint": "Everyday words are perfect — you don't need technical details.",
+      "attachmentLabel": "Add a picture (optional)",
+      "attachmentHint": "A screenshot or PDF, up to 10 MB.",
+      "contextTitle": "We'll send this along with your note:",
+      "contextPage": "Page: {page}",
+      "contextLanguage": "Language: {language}",
+      "submit": "Send to the team",
+      "submitting": "Sending…",
+      "dismiss": "Not now"
+    },
+    "success": {
+      "title": "Thank you — we got it.",
+      "body": "Your note is with the team. Reports like yours are how this platform gets better for everyone.",
+      "another": "Send another note",
+      "done": "Done"
+    },
+    "errors": {
+      "messageRequired": "Please tell us a little about what you're seeing.",
+      "messageTooLong": "That note is a bit too long. Please shorten it and try again.",
+      "attachmentType": "That file type can't be attached. Please use a PNG, JPG, WEBP or PDF.",
+      "attachmentTooLarge": "That file is larger than 10 MB. Please attach a smaller one."
     }
   }
 }

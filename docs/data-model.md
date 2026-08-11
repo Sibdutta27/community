@@ -54,24 +54,27 @@ User 1───1 Enrollment 1───1 Contact
   externalUrl?.
 - **EventCategory** — `key` (unique), name, description?, icon?.
 - **EventRegistration** — eventId, userId.
+- **Feedback** — in-app report / work order: `message` (Text), `pageUrl`, `locale`, `userAgent?`,
+  optional `userId` (**nullable — signed-out visitors may submit**), optional attachment
+  (`attachmentKey/Name/MimeType/Size`), `createdAt`. Indexed on `[userId]` and `[createdAt]`.
 
 ## Enums
 
-| Enum | Values |
-|------|--------|
-| `Role` | USER, ADMIN, MODERATOR |
-| `EnrollmentStatus` | DRAFT, SUBMITTED, APPROVED, REJECTED |
-| `Gender` | MALE, FEMALE, NON_BINARY, TWO_SPIRIT, SELF_DESCRIBE, PREFER_NOT_TO_SAY, OTHER |
-| `MaritalStatus` | SINGLE, MARRIED, DIVORCED, WIDOWED |
-| `AddressType` | CURRENT, MAILING |
-| `PhoneType` | MOBILE, HOME, WORK |
-| `DocumentType` | PROFILE_PICTURE, USER_PHOTO, BIRTH_CERTIFICATE, FAMILY_RECORD, FAMILY_PHOTO, ADDITIONAL_EVIDENCE, UNKNOWN |
-| `DocumentStatus` | PENDING, APPROVED, REJECTED |
-| `StorageProvider` | S3, MINIO |
-| `RelationType` | MOTHER, GRANDMOTHER, GREAT_GRANDMOTHER, GREAT_GREAT_GRANDMOTHER, GREAT_GREAT_GREAT_GRANDMOTHER |
-| `LivingStatus` | LIVING, DECEASED |
-| `ServiceStatus` | ACTIVE, INACTIVE, CLOSED |
-| `ActionType` | INTERNAL, EXTERNAL, MODAL, NONE |
-| `LocationType` | PHYSICAL, VIRTUAL |
+| Enum               | Values                                                                                                    |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| `Role`             | USER, ADMIN, MODERATOR                                                                                    |
+| `EnrollmentStatus` | DRAFT, SUBMITTED, APPROVED, REJECTED                                                                      |
+| `Gender`           | MALE, FEMALE, NON_BINARY, TWO_SPIRIT, SELF_DESCRIBE, PREFER_NOT_TO_SAY, OTHER                             |
+| `MaritalStatus`    | SINGLE, MARRIED, DIVORCED, WIDOWED                                                                        |
+| `AddressType`      | CURRENT, MAILING                                                                                          |
+| `PhoneType`        | MOBILE, HOME, WORK                                                                                        |
+| `DocumentType`     | PROFILE_PICTURE, USER_PHOTO, BIRTH_CERTIFICATE, FAMILY_RECORD, FAMILY_PHOTO, ADDITIONAL_EVIDENCE, UNKNOWN |
+| `DocumentStatus`   | PENDING, APPROVED, REJECTED                                                                               |
+| `StorageProvider`  | S3, MINIO                                                                                                 |
+| `RelationType`     | MOTHER, GRANDMOTHER, GREAT_GRANDMOTHER, GREAT_GREAT_GRANDMOTHER, GREAT_GREAT_GREAT_GRANDMOTHER            |
+| `LivingStatus`     | LIVING, DECEASED                                                                                          |
+| `ServiceStatus`    | ACTIVE, INACTIVE, CLOSED                                                                                  |
+| `ActionType`       | INTERNAL, EXTERNAL, MODAL, NONE                                                                           |
+| `LocationType`     | PHYSICAL, VIRTUAL                                                                                         |
 
 Migrations in `apps/api/prisma/migrations/`; seed data in `prisma/seed/`.

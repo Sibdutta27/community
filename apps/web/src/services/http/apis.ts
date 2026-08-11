@@ -50,6 +50,9 @@ export const endpoints = {
     STEP_4_DOCUMENTS_NEXT: normalizePath("/enrollment/step4/next"),
     YUCAYEKES: normalizePath("/enrollment/yucayekes"),
   },
+  FEEDBACK: {
+    SUBMIT: normalizePath("/feedback"),
+  },
   DOCUMENT: {
     LIST: normalizePath("/document/list"),
     UPLOAD: normalizePath("/document/upload"),

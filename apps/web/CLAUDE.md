@@ -13,7 +13,8 @@ src/
     api/                       # route handlers (BFF: auth, enrollment, events, …)
     layout.tsx globals.css
   features/<domain>/           # auth, enrollment, dashboard, profile, community,
-                               #   services, yucayeke, contact, about, home, protected
+                               #   services, yucayeke, contact, about, home, protected,
+                               #   feedback (floating widget mounted in the root layout)
     components/ lib/ hooks/ api/ styles/ types/ constants/
   components/
     ui/                        # shadcn ("new-york" style) — button, input, form, dialog, …

@@ -25,6 +25,7 @@ describe("message catalogs", () => {
       "errors",
       "profile",
       "support",
+      "feedback",
       "contact",
       "yucayeke",
       "services",

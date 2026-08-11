@@ -7,12 +7,13 @@ All notable changes to the Community monorepo are recorded here, categorized by
 
 `app` ∈ `backend | web | admin`. `domain` ∈ the keys in `categories.yaml`
 (`auth`, `enrollment`, `consent`, `documents`, `services`, `events`, `profile`,
-`cultural-connection`, `admin-management`, `marketing-content`).
+`cultural-connection`, `feedback`, `admin-management`, `marketing-content`).
 
 ## [Unreleased]
 
 ### Added
 
+- [backend+web/feedback] In-app feedback / work-order widget for the closed-beta focus groups: floating launcher on every page (public + auth + protected) opening a compact, keyboard-trapped panel that takes a plain-language note plus an optional screenshot and auto-captures the page URL, locale and browser agent; new `POST /feedback` (multipart, `OptionalJwtAuthGuard` so signed-out testers can report) storing a `Feedback` row with the attachment in the private S3 bucket; the support section's dead "chat" button now opens the same panel; `feedback` i18n namespace in en + es — apps/api/src/modules/feedback, apps/web/src/features/feedback
 - [repo/docs] 2026-07-08 BTF x Stable sync transcript imported + change requests recorded as kanban cards S0–S6 — docs/product/transcripts/2026-07-08-btf-sync.md
 - [backend+web/enrollment] Yucayeke official-names dropdown: `OFFICIAL_YUCAYEKES` config (placeholder pending BTF list) served via `GET /enrollment/yucayekes`, enforced with `@IsIn` on step-1 DTOs, select in the step-1 form — apps/api/src/modules/enrollment/common/config/yucayeke.config.ts
 - [backend+web/documents] 2-of-3 proof-of-identity documents (STATE_ID / BIRTH_CERTIFICATE / SOCIAL_SECURITY_CARD): new single-file slots + policies, step-4 section with counter, enforced in step-4 next AND enrollment complete (`missing_identity_documents`) — apps/api/src/modules/enrollment/step4

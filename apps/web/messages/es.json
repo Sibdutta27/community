@@ -105,6 +105,22 @@
         },
         "5": {
           "description": "Revisa todo, firma y somete tu solicitud para la revisión del concilio."
+        },
+        "account": {
+          "title": "Crea tu Cuenta",
+          "description": "Regístrate con tu email y crea una contraseña segura para acceder al portal de inscripción."
+        },
+        "personalInfo": {
+          "title": "Información Personal",
+          "description": "Provee tus datos básicos, incluyendo nombre, fecha de nacimiento e información de contacto."
+        },
+        "maternalLineage": {
+          "title": "Linaje Materno",
+          "description": "Documenta tu ascendencia materna con los nombres, fechas y lugares de nacimiento de tu linaje."
+        },
+        "documents": {
+          "title": "Sube tus Documentos",
+          "description": "Somete documentos de apoyo como certificados de nacimiento, récords familiares y evidencia de linaje."
         }
       },
       "needs": {
@@ -1267,7 +1283,8 @@
     "enrollmentSubmit": "No se pudo enviar su solicitud de inscripción en este momento.",
     "missingStateId": "A su solicitud le falta una identificación oficial (identificación estatal, licencia de conducir o pasaporte). Es requerida antes de poder enviarla.",
     "missingIdentityDocuments": "Su solicitud necesita al menos 2 documentos de identidad: su identificación oficial más un certificado de nacimiento o una tarjeta de seguro social.",
-    "missingRequiredDocuments": "A su solicitud le falta un documento requerido. Suba una foto clara de usted antes de enviarla."
+    "missingRequiredDocuments": "A su solicitud le falta un documento requerido. Suba una foto clara de usted antes de enviarla.",
+    "feedbackSubmit": "No se pudo enviar su nota en este momento. Inténtelo de nuevo."
   },
   "support": {
     "badge": "Estamos para Ayudarle",
@@ -1279,9 +1296,9 @@
       "hours": "Lun-Vie: 9am - 6pm AST"
     },
     "chat": {
-      "title": "Converse en los Foros",
-      "description": "Publique su consulta en los foros",
-      "cta": "Iniciar Chat"
+      "title": "Reporte un Problema",
+      "description": "Cuéntenos lo que está viendo",
+      "cta": "Abrir el Buzón de Comentarios"
     }
   },
   "contact": {
@@ -1601,6 +1618,40 @@
           "description": "Obtén orientación, respuestas de apoyo y recursos confiables para tus preguntas sobre la plataforma y la membresía."
         }
       }
+    }
+  },
+  "feedback": {
+    "launcher": {
+      "open": "Enviar comentario",
+      "openAria": "Enviar un comentario sobre esta página",
+      "close": "Cerrar los comentarios"
+    },
+    "panel": {
+      "title": "Cuéntenos lo que está viendo",
+      "subtitle": "¿Algo no funciona o tiene una idea para mejorarlo? Escríbalo aquí — una persona del equipo lee cada nota.",
+      "messageLabel": "¿Qué está pasando?",
+      "messagePlaceholder": "Por ejemplo: oprimí Continuar en la página de inscripción y no pasó nada.",
+      "messageHint": "Basta con que lo escriba en sus propias palabras; no hacen falta detalles técnicos.",
+      "attachmentLabel": "Añada una imagen (opcional)",
+      "attachmentHint": "Una captura de pantalla o un PDF, hasta 10 MB.",
+      "contextTitle": "Enviaremos esto junto con su nota:",
+      "contextPage": "Página: {page}",
+      "contextLanguage": "Idioma: {language}",
+      "submit": "Enviar al equipo",
+      "submitting": "Enviando…",
+      "dismiss": "Ahora no"
+    },
+    "success": {
+      "title": "Gracias — ya lo recibimos.",
+      "body": "Su nota está con el equipo. Con reportes como el suyo esta plataforma mejora para toda la comunidad.",
+      "another": "Enviar otra nota",
+      "done": "Listo"
+    },
+    "errors": {
+      "messageRequired": "Cuéntenos un poco sobre lo que está viendo.",
+      "messageTooLong": "La nota es demasiado larga. Acórtela e inténtelo de nuevo.",
+      "attachmentType": "Ese tipo de archivo no se puede adjuntar. Use PNG, JPG, WEBP o PDF.",
+      "attachmentTooLarge": "Ese archivo pesa más de 10 MB. Adjunte uno más pequeño."
     }
   }
 }

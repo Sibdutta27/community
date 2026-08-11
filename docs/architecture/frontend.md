@@ -13,7 +13,7 @@ Route groups under `src/app/`:
 - **`(protected)`** — `dashboard`, `enrollment/step-1..4`, `my-profile`, `profile`,
   `yucayeke/map` (interactive territory map).
 - **`api/`** — Next route handlers acting as a BFF (auth, enrollment, events, services, documents,
-  profile, consent) that forward to the NestJS backend.
+  profile, consent, feedback) that forward to the NestJS backend.
 
 `middleware.ts` (`src/middleware.ts`):
 
@@ -42,6 +42,26 @@ protected member map (`(protected)/yucayeke/map` + the profile "Your Yucayeke" c
   `YourYucayekeCard` (profile card; degrades assigned → unknown → unassigned → unmapped).
 - i18n namespace `yucayekeMap` in `messages/{en,es}.json` (territory descriptions per slug).
 - Source GIS data + caveats: `data/gis/yucayekeno-ecological-communities/README.md`.
+
+## Feedback widget (`features/feedback/`)
+
+A floating launcher mounted once in `app/layout.tsx` (inside `AppProviders`, the only tree shared
+by all three route groups), so members and closed-beta testers can report an issue from any page:
+
+- `components/feedback-widget.tsx` — launcher + disclosure panel (no scrim, not a modal
+  takeover): `aria-haspopup="dialog"`/`aria-expanded`, Tab trapped inside the open panel, Escape
+  and outside-click close, focus returned to the launcher. Icon-only on mobile so it never covers
+  a primary action.
+- `components/feedback-panel.tsx` — the note (required), an optional screenshot/PDF, and the
+  auto-captured page URL + locale shown back to the member. Confirmation and recoverable-error
+  states.
+- `lib/feedback-mutations.ts` — `requestMultipart` → `/api/feedback` with
+  **`redirectOnUnauthorized: false`** (the widget is reachable signed-out; the default 401 handler
+  would bounce visitors to /sign-in).
+- `lib/feedback-widget-events.ts` — a window CustomEvent bus so any surface can open the panel
+  without threading a provider; used by `components/shared/support-feedback-button.tsx` to wire
+  the support section's report card.
+- i18n namespace `feedback` in `messages/{en,es}.json`.
 
 ## Data layer
 
