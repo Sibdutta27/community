@@ -226,7 +226,7 @@ export const profileConfig = {
     },
     {
       iconSrc: "/icons/profile/yucayeke.svg",
-      label: "Yucayeke",
+      label: "Yukayeke",
       value: "yucayeke",
     },
     {
@@ -341,7 +341,7 @@ export const profileConfig = {
         value: "Yucayeke Guainía",
       },
     ],
-    title: "Yucayeke",
+    title: "Yukayeke",
     yucayekeUnknown: false,
   },
   documents: {

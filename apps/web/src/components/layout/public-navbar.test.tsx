@@ -52,7 +52,7 @@ describe("PublicNavbar", () => {
       screen.getAllByRole("link", { name: "Enrollment" }).length,
     ).toBeGreaterThan(0);
 
-    for (const removed of ["Home", "Yucayeke", "Community", "Services"]) {
+    for (const removed of ["Home", "Yukayeke", "Community", "Services"]) {
       expect(
         screen.queryByRole("link", { name: removed }),
       ).not.toBeInTheDocument();

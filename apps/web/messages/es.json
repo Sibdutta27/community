@@ -21,7 +21,7 @@
     "quickLinks": {
       "about": "Sobre Nosotros",
       "enrollment": "Proceso de Inscripción",
-      "yucayeke": "Regiones Yucayeke",
+      "yucayeke": "Regiones Yukayeke",
       "services": "Servicios para Miembros",
       "events": "Eventos Comunitarios",
       "cultural": "Recursos Culturales"
@@ -64,7 +64,7 @@
         },
         "culturalIdentity": {
           "title": "Identidad Cultural",
-          "description": "Recibe tu Identificación Tribal oficial, traza tu linaje materno y conéctate con tu Yucayeke ancestral para fortalecer tu identidad indígena."
+          "description": "Recibe tu Identificación Tribal oficial, traza tu linaje materno y conéctate con tu Yukayeke ancestral para fortalecer tu identidad indígena."
         },
         "communityHelp": {
           "title": "Ayuda Comunitaria",
@@ -159,16 +159,16 @@
       }
     },
     "yucayeke": {
-      "label": "Regiones Yucayeke",
+      "label": "Regiones Yukayeke",
       "title": "Conéctate con tu Tierra Ancestral",
-      "subtitle": "A cada miembro inscrito se le asigna un Yucayeke, una comunidad tradicional arraigada a la tierra que te conecta con tu territorio ancestral y con otros descendientes de tu región.",
+      "subtitle": "A cada miembro inscrito se le asigna un Yukayeke, una comunidad tradicional arraigada a la tierra que te conecta con tu territorio ancestral y con otros descendientes de tu región.",
       "overview": {
-        "mapAlt": "Mapa ilustrado de Borikén representando las regiones Yucayeke",
-        "title": "¿Qué es un Yucayeke?",
-        "paragraph1": "En la cultura taína, un Yucayeke era una aldea o asentamiento liderado por un cacique. Estas comunidades se organizaban alrededor de territorios a lo largo de Borikén, cada una con su propia identidad, tradiciones y liderazgo.",
-        "paragraph2": "Hoy honramos esa tradición asignando a los miembros a regiones Yucayeke históricas según su linaje materno y sus conexiones ancestrales. Esto ayuda a preservar nuestra herencia territorial y fortalece los lazos dentro de las comunidades regionales.",
+        "mapAlt": "Mapa ilustrado de Borikén representando las regiones Yukayeke",
+        "title": "¿Qué es un Yukayeke?",
+        "paragraph1": "En la cultura taína, un Yukayeke era una aldea o asentamiento liderado por un cacique. Estas comunidades se organizaban alrededor de territorios a lo largo de Borikén, cada una con su propia identidad, tradiciones y liderazgo.",
+        "paragraph2": "Hoy honramos esa tradición asignando a los miembros a regiones Yukayeke históricas según su linaje materno y sus conexiones ancestrales. Esto ayuda a preservar nuestra herencia territorial y fortalece los lazos dentro de las comunidades regionales.",
         "cards": {
-          "regions": "18 Regiones Yucayeke Históricas",
+          "regions": "18 Regiones Yukayeke Históricas",
           "connect": "Conéctate con Miembros de tu Región",
           "events": "Accede a Eventos y Encuentros Regionales"
         }
@@ -186,7 +186,7 @@
         "announcements": "Mantente al día con anuncios, noticias y actualizaciones importantes del liderazgo tribal y de los organizadores comunitarios.",
         "events": "Descubre y regístrate en ceremonias culturales, talleres educativos, encuentros regionales y celebraciones comunitarias.",
         "services": "Accede a servicios de salud, asistencia legal, recursos educativos y programas de apoyo comunitario exclusivos para miembros.",
-        "regionalCommunity": "Conéctate con otros miembros de tu región Yucayeke asignada y participa en actividades comunitarias regionales.",
+        "regionalCommunity": "Conéctate con otros miembros de tu región Yukayeke asignada y participa en actividades comunitarias regionales.",
         "mobileApps": "Descarga nuestras apps de iOS y Android para acceder a tu perfil, tus documentos y las funciones comunitarias dondequiera que estés.",
         "culturalResources": "Accede a recursos educativos, lecciones de idioma, archivos históricos y materiales de preservación cultural."
       }
@@ -284,7 +284,7 @@
         },
         "benefits": {
           "question": "¿Qué beneficios reciben los miembros inscritos?",
-          "answer": "Los miembros inscritos pueden acceder a su Identificación Tribal, documentar su parentesco materno y paterno, conectarse con su Yucayeke asignado, usar la bóveda segura de documentos y explorar servicios para miembros como recursos de salud, legales, educativos y de apoyo comunitario."
+          "answer": "Los miembros inscritos pueden acceder a su Identificación Tribal, documentar su parentesco materno y paterno, conectarse con su Yukayeke asignado, usar la bóveda segura de documentos y explorar servicios para miembros como recursos de salud, legales, educativos y de apoyo comunitario."
         },
         "fee": {
           "question": "¿Hay que pagar para inscribirse?",
@@ -309,7 +309,7 @@
         },
         "regions": {
           "value": "8 Regiones",
-          "label": "Conexiones Yucayeke"
+          "label": "Conexiones Yukayeke"
         },
         "access": {
           "value": "24/7",
@@ -494,7 +494,7 @@
         "title": "Con quién se está inscribiendo",
         "description": "La comunidad a la que va dirigida su solicitud.",
         "paragraph1": "Usted está solicitando la ciudadanía con la Nación Taíno de Borikén. Esta plataforma fue creada para darles a los descendientes una manera respetuosa de documentar su linaje, reconectarse con su herencia ancestral y participar en una comunidad indígena viva.",
-        "paragraph2": "Es más que un sistema de récords. Es un hogar digital soberano donde la identidad, la historia familiar y la participación comunitaria giran en torno a los valores taínos y no a herramientas administrativas genéricas. Su inscripción documenta su parentesco con la Nación y, una vez aprobada, lo conecta con su Yucayeke."
+        "paragraph2": "Es más que un sistema de récords. Es un hogar digital soberano donde la identidad, la historia familiar y la participación comunitaria giran en torno a los valores taínos y no a herramientas administrativas genéricas. Su inscripción documenta su parentesco con la Nación y, una vez aprobada, lo conecta con su Yukayeke."
       },
       "steps": {
         "title": "Qué le pide la solicitud",
@@ -633,16 +633,16 @@
       },
       "yucayekeno": {
         "title": "Su información Yucayekeno",
-        "description": "Comparta cómo se identifica y su conexión con su Yucayeke y su familia.",
+        "description": "Comparta cómo se identifica y su conexión con su Yukayeke y su familia.",
         "identity": {
           "label": "Identidad",
           "placeholder": "Seleccione su identidad"
         },
         "yucayeke": {
-          "label": "Yucayeke",
-          "placeholder": "Seleccione su Yucayeke"
+          "label": "Yukayeke",
+          "placeholder": "Seleccione su Yukayeke"
         },
-        "yucayekeUnknown": "No conozco mi Yucayeke",
+        "yucayekeUnknown": "No conozco mi Yukayeke",
         "hasChildren": "¿Tiene hijos?",
         "hasMinorChildren": "¿Alguno de sus hijos es menor de 18 años?"
       }
@@ -698,8 +698,8 @@
           "placeholder": "Escriba el municipio"
         },
         "yucayeke": {
-          "label": "Yucayeke",
-          "placeholder": "Escriba el Yucayeke si lo conoce"
+          "label": "Yukayeke",
+          "placeholder": "Escriba el Yukayeke si lo conoce"
         }
       },
       "ancestors": {
@@ -924,12 +924,12 @@
     "tabs": {
       "overview": "Resumen",
       "kinship": "Parentesco",
-      "yucayeke": "Yucayeke",
+      "yucayeke": "Yukayeke",
       "documents": "Documentos",
       "activity": "Actividad",
       "settings": "Configuración",
       "ariaLabel": "Secciones del perfil",
-      "notImplemented": "Esta sección aún no está disponible. Actualmente puede acceder a las pestañas Resumen, Parentesco, Yucayeke, Documentos, Actividad y Configuración."
+      "notImplemented": "Esta sección aún no está disponible. Actualmente puede acceder a las pestañas Resumen, Parentesco, Yukayeke, Documentos, Actividad y Configuración."
     },
     "overview": {
       "title": "Resumen",
@@ -989,7 +989,7 @@
       },
       "facts": {
         "municipality": "Municipio",
-        "yucayeke": "Yucayeke",
+        "yucayeke": "Yukayeke",
         "nationality": "Nacionalidad",
         "dateOfBirth": "Fecha de nacimiento",
         "borikuaTaino": "Borikua Taíno"
@@ -1002,11 +1002,11 @@
       }
     },
     "yucayeke": {
-      "title": "Yucayeke",
-      "description": "Su perfil de Yucayeke conecta su territorio, su línea familiar y el progreso de su inscripción en un solo lugar.",
-      "communityName": "Yucayeke {name}",
-      "unknownCommunity": "Yucayeke desconocido",
-      "defaultCommunity": "Yucayeke",
+      "title": "Yukayeke",
+      "description": "Su perfil de Yukayeke conecta su territorio, su línea familiar y el progreso de su inscripción en un solo lugar.",
+      "communityName": "Yukayeke {name}",
+      "unknownCommunity": "Yukayeke desconocido",
+      "defaultCommunity": "Yukayeke",
       "metrics": {
         "completedSteps": {
           "label": "Pasos completados",
@@ -1026,13 +1026,13 @@
         }
       },
       "territorySnapshot": "Resumen del territorio",
-      "familyCircle": "Círculo familiar en este Yucayeke",
+      "familyCircle": "Círculo familiar en este Yukayeke",
       "communityRhythm": "Ritmo comunitario",
       "facts": {
         "birthCity": "Ciudad de nacimiento",
         "birthMunicipality": "Municipio de nacimiento",
         "birthCountry": "País de nacimiento",
-        "declaredYucayeke": "Yucayeke declarado",
+        "declaredYucayeke": "Yukayeke declarado",
         "profileStatus": "Estado del perfil",
         "primaryContact": "Contacto principal",
         "identity": "Identidad",
@@ -1216,7 +1216,7 @@
         "fullName": "Nombre Completo",
         "memberId": "Identificación de Miembro",
         "dateOfBirth": "Fecha de Nacimiento",
-        "yucayeke": "Asignación de Yucayeke",
+        "yucayeke": "Asignación de Yukayeke",
         "enrollmentDate": "Fecha de Inscripción",
         "documentNumber": "Número de Documento"
       },
@@ -1248,22 +1248,22 @@
     "deck": {
       "srLabel": "Tarjetas de identidad",
       "showId": "Mostrar la identificación tribal",
-      "showYucayeke": "Mostrar tu yucayeque",
+      "showYucayeke": "Mostrar tu yukayeke",
       "faceId": "Identificación tribal",
-      "faceYucayeke": "Tu yucayeque"
+      "faceYucayeke": "Tu yukayeke"
     },
     "yucayekeCard": {
       "eyebrow": "Territorio ancestral",
-      "title": "Yucayeque",
+      "title": "Yukayeke",
       "caciqueLabel": "Cacique",
       "municipalitiesLabel": "Municipios actuales",
-      "explore": "Explorar los yucayeques",
+      "explore": "Explorar los yukayekes",
       "learnMore": "Conocer {name}",
-      "unassigned": "Aún no has declarado un yucayeque.",
+      "unassigned": "Aún no has declarado un yukayeke.",
       "unassignedCta": "Completa tu inscripción",
       "unknown": "Registrado como desconocido.",
       "notMapped": "Aún no cartografiado",
-      "cardAria": "Tu yucayeque ancestral"
+      "cardAria": "Tu yukayeke ancestral"
     }
   },
   "consent": {
@@ -1356,7 +1356,7 @@
       "periods": {
         "preColonial": {
           "title": "Era Precolonial (Antes de 1493)",
-          "description": "Guainía se estableció como una de las principales regiones Yucayeke bajo el liderazgo de caciques respetados. La comunidad prosperó gracias a prácticas de pesca sostenibles, técnicas agrícolas avanzadas en los valles costeros y extensas redes de comercio con las islas vecinas. La evidencia arqueológica muestra patrones de asentamiento sofisticados, plazas ceremoniales y señales de una compleja organización social."
+          "description": "Guainía se estableció como una de las principales regiones Yukayeke bajo el liderazgo de caciques respetados. La comunidad prosperó gracias a prácticas de pesca sostenibles, técnicas agrícolas avanzadas en los valles costeros y extensas redes de comercio con las islas vecinas. La evidencia arqueológica muestra patrones de asentamiento sofisticados, plazas ceremoniales y señales de una compleja organización social."
         },
         "colonial": {
           "title": "Período Colonial (1493-1898)",
@@ -1370,7 +1370,7 @@
     },
     "connect": {
       "badge": "Participa",
-      "title": "Conéctate con tu Comunidad Yucayeke",
+      "title": "Conéctate con tu Comunidad Yukayeke",
       "description": "Ya sea que quieras asistir a eventos, ser voluntario o simplemente conectar con otros miembros, estamos aquí para ayudarte a involucrarte con tu comunidad ancestral.",
       "links": {
         "events": {
@@ -1392,7 +1392,7 @@
     },
     "directory": {
       "eyebrow": "Territorios ancestrales de Borikén",
-      "title": "Los Yucayeques",
+      "title": "Los Yukayekes",
       "subtitle": "Veintiún territorios ancestrales, sus caciques y las tierras que ocuparon. Los límites son reconstrucciones interpretativas de fuentes históricas y orales, no líneas de agrimensura.",
       "countLabel": "{count} territorios",
       "filterConfirmed": "Documentado históricamente",
@@ -1402,32 +1402,32 @@
       "srHeading": "Directorio de territorios"
     },
     "territory": {
-      "backToDirectory": "Todos los yucayeques",
+      "backToDirectory": "Todos los yukayekes",
       "caciqueLabel": "Cacique",
       "municipalitiesLabel": "Municipios actuales",
       "alsoKnownAs": "También conocido como",
       "locatorHeading": "Su ubicación en Borikén",
       "notMapped": "Aún no se ha entregado el límite",
       "openMap": "Verlo en el mapa interactivo",
-      "yoursBadge": "Tu yucayeque",
+      "yoursBadge": "Tu yukayeke",
       "provenanceConfirmed": "Documentado históricamente en el Informe Yucayekeno firmado (mayo de 2025).",
       "provenanceOral": "Conservado en la tradición oral; los límites y la atribución aún no están confirmados por el registro documental.",
       "prosePendingTitle": "Historia ampliada en preparación",
-      "prosePendingBody": "La historia extensa de este yucayeque aún se recopila junto a historiadores de la comunidad. Lo anterior proviene del registro canónico de territorios.",
-      "metaDescription": "{name} — yucayeque ancestral de Borikén, sede del cacique {cacique}."
+      "prosePendingBody": "La historia extensa de este yukayeke aún se recopila junto a historiadores de la comunidad. Lo anterior proviene del registro canónico de territorios.",
+      "metaDescription": "{name} — yukayeke ancestral de Borikén, sede del cacique {cacique}."
     },
     "yourBand": {
-      "title": "Tu yucayeque",
+      "title": "Tu yukayeke",
       "cta": "Leer sobre {name}",
-      "unassigned": "Todavía no has declarado un yucayeque.",
+      "unassigned": "Todavía no has declarado un yukayeke.",
       "unassignedCta": "Completa tu inscripción",
-      "unknown": "Marcaste tu yucayeque como desconocido. Puedes actualizarlo en tu inscripción cuando quieras."
+      "unknown": "Marcaste tu yukayeke como desconocido. Puedes actualizarlo en tu inscripción cuando quieras."
     }
   },
   "yucayekeMap": {
-    "title": "Yucayekes de Borikén",
+    "title": "Yukayekes de Borikén",
     "subtitle": "Los territorios ancestrales del pueblo taíno de Borikén. Selecciona un territorio en el mapa o en la lista para conocerlo.",
-    "mapAriaLabel": "Mapa interactivo de los territorios yucayeke de Borikén",
+    "mapAriaLabel": "Mapa interactivo de los territorios yukayeke de Borikén",
     "listAriaLabel": "Lista de territorios",
     "disclaimer": "Los límites territoriales son reconstrucciones interpretativas a partir de fuentes históricas y orales — no son líneas de agrimensura.",
     "status": {
@@ -1438,17 +1438,17 @@
       "cacique": "Cacique {name}",
       "municipalities": "Municipios actuales",
       "notMapped": "Aún sin cartografiar",
-      "yourTerritory": "Tu yucayeke",
-      "yourTerritoryChip": "Tu yucayeke: {name}",
+      "yourTerritory": "Tu yukayeke",
+      "yourTerritoryChip": "Tu yukayeke: {name}",
       "selectPrompt": "Selecciona un territorio en el mapa o en la lista para leer sobre él.",
       "readMore": "Leer sobre {name}",
       "exploreHeading": "Explora los territorios"
     },
     "profileCard": {
-      "title": "Tu Yucayeke",
+      "title": "Tu Yukayeke",
       "explore": "Explora los territorios",
-      "unknown": "Marcaste tu yucayeke como desconocido — explora el mapa y las historias de los territorios para ayudarte a encontrar tu conexión.",
-      "unassigned": "Aún no hay yucayeke registrado. Completa tu inscripción para declararlo.",
+      "unknown": "Marcaste tu yukayeke como desconocido — explora el mapa y las historias de los territorios para ayudarte a encontrar tu conexión.",
+      "unassigned": "Aún no hay yukayeke registrado. Completa tu inscripción para declararlo.",
       "completeEnrollment": "Completar inscripción"
     },
     "states": {
@@ -1458,7 +1458,7 @@
     },
     "territories": {
       "aymaco": {
-        "description": "Territorio del noroeste alrededor de las actuales Aguadilla y Aguada, sede del cacique Aymamón — uno de los yucayekes confirmados de la época del contacto."
+        "description": "Territorio del noroeste alrededor de las actuales Aguadilla y Aguada, sede del cacique Aymamón — uno de los yukayekes confirmados de la época del contacto."
       },
       "abacoa": {
         "description": "Territorio del cacique Arasibo a lo largo del Río Grande de Arecibo, extendiéndose aproximadamente desde Quebradillas hasta Arecibo."

@@ -21,7 +21,7 @@
     "quickLinks": {
       "about": "About Us",
       "enrollment": "Enrollment Process",
-      "yucayeke": "Yucayeke Regions",
+      "yucayeke": "Yukayeke Regions",
       "services": "Member Services",
       "events": "Community Events",
       "cultural": "Cultural Resources"
@@ -64,7 +64,7 @@
         },
         "culturalIdentity": {
           "title": "Cultural Identity",
-          "description": "Receive your official Tribal ID, trace your maternal lineage, and connect with your ancestral Yucayeke to strengthen your Indigenous identity."
+          "description": "Receive your official Tribal ID, trace your maternal lineage, and connect with your ancestral Yukayeke to strengthen your Indigenous identity."
         },
         "communityHelp": {
           "title": "Community Help",
@@ -159,16 +159,16 @@
       }
     },
     "yucayeke": {
-      "label": "Yucayeke Regions",
+      "label": "Yukayeke Regions",
       "title": "Connect to Your Ancestral Land",
-      "subtitle": "Each enrolled member is assigned to a Yucayeke, a traditional land-based community that connects you to your ancestral territory and fellow descendants from your region.",
+      "subtitle": "Each enrolled member is assigned to a Yukayeke, a traditional land-based community that connects you to your ancestral territory and fellow descendants from your region.",
       "overview": {
-        "mapAlt": "Illustrated map of Boriken representing Yucayeke regions",
-        "title": "What is a Yucayeke?",
-        "paragraph1": "In Taíno culture, a Yucayeke was a village or settlement led by a cacique. These communities were organized around territories throughout Borikén, each with its own identity, traditions, and leadership.",
-        "paragraph2": "Today, we honor this tradition by assigning members to historical Yucayeke regions based on their maternal lineage and ancestral connections. This helps preserve our territorial heritage and strengthens bonds within regional communities.",
+        "mapAlt": "Illustrated map of Boriken representing Yukayeke regions",
+        "title": "What is a Yukayeke?",
+        "paragraph1": "In Taíno culture, a Yukayeke was a village or settlement led by a cacique. These communities were organized around territories throughout Borikén, each with its own identity, traditions, and leadership.",
+        "paragraph2": "Today, we honor this tradition by assigning members to historical Yukayeke regions based on their maternal lineage and ancestral connections. This helps preserve our territorial heritage and strengthens bonds within regional communities.",
         "cards": {
-          "regions": "18 Historical Yucayeke Regions",
+          "regions": "18 Historical Yukayeke Regions",
           "connect": "Connect with Regional Community Members",
           "events": "Access Regional Events & Gatherings"
         }
@@ -186,7 +186,7 @@
         "announcements": "Stay informed with announcements, news, and important updates from tribal leadership and community organizers.",
         "events": "Discover and register for cultural ceremonies, educational workshops, regional gatherings, and community celebrations.",
         "services": "Access health services, legal assistance, educational resources, and community support programs exclusively for members.",
-        "regionalCommunity": "Connect with other members from your assigned Yucayeke region and participate in regional community activities.",
+        "regionalCommunity": "Connect with other members from your assigned Yukayeke region and participate in regional community activities.",
         "mobileApps": "Download our iOS and Android apps to access your profile, documents, and community features on the go.",
         "culturalResources": "Access educational resources, language lessons, historical archives, and cultural preservation materials."
       }
@@ -284,7 +284,7 @@
         },
         "benefits": {
           "question": "What benefits do enrolled members receive?",
-          "answer": "Enrolled members can access their Tribal ID, document their maternal and paternal kinship, connect with their assigned Yucayeke, use the secure document vault, and explore member services such as health, legal, educational, and community support resources."
+          "answer": "Enrolled members can access their Tribal ID, document their maternal and paternal kinship, connect with their assigned Yukayeke, use the secure document vault, and explore member services such as health, legal, educational, and community support resources."
         },
         "fee": {
           "question": "Is there a fee to enroll?",
@@ -309,7 +309,7 @@
         },
         "regions": {
           "value": "8 Regions",
-          "label": "Yucayeke Connections"
+          "label": "Yukayeke Connections"
         },
         "access": {
           "value": "24/7",
@@ -494,7 +494,7 @@
         "title": "Who you are enrolling with",
         "description": "The community your application is addressed to.",
         "paragraph1": "You are applying for citizenship with the Taíno Nation of Borikén. This platform was created to give descendants a respectful way to document lineage, reconnect with ancestral heritage, and participate in a living Indigenous community.",
-        "paragraph2": "It is more than a records system. It is a sovereign digital home where identity, family history, and community participation are centered around Taíno values rather than generic administrative tools. Your enrollment records your kinship with the Nation and, once approved, connects you to your Yucayeke."
+        "paragraph2": "It is more than a records system. It is a sovereign digital home where identity, family history, and community participation are centered around Taíno values rather than generic administrative tools. Your enrollment records your kinship with the Nation and, once approved, connects you to your Yukayeke."
       },
       "steps": {
         "title": "What the application asks for",
@@ -633,16 +633,16 @@
       },
       "yucayekeno": {
         "title": "Your Yucayekeno Information",
-        "description": "Share how you identify and your connection to your Yucayeke and family.",
+        "description": "Share how you identify and your connection to your Yukayeke and family.",
         "identity": {
           "label": "Identity",
           "placeholder": "Select your identity"
         },
         "yucayeke": {
-          "label": "Yucayeke",
-          "placeholder": "Select your Yucayeke"
+          "label": "Yukayeke",
+          "placeholder": "Select your Yukayeke"
         },
-        "yucayekeUnknown": "I don't know my Yucayeke",
+        "yucayekeUnknown": "I don't know my Yukayeke",
         "hasChildren": "Do you have children?",
         "hasMinorChildren": "Any children under 18?"
       }
@@ -698,8 +698,8 @@
           "placeholder": "Enter municipality"
         },
         "yucayeke": {
-          "label": "Yucayeke",
-          "placeholder": "Enter Yucayeke if known"
+          "label": "Yukayeke",
+          "placeholder": "Enter Yukayeke if known"
         }
       },
       "ancestors": {
@@ -924,12 +924,12 @@
     "tabs": {
       "overview": "Overview",
       "kinship": "Kinship",
-      "yucayeke": "Yucayeke",
+      "yucayeke": "Yukayeke",
       "documents": "Documents",
       "activity": "Activity",
       "settings": "Settings",
       "ariaLabel": "Profile sections",
-      "notImplemented": "This section is not implemented yet. Overview, Kinship, Yucayeke, Documents, Activity, and Settings tabs are currently available."
+      "notImplemented": "This section is not implemented yet. Overview, Kinship, Yukayeke, Documents, Activity, and Settings tabs are currently available."
     },
     "overview": {
       "title": "Overview",
@@ -989,7 +989,7 @@
       },
       "facts": {
         "municipality": "Municipality",
-        "yucayeke": "Yucayeke",
+        "yucayeke": "Yukayeke",
         "nationality": "Nationality",
         "dateOfBirth": "Date of Birth",
         "borikuaTaino": "Borikua Taíno"
@@ -1002,11 +1002,11 @@
       }
     },
     "yucayeke": {
-      "title": "Yucayeke",
-      "description": "Your Yucayeke profile connects your territory, family line, and enrollment progress in one place.",
-      "communityName": "Yucayeke {name}",
-      "unknownCommunity": "Yucayeke Unknown",
-      "defaultCommunity": "Yucayeke",
+      "title": "Yukayeke",
+      "description": "Your Yukayeke profile connects your territory, family line, and enrollment progress in one place.",
+      "communityName": "Yukayeke {name}",
+      "unknownCommunity": "Yukayeke Unknown",
+      "defaultCommunity": "Yukayeke",
       "metrics": {
         "completedSteps": {
           "label": "Completed Steps",
@@ -1026,13 +1026,13 @@
         }
       },
       "territorySnapshot": "Territory Snapshot",
-      "familyCircle": "Family Circle In This Yucayeke",
+      "familyCircle": "Family Circle In This Yukayeke",
       "communityRhythm": "Community Rhythm",
       "facts": {
         "birthCity": "Birth City",
         "birthMunicipality": "Birth Municipality",
         "birthCountry": "Birth Country",
-        "declaredYucayeke": "Declared Yucayeke",
+        "declaredYucayeke": "Declared Yukayeke",
         "profileStatus": "Profile Status",
         "primaryContact": "Primary Contact",
         "identity": "Identity",
@@ -1216,7 +1216,7 @@
         "fullName": "Full Name",
         "memberId": "Member ID",
         "dateOfBirth": "Date of Birth",
-        "yucayeke": "Yucayeke Assignment",
+        "yucayeke": "Yukayeke Assignment",
         "enrollmentDate": "Enrollment Date",
         "documentNumber": "Document Number"
       },
@@ -1248,22 +1248,22 @@
     "deck": {
       "srLabel": "Identity cards",
       "showId": "Show tribal ID",
-      "showYucayeke": "Show your yucayeke",
+      "showYucayeke": "Show your yukayeke",
       "faceId": "Tribal ID",
-      "faceYucayeke": "Your yucayeke"
+      "faceYucayeke": "Your yukayeke"
     },
     "yucayekeCard": {
       "eyebrow": "Ancestral territory",
-      "title": "Yucayeke",
+      "title": "Yukayeke",
       "caciqueLabel": "Cacique",
       "municipalitiesLabel": "Present-day",
-      "explore": "Explore the yucayekes",
+      "explore": "Explore the yukayekes",
       "learnMore": "Learn about {name}",
-      "unassigned": "No yucayeke declared yet.",
+      "unassigned": "No yukayeke declared yet.",
       "unassignedCta": "Complete your enrollment",
       "unknown": "Recorded as unknown.",
       "notMapped": "Not yet mapped",
-      "cardAria": "Your ancestral yucayeke"
+      "cardAria": "Your ancestral yukayeke"
     }
   },
   "consent": {
@@ -1356,7 +1356,7 @@
       "periods": {
         "preColonial": {
           "title": "Pre-Colonial Era (Before 1493)",
-          "description": "Guainía was established as one of the principal Yucayeke regions under the leadership of respected caciques. The community thrived through sustainable fishing practices, advanced agricultural techniques in coastal valleys, and extensive trade networks with neighboring islands. Archaeological evidence shows sophisticated settlement patterns, ceremonial plazas, and evidence of complex social organization."
+          "description": "Guainía was established as one of the principal Yukayeke regions under the leadership of respected caciques. The community thrived through sustainable fishing practices, advanced agricultural techniques in coastal valleys, and extensive trade networks with neighboring islands. Archaeological evidence shows sophisticated settlement patterns, ceremonial plazas, and evidence of complex social organization."
         },
         "colonial": {
           "title": "Colonial Period (1493-1898)",
@@ -1370,7 +1370,7 @@
     },
     "connect": {
       "badge": "Get Involved",
-      "title": "Connect with Your Yucayeke Community",
+      "title": "Connect with Your Yukayeke Community",
       "description": "Whether you want to attend events, volunteer, or simply connect with other members, we're here to help you engage with your ancestral community.",
       "links": {
         "events": {
@@ -1392,7 +1392,7 @@
     },
     "directory": {
       "eyebrow": "Ancestral territories of Borikén",
-      "title": "The Yucayekes",
+      "title": "The Yukayekes",
       "subtitle": "Twenty-one ancestral territories, their caciques, and the lands they held. Boundaries are interpretive reconstructions from historical and oral sources — not survey lines.",
       "countLabel": "{count} territories",
       "filterConfirmed": "Historically documented",
@@ -1402,32 +1402,32 @@
       "srHeading": "Territory directory"
     },
     "territory": {
-      "backToDirectory": "All yucayekes",
+      "backToDirectory": "All yukayekes",
       "caciqueLabel": "Cacique",
       "municipalitiesLabel": "Municipalities today",
       "alsoKnownAs": "Also known as",
       "locatorHeading": "Where it sits in Borikén",
       "notMapped": "No boundary delivered yet",
       "openMap": "See it on the interactive map",
-      "yoursBadge": "Your yucayeke",
+      "yoursBadge": "Your yukayeke",
       "provenanceConfirmed": "Historically documented in the signed Yucayekeno Report (May 2025).",
       "provenanceOral": "Held in oral tradition; boundaries and attribution are not yet confirmed by the documentary record.",
       "prosePendingTitle": "Fuller history in progress",
-      "prosePendingBody": "Long-form history for this yucayeke is still being gathered with community historians. What appears above is drawn from the canonical territory record.",
-      "metaDescription": "{name} — ancestral yucayeke of Borikén, seat of cacique {cacique}."
+      "prosePendingBody": "Long-form history for this yukayeke is still being gathered with community historians. What appears above is drawn from the canonical territory record.",
+      "metaDescription": "{name} — ancestral yukayeke of Borikén, seat of cacique {cacique}."
     },
     "yourBand": {
-      "title": "Your yucayeke",
+      "title": "Your yukayeke",
       "cta": "Read about {name}",
-      "unassigned": "You haven't declared a yucayeke yet.",
+      "unassigned": "You haven't declared a yukayeke yet.",
       "unassignedCta": "Complete your enrollment",
-      "unknown": "You marked your yucayeke as unknown. You can update this in your enrollment at any time."
+      "unknown": "You marked your yukayeke as unknown. You can update this in your enrollment at any time."
     }
   },
   "yucayekeMap": {
-    "title": "Yucayekes of Borikén",
+    "title": "Yukayekes of Borikén",
     "subtitle": "The ancestral territories of the Taíno people of Borikén. Select a territory on the map or in the list to learn about it.",
-    "mapAriaLabel": "Interactive map of the yucayeke territories of Borikén",
+    "mapAriaLabel": "Interactive map of the yukayeke territories of Borikén",
     "listAriaLabel": "Territory list",
     "disclaimer": "Territory boundaries are interpretive reconstructions from historical and oral sources — not survey lines.",
     "status": {
@@ -1438,17 +1438,17 @@
       "cacique": "Cacique {name}",
       "municipalities": "Present-day municipalities",
       "notMapped": "Not yet mapped",
-      "yourTerritory": "Your yucayeke",
-      "yourTerritoryChip": "Your yucayeke: {name}",
+      "yourTerritory": "Your yukayeke",
+      "yourTerritoryChip": "Your yukayeke: {name}",
       "selectPrompt": "Select a territory on the map or in the list to read about it.",
       "readMore": "Read about {name}",
       "exploreHeading": "Explore the territories"
     },
     "profileCard": {
-      "title": "Your Yucayeke",
+      "title": "Your Yukayeke",
       "explore": "Explore the territories",
-      "unknown": "You marked your yucayeke as unknown — explore the map and territory histories to help find your connection.",
-      "unassigned": "No yucayeke recorded yet. Complete your enrollment to declare one.",
+      "unknown": "You marked your yukayeke as unknown — explore the map and territory histories to help find your connection.",
+      "unassigned": "No yukayeke recorded yet. Complete your enrollment to declare one.",
       "completeEnrollment": "Complete enrollment"
     },
     "states": {
@@ -1458,7 +1458,7 @@
     },
     "territories": {
       "aymaco": {
-        "description": "Northwestern territory around present-day Aguadilla and Aguada, seat of cacique Aymamón — one of the confirmed yucayekes of the contact era."
+        "description": "Northwestern territory around present-day Aguadilla and Aguada, seat of cacique Aymamón — one of the confirmed yukayekes of the contact era."
       },
       "abacoa": {
         "description": "Territory of cacique Arasibo along the Río Grande de Arecibo, spanning roughly from Quebradillas to Arecibo."

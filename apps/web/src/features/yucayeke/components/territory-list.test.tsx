@@ -46,6 +46,6 @@ describe("TerritoryList", () => {
         .querySelector('[data-territory-slug="turabo"]')
         ?.getAttribute("aria-current"),
     ).toBe("true");
-    expect(screen.getByText(/• Your yucayeke/)).toBeDefined();
+    expect(screen.getByText(/• Your yukayeke/)).toBeDefined();
   });
 });

@@ -49,7 +49,7 @@ describe("YourYucayekeCard", () => {
   it("shows help-finding framing when yucayeke is unknown", () => {
     renderCard({ yucayekeValue: null, yucayekeUnknown: true });
 
-    expect(screen.getByText(/marked your yucayeke as unknown/)).toBeDefined();
+    expect(screen.getByText(/marked your yukayeke as unknown/)).toBeDefined();
     expect(
       screen.queryByRole("link", { name: "Complete enrollment" }),
     ).toBeNull();
@@ -58,7 +58,7 @@ describe("YourYucayekeCard", () => {
   it("shows the enrollment CTA when nothing is declared", () => {
     renderCard({ yucayekeValue: null, yucayekeUnknown: false });
 
-    expect(screen.getByText(/No yucayeke recorded yet/)).toBeDefined();
+    expect(screen.getByText(/No yukayeke recorded yet/)).toBeDefined();
     expect(
       screen.getByRole("link", { name: "Complete enrollment" }),
     ).toBeDefined();

@@ -42,7 +42,7 @@ type NavItem =
  */
 const navItems: readonly NavItem[] = [
   { kind: "link", label: "Dashboard", href: "/dashboard" },
-  { kind: "link", label: "Yucayeke", href: "/yucayeke" },
+  { kind: "link", label: "Yukayeke", href: "/yucayeke" },
   {
     kind: "menu",
     label: "Programs",

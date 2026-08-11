@@ -16,7 +16,7 @@ describe("TerritoryInfoCard", () => {
     expect(screen.getByText("Cacique Agüeybaná")).toBeDefined();
     expect(screen.getByText("Historically documented")).toBeDefined();
     expect(screen.getByText("Ponce")).toBeDefined();
-    expect(screen.queryByText("Your yucayeke")).toBeNull();
+    expect(screen.queryByText("Your yukayeke")).toBeNull();
   });
 
   it("shows the oral-tradition badge for unconfirmed territories", () => {
@@ -35,7 +35,7 @@ describe("TerritoryInfoCard", () => {
       />,
     );
 
-    expect(screen.getByText("Your yucayeke")).toBeDefined();
+    expect(screen.getByText("Your yukayeke")).toBeDefined();
   });
 
   it("shows the not-yet-mapped tag for unmapped territories", () => {

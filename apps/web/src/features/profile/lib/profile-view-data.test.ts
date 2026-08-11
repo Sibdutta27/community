@@ -129,9 +129,9 @@ describe("buildProfileViewData kinship / ancestry mapping", () => {
 
     // Empty rows and null ancestors are skipped.
     expect(maternalGroup.ancestors).toHaveLength(1);
-    expect(paternalGroup.ancestors.map((ancestor) => ancestor.relation)).toEqual(
-      ["Father", "Paternal Grandmother"],
-    );
+    expect(
+      paternalGroup.ancestors.map((ancestor) => ancestor.relation),
+    ).toEqual(["Father", "Paternal Grandmother"]);
   });
 
   it("maps the populated ancestor fields into labelled facts", () => {
@@ -147,7 +147,7 @@ describe("buildProfileViewData kinship / ancestry mapping", () => {
     expect(mother.name).toBe("María Torres");
     expect(mother.facts).toEqual([
       { label: "Municipality", value: "Arecibo" },
-      { label: "Yucayeke", value: "Jatibonicu" },
+      { label: "Yukayeke", value: "Jatibonicu" },
       { label: "Nationality", value: "Puerto Rican" },
       { label: "Date of Birth", value: "April 2, 1960" },
       { label: "Borikua Taíno", value: "Yes" },

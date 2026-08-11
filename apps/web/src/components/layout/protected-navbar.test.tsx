@@ -136,7 +136,7 @@ describe("ProtectedNavbar", () => {
   it("keeps the app navigation links", () => {
     renderWithIntl(<ProtectedNavbar user={user} />);
 
-    for (const label of ["Dashboard", "Yucayeke"]) {
+    for (const label of ["Dashboard", "Yukayeke"]) {
       expect(
         screen.getAllByRole("link", { name: label }).length,
       ).toBeGreaterThan(0);

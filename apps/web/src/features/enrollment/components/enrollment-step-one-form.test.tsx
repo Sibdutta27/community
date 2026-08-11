@@ -119,8 +119,8 @@ describe("EnrollmentStepOneForm — demographics only", () => {
     renderForm();
 
     expect(screen.getByText("Identity")).toBeInTheDocument();
-    expect(screen.getByText("Yucayeke")).toBeInTheDocument();
-    expect(screen.getByText("I don't know my Yucayeke")).toBeInTheDocument();
+    expect(screen.getByText("Yukayeke")).toBeInTheDocument();
+    expect(screen.getByText("I don't know my Yukayeke")).toBeInTheDocument();
     expect(screen.getByText("Do you have children?")).toBeInTheDocument();
   });
 
