@@ -92,3 +92,39 @@ Process / non-code
 - [ ] Merge staging (btf-testing) into main → updated single link for Priscilla to share with testers
 - [ ] Focus: no new features — lock down enrollment + admin approval end-to-end for production/investors
 - [ ] Community artwork/photographs to fill out the visual design (content gathering, not code)
+
+2026-07-20 Sync (transcript: [transcripts/2026-07-20-btf-sync.md](./transcripts/2026-07-20-btf-sync.md))
+
+Context: the consent-once + identity-document work was committed 12:57–13:53 EDT that day; this
+call started 15:06 EDT and the changes were not yet deployed ("we'll have that in the next day or
+two"). Several items below are the client restating asks against the _older live build_ — status
+against code is recorded in each line.
+
+Yucayeke naming
+
+- [ ] Arawakan corrections — adopt the client's official spellings; legal names are `Yukayeke <Name>` (e.g. `Guania` → **Yukayeke Wainia**, `Daguao` → **Yukayeke Dawao**). List delivered: `data/naming/yucayeke-names/` (**unblocks** the S3-list• placeholder)
+- [ ] Generic term corrected — "Yucayeke" → **"Yukayeke"** (user-facing copy only; URLs, i18n namespaces, package names and domains unchanged)
+- [ ] Count reconciliation — client's sheet has **18**; app carries **21**, GeoJSON **19**, API list **18**. Nothing eliminated; the three extras (Guajataca/Hayuya/Loquillo) retained pending client answer
+- [ ] Guaynabo promoted to historically documented — client's sheet lists it; our data had it as oral tradition
+
+Enrollment / questionnaire
+
+- [ ] Single point of consent, filled out once — **not implemented**: consent is asked three times (sign-up, pre-step-1 dialog, step 5). Decision: keep consent at the START (sensitive identity documents must not be collected before it) and delete the step-5 re-ask, which becomes a signature + read-only summary of what was already consented to
+- [ ] Government ID mandatory — **partial**: 2-of-3 identity docs shipped, but `STATE_ID` is optional, so birth certificate + social security card passes with no ID. Rule becomes "state ID **plus** at least one other"
+- [ ] Intro / description of the Nation inside the flow — **partial**: intro copy exists only on the public marketing page, and that copy is **stale** (claims 4 steps, maternal-only; the real flow is 5 steps with paternal kinship). Add an intro screen at `/enrollment/start` (**blocked on copy**: authoritative "what the Nation is" text must come from BTF)
+
+Beta testing / support
+
+- [ ] Feedback + work-order widget — **not implemented**. Friendly always-available button so closed-beta testers can report issues with a screenshot; wanted before the weekly Wednesday focus groups. Hook exists: the chat button in `support-section.tsx` has no handler today
+
+Roadmap decisions
+
+- [x] PWA deprioritised — security concerns; stay on the web app, Google Play Store later once validated. Consistent with the repo (`apps/pwa` + `apps/mobile` are inert placeholders) but **undocumented** — PRD §9 still lists them as planned
+- [x] Messaging board / social feature — explicitly deferred by the client ("for this month maybe not so much"); to be released later as its own announcement
+- [x] GIS map of the yucayekes — delivered and shipped (contractor package + interactive map, 2026-07-28)
+
+Process / non-code
+
+- [ ] Closed-beta focus groups every Wednesday; NDA wording for testers (framed as "closed beta test", lifting at launch)
+- [ ] Launch-party date deferred to end of month, to be paired with marketing rollout
+- [ ] Social/marketing: stagger announcements as features land (enrollment now, chat later)
