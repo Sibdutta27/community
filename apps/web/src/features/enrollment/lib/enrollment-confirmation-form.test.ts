@@ -14,12 +14,10 @@ const enrollmentConfirmationSchema = createEnrollmentConfirmationSchema(
 const validValues = {
   signatureName: "Anani Guarocuya",
   signatureDate: "2026-07-02",
-  agreeToSubmit: true,
-  agreeToTerms: true,
 };
 
 describe("enrollmentConfirmationSchema", () => {
-  it("accepts a fully signed confirmation", () => {
+  it("accepts a signed confirmation", () => {
     const result = enrollmentConfirmationSchema.safeParse(validValues);
 
     expect(result.success).toBe(true);
@@ -43,22 +41,16 @@ describe("enrollmentConfirmationSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("requires agreeing to submit the information", () => {
-    const result = enrollmentConfirmationSchema.safeParse({
-      ...validValues,
-      agreeToSubmit: false,
-    });
+  it("carries no consent field — consent is collected once, before step 1", () => {
+    // The two agreement checkboxes that used to live here re-asked for the
+    // `accuracy_declaration` / `data_privacy_agreement` consents already
+    // accepted and timestamped at `/enrollment/start`.
+    const parsed = enrollmentConfirmationSchema.parse(validValues);
 
-    expect(result.success).toBe(false);
-  });
-
-  it("requires agreeing to the terms of service", () => {
-    const result = enrollmentConfirmationSchema.safeParse({
-      ...validValues,
-      agreeToTerms: false,
-    });
-
-    expect(result.success).toBe(false);
+    expect(Object.keys(parsed).sort()).toEqual([
+      "signatureDate",
+      "signatureName",
+    ]);
   });
 });
 
@@ -70,13 +62,15 @@ describe("getEnrollmentConfirmationDefaultValues", () => {
     process.env.TZ = originalTz;
   });
 
-  it("starts with an empty signature and unchecked agreements", () => {
+  it("starts with an empty signature and no agreement fields", () => {
     const defaults = getEnrollmentConfirmationDefaultValues();
 
     expect(defaults.signatureName).toBe("");
-    expect(defaults.agreeToSubmit).toBe(false);
-    expect(defaults.agreeToTerms).toBe(false);
     expect(defaults.signatureDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(Object.keys(defaults).sort()).toEqual([
+      "signatureDate",
+      "signatureName",
+    ]);
   });
 
   it("prefills the signer's LOCAL calendar date, not the UTC date", () => {
@@ -94,11 +88,10 @@ describe("getEnrollmentConfirmationDefaultValues", () => {
 });
 
 describe("mapEnrollmentConfirmationFormToPayload", () => {
-  it("maps the form values to the complete-enrollment request", () => {
+  it("sends the e-signature alone — the backend derives agreedToTerms from it", () => {
     expect(mapEnrollmentConfirmationFormToPayload(validValues)).toEqual({
       signatureName: "Anani Guarocuya",
       signatureDate: "2026-07-02",
-      agreedToTerms: true,
     });
   });
 
@@ -113,17 +106,5 @@ describe("mapEnrollmentConfirmationFormToPayload", () => {
     expect(mapEnrollmentConfirmationFormToPayload(parsed).signatureName).toBe(
       "Anani Guarocuya",
     );
-  });
-
-  it("derives agreedToTerms from the terms checkbox alone", () => {
-    // Both checkboxes gate submission via the schema; the persisted
-    // attestation is the terms agreement and must not depend on agreeToSubmit.
-    expect(
-      mapEnrollmentConfirmationFormToPayload({
-        ...validValues,
-        agreeToTerms: true,
-        agreeToSubmit: false,
-      }).agreedToTerms,
-    ).toBe(true);
   });
 });

@@ -9,9 +9,6 @@ import { useTranslations } from "next-intl";
 import {
   accountQueryKeys,
   useAccountInfoQuery,
-  enrollmentQueryKeys,
-  useAcceptEnrollmentConsentsMutation,
-  useActiveConsentsQuery,
   useStartEnrollmentMutation,
 } from "@/features/dashboard/lib/enrollment-queries";
 import {
@@ -20,7 +17,6 @@ import {
   resolveEnrollmentStepState,
 } from "@/features/enrollment/config/enrollment-steps";
 
-import { DashboardConsentDialog } from "./dashboard-consent-dialog";
 import { EnrollmentStepCard } from "./enrollment-step-card";
 
 const STATUS_LABEL_KEYS = {
@@ -36,18 +32,10 @@ export function DashboardEnrollmentSection() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const accountInfoQuery = useAccountInfoQuery();
-  const activeConsentsQuery = useActiveConsentsQuery();
   const startEnrollmentMutation = useStartEnrollmentMutation();
-  const acceptEnrollmentConsentsMutation =
-    useAcceptEnrollmentConsentsMutation();
-  const [dialogErrorMessage, setDialogErrorMessage] = useState<string | null>(
-    null,
-  );
-  const [isConsentDialogOpen, setIsConsentDialogOpen] = useState(false);
   const [sectionErrorMessage, setSectionErrorMessage] = useState<string | null>(
     null,
   );
-  const [selectedConsentIds, setSelectedConsentIds] = useState<string[]>([]);
   const hasEnrollment = Boolean(accountInfoQuery.data?.hasEnrollment);
   const resolvedStepState = resolveEnrollmentStepState(accountInfoQuery.data);
 
@@ -74,12 +62,12 @@ export function DashboardEnrollmentSection() {
   );
   const stepOne = enrollmentSteps.find((step) => step.step === 1);
   // First-timers land on the enrollment overview (who they are enrolling with,
-  // what the five steps ask for, what to have to hand); members who already
-  // completed step 1 go straight to the form so returning costs no extra click.
+  // what the five steps ask for, what to have to hand, and the one consent
+  // ask); members who already completed step 1 go straight to the form so
+  // returning costs no extra click.
   const stepOneHref = resolvedStepState?.["1"]
     ? (stepOne?.href ?? "/enrollment/step-1")
     : enrollmentOverviewHref;
-  const activeConsents = activeConsentsQuery.data ?? [];
   const accountInfoErrorMessage =
     !accountInfoQuery.data && accountInfoQuery.error instanceof Error
       ? accountInfoQuery.error.message
@@ -100,106 +88,27 @@ export function DashboardEnrollmentSection() {
       : !hasEnrollment
         ? t("status.notStarted")
         : t(statusLabelKey ?? "status.draft");
-  const hasAcceptedAllRequiredConsents = activeConsents.every(
-    (consent) => !consent.required || selectedConsentIds.includes(consent.id),
-  );
-  const isPreparingStepOne =
-    startEnrollmentMutation.isPending || activeConsentsQuery.isFetching;
-  const isSubmittingConsent = acceptEnrollmentConsentsMutation.isPending;
+  const isPreparingStepOne = startEnrollmentMutation.isPending;
 
-  const closeConsentDialog = () => {
-    if (acceptEnrollmentConsentsMutation.isPending) {
-      return;
-    }
-
-    setDialogErrorMessage(null);
-    setIsConsentDialogOpen(false);
-    setSelectedConsentIds([]);
-  };
-
-  const handleToggleConsent = (consentId: string) => {
-    setDialogErrorMessage(null);
-    setSelectedConsentIds((currentSelections) =>
-      currentSelections.includes(consentId)
-        ? currentSelections.filter((selectedId) => selectedId !== consentId)
-        : [...currentSelections, consentId],
-    );
-  };
-
+  /**
+   * The dashboard no longer asks for consent — it only makes sure an
+   * enrollment exists and hands the member to `/enrollment/start`, the single
+   * consent surface, which decides whether anything still needs accepting.
+   * Members already past step 1 skip the introduction entirely.
+   */
   const handleStepOneNavigation = async () => {
     setSectionErrorMessage(null);
-    setDialogErrorMessage(null);
 
     try {
       if (!hasEnrollment) {
         await startEnrollmentMutation.mutateAsync();
+        queryClient.invalidateQueries({ queryKey: accountQueryKeys.info });
       }
 
-      const consentResult = await activeConsentsQuery.refetch();
-
-      if (consentResult.error) {
-        throw consentResult.error;
-      }
-
-      queryClient.invalidateQueries({
-        queryKey: accountQueryKeys.info,
-      });
-
-      const consents = consentResult.data ?? [];
-
-      // Consent persists: only re-open the dialog when a required active
-      // consent has not been accepted yet (covers newly published consents).
-      const enrollmentInfo = accountInfoQuery.data?.enrollment;
-      const acceptedConsentIds = new Set(
-        (enrollmentInfo?.consent ?? [])
-          .filter((consentRow) => consentRow.accepted)
-          .map((consentRow) => consentRow.id),
-      );
-      const pendingRequiredConsents = consents.filter(
-        (consent) => consent.required && !acceptedConsentIds.has(consent.id),
-      );
-
-      if (
-        consents.length === 0 ||
-        (enrollmentInfo?.consentAccepted &&
-          pendingRequiredConsents.length === 0)
-      ) {
-        router.push(stepOneHref);
-        return;
-      }
-
-      setSelectedConsentIds([]);
-      setIsConsentDialogOpen(true);
+      router.push(stepOneHref);
     } catch (error) {
       setSectionErrorMessage(
         error instanceof Error ? error.message : t("errors.startFlow"),
-      );
-    }
-  };
-
-  const handleAcceptConsents = async () => {
-    if (!hasAcceptedAllRequiredConsents) {
-      setDialogErrorMessage(t("errors.acceptRequiredConsents"));
-      return;
-    }
-
-    setDialogErrorMessage(null);
-    try {
-      await acceptEnrollmentConsentsMutation.mutateAsync({
-        acceptRequired: true,
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: enrollmentQueryKeys.activeConsents,
-      });
-      queryClient.invalidateQueries({
-        queryKey: accountQueryKeys.info,
-      });
-      setIsConsentDialogOpen(false);
-      router.push(stepOneHref);
-    } catch (error) {
-      setDialogErrorMessage(
-        error instanceof Error ? error.message : t("errors.saveConsents"),
       );
     }
   };
@@ -270,17 +179,6 @@ export function DashboardEnrollmentSection() {
           </div>
         </div>
       </section>
-
-      <DashboardConsentDialog
-        activeConsents={activeConsents}
-        errorMessage={dialogErrorMessage}
-        isOpen={isConsentDialogOpen}
-        isSubmitting={isSubmittingConsent}
-        onClose={closeConsentDialog}
-        onSubmit={handleAcceptConsents}
-        onToggleConsent={handleToggleConsent}
-        selectedConsentIds={selectedConsentIds}
-      />
     </>
   );
 }

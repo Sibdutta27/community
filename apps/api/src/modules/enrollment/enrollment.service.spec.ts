@@ -6,10 +6,11 @@ describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () =
     const userId = 'user-1';
     const enrollmentId = 'enrollment-1';
 
+    // Consent is collected once at the start of the flow, so step 5 sends only
+    // the e-signature — there is no `agreedToTerms` field on the payload.
     const signature = {
         signatureName: 'Anani Guarocuya',
         signatureDate: '2026-07-02',
-        agreedToTerms: true,
     };
 
     function buildDraftEnrollment(overrides: Record<string, unknown> = {}) {
@@ -65,12 +66,25 @@ describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () =
             where: { id: enrollmentId },
             data: {
                 status: EnrollmentStatus.SUBMITTED,
-                consentAccepted: true,
                 signatureName: 'Anani Guarocuya',
                 signatureDate: new Date('2026-07-02'),
                 agreedToTerms: true,
             },
         });
+    });
+
+    it('does not re-write consentAccepted — the guard already proved it true', async () => {
+        const { service, database } = buildService(buildDraftEnrollment());
+
+        await service.completeEnrollment(userId, signature);
+
+        expect(database.enrollment.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.not.objectContaining({
+                    consentAccepted: expect.anything(),
+                }),
+            }),
+        );
     });
 
     it('trims the signature name before persisting it', async () => {
@@ -278,7 +292,12 @@ describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () =
         expect(database.enrollment.update).not.toHaveBeenCalled();
     });
 
-    it('throws when the terms of service are not agreed to', async () => {
+    it('derives agreedToTerms from a valid signature, ignoring what the client sent', async () => {
+        // Consent is asked once, up front. A step-5 client (old or new) has no
+        // say over the stored attestation: signing over an enrollment whose
+        // required consents are accepted IS the attestation, so a stale bundle
+        // sending `agreedToTerms: false` must still record `true` rather than
+        // being rejected.
         const { service, database } = buildService(buildDraftEnrollment());
 
         await expect(
@@ -286,6 +305,24 @@ describe('EnrollmentService.completeEnrollment (confirmation e-signature)', () =
                 ...signature,
                 agreedToTerms: false,
             }),
+        ).resolves.toEqual({
+            success: true,
+            message: 'Enrollment completed successfully',
+        });
+        expect(database.enrollment.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.objectContaining({ agreedToTerms: true }),
+            }),
+        );
+    });
+
+    it('does not record the terms attestation when the signature is invalid', async () => {
+        // The signature is what carries the attestation now, so an unsigned
+        // submission must leave no ToS record at all.
+        const { service, database } = buildService(buildDraftEnrollment());
+
+        await expect(
+            service.completeEnrollment(userId, { ...signature, signatureName: '' }),
         ).rejects.toThrow(BadRequestException);
         expect(database.enrollment.update).not.toHaveBeenCalled();
     });

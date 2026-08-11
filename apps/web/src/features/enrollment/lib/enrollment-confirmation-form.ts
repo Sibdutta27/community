@@ -9,27 +9,26 @@ import type { EnrollmentCompleteRequest } from "@/types/enrollment";
  * locale.
  */
 export type EnrollmentConfirmationValidationKey =
-  | "signatureNameRequired"
-  | "signatureDateRequired"
-  | "agreeToSubmitRequired"
-  | "agreeToTermsRequired";
+  "signatureNameRequired" | "signatureDateRequired";
 
 export type EnrollmentConfirmationValidationTranslator = (
   key: EnrollmentConfirmationValidationKey,
 ) => string;
 
+/**
+ * Step 5 collects the e-signature and NOTHING else. The two agreement
+ * checkboxes that used to live here re-asked for consents the member already
+ * accepted (and that are timestamped in `EnrollmentConsent`) at
+ * `/enrollment/start` — the seeded `accuracy_declaration` and
+ * `data_privacy_agreement`. The signature, given under the declaration
+ * rendered above it, is now the attestation.
+ */
 export function createEnrollmentConfirmationSchema(
   t: EnrollmentConfirmationValidationTranslator,
 ) {
   return z.object({
     signatureName: z.string().trim().min(1, t("signatureNameRequired")),
     signatureDate: z.string().min(1, t("signatureDateRequired")),
-    agreeToSubmit: z.boolean().refine((value) => value === true, {
-      message: t("agreeToSubmitRequired"),
-    }),
-    agreeToTerms: z.boolean().refine((value) => value === true, {
-      message: t("agreeToTermsRequired"),
-    }),
   });
 }
 
@@ -55,8 +54,6 @@ export function getEnrollmentConfirmationDefaultValues(): EnrollmentConfirmation
   return {
     signatureName: "",
     signatureDate: todayIsoDate(),
-    agreeToSubmit: false,
-    agreeToTerms: false,
   };
 }
 
@@ -99,9 +96,5 @@ export function mapEnrollmentConfirmationFormToPayload(
     // hands the parsed values to submit handlers, so don't re-trim here.
     signatureName: values.signatureName,
     signatureDate: values.signatureDate,
-    // Both checkboxes gate submission (the schema refines each to true); the
-    // persisted record is the single terms-of-service attestation, so it maps
-    // from the terms checkbox alone.
-    agreedToTerms: values.agreeToTerms,
   };
 }

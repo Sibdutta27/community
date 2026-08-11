@@ -1,5 +1,54 @@
-import { screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const pushMock = vi.fn();
+const acceptConsentsMock = vi.fn();
+const startEnrollmentMock = vi.fn();
+
+const activeConsents = [
+  {
+    id: "consent-1",
+    key: "accuracy_declaration",
+    title: "Accuracy Declaration",
+    content: "I certify that all information provided is true and accurate.",
+    required: true,
+    version: 1,
+  },
+  {
+    id: "consent-2",
+    key: "community_directory",
+    title: "Community Directory (Optional)",
+    content: "I agree to be listed in the Yukayeke member directory.",
+    required: false,
+    version: 1,
+  },
+];
+
+let accountInfoData: Record<string, unknown> | undefined;
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: pushMock }),
+}));
+
+vi.mock("@/features/enrollment/lib/enrollment-queries", () => ({
+  accountQueryKeys: { info: ["account", "info"] },
+  enrollmentQueryKeys: {
+    activeConsents: ["enrollment", "consent", "active"],
+  },
+  useAccountInfoQuery: () => ({ data: accountInfoData }),
+  useActiveConsentsQuery: () => ({ data: activeConsents }),
+  useAcceptEnrollmentConsentsMutation: () => ({
+    mutateAsync: acceptConsentsMock,
+    isPending: false,
+  }),
+  useStartEnrollmentMutation: () => ({
+    mutateAsync: startEnrollmentMock,
+    isPending: false,
+  }),
+}));
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { EnrollmentIntro } from "@/features/enrollment/components/enrollment-intro";
 import { enrollmentStepDefinitions } from "@/features/enrollment/config/enrollment-steps";
@@ -8,7 +57,44 @@ import {
   enrollmentStepFourIdentityUploadSlots,
   enrollmentStepFourUserPhotoCard,
 } from "@/features/enrollment/lib/enrollment-step-four-form";
-import { messagesByLocale, renderWithIntl } from "@/test/i18n";
+import { messagesByLocale, withIntl, type TestLocale } from "@/test/i18n";
+
+/** Consent already on record — the intro should not ask again. */
+const consentedAccountInfo = {
+  hasEnrollment: true,
+  enrollment: {
+    status: "DRAFT",
+    consentAccepted: true,
+    consent: [
+      {
+        id: "consent-1",
+        key: "accuracy_declaration",
+        version: 1,
+        title: "Accuracy Declaration",
+        accepted: true,
+        acceptedAt: "2026-07-08T00:00:00.000Z",
+        required: true,
+      },
+    ],
+  },
+};
+
+/** An enrollment that has never consented. */
+const unconsentedAccountInfo = {
+  hasEnrollment: true,
+  enrollment: { status: "DRAFT", consentAccepted: false, consent: [] },
+};
+
+function renderIntro(locale: TestLocale = "en") {
+  return render(
+    withIntl(
+      <QueryClientProvider client={new QueryClient()}>
+        <EnrollmentIntro />
+      </QueryClientProvider>,
+      locale,
+    ),
+  );
+}
 
 function getStepRows() {
   return Array.from(
@@ -22,9 +108,24 @@ function getDocumentRows() {
   ) as HTMLElement[];
 }
 
+function getConsentRows() {
+  return Array.from(
+    document.querySelectorAll("[data-slot='consent-checklist-item']"),
+  ) as HTMLElement[];
+}
+
+beforeEach(() => {
+  pushMock.mockReset();
+  acceptConsentsMock.mockReset();
+  acceptConsentsMock.mockResolvedValue({});
+  startEnrollmentMock.mockReset();
+  startEnrollmentMock.mockResolvedValue({});
+  accountInfoData = consentedAccountInfo;
+});
+
 describe("EnrollmentIntro — what the application asks for", () => {
   it("lists every real enrollment step, in order, including the paternal-kinship step the old copy omitted", () => {
-    renderWithIntl(<EnrollmentIntro />);
+    renderIntro();
 
     const rows = getStepRows();
     expect(rows).toHaveLength(enrollmentStepDefinitions.length);
@@ -43,7 +144,7 @@ describe("EnrollmentIntro — what the application asks for", () => {
   });
 
   it("introduces the Nation the member is enrolling with", () => {
-    renderWithIntl(<EnrollmentIntro />);
+    renderIntro();
 
     expect(screen.getByText("Who you are enrolling with")).toBeInTheDocument();
     expect(
@@ -54,7 +155,7 @@ describe("EnrollmentIntro — what the application asks for", () => {
 
 describe("EnrollmentIntro — what you'll need", () => {
   it("lists every step-4 upload slot and marks the required ones", () => {
-    renderWithIntl(<EnrollmentIntro />);
+    renderIntro();
 
     const rows = getDocumentRows();
     expect(rows).toHaveLength(
@@ -93,9 +194,100 @@ describe("EnrollmentIntro — what you'll need", () => {
   });
 });
 
+describe("EnrollmentIntro — the single consent surface", () => {
+  it("asks for consent here, before step 1, when the enrollment has none on record", () => {
+    accountInfoData = unconsentedAccountInfo;
+    renderIntro();
+
+    expect(screen.getByText("Your consent")).toBeInTheDocument();
+    expect(getConsentRows()).toHaveLength(activeConsents.length);
+    expect(screen.getByText("Accuracy Declaration")).toBeInTheDocument();
+
+    // Nothing is pre-ticked, so the CTA is blocked until the member accepts.
+    expect(
+      screen.getByRole("button", { name: /accept and start step 1/i }),
+    ).toBeDisabled();
+  });
+
+  it("accepts the consents and enters step 1 once the required boxes are ticked", async () => {
+    accountInfoData = unconsentedAccountInfo;
+    const user = userEvent.setup();
+    renderIntro();
+
+    await user.click(screen.getAllByRole("checkbox")[0]);
+
+    const cta = screen.getByRole("button", {
+      name: /accept and start step 1/i,
+    });
+    expect(cta).toBeEnabled();
+    await user.click(cta);
+
+    await waitFor(() => {
+      expect(acceptConsentsMock).toHaveBeenCalledWith({ acceptRequired: true });
+    });
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/enrollment/step-1");
+    });
+    // The enrollment already exists — never restart it (that resets a
+    // non-DRAFT enrollment back to DRAFT).
+    expect(startEnrollmentMock).not.toHaveBeenCalled();
+  });
+
+  it("starts the enrollment first when the member arrives without one", async () => {
+    accountInfoData = { hasEnrollment: false, enrollment: null };
+    const user = userEvent.setup();
+    renderIntro();
+
+    await user.click(screen.getAllByRole("checkbox")[0]);
+    await user.click(
+      screen.getByRole("button", { name: /accept and start step 1/i }),
+    );
+
+    await waitFor(() => {
+      expect(startEnrollmentMock).toHaveBeenCalled();
+    });
+    expect(acceptConsentsMock).toHaveBeenCalledWith({ acceptRequired: true });
+  });
+
+  it("re-asks for a newly published required consent, pre-ticking what is already on record", () => {
+    // The residual edge case: consent is accepted, but the catalog gained a
+    // required entry since. The band comes back for that one alone.
+    accountInfoData = consentedAccountInfo;
+    activeConsents[1].required = true;
+
+    try {
+      renderIntro();
+
+      expect(screen.getByText("Your consent")).toBeInTheDocument();
+
+      // The already-accepted consent stays ticked, so the member only has to
+      // read and accept what is genuinely new.
+      const checkboxes = screen.getAllByRole("checkbox");
+      expect(checkboxes[0]).toBeChecked();
+      expect(checkboxes[1]).not.toBeChecked();
+      expect(
+        screen.getByRole("button", { name: /accept and start step 1/i }),
+      ).toBeDisabled();
+    } finally {
+      activeConsents[1].required = false;
+    }
+  });
+
+  it("does not ask again once consent is on record — the CTA is a plain link", () => {
+    renderIntro();
+
+    expect(screen.queryByText("Your consent")).not.toBeInTheDocument();
+    expect(getConsentRows()).toHaveLength(0);
+    expect(screen.getByRole("link", { name: /start step 1/i })).toHaveAttribute(
+      "href",
+      "/enrollment/step-1",
+    );
+  });
+});
+
 describe("EnrollmentIntro — actions", () => {
   it("routes Back to the dashboard and the primary CTA into step 1", () => {
-    renderWithIntl(<EnrollmentIntro />);
+    renderIntro();
 
     expect(screen.getByRole("link", { name: /back/i })).toHaveAttribute(
       "href",
@@ -110,7 +302,7 @@ describe("EnrollmentIntro — actions", () => {
 
 describe("EnrollmentIntro — localization", () => {
   it("renders the whole introduction in PR-Spanish under the es catalog", () => {
-    renderWithIntl(<EnrollmentIntro />, "es");
+    renderIntro("es");
 
     expect(
       screen.getByText("Con quién se está inscribiendo"),
@@ -135,5 +327,15 @@ describe("EnrollmentIntro — localization", () => {
     expect(
       screen.getByRole("link", { name: /comenzar el paso 1/i }),
     ).toHaveAttribute("href", "/enrollment/step-1");
+  });
+
+  it("translates the consent band and its CTA", () => {
+    accountInfoData = unconsentedAccountInfo;
+    renderIntro("es");
+
+    expect(screen.getByText("Su consentimiento")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /aceptar y comenzar el paso 1/i }),
+    ).toBeInTheDocument();
   });
 });

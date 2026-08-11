@@ -529,7 +529,17 @@
           }
         }
       },
-      "cta": "Start Step 1"
+      "cta": "Start Step 1",
+      "consent": {
+        "title": "Your consent",
+        "description": "Read and accept these before you begin. Consent is asked only once — the rest of the application will not ask again.",
+        "cta": "Accept and start step 1",
+        "saving": "Saving consent...",
+        "errors": {
+          "acceptRequired": "Please accept every required consent to continue.",
+          "save": "We could not save your consent. Please try again."
+        }
+      }
     },
     "stepper": {
       "listLabel": "Enrollment steps",
@@ -783,7 +793,7 @@
     "confirmation": {
       "intro": "Sign with your full legal name to confirm that the information in your application is true and complete. Submitting sends your application to the council for review.",
       "sectionTitle": "E-Signature",
-      "sectionDescription": "Type your full legal name as your electronic signature and confirm the agreements below to submit your enrollment application.",
+      "sectionDescription": "Type your full legal name as your electronic signature to submit your enrollment application.",
       "signatureName": {
         "label": "Sign your full legal name",
         "placeholder": "Full legal name"
@@ -792,8 +802,17 @@
         "label": "Date",
         "placeholder": "Signature date"
       },
-      "agreeToSubmit": "I agree to submit my information",
-      "agreeToTerms": "I agree to the terms of service",
+      "declaration": "By typing my full legal name below I declare, under the Accuracy Declaration and Data Privacy Agreement I accepted at the start of this application, that the information in it is true, accurate and complete to the best of my knowledge, and I reaffirm my agreement to the <terms>Terms of Service</terms> and the <privacy>Privacy Policy</privacy>. I understand that this electronic signature has the same effect as a handwritten one, and that providing false information may result in the denial of my enrollment.",
+      "consentSummary": {
+        "sectionTitle": "Consents you accepted",
+        "sectionDescription": "You accepted these before starting your application. They are shown here for your record — there is nothing to accept again.",
+        "acceptedOn": "Accepted {date}",
+        "notAccepted": "Not accepted yet",
+        "version": "Version {version}",
+        "required": "Required",
+        "optional": "Optional",
+        "empty": "No consent record is showing for your application yet. You can <link>review your consents</link> at any time."
+      },
       "incompleteIntro": "Almost there — finish:",
       "incompleteOutro": "before submitting your application."
     },
@@ -819,8 +838,6 @@
       "selectYesNo": "Select Yes or No",
       "signatureNameRequired": "Please sign with your full legal name.",
       "signatureDateRequired": "Please provide the signature date.",
-      "agreeToSubmitRequired": "You must agree to submit your information.",
-      "agreeToTermsRequired": "You must agree to the terms of service.",
       "emptyFile": "Please choose a non-empty file.",
       "fileNotAccepted": "This slot accepts {formats} files up to {maxSize}.",
       "genderSelfDescribeRequired": "Please describe your gender or choose another option."
@@ -865,9 +882,7 @@
       }
     },
     "errors": {
-      "startFlow": "Unable to start the enrollment flow right now.",
-      "acceptRequiredConsents": "Please accept every required consent before continuing to Step 1.",
-      "saveConsents": "Unable to save the required consents right now."
+      "startFlow": "Unable to start the enrollment flow right now."
     },
     "expectations": {
       "title": "What to Expect During Enrollment",
@@ -1252,13 +1267,7 @@
     }
   },
   "consent": {
-    "kicker": "ENROLLMENT CONSENT",
-    "description": "Please accept the required consents to continue.",
-    "closeAria": "Close consent dialog",
-    "readAll": "Read all the <link>terms and conditions.</link>",
-    "cancel": "Cancel",
-    "acceptAndContinue": "Accept and Continue",
-    "savingConsent": "Saving consent..."
+    "readAll": "Read all the <link>terms and conditions.</link>"
   },
   "errors": {
     "accountInfoLoad": "Unable to load the account enrollment information right now.",

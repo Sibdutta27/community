@@ -529,7 +529,17 @@
           }
         }
       },
-      "cta": "Comenzar el paso 1"
+      "cta": "Comenzar el paso 1",
+      "consent": {
+        "title": "Su consentimiento",
+        "description": "Léalos y acéptelos antes de comenzar. El consentimiento se le pide una sola vez; el resto de la solicitud no se lo volverá a pedir.",
+        "cta": "Aceptar y comenzar el paso 1",
+        "saving": "Guardando el consentimiento...",
+        "errors": {
+          "acceptRequired": "Acepte todos los consentimientos obligatorios para continuar.",
+          "save": "No pudimos guardar su consentimiento. Intente de nuevo."
+        }
+      }
     },
     "stepper": {
       "listLabel": "Pasos de la inscripción",
@@ -783,7 +793,7 @@
     "confirmation": {
       "intro": "Firme con su nombre legal completo para confirmar que la información de su solicitud es verdadera y está completa. Al enviarla, su solicitud pasa al concilio para su revisión.",
       "sectionTitle": "Firma electrónica",
-      "sectionDescription": "Escriba su nombre legal completo como su firma electrónica y confirme los acuerdos a continuación para enviar su solicitud de inscripción.",
+      "sectionDescription": "Escriba su nombre legal completo como su firma electrónica para enviar su solicitud de inscripción.",
       "signatureName": {
         "label": "Firme con su nombre legal completo",
         "placeholder": "Nombre legal completo"
@@ -792,8 +802,17 @@
         "label": "Fecha",
         "placeholder": "Fecha de la firma"
       },
-      "agreeToSubmit": "Acepto enviar mi información",
-      "agreeToTerms": "Acepto los términos de servicio",
+      "declaration": "Al escribir mi nombre legal completo a continuación declaro, conforme a la Declaración de Exactitud y al Acuerdo de Privacidad de Datos que acepté al comenzar esta solicitud, que la información contenida en ella es verdadera, exacta y completa según mi leal saber y entender, y reafirmo mi aceptación de los <terms>Términos de Servicio</terms> y la <privacy>Política de Privacidad</privacy>. Entiendo que esta firma electrónica tiene el mismo efecto que una firma manuscrita y que proveer información falsa puede resultar en la denegación de mi inscripción.",
+      "consentSummary": {
+        "sectionTitle": "Consentimientos que aceptó",
+        "sectionDescription": "Usted los aceptó antes de comenzar su solicitud. Se muestran aquí para su récord; no hay nada que aceptar de nuevo.",
+        "acceptedOn": "Aceptado el {date}",
+        "notAccepted": "Aún no aceptado",
+        "version": "Versión {version}",
+        "required": "Obligatorio",
+        "optional": "Opcional",
+        "empty": "Todavía no aparece un récord de consentimiento para su solicitud. Puede <link>revisar sus consentimientos</link> en cualquier momento."
+      },
       "incompleteIntro": "Ya casi termina. Complete:",
       "incompleteOutro": "antes de enviar su solicitud."
     },
@@ -819,8 +838,6 @@
       "selectYesNo": "Seleccione Sí o No",
       "signatureNameRequired": "Firme con su nombre legal completo.",
       "signatureDateRequired": "Indique la fecha de la firma.",
-      "agreeToSubmitRequired": "Debe aceptar el envío de su información.",
-      "agreeToTermsRequired": "Debe aceptar los términos de servicio.",
       "emptyFile": "Seleccione un archivo que no esté vacío.",
       "fileNotAccepted": "Este espacio acepta archivos {formats} de hasta {maxSize}.",
       "genderSelfDescribeRequired": "Por favor describa su género o elija otra opción."
@@ -865,9 +882,7 @@
       }
     },
     "errors": {
-      "startFlow": "No se pudo iniciar el proceso de inscripción en este momento.",
-      "acceptRequiredConsents": "Por favor, acepte todos los consentimientos requeridos antes de continuar al paso 1.",
-      "saveConsents": "No se pudieron guardar los consentimientos requeridos en este momento."
+      "startFlow": "No se pudo iniciar el proceso de inscripción en este momento."
     },
     "expectations": {
       "title": "Qué esperar durante la inscripción",
@@ -1252,13 +1267,7 @@
     }
   },
   "consent": {
-    "kicker": "CONSENTIMIENTO DE INSCRIPCIÓN",
-    "description": "Acepte los consentimientos requeridos para continuar.",
-    "closeAria": "Cerrar el diálogo de consentimiento",
-    "readAll": "Lea todos los <link>términos y condiciones.</link>",
-    "cancel": "Cancelar",
-    "acceptAndContinue": "Aceptar y continuar",
-    "savingConsent": "Guardando el consentimiento..."
+    "readAll": "Lea todos los <link>términos y condiciones.</link>"
   },
   "errors": {
     "accountInfoLoad": "No se pudo cargar la información de inscripción de la cuenta en este momento.",

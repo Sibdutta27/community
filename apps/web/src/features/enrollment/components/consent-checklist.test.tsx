@@ -1,7 +1,8 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import { DashboardConsentDialog } from "@/features/dashboard/components/dashboard-consent-dialog";
+import { ConsentChecklist } from "@/features/enrollment/components/consent-checklist";
 import { renderWithIntl as render, type TestLocale } from "@/test/i18n";
 import type { ActiveConsent } from "@/types/enrollment";
 
@@ -28,25 +29,24 @@ const activeConsents: readonly ActiveConsent[] = [
   },
 ];
 
-function renderDialog(locale: TestLocale = "en") {
+function renderChecklist(
+  locale: TestLocale = "en",
+  overrides: Partial<React.ComponentProps<typeof ConsentChecklist>> = {},
+) {
   return render(
-    <DashboardConsentDialog
+    <ConsentChecklist
       activeConsents={activeConsents}
-      errorMessage={null}
-      isOpen
-      isSubmitting={false}
       selectedConsentIds={[]}
-      onClose={vi.fn()}
-      onSubmit={vi.fn()}
       onToggleConsent={vi.fn()}
+      {...overrides}
     />,
     locale,
   );
 }
 
-describe("DashboardConsentDialog", () => {
+describe("ConsentChecklist", () => {
   it("renders every active consent's title and content", () => {
-    renderDialog();
+    renderChecklist();
 
     expect(screen.getByText("Communication Consent")).toBeInTheDocument();
     expect(screen.getByText(REWORDED_COMMUNICATION_COPY)).toBeInTheDocument();
@@ -58,7 +58,7 @@ describe("DashboardConsentDialog", () => {
   });
 
   it("marks required consents with an asterisk and leaves optional ones unmarked", () => {
-    renderDialog();
+    renderChecklist();
 
     const requiredTitle = screen.getByText("Communication Consent");
     expect(requiredTitle).toHaveTextContent("*");
@@ -69,22 +69,37 @@ describe("DashboardConsentDialog", () => {
     expect(optionalTitle).not.toHaveTextContent("*");
   });
 
-  it("translates the dialog chrome to PR-Spanish while keeping the backend-sourced consent copy untouched", () => {
-    renderDialog("es");
+  it("reflects the selection it is given and reports toggles to the owner", async () => {
+    // Purely presentational: it holds no selection state of its own, which is
+    // what lets the enrollment introduction seed it from the server record.
+    const onToggleConsent = vi.fn();
+    const user = userEvent.setup();
+
+    renderChecklist("en", {
+      onToggleConsent,
+      selectedConsentIds: ["consent-1"],
+    });
+
+    const [required, optional] = screen.getAllByRole("checkbox");
+    expect(required).toBeChecked();
+    expect(optional).not.toBeChecked();
+
+    await user.click(optional);
+    expect(onToggleConsent).toHaveBeenCalledWith("consent-2");
+  });
+
+  it("disables every box while the acceptance is in flight", () => {
+    renderChecklist("en", { isSubmitting: true });
+
+    screen.getAllByRole("checkbox").forEach((checkbox) => {
+      expect(checkbox).toBeDisabled();
+    });
+  });
+
+  it("translates the chrome to PR-Spanish while keeping the backend-sourced consent copy untouched", () => {
+    renderChecklist("es");
 
     // Chrome comes from the catalog…
-    expect(
-      screen.getByText("CONSENTIMIENTO DE INSCRIPCIÓN"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("Acepte los consentimientos requeridos para continuar."),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Aceptar y continuar" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Cancelar" }),
-    ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /términos y condiciones/i }),
     ).toHaveAttribute("href", "/privacy-policy");
@@ -94,10 +109,8 @@ describe("DashboardConsentDialog", () => {
   });
 
   it("uses semantic tokens instead of hardcoded earthy colors", () => {
-    renderDialog();
-
-    const dialog = screen.getByRole("dialog");
-    const html = dialog.innerHTML;
+    const { container } = renderChecklist();
+    const html = container.innerHTML;
 
     expect(html).not.toMatch(/#1f8ca5/i);
     expect(html).not.toMatch(/#fffdec/i);
@@ -110,7 +123,7 @@ describe("DashboardConsentDialog", () => {
     expect(html).not.toContain("brand-brown");
     expect(html).not.toContain("text-slate-600");
 
-    expect(dialog.querySelector(".border-border")).not.toBeNull();
-    expect(dialog.querySelector(".text-muted-foreground")).not.toBeNull();
+    expect(container.querySelector(".border-border")).not.toBeNull();
+    expect(container.querySelector(".text-muted-foreground")).not.toBeNull();
   });
 });

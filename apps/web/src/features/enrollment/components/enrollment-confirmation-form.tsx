@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, PenLine } from "lucide-react";
+import { CheckCircle2, PenLine, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Fragment, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { EnrollmentConsentSummary } from "@/features/enrollment/components/enrollment-consent-summary";
 import {
-  EnrollmentCheckboxField,
   EnrollmentDateField,
   EnrollmentInputField,
 } from "@/features/enrollment/components/enrollment-form-fields";
@@ -52,6 +52,9 @@ export function EnrollmentConfirmationForm() {
   const stepState = resolveEnrollmentStepState(accountInfoQuery.data);
   const incompleteSteps = getIncompleteEnrollmentSteps(stepState);
   const hasIncompleteSteps = incompleteSteps.length > 0;
+  // The consent record already returned by `/account/info` — no extra endpoint
+  // exists or is needed for the read-only summary below.
+  const acceptedConsents = accountInfoQuery.data?.enrollment?.consent ?? [];
 
   const schema = useMemo(
     () => createEnrollmentConfirmationSchema((key) => tValidation(key)),
@@ -132,11 +135,50 @@ export function EnrollmentConfirmationForm() {
           {t("confirmation.intro")}
         </p>
 
+        {/* The consents were accepted once, before step 1 — this is the record
+            of that, not another ask. Mirrors the admin panel's ConsentReview so
+            the member sees exactly what a reviewer sees. */}
+        <EnrollmentStepSection
+          description={t("confirmation.consentSummary.sectionDescription")}
+          icon={ShieldCheck}
+          title={t("confirmation.consentSummary.sectionTitle")}
+        >
+          <EnrollmentConsentSummary consents={acceptedConsents} />
+        </EnrollmentStepSection>
+
         <EnrollmentStepSection
           description={t("confirmation.sectionDescription")}
           icon={PenLine}
           title={t("confirmation.sectionTitle")}
         >
+          {/* The declaration the signature is given under. Because sign-up never
+              persists a terms attestation, this paragraph plus the signature
+              below IS the platform's terms-of-service record — the backend
+              derives `Enrollment.agreedToTerms` from a valid signature here. */}
+          <p
+            className="text-muted-foreground text-[0.92rem] leading-7 md:col-span-2"
+            data-slot="enrollment-confirmation-declaration"
+          >
+            {t.rich("confirmation.declaration", {
+              privacy: (chunks) => (
+                <Link
+                  className="text-foreground focus-visible:ring-ring rounded-sm font-medium underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  href="/privacy-policy"
+                >
+                  {chunks}
+                </Link>
+              ),
+              terms: (chunks) => (
+                <Link
+                  className="text-foreground focus-visible:ring-ring rounded-sm font-medium underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  href="/terms-of-service"
+                >
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </p>
+
           <EnrollmentInputField
             autoComplete="name"
             control={control}
@@ -151,18 +193,6 @@ export function EnrollmentConfirmationForm() {
             name="signatureDate"
             placeholder={t("confirmation.signatureDate.placeholder")}
             required
-          />
-          <EnrollmentCheckboxField
-            className="md:col-span-2"
-            control={control}
-            label={t("confirmation.agreeToSubmit")}
-            name="agreeToSubmit"
-          />
-          <EnrollmentCheckboxField
-            className="md:col-span-2"
-            control={control}
-            label={t("confirmation.agreeToTerms")}
-            name="agreeToTerms"
           />
         </EnrollmentStepSection>
 

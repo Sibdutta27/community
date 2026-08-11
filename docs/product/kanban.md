@@ -66,7 +66,7 @@ DTOs ↔ types ↔ BFF in sync.
 - **B1** step1 DTO/service/mapper (`modules/enrollment/step1/step1.utils.ts`): marital+identity+has-children. Tests: jest.
 - **B2** step2 service/DTO: bidirectional ancestry + per-ancestor yucayeke. Tests: jest.
 - **B3** confirmation/e-sign persistence + submit transition. Tests: jest.
-- **C1** [backend+web/consent] add evergreen-memory consent (`prisma/seed/consent.seed.ts` + `dashboard-consent-dialog.tsx`); reword communication consent. Tests: jest + RTL.
+- **C1** [backend+web/consent] add evergreen-memory consent (`prisma/seed/consent.seed.ts` + `consent-checklist.tsx`, rendered on `/enrollment/start` since T4 collapsed the three consent asks into one); reword communication consent. Tests: jest + RTL.
 
 ### Phase 1 — Admin [admin/enrollment]
 

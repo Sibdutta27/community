@@ -20,6 +20,44 @@ type RequestMultipartOptions = Omit<RequestInit, "body"> & {
 };
 
 let unauthorizedRedirectInFlight = false;
+let consentRedirectInFlight = false;
+
+/** The single consent surface — the enrollment introduction, before step 1. */
+const CONSENT_SCREEN_PATH = "/enrollment/start";
+
+/**
+ * `ConsentAcceptedGuard` rejects every enrollment/document write with exactly
+ * this message when the enrollment has no consent on record.
+ */
+const CONSENT_NOT_ACCEPTED_MESSAGE = "consent not accepted";
+
+/**
+ * Consent is asked once, before step 1 — but a NEW required consent can be
+ * published while a member is mid-flow, at which point the backend starts
+ * 403ing their saves. Rather than surface a dead-end error, send them back to
+ * the consent screen; it shows only what is still pending and returns them to
+ * the flow. Deliberately narrow: only this guard's message redirects, so an
+ * unrelated 403 still bubbles up as an error.
+ */
+function handleConsentNotAccepted() {
+  if (typeof window === "undefined" || consentRedirectInFlight) {
+    return;
+  }
+
+  if (window.location.pathname === CONSENT_SCREEN_PATH) {
+    return;
+  }
+
+  consentRedirectInFlight = true;
+  window.location.assign(CONSENT_SCREEN_PATH);
+}
+
+function isConsentNotAcceptedResponse(status: number, message?: string) {
+  return (
+    status === 403 &&
+    message?.trim().toLowerCase() === CONSENT_NOT_ACCEPTED_MESSAGE
+  );
+}
 
 /**
  * A 401 from an authenticated endpoint means the session is no longer valid
@@ -81,6 +119,10 @@ export async function requestJson<TResponse, TBody = undefined>(
         void handleUnauthorized();
       }
 
+      if (isConsentNotAcceptedResponse(response.status, data?.message)) {
+        handleConsentNotAccepted();
+      }
+
       throw new Error(data?.message ?? fallbackMessage);
     }
 
@@ -122,6 +164,10 @@ export async function requestMultipart<TResponse>(
     if (!response.ok) {
       if (response.status === 401 && redirectOnUnauthorized) {
         void handleUnauthorized();
+      }
+
+      if (isConsentNotAcceptedResponse(response.status, data?.message)) {
+        handleConsentNotAccepted();
       }
 
       throw new Error(data?.message ?? fallbackMessage);
