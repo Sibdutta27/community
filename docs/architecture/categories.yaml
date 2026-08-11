@@ -131,17 +131,25 @@ domains:
       - apps/admin/src/api/culturalConnection.api.js
 
   feedback:
-    desc: "In-app feedback / work-order widget: floating launcher + panel, optional screenshot, auto-captured page URL + locale. Accepts signed-out submissions."
-    docs: [docs/architecture/backend.md, docs/architecture/frontend.md]
+    desc: "In-app feedback / work-order widget: floating launcher + panel, optional screenshot, auto-captured page URL + locale. Accepts signed-out submissions. Staff read + triage it in the admin panel (FeedbackStatus lanes)."
+    docs:
+      [
+        docs/architecture/backend.md,
+        docs/architecture/frontend.md,
+        docs/architecture/admin-panel.md,
+      ]
     backend:
       - apps/api/src/modules/feedback
       - apps/api/src/modules/auth/guards/optionalAuth.guard.ts
+      - apps/api/src/modules/admin/adminFeedback
     web:
       - apps/web/src/features/feedback
       - apps/web/src/app/api/feedback
       - apps/web/src/components/shared/support-section.tsx
       - apps/web/src/components/shared/support-feedback-button.tsx
-    admin: []
+    admin:
+      - apps/admin/src/pages/Feedback
+      - apps/admin/src/api/feedback.api.js
 
   admin-management:
     desc: "Backend admin CRUD surface + admin-panel shell (layout/nav)."

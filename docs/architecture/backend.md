@@ -5,27 +5,27 @@ NestJS 11 + Prisma 7 (Postgres via `@prisma/adapter-pg`). See also
 
 ## Module map (`src/`)
 
-| Path                           | Responsibility                                                                                                                   |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| `main.ts`                      | Bootstrap; registers global `ValidationPipe({ whitelist, forbidNonWhitelisted, transform })`                                     |
-| `app.module.ts`                | Root module; imports all feature modules + `ConfigModule.forRoot()`                                                              |
-| `health.controller.ts`         | Health check                                                                                                                     |
-| `database/database.service.ts` | `DatabaseService extends PrismaClient` with `OnModuleInit/Destroy`; uses `PrismaPg` adapter                                      |
-| `config/s3.config.ts`          | `S3Client` factory (AWS virtual-host or MinIO path-style)                                                                        |
-| `common/decorators/`           | `@CurrentUser()`, `@CurrentEnrollment()`                                                                                         |
-| `common/s3/s3.service.ts`      | put / delete / signed-url (AWS SDK v3)                                                                                           |
-| `common/utils/`                | `password.util.ts` (bcrypt, 12 rounds), formatters                                                                               |
-| `modules/auth/`                | register / login / admin-login, JWT strategy, guards                                                                             |
-| `modules/user/`                | user lookup, profile photo upload                                                                                                |
-| `modules/enrollment/`          | `step1`–`step4` submodules + `common/`; `EnrollmentStepService` tracks completion                                                |
-| `modules/document/`            | upload/list/delete documents (S3 + DB, transactional)                                                                            |
-| `modules/consent/`             | active consent templates, accept consents                                                                                        |
-| `modules/service/`             | services + categories + registrations                                                                                            |
-| `modules/event/`               | events + categories + registrations                                                                                              |
-| `modules/account/`             | account info, community metadata                                                                                                 |
-| `modules/profile/`             | user profile with documents                                                                                                      |
-| `modules/feedback/`            | in-app feedback / work orders (`POST /feedback`, optional attachment)                                                            |
-| `modules/admin/`               | `adminUser`, `adminEnrollment`, `adminConsent`, `adminCulturalConnection`, `adminService`, `adminEvent` + `guard/AdminAuthGuard` |
+| Path                           | Responsibility                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `main.ts`                      | Bootstrap; registers global `ValidationPipe({ whitelist, forbidNonWhitelisted, transform })`                                                      |
+| `app.module.ts`                | Root module; imports all feature modules + `ConfigModule.forRoot()`                                                                               |
+| `health.controller.ts`         | Health check                                                                                                                                      |
+| `database/database.service.ts` | `DatabaseService extends PrismaClient` with `OnModuleInit/Destroy`; uses `PrismaPg` adapter                                                       |
+| `config/s3.config.ts`          | `S3Client` factory (AWS virtual-host or MinIO path-style)                                                                                         |
+| `common/decorators/`           | `@CurrentUser()`, `@CurrentEnrollment()`                                                                                                          |
+| `common/s3/s3.service.ts`      | put / delete / signed-url (AWS SDK v3)                                                                                                            |
+| `common/utils/`                | `password.util.ts` (bcrypt, 12 rounds), formatters                                                                                                |
+| `modules/auth/`                | register / login / admin-login, JWT strategy, guards                                                                                              |
+| `modules/user/`                | user lookup, profile photo upload                                                                                                                 |
+| `modules/enrollment/`          | `step1`–`step4` submodules + `common/`; `EnrollmentStepService` tracks completion                                                                 |
+| `modules/document/`            | upload/list/delete documents (S3 + DB, transactional)                                                                                             |
+| `modules/consent/`             | active consent templates, accept consents                                                                                                         |
+| `modules/service/`             | services + categories + registrations                                                                                                             |
+| `modules/event/`               | events + categories + registrations                                                                                                               |
+| `modules/account/`             | account info, community metadata                                                                                                                  |
+| `modules/profile/`             | user profile with documents                                                                                                                       |
+| `modules/feedback/`            | in-app feedback / work orders (`POST /feedback`, optional attachment)                                                                             |
+| `modules/admin/`               | `adminUser`, `adminEnrollment`, `adminConsent`, `adminCulturalConnection`, `adminService`, `adminEvent`, `adminFeedback` + `guard/AdminAuthGuard` |
 
 Per-module files: `*.module.ts`, `*.controller.ts`, `*.service.ts`, `dto/*.ts`, `guards/*.ts`,
 `interfaces/*.ts`.
@@ -48,22 +48,24 @@ Per-module files: `*.module.ts`, `*.controller.ts`, `*.service.ts`, `dto/*.ts`, 
 
 ## Endpoint surface (representative)
 
-| Method & path                                                                           | Guards                                      | Notes                                                                                     |
-| --------------------------------------------------------------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `POST /auth/register`                                                                   | —                                           | name, email, password                                                                     |
-| `POST /auth/login`                                                                      | —                                           | → `{ accessToken }`                                                                       |
-| `POST /auth/admin-login`                                                                | —                                           | role-checked                                                                              |
-| `POST /user/upload-profile-photo`                                                       | Jwt, Activity, FileInterceptor              | single file                                                                               |
-| `GET/POST /enrollment/step1..4`                                                         | Jwt, Activity (+ ConsentAccepted on writes) | multi-step form                                                                           |
-| `POST /document/upload`                                                                 | Jwt, ConsentAccepted, FileInterceptor       | mime/size validated                                                                       |
-| `GET /document/list`, `POST /document/:id` (delete)                                     | Jwt, ConsentAccepted                        |                                                                                           |
-| `GET /consent/active`, `POST /consent/accept`                                           | — / Jwt, Activity                           |                                                                                           |
-| `GET /services`, `/services/categories`, `POST /services/register[-list]`               | — / Jwt                                     |                                                                                           |
-| `GET /events`, `/events/previous`, `/events/categories`, `POST /events/register[-list]` | — / Jwt                                     |                                                                                           |
-| `GET /account/info`, `/account/community-meta`                                          | Jwt / —                                     |                                                                                           |
-| `GET /profile`                                                                          | Jwt, Activity                               | profile + documents                                                                       |
-| `POST /feedback`                                                                        | OptionalJwt, FileInterceptor(`attachment`)  | multipart: message, pageUrl, locale, userAgent? + optional file (jpeg/png/webp/pdf ≤10MB) |
-| `/admin/*`                                                                              | AdminAuthGuard                              | management CRUD                                                                           |
+| Method & path                                                                           | Guards                                      | Notes                                                                                           |
+| --------------------------------------------------------------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `POST /auth/register`                                                                   | —                                           | name, email, password                                                                           |
+| `POST /auth/login`                                                                      | —                                           | → `{ accessToken }`                                                                             |
+| `POST /auth/admin-login`                                                                | —                                           | role-checked                                                                                    |
+| `POST /user/upload-profile-photo`                                                       | Jwt, Activity, FileInterceptor              | single file                                                                                     |
+| `GET/POST /enrollment/step1..4`                                                         | Jwt, Activity (+ ConsentAccepted on writes) | multi-step form                                                                                 |
+| `POST /document/upload`                                                                 | Jwt, ConsentAccepted, FileInterceptor       | mime/size validated                                                                             |
+| `GET /document/list`, `POST /document/:id` (delete)                                     | Jwt, ConsentAccepted                        |                                                                                                 |
+| `GET /consent/active`, `POST /consent/accept`                                           | — / Jwt, Activity                           |                                                                                                 |
+| `GET /services`, `/services/categories`, `POST /services/register[-list]`               | — / Jwt                                     |                                                                                                 |
+| `GET /events`, `/events/previous`, `/events/categories`, `POST /events/register[-list]` | — / Jwt                                     |                                                                                                 |
+| `GET /account/info`, `/account/community-meta`                                          | Jwt / —                                     |                                                                                                 |
+| `GET /profile`                                                                          | Jwt, Activity                               | profile + documents                                                                             |
+| `POST /feedback`                                                                        | OptionalJwt, FileInterceptor(`attachment`)  | multipart: message, pageUrl, locale, userAgent? + optional file (jpeg/png/webp/pdf ≤10MB)       |
+| `GET /admin/feedback`, `/admin/feedback/status-counts`, `/admin/feedback/:id`           | Jwt, AdminAuthGuard                         | triage queue (page/limit/status, newest first), per-lane counts, detail + signed attachment URL |
+| `PATCH /admin/feedback/:id/status`                                                      | Jwt, AdminAuthGuard                         | `{ status: FeedbackStatus }` — any lane to any lane                                             |
+| `/admin/*`                                                                              | AdminAuthGuard                              | management CRUD                                                                                 |
 
 ## File uploads
 
