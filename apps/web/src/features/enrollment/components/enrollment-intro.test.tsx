@@ -63,17 +63,28 @@ describe("EnrollmentIntro — what you'll need", () => {
         enrollmentStepFourEvidenceUploadSlots.length,
     );
 
-    // The photo is the one mandatory upload (`required: true` on the slot).
-    expect(enrollmentStepFourUserPhotoCard.required).toBe(true);
-    const photoRow = rows[0];
-    expect(photoRow).toHaveTextContent("Your Photo");
-    expect(within(photoRow).getByText("Required")).toBeInTheDocument();
+    // Derived from the slot configs rather than hardcoded: which uploads are
+    // mandatory is a product rule that moves (the government ID became
+    // required in T2), and this list must follow it automatically.
+    const slotRequirements = [
+      enrollmentStepFourUserPhotoCard,
+      ...enrollmentStepFourIdentityUploadSlots,
+      ...enrollmentStepFourEvidenceUploadSlots,
+    ].map((slot) => Boolean(slot.required));
 
-    // Everything else is optional per its slot config…
-    for (const row of rows.slice(1)) {
-      expect(within(row).getByText("Optional")).toBeInTheDocument();
-    }
-    expect(screen.getAllByText("Required")).toHaveLength(1);
+    expect(rows[0]).toHaveTextContent("Your Photo");
+
+    rows.forEach((row, index) => {
+      expect(
+        within(row).getByText(
+          slotRequirements[index] ? "Required" : "Optional",
+        ),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getAllByText("Required")).toHaveLength(
+      slotRequirements.filter(Boolean).length,
+    );
 
     // …but the 2-of-3 proof-of-identity rule is still spelled out.
     expect(
@@ -112,8 +123,15 @@ describe("EnrollmentIntro — localization", () => {
     expect(getStepRows()).toHaveLength(5);
     expect(screen.getByText("Parentesco paterno")).toBeInTheDocument();
 
-    // Required/Optional pills and the CTA.
-    expect(screen.getAllByText("Obligatorio")).toHaveLength(1);
+    // Required/Optional pills and the CTA. Count derived from the slot
+    // configs, for the same reason as the English case above.
+    expect(screen.getAllByText("Obligatorio")).toHaveLength(
+      [
+        enrollmentStepFourUserPhotoCard,
+        ...enrollmentStepFourIdentityUploadSlots,
+        ...enrollmentStepFourEvidenceUploadSlots,
+      ].filter((slot) => slot.required).length,
+    );
     expect(
       screen.getByRole("link", { name: /comenzar el paso 1/i }),
     ).toHaveAttribute("href", "/enrollment/step-1");
