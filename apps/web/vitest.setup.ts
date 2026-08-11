@@ -28,3 +28,43 @@ class MockResizeObserver implements ResizeObserver {
 
 globalThis.ResizeObserver =
   MockResizeObserver as unknown as typeof ResizeObserver;
+
+// Node ≥ 24 exposes its own experimental `localStorage` global, which shadows
+// jsdom's `Storage` with an inert object whose methods are missing entirely
+// (`getItem is not a function`). Install a plain in-memory Storage so code
+// that persists a preference behaves the same here as in a browser.
+class MemoryStorage implements Storage {
+  #entries = new Map<string, string>();
+
+  get length(): number {
+    return this.#entries.size;
+  }
+
+  clear(): void {
+    this.#entries.clear();
+  }
+
+  getItem(key: string): string | null {
+    return this.#entries.get(String(key)) ?? null;
+  }
+
+  key(index: number): string | null {
+    return [...this.#entries.keys()][index] ?? null;
+  }
+
+  removeItem(key: string): void {
+    this.#entries.delete(String(key));
+  }
+
+  setItem(key: string, value: string): void {
+    this.#entries.set(String(key), String(value));
+  }
+}
+
+for (const name of ["localStorage", "sessionStorage"] as const) {
+  Object.defineProperty(globalThis, name, {
+    configurable: true,
+    value: new MemoryStorage(),
+    writable: true,
+  });
+}
