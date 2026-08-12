@@ -12,6 +12,7 @@ import { useOptionalProfileInfoQuery } from "@/features/profile/lib/profile-quer
 
 import { resolveTerritory, type Territory } from "../content/territories";
 import { buildTerritoryShapes } from "../lib/geometry";
+import { useTerritoryView } from "../lib/territory-overrides-context";
 import { useYucayekeGeometryQuery } from "../lib/yucayeke-map-queries";
 import { BorikenMap } from "./boriken-map";
 import { TerritoryInfoCard } from "./territory-info-card";
@@ -32,7 +33,11 @@ export function YucayekeMapPageContent() {
   const profileQuery = useOptionalProfileInfoQuery();
 
   const personalInfo = profileQuery.data?.enrollment?.personalInfo;
+
+  // Canonical everywhere it is used as an identity (slug, geometry key,
+  // selection); overridden only where its name is drawn on screen.
   const ownTerritory = resolveTerritory(personalInfo?.yucayeke);
+  const ownTerritoryView = useTerritoryView(ownTerritory);
 
   const shapes = useMemo(
     () => (geometryQuery.data ? buildTerritoryShapes(geometryQuery.data) : []),
@@ -80,7 +85,7 @@ export function YucayekeMapPageContent() {
         {ownTerritory ? (
           <span className="border-border bg-secondary text-secondary-foreground mt-3 inline-flex w-fit items-center rounded-full border px-3 py-1 text-[12px] font-semibold">
             {t("labels.yourTerritoryChip", {
-              name: ownTerritory.displayName,
+              name: ownTerritoryView?.displayName ?? ownTerritory.displayName,
             })}
           </span>
         ) : null}

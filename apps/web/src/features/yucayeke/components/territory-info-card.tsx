@@ -8,6 +8,7 @@ import { SurfaceCard } from "@/components/shared/surface-card";
 import { cn } from "@/lib/utils";
 
 import type { Territory } from "../content/territories";
+import { useTerritoryView } from "../lib/territory-overrides-context";
 
 type TerritoryInfoCardProps = Readonly<{
   territory: Territory | null;
@@ -39,11 +40,15 @@ export function TerritoryStatusBadge({
  * municipalities, and the short history blurb from the message catalog.
  */
 export function TerritoryInfoCard({
-  territory,
+  territory: canonicalTerritory,
   isOwnTerritory = false,
   className,
 }: TerritoryInfoCardProps) {
   const t = useTranslations("yucayekeMap");
+
+  // The render boundary: names shown here may come from the Website Studio,
+  // but the record the caller holds — and every lookup — stays canonical.
+  const territory = useTerritoryView(canonicalTerritory);
 
   if (!territory) {
     return (

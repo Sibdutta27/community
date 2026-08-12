@@ -5,6 +5,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
 import { FeedbackWidget } from "@/features/feedback/components/feedback-widget";
+import { TerritoryOverridesProvider } from "@/features/yucayeke/lib/territory-overrides-context";
+import { getTerritoryOverrides } from "@/i18n/content-overrides";
 import { AppProviders } from "@/providers/app-providers";
 import { cinzel, lato, montserrat } from "@/styles/fonts";
 
@@ -32,7 +34,13 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   // Locale is resolved server-side from the `community_locale` cookie
   // (see src/i18n/request.ts) — no URL prefix involved.
   const locale = await getLocale();
-  const messages = await getMessages();
+
+  // `getMessages()` and `getTerritoryOverrides()` read the same cached
+  // `/content/messages` payload, so this is one fetch, not two.
+  const [messages, territoryOverrides] = await Promise.all([
+    getMessages(),
+    getTerritoryOverrides(),
+  ]);
 
   return (
     <html
@@ -42,13 +50,17 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     >
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AppProviders>
-            {children}
-            {/* Root layout is the only tree shared by the public, auth and
-                protected route groups — mounting the feedback launcher here
-                keeps it reachable from every page. */}
-            <FeedbackWidget />
-          </AppProviders>
+          {/* Territory edits from the Website Studio, carried to the render
+              boundary only — see apply-territory-override.ts. */}
+          <TerritoryOverridesProvider value={territoryOverrides}>
+            <AppProviders>
+              {children}
+              {/* Root layout is the only tree shared by the public, auth and
+                  protected route groups — mounting the feedback launcher here
+                  keeps it reachable from every page. */}
+              <FeedbackWidget />
+            </AppProviders>
+          </TerritoryOverridesProvider>
         </NextIntlClientProvider>
       </body>
     </html>

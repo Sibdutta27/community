@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 import { resolveTerritory } from "../content/territories";
 import { buildTerritoryShapes } from "../lib/geometry";
+import { useTerritoryView } from "../lib/territory-overrides-context";
 import { useYucayekeGeometryQuery } from "../lib/yucayeke-map-queries";
 import { BorikenMap } from "./boriken-map";
 import { TerritoryStatusBadge } from "./territory-info-card";
@@ -32,7 +33,9 @@ export function YourYucayekeCard({
   const t = useTranslations("yucayekeMap");
   const geometryQuery = useYucayekeGeometryQuery();
 
-  const territory = resolveTerritory(yucayekeValue);
+  // Resolve from the canonical table — never from override data — then apply
+  // the Nation's edits for display only.
+  const territory = useTerritoryView(resolveTerritory(yucayekeValue));
 
   const shapes = useMemo(
     () => (geometryQuery.data ? buildTerritoryShapes(geometryQuery.data) : []),
