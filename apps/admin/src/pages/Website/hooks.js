@@ -65,9 +65,11 @@ export function useDiscardContentDrafts() {
   });
 }
 
-export function useContentRevisions(params = {}) {
+export function useContentRevisions({ enabled = true, ...params } = {}) {
   return useQuery({
     queryKey: ["content-revisions", params],
     queryFn: () => getContentRevisions(params),
+    // The per-field dialog passes `enabled` so a closed dialog never fetches.
+    enabled,
   });
 }

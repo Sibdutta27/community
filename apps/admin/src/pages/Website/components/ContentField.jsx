@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 
 import UndoIcon from "@mui/icons-material/Undo";
+import HistoryIcon from "@mui/icons-material/History";
+
+import FieldHistoryDialog from "./FieldHistoryDialog";
 
 import { extractPlaceholders, missingPlaceholders } from "../placeholders.util";
 
@@ -35,6 +38,7 @@ export default function ContentField({ field, onSave, onRevert, saving }) {
   const [en, setEn] = useState(serverEn);
   const [es, setEs] = useState(serverEs);
   const [error, setError] = useState(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // Re-seed when the server value changes underneath us — after a publish,
   // revert or discard. Keyed on the values themselves so typing is untouched.
@@ -129,9 +133,20 @@ export default function ContentField({ field, onSave, onRevert, saving }) {
           </Tooltip>
         ))}
 
+        <Tooltip title="See who changed this and what it said before">
+          <IconButton
+            size="small"
+            sx={{ ml: "auto" }}
+            onClick={() => setHistoryOpen(true)}
+            aria-label={`Change history for ${humaniseKey(field.keyPath)}`}
+          >
+            <HistoryIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+
         {isPublished || hasDraft ? (
           <Tooltip title="Restore the original wording">
-            <span style={{ marginLeft: "auto" }}>
+            <span>
               <IconButton
                 size="small"
                 disabled={saving}
@@ -181,6 +196,12 @@ export default function ContentField({ field, onSave, onRevert, saving }) {
           error={Boolean(error)}
         />
       </Box>
+
+      <FieldHistoryDialog
+        keyPath={field.keyPath}
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+      />
 
       {error ? (
         <Typography

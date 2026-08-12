@@ -81,3 +81,22 @@ export const NAMESPACE_TO_PAGE = WEBSITE_PAGES.reduce((map, page) => {
 export function findPage(pageId) {
   return WEBSITE_PAGES.find((page) => page.id === pageId) ?? WEBSITE_PAGES[0];
 }
+
+/**
+ * Which page a message key belongs to.
+ *
+ * The change log stores key paths, but "what did this change look like?" is a
+ * question about a page — so history rows need this to point anywhere useful.
+ * Returns null for a key whose namespace no page claims (developer-owned copy,
+ * or a namespace added since this map was written), and callers must handle
+ * that rather than guessing at a page.
+ */
+export function findPageForKeyPath(keyPath) {
+  if (typeof keyPath !== "string") {
+    return null;
+  }
+
+  const pageId = NAMESPACE_TO_PAGE[keyPath.split(".")[0]];
+
+  return pageId ? findPage(pageId) : null;
+}
