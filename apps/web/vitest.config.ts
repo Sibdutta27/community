@@ -9,6 +9,12 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
+    // `src/config/env.ts` throws at import time when this is unset, which is
+    // the behaviour we want in a real build — but it means any module that
+    // transitively imports it cannot be tested without a value here.
+    env: {
+      NEXT_PUBLIC_API_BASE_URL: "http://api.test",
+    },
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     css: true,
   },

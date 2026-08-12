@@ -686,7 +686,92 @@ model ContentKey {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  override  ContentString?
+  revisions ContentRevision[]
+
   @@index([namespace, group])
   @@index([editable, namespace])
   @@index([retiredAt])
+}
+
+/// A published edit to one site string, layered over the git catalog.
+///
+/// Sparse by design — expect tens of rows, not 990. A key with no row here
+/// renders its shipped default, which is why the site cannot go blank when
+/// this table (or the whole API) is unreachable.
+///
+/// Both locales live on ONE row on purpose: splitting into (keyPath, locale)
+/// rows would let English publish without Spanish and leave a half-translated
+/// page, which is exactly what the catalog parity test exists to prevent.
+model ContentString {
+  id           String @id @default(uuid())
+  contentKeyId String @unique /// one override per key — no last-write-wins races
+
+  /// Denormalised from ContentKey so the public read never joins. That read is
+  /// the hot path: it runs behind every page render.
+  keyPath String @unique
+
+  /// Working copy. Null means "no unpublished change for this locale".
+  draftEn String? @db.Text
+  draftEs String? @db.Text
+
+  /// What the site actually serves. Null falls through to the git default.
+  publishedEn String? @db.Text
+  publishedEs String? @db.Text
+
+  publishedAt DateTime?
+  publishedBy String?
+  updatedBy   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contentKey ContentKey @relation(fields: [contentKeyId], references: [id], onDelete: Cascade)
+
+  @@index([publishedAt])
+  @@index([updatedAt])
+}
+
+/// Append-only record of every publish and revert.
+///
+/// This is the undo button and the answer to "who changed the homepage".
+/// Content edits deliberately bypass code review, so the audit trail is not
+/// optional — it is the thing that makes bypassing review acceptable.
+model ContentRevision {
+  id           String @id @default(uuid())
+  contentKeyId String
+  keyPath      String
+
+  action ContentRevisionAction
+
+  fromEn String? @db.Text
+  fromEs String? @db.Text
+  toEn   String? @db.Text
+  toEs   String? @db.Text
+
+  actorId    String?
+  actorEmail String?
+
+  createdAt DateTime @default(now())
+
+  contentKey ContentKey @relation(fields: [contentKeyId], references: [id], onDelete: Cascade)
+
+  @@index([contentKeyId, createdAt])
+  @@index([createdAt])
+}
+
+enum ContentRevisionAction {
+  PUBLISHED
+  /// Override removed — the key is back to its shipped default.
+  REVERTED
+}
+
+/// Single row (`id = "site"`), bumped inside every publish transaction.
+///
+/// Lets the web app answer "has anything changed?" without reading every
+/// override, and gives the cache something cheap to key on.
+model ContentVersion {
+  id        String   @id
+  version   Int      @default(1)
+  updatedAt DateTime @updatedAt
 }

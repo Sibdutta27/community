@@ -13,6 +13,7 @@ import { ServiceModule } from './modules/service/service.module';
 import { EventModule } from './modules/event/event.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
+import { ContentModule } from './modules/content/content.module';
 
 @Module({
   controllers: [HealthController],
@@ -31,7 +32,8 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
     ServiceModule,
     EventModule,
     AdminModule,
-    FeedbackModule
+    FeedbackModule,
+    ContentModule,
   ],
 })
 

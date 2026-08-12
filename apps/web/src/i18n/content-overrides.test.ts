@@ -1,0 +1,107 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import {
+  __resetContentOverrideCache,
+  CONTENT_CACHE_TAG,
+  getContentOverrides,
+} from "@/i18n/content-overrides";
+
+const payload = {
+  version: 3,
+  overrides: { "home.hero.title": { en: "Kaya!", es: "¡Kaya!" } },
+};
+
+type FetchOptions = {
+  next?: { revalidate?: number; tags?: string[] };
+  signal?: AbortSignal;
+};
+
+function mockFetch(impl: () => Promise<unknown>) {
+  // Typed rather than parameterised, so the call signature is recorded for the
+  // options assertion without declaring arguments the stub never reads.
+  const spy = vi.fn<(url: string, options?: FetchOptions) => Promise<unknown>>(
+    () => impl(),
+  );
+
+  vi.stubGlobal("fetch", spy);
+
+  return spy;
+}
+
+function okResponse(body: unknown) {
+  return Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve(body),
+  });
+}
+
+describe("getContentOverrides", () => {
+  beforeEach(() => {
+    __resetContentOverrideCache();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("returns the published overrides", async () => {
+    mockFetch(() => okResponse(payload));
+
+    await expect(getContentOverrides()).resolves.toEqual(payload.overrides);
+  });
+
+  // A regression here is invisible in behaviour but turns a cached read into a
+  // real API round-trip on every single render.
+  it("caches through Next's Data Cache with the bustable tag", async () => {
+    const spy = mockFetch(() => okResponse(payload));
+
+    await getContentOverrides();
+
+    const options = spy.mock.calls[0][1];
+
+    expect(options?.next?.revalidate).toBeGreaterThan(0);
+    expect(options?.next?.tags).toContain(CONTENT_CACHE_TAG);
+    expect(options?.signal).toBeDefined();
+  });
+
+  it("falls back to nothing when the API errors on a cold process", async () => {
+    mockFetch(() => Promise.resolve({ ok: false, status: 500 }) as never);
+
+    await expect(getContentOverrides()).resolves.toEqual({});
+  });
+
+  it("falls back to nothing when the request throws", async () => {
+    mockFetch(() => Promise.reject(new Error("ECONNREFUSED")));
+
+    await expect(getContentOverrides()).resolves.toEqual({});
+  });
+
+  it("survives malformed JSON rather than throwing into the render", async () => {
+    mockFetch(
+      () =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.reject(new SyntaxError("Unexpected token")),
+        }) as never,
+    );
+
+    await expect(getContentOverrides()).resolves.toEqual({});
+  });
+
+  it("ignores a well-formed response with no overrides field", async () => {
+    mockFetch(() => okResponse({ version: 1 }));
+
+    await expect(getContentOverrides()).resolves.toEqual({});
+  });
+
+  // The belt-and-braces layer: once this process has seen good content, an API
+  // outage must not drop every override at once.
+  it("keeps serving the last good payload after the API goes down", async () => {
+    mockFetch(() => okResponse(payload));
+    await getContentOverrides();
+
+    mockFetch(() => Promise.reject(new Error("gone")));
+
+    await expect(getContentOverrides()).resolves.toEqual(payload.overrides);
+  });
+});

@@ -1,6 +1,19 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const cookieJar = vi.hoisted(() => new Map<string, string>());
+
+// Website Studio content is fetched here. Stubbed per-test so the suite never
+// depends on a network call; the default is "nothing published", which is also
+// the state the site ships in.
+const contentOverrides = vi.hoisted(() => ({
+  current: {} as Record<string, { en?: string; es?: string }>,
+}));
+
+vi.mock("@/i18n/content-overrides", () => ({
+  CONTENT_CACHE_TAG: "site-content",
+  getContentOverrides: async () => contentOverrides.current,
+  __resetContentOverrideCache: () => {},
+}));
 
 vi.mock("next/headers", () => ({
   cookies: async () => ({
@@ -55,9 +68,7 @@ describe("i18n request config (cookie-based locale)", () => {
 
     expect(config.locale).toBe("es");
     expect(config.messages.nav.enrollToday).toBe("Inscríbete Hoy");
-    expect(config.messages.home.hero.ctaEnroll).toBe(
-      "Comienza tu Inscripción",
-    );
+    expect(config.messages.home.hero.ctaEnroll).toBe("Comienza tu Inscripción");
   });
 
   it("falls back to English for an unsupported cookie value", async () => {
@@ -75,5 +86,56 @@ describe("i18n request config (cookie-based locale)", () => {
     const config = await resolveRequestConfig();
 
     expect(config.locale).toBe("en");
+  });
+});
+
+describe("i18n request config (Website Studio content)", () => {
+  beforeEach(() => {
+    cookieJar.clear();
+  });
+
+  afterEach(() => {
+    contentOverrides.current = {};
+  });
+
+  it("serves published copy over the shipped catalog", async () => {
+    contentOverrides.current = {
+      "nav.enrollToday": { en: "Join the Nation", es: "Únete a la Nación" },
+    };
+
+    const config = await resolveRequestConfig();
+
+    expect(config.messages.nav.enrollToday).toBe("Join the Nation");
+  });
+
+  it("serves the Spanish override when the locale is Spanish", async () => {
+    cookieJar.set("community_locale", "es");
+    contentOverrides.current = {
+      "nav.enrollToday": { en: "Join the Nation", es: "Únete a la Nación" },
+    };
+
+    const config = await resolveRequestConfig();
+
+    expect(config.messages.nav.enrollToday).toBe("Únete a la Nación");
+  });
+
+  it("leaves untouched keys on their shipped value", async () => {
+    contentOverrides.current = {
+      "nav.enrollToday": { en: "Join the Nation" },
+    };
+
+    const config = await resolveRequestConfig();
+
+    expect(config.messages.home.hero.ctaEnroll).toBe("Start Your Enrollment");
+  });
+
+  // The whole safety argument for storing overrides rather than moving the
+  // catalog into the database: with nothing published — or with the API
+  // unreachable, which resolves to the same empty map — the site is exactly
+  // what shipped.
+  it("renders the shipped catalog when no content is published", async () => {
+    const config = await resolveRequestConfig();
+
+    expect(config.messages.nav.enrollToday).toBe("Enroll Today");
   });
 });
