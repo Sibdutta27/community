@@ -24,9 +24,11 @@ export default function UserConsents({ userId }) {
     <Panel sx={{ mt: 2 }}>
       <Stack
         direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ mb: 1.5 }}
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 1.5,
+        }}
       >
         <Typography variant="subtitle2" fontWeight={700}>
           Consent record

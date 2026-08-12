@@ -157,9 +157,11 @@ export default function Dashboard() {
         <Panel>
           <Stack
             direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ mb: 1 }}
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 1,
+            }}
           >
             <Typography variant="subtitle2" fontWeight={700}>
               Latest applications
@@ -229,9 +231,11 @@ export default function Dashboard() {
         <Panel>
           <Stack
             direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ mb: 1 }}
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 1,
+            }}
           >
             <Typography variant="subtitle2" fontWeight={700}>
               Next 30 days

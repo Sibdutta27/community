@@ -10,7 +10,19 @@ import {
     AncestryVerificationStatus,
     DocumentType,
     EnrollmentStatus,
+    NoticeChannel,
+    NoticeStatus,
 } from '@/generated/prisma/enums';
+
+/**
+ * What staff chose when rejecting: the reason recorded on the decision, and
+ * which of the member's registered channels they asked to be notified on.
+ */
+export interface RejectEnrollmentOptions {
+    reason?: string;
+    channels?: NoticeChannel[];
+    decidedById?: string;
+}
 
 @Injectable()
 export class AdminEnrollmentService {
@@ -370,12 +382,29 @@ export class AdminEnrollmentService {
      */
     public async rejectEnrollment(
         enrollmentId: string,
+        options: RejectEnrollmentOptions = {},
     ) {
 
         // Find enrollment
         const enrollment = await this.database.enrollment.findUnique({
             where: {
                 id: enrollmentId,
+            },
+
+            include: {
+                user: {
+                    select: {
+                        email: true,
+                    },
+                },
+
+                contact: {
+                    select: {
+                        email: true,
+                        phoneNumber: true,
+                        allowSMS: true,
+                    },
+                },
             },
         });
 
@@ -397,25 +426,195 @@ export class AdminEnrollmentService {
         }
 
         /**
-         * Update enrollment
+         * The decision and the notices it should produce are written together:
+         * a rejection recorded without its notices would leave no trace that
+         * anyone was meant to be told.
          */
-        await this.database.enrollment.update({
-            where: {
-                id: enrollmentId,
-            },
+        const notices = this.resolveDecisionNotices(
+            enrollment,
+            options.channels ?? [],
+        );
 
-            data: {
-                status:
-                    EnrollmentStatus.REJECTED,
+        await this.database.$transaction(async (tx) => {
 
-                approvalDate: null,
-            },
+            await tx.enrollment.update({
+                where: {
+                    id: enrollmentId,
+                },
+
+                data: {
+                    status:
+                        EnrollmentStatus.REJECTED,
+
+                    approvalDate: null,
+
+                    decisionReason: options.reason?.trim() || null,
+                    decidedAt     : new Date(),
+                    decidedById   : options.decidedById ?? null,
+                },
+            });
+
+            if (notices.length > 0) {
+                await tx.enrollmentNotice.createMany({
+                    data: notices.map((notice) => ({
+                        enrollmentId,
+                        ...notice,
+                    })),
+                });
+            }
         });
 
         return {
             success: true,
             message: 'Enrollment rejected successfully',
+
+            /**
+             * Queued, NOT sent. Nothing in this API delivers mail or SMS yet;
+             * the caller must not describe these as delivered.
+             */
+            notices: notices.map((notice) => ({
+                channel: notice.channel,
+                status : notice.status,
+            })),
         };
+    }
+
+    /**
+     * The communication channels this member actually registered.
+     *
+     * The reject dialog offers only these — an interface that lets staff pick
+     * "text them" for a member with no phone on file promises something the
+     * system cannot do.
+     */
+    public async getNotificationChannels(enrollmentId: string) {
+
+        const enrollment = await this.database.enrollment.findUnique({
+            where: {
+                id: enrollmentId,
+            },
+
+            select: {
+                user: {
+                    select: {
+                        email: true,
+                    },
+                },
+
+                contact: {
+                    select: {
+                        email: true,
+                        phoneNumber: true,
+                        phoneType: true,
+                        allowSMS: true,
+                    },
+                },
+            },
+        });
+
+        if (!enrollment) {
+            throw new NotFoundException('Enrollment not found');
+        }
+
+        const channels: {
+            channel: NoticeChannel;
+            destination: string;
+            available: boolean;
+            note?: string;
+        }[] = [];
+
+        if (enrollment.user?.email) {
+            channels.push({
+                channel    : NoticeChannel.ACCOUNT_EMAIL,
+                destination: enrollment.user.email,
+                available  : true,
+            });
+        }
+
+        /**
+         * Only worth offering when it differs from the account email —
+         * otherwise staff are choosing between two names for one inbox.
+         */
+        if (
+            enrollment.contact?.email
+            && enrollment.contact.email !== enrollment.user?.email
+        ) {
+            channels.push({
+                channel    : NoticeChannel.CONTACT_EMAIL,
+                destination: enrollment.contact.email,
+                available  : true,
+            });
+        }
+
+        if (enrollment.contact?.phoneNumber) {
+            channels.push({
+                channel    : NoticeChannel.SMS,
+                destination: enrollment.contact.phoneNumber,
+                available  : enrollment.contact.allowSMS,
+
+                note: enrollment.contact.allowSMS
+                    ? undefined
+                    : 'This member did not consent to SMS',
+            });
+        }
+
+        return { channels };
+    }
+
+    /**
+     * Turn the channels staff asked for into notice rows.
+     *
+     * A channel with no destination on file is skipped entirely — there is
+     * nothing to queue. SMS is different: if the member never set `allowSMS`
+     * we record a SUPPRESSED row rather than skipping, so the reason they were
+     * not texted is auditable instead of invisible.
+     */
+    private resolveDecisionNotices(
+        enrollment: {
+            user?: { email: string | null } | null;
+            contact?: {
+                email: string | null;
+                phoneNumber: string | null;
+                allowSMS: boolean;
+            } | null;
+        },
+        channels: NoticeChannel[],
+    ) {
+
+        const requested = new Set(channels);
+        const rows: {
+            channel: NoticeChannel;
+            destination: string;
+            status: NoticeStatus;
+        }[] = [];
+
+        if (requested.has(NoticeChannel.ACCOUNT_EMAIL) && enrollment.user?.email) {
+            rows.push({
+                channel    : NoticeChannel.ACCOUNT_EMAIL,
+                destination: enrollment.user.email,
+                status     : NoticeStatus.PENDING,
+            });
+        }
+
+        if (requested.has(NoticeChannel.CONTACT_EMAIL) && enrollment.contact?.email) {
+            rows.push({
+                channel    : NoticeChannel.CONTACT_EMAIL,
+                destination: enrollment.contact.email,
+                status     : NoticeStatus.PENDING,
+            });
+        }
+
+        if (requested.has(NoticeChannel.SMS) && enrollment.contact?.phoneNumber) {
+            rows.push({
+                channel    : NoticeChannel.SMS,
+                destination: enrollment.contact.phoneNumber,
+
+                status: enrollment.contact.allowSMS
+                    ? NoticeStatus.PENDING
+                    : NoticeStatus.SUPPRESSED,
+            });
+        }
+
+        return rows;
     }
 
 }

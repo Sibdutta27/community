@@ -32,6 +32,8 @@ import ConsentReview from "../components/ConsentReview/ConsentReview";
 
 import { verifyEnrollment } from "@/api/enrollment.api";
 
+import RejectDialog from "../components/RejectDialog/RejectDialog";
+
 /**
  * The steps are named after what they contain.
  *
@@ -60,6 +62,7 @@ export default function EnrollmentApproval() {
   const navigate = useNavigate();
 
   const [activeStep, setActiveStep] = useState(0);
+  const [rejectOpen, setRejectOpen] = useState(false);
 
   const isLastStep = activeStep === STEPS.length - 1;
 
@@ -74,22 +77,23 @@ export default function EnrollmentApproval() {
   /**
    * Handle the enrollment decision
    */
-  const handleVerification = async (isApproved) => {
+  const handleVerification = async (isApproved, decision = {}) => {
     // This decides someone's citizenship application and there is no undo in
     // the UI, so it asks first. The prompt names the outcome rather than
-    // saying "are you sure?".
-    const confirmed = window.confirm(
-      isApproved
-        ? "Approve this enrollment? The applicant becomes an enrolled member."
-        : "Reject this enrollment? The applicant will be told their application was not approved.",
-    );
+    // saying "are you sure?". Rejection goes through its own dialog, which
+    // collects the reason — so only approval confirms here.
+    if (isApproved) {
+      const confirmed = window.confirm(
+        "Approve this enrollment? The applicant becomes an enrolled member.",
+      );
 
-    if (!confirmed) {
-      return;
+      if (!confirmed) {
+        return;
+      }
     }
 
     await verificationMut(
-      { enrollmentId, isApproved },
+      { enrollmentId, isApproved, ...decision },
       {
         onSuccess: () => {
           toast.success(
@@ -187,7 +191,7 @@ export default function EnrollmentApproval() {
           <Button
             variant="outlined"
             color="error"
-            onClick={() => handleVerification(false)}
+            onClick={() => setRejectOpen(true)}
             disabled={verificationPending}
           >
             Reject
@@ -203,6 +207,17 @@ export default function EnrollmentApproval() {
           </Button>
         </Box>
       </Box>
+
+      <RejectDialog
+        enrollmentId={enrollmentId}
+        open={rejectOpen}
+        pending={verificationPending}
+        onClose={() => setRejectOpen(false)}
+        onConfirm={async (decision) => {
+          await handleVerification(false, decision);
+          setRejectOpen(false);
+        }}
+      />
     </Box>
   );
 }

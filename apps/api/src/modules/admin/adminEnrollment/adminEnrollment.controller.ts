@@ -194,6 +194,16 @@ export class AdminEnrollmentController {
     }
 
     /**
+     * The member's registered communication channels, for the decision dialog
+     */
+    @Get('/:enrollmentId/notification-channels')
+    async getNotificationChannels(
+        @Param('enrollmentId') enrollmentId: string,
+    ) {
+        return this.adminEnrollmentService.getNotificationChannels(enrollmentId);
+    }
+
+    /**
      * Verify document
      */
     @Patch('/:enrollmentId/verify')
@@ -202,11 +212,20 @@ export class AdminEnrollmentController {
 
         @Body()
         body: VerifyEnrollmentDto,
+
+        @CurrentUser() user?: { id: string },
     ) {
         if ( body.isApproved ) {
             return this.adminEnrollmentService.approveEnrollment( enrollmentId );
-        } else {
-            return this.adminEnrollmentService.rejectEnrollment( enrollmentId );
         }
+
+        return this.adminEnrollmentService.rejectEnrollment(
+            enrollmentId,
+            {
+                reason     : body.reason,
+                channels   : body.channels,
+                decidedById: user?.id,
+            },
+        );
     }
 }

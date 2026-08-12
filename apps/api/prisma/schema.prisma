@@ -91,6 +91,13 @@ model Enrollment {
 
   approvalDate DateTime?
 
+  // Why the application was decided the way it was. A rejection with no
+  // recorded reason cannot be explained to the applicant later, and cannot be
+  // reviewed if the decision is ever challenged.
+  decisionReason String?
+  decidedAt      DateTime?
+  decidedById    String?
+
   user User @relation(fields: [userId], references: [id])
 
   contact   Contact?
@@ -98,6 +105,7 @@ model Enrollment {
   ancestry  Ancestry[]
   documents Document[]
   steps     EnrollmentStep[]
+  notices   EnrollmentNotice[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -222,6 +230,52 @@ enum AncestryRelation {
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // Contact model
+/// A decision notice queued for one communication channel.
+///
+/// There is no email or SMS provider wired into this API yet, so a row here
+/// records that staff ASKED for the applicant to be told — never that they
+/// were. Rows stay PENDING until something delivers them; when a provider is
+/// added it consumes PENDING rows and moves them to SENT or FAILED. That is
+/// deliberate: a queue that silently claims success is worse than no queue.
+///
+/// `destination` is snapshotted at decision time, so a later change to the
+/// member's email does not rewrite what we tried to notify.
+model EnrollmentNotice {
+  id           String @id @default(uuid())
+  enrollmentId String
+
+  channel     NoticeChannel
+  destination String
+
+  status NoticeStatus @default(PENDING)
+
+  sentAt DateTime?
+  error  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([enrollmentId])
+}
+
+enum NoticeChannel {
+  ACCOUNT_EMAIL
+  CONTACT_EMAIL
+  SMS
+}
+
+enum NoticeStatus {
+  PENDING
+  SENT
+  FAILED
+  /// Requested, but not queued — e.g. SMS asked for on a member who never
+  /// consented to it. Recorded rather than dropped so the gap is auditable.
+  SUPPRESSED
+}
+
 model Contact {
   id           String @id @default(uuid())
   enrollmentId String @unique

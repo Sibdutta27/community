@@ -145,10 +145,31 @@ export async function verifyEnrollmentDocument({ documentId, isApproved }) {
 /**
  * Verify enrollment
  */
-export async function verifyEnrollment({ enrollmentId, isApproved }) {
+export async function verifyEnrollment({
+  enrollmentId,
+  isApproved,
+  reason,
+  channels,
+}) {
   const response = await api.patch(`/admin/enrollment/${enrollmentId}/verify`, {
     isApproved,
+
+    // Only sent on a rejection; the API treats both as optional so it can be
+    // deployed ahead of this panel.
+    ...(reason ? { reason } : {}),
+    ...(channels?.length ? { channels } : {}),
   });
+
+  return response.data;
+}
+
+/**
+ * The member's registered communication channels, for the decision dialog.
+ */
+export async function fetchNotificationChannels(enrollmentId) {
+  const response = await api.get(
+    `/admin/enrollment/${enrollmentId}/notification-channels`,
+  );
 
   return response.data;
 }
