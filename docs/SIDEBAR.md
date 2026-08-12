@@ -8,7 +8,12 @@ Statuses: open | in-progress | done. Types: discuss-later | parallel-agent.
 ## 2026-08-11 — Admin panel feels bloated; make it slim, elegant, enterprise
 
 - **type:** parallel-agent
-- **status:** in-progress
+- **status:** done — merged 2026-08-11. Theme-level density pass (52 files, net −963 lines);
+  10 of 12 screens now fit a 1440×900 viewport without scrolling. Found and fixed a real
+  defect on the way: rows in the All/Approved/Rejected enrollment lists were inert (the
+  `<Link>` was commented out and pointed at `/users/edit/`), so only the Submitted queue
+  could open an application — staff could never reopen a decided one. **Five open questions
+  went back to the user, incl. an unrouted Dashboard rendering fake SaaS metrics.**
 - **raise when:** launched immediately at the user's request; collect when the agent reports back
 - **launched:** 2026-08-11, in an isolated git worktree
 - **owns:** `apps/admin/**` only. Reserved for the main thread: `docs/CHANGELOG.md`,
