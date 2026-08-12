@@ -3,6 +3,8 @@ import AdminLayout from "@/layouts/AdminLayout/AdminLayout.jsx";
 
 import Dashboard from "@/pages/Dashboard/Dashboard.jsx";
 
+import Website from "@/pages/Website/Website.jsx";
+
 import Users from "@/pages/Users/Users.jsx";
 import CreateUser from "@/pages/Users/CreateUser/CreateUser.jsx";
 import EditUser from "@/pages/Users/EditUsers/EditUser.jsx";
@@ -66,6 +68,9 @@ export default function AppRoutes() {
             into the user table. */}
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Navigate to="/" replace />} />
+
+        {/* Website Studio */}
+        <Route path="website" element={<Website />} />
 
         {/* Users */}
         <Route path="users" element={<Users />} />

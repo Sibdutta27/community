@@ -18,6 +18,7 @@ import {
 import {
   SpaceDashboard,
   People,
+  Language,
   ChevronLeft,
   ChevronRight,
   ExpandLess,
@@ -84,6 +85,14 @@ const menuItems = [
     icon: <Event />,
     path: "/events",
     alsoActiveOn: ["/event-categories"],
+  },
+  // The public website's copy. Sits with the other things staff maintain
+  // rather than under a settings menu — editing the homepage is routine work,
+  // not configuration.
+  {
+    label: "Website Studio",
+    icon: <Language />,
+    path: "/website",
   },
   {
     label: "Feedback",
