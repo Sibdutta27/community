@@ -9,6 +9,7 @@ import {
 import { DatabaseService } from '@/database/database.service';
 import { ContentRevisionAction } from '@/generated/prisma/enums';
 
+import { buildPublicMediaUrl } from './config';
 import { extractPlaceholders, isEditableKeyPath } from './content.util';
 import { getCatalogTerritory, isTerritoryStatus } from './territory.catalog';
 
@@ -150,14 +151,14 @@ export class ContentService {
      * edge — is what keeps it to one query per revalidation. See
      * `content.controller.ts` for why an edge cache here breaks publishing.
      *
-     * Territory overrides ride along here rather than getting their own
-     * endpoint: the web app already makes exactly one cached fetch in front of
-     * every render, and a second one would double that cost to deliver a few
-     * dozen names.
+     * Territory overrides and image-slot assignments ride along here rather
+     * than getting their own endpoints: the site already blocks on this fetch
+     * once per render, and further round-trips on that path would cost far
+     * more than the two fields are worth.
      */
     public async getPublishedMessages() {
 
-        const [rows, version, territoryRows] = await Promise.all([
+        const [rows, version, territoryRows, slots] = await Promise.all([
             this.database.contentString.findMany({
                 where: {
                     publishedAt: { not: null },
@@ -191,6 +192,22 @@ export class ContentService {
                     status        : true,
                 },
             }),
+
+            this.database.contentImageSlot.findMany({
+                where: { publishedAt: { not: null } },
+
+                select: {
+                    slotKey: true,
+
+                    media: {
+                        select: {
+                            fileKey: true,
+                            altEn  : true,
+                            altEs  : true,
+                        },
+                    },
+                },
+            }),
         ]);
 
         const overrides: Record<string, { en?: string; es?: string }> = {};
@@ -211,7 +228,52 @@ export class ContentService {
             version: version?.version ?? 0,
             overrides,
             territories: buildTerritoryOverrides(territoryRows),
+            media      : this.buildMediaPayload(slots),
         };
+    }
+
+    /**
+     * Published slot assignments, keyed by slot.
+     *
+     * A slot is only served when there is an actual URL to serve — the image
+     * still exists, and `S3_PUBLIC_URL` is set. Anything short of that is
+     * omitted, and the web app renders the image that shipped in git rather
+     * than a broken one. That is why the registry holds the default: an
+     * unresolvable slot degrades to "as shipped", never to "missing".
+     */
+    private buildMediaPayload(
+        slots: ReadonlyArray<{
+            slotKey: string;
+            media: { fileKey: string; altEn: string | null; altEs: string | null } | null;
+        }>,
+    ) {
+        const media: Record<
+            string,
+            { url: string; altEn: string | null; altEs: string | null }
+        > = {};
+
+        for (const slot of slots) {
+            if (!slot.media) {
+                continue;
+            }
+
+            const url = buildPublicMediaUrl(
+                process.env.S3_PUBLIC_URL,
+                slot.media.fileKey,
+            );
+
+            if (!url) {
+                continue;
+            }
+
+            media[slot.slotKey] = {
+                url,
+                altEn: slot.media.altEn,
+                altEs: slot.media.altEs,
+            };
+        }
+
+        return media;
     }
 
     /**

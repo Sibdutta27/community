@@ -35,6 +35,7 @@ export function YucayekeIdentityCard({
   yucayekeUnknown,
 }: YucayekeIdentityCardProps) {
   const t = useTranslations("profile.yucayekeCard");
+  const media = useTranslations("media");
   const tMap = useTranslations("yucayekeMap");
 
   const geometryQuery = useYucayekeGeometryQuery();
@@ -70,12 +71,16 @@ export function YucayekeIdentityCard({
         <div className="flex shrink-0 items-start justify-between gap-2">
           <div className="flex items-center gap-2">
             <div className="border-border relative size-8 shrink-0 overflow-hidden rounded-full border bg-white p-0.5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_3px_8px_-5px_rgba(20,26,34,0.35)]">
+              {/* Plain <img>, not next/image: this subtree is rasterized by
+                  html-to-image for the PNG/PDF export. If the seal is ever
+                  reassigned to an uploaded image, the public bucket must send
+                  CORS headers or the export cannot inline it. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 alt=""
                 aria-hidden="true"
                 className="size-full rounded-full object-cover"
-                src="/images/logo.png"
+                src={media("brand.logo")}
               />
             </div>
             <div className="min-w-0">

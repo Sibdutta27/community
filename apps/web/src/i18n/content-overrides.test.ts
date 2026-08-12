@@ -3,7 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   __resetContentOverrideCache,
   CONTENT_CACHE_TAG,
+  getContentMedia,
   getContentOverrides,
+  getSiteContent,
   getTerritoryOverrides,
 } from "@/i18n/content-overrides";
 
@@ -11,6 +13,7 @@ const payload = {
   version: 3,
   overrides: { "home.hero.title": { en: "Kaya!", es: "¡Kaya!" } },
   territories: { aymaco: { displayName: "Aymamón" } },
+  media: { "brand.logo": { url: "https://cdn.test/site-media/logo.png" } },
 };
 
 type FetchOptions = {
@@ -158,5 +161,52 @@ describe("getTerritoryOverrides", () => {
     mockFetch(() => okResponse({ version: 1, overrides: {} }));
 
     await expect(getTerritoryOverrides()).resolves.toEqual({});
+  });
+});
+
+describe("getContentMedia", () => {
+  beforeEach(() => {
+    __resetContentOverrideCache();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("returns the published image-slot assignments", async () => {
+    mockFetch(() => okResponse(payload));
+
+    await expect(getContentMedia()).resolves.toEqual(payload.media);
+  });
+
+  // Copy, territories and images ride in one payload. Splitting them into
+  // separate requests would multiply the cost of a fetch that runs in front of
+  // every render.
+  it("shares one request with the copy and territory overrides", async () => {
+    const spy = mockFetch(() => okResponse(payload));
+
+    const content = await getSiteContent();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(content.overrides).toEqual(payload.overrides);
+    expect(content.territories).toEqual(payload.territories);
+    expect(content.media).toEqual(payload.media);
+  });
+
+  // Each field is newer than some deployed version of the API. A response
+  // missing one must not discard the parts that did arrive.
+  it("keeps the copy when the response carries no media field", async () => {
+    mockFetch(() => okResponse({ version: 3, overrides: payload.overrides }));
+
+    const content = await getSiteContent();
+
+    expect(content.overrides).toEqual(payload.overrides);
+    expect(content.media).toEqual({});
+  });
+
+  it("falls back to nothing when the API is unreachable", async () => {
+    mockFetch(() => Promise.reject(new Error("gone")));
+
+    await expect(getContentMedia()).resolves.toEqual({});
   });
 });

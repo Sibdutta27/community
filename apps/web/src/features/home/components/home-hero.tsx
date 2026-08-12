@@ -13,14 +13,17 @@ import { fadeInScaleItem, fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 
 import sharedStyles from "../styles/home-shared.module.scss";
 
-const memberAvatarSrcs = [
-  "/images/member1.png",
-  "/images/member2.png",
-  "/images/member3.png",
+// Slot keys, not paths. The images themselves come from the reserved `media`
+// namespace, so an editor can swap a portrait without a deploy.
+const memberAvatarSlots = [
+  "home.hero.portrait.1",
+  "home.hero.portrait.2",
+  "home.hero.portrait.3",
 ] as const;
 
 export function HomeHero() {
   const t = useTranslations("home.hero");
+  const media = useTranslations("media");
 
   return (
     <PageHeroSection containerClassName={sharedStyles.sectionContainer}>
@@ -65,9 +68,9 @@ export function HomeHero() {
           className="flex items-center -space-x-3"
           variants={fadeInUpContainer}
         >
-          {memberAvatarSrcs.map((src, index) => (
+          {memberAvatarSlots.map((slotKey, index) => (
             <motion.div
-              key={src}
+              key={slotKey}
               className="border-surface bg-surface overflow-hidden rounded-full border-2"
               variants={fadeInScaleItem}
             >
@@ -76,7 +79,7 @@ export function HomeHero() {
                 className="h-10 w-10 object-cover"
                 height={40}
                 priority={false}
-                src={src}
+                src={media(slotKey)}
                 width={40}
               />
             </motion.div>

@@ -8,8 +8,8 @@ import {
   PREVIEW_LOCALE_HEADER,
   resolveLocale,
 } from "@/i18n/config";
-import { getContentOverrides } from "@/i18n/content-overrides";
-import { mergeMessages } from "@/i18n/merge-messages";
+import { getSiteContent } from "@/i18n/content-overrides";
+import { mergeMessages, withMediaNamespace } from "@/i18n/merge-messages";
 
 /**
  * next-intl request config (wired via `createNextIntlPlugin` in
@@ -20,6 +20,10 @@ import { mergeMessages } from "@/i18n/merge-messages";
  * shipped catalog here. The catalog stays the source of truth: if the API is
  * unreachable the merge receives `{}` and the site renders exactly as it does
  * with no CMS at all.
+ *
+ * Site images are resolved the same way and injected as a reserved `media`
+ * namespace, so `t("media.brand.logo")` works in server and client components
+ * alike without a second fetch or a second provider.
  */
 export default getRequestConfig(async () => {
   const [cookieStore, headerStore] = await Promise.all([cookies(), headers()]);
@@ -34,13 +38,16 @@ export default getRequestConfig(async () => {
     ? resolveLocale(previewLocale)
     : resolveLocale(cookieStore.get(LOCALE_COOKIE_NAME)?.value);
 
-  const [defaults, overrides] = await Promise.all([
+  const [defaults, content] = await Promise.all([
     import(`../../messages/${locale}.json`).then((module) => module.default),
-    getContentOverrides(),
+    getSiteContent(),
   ]);
 
   return {
     locale,
-    messages: mergeMessages(defaults, overrides, locale),
+    messages: withMediaNamespace(
+      mergeMessages(defaults, content.overrides, locale),
+      content.media,
+    ),
   };
 });

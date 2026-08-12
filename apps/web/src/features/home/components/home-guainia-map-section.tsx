@@ -9,6 +9,7 @@ import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 
 export function HomeGuainiaMapSection() {
   const t = useTranslations("home.yucayeke");
+  const media = useTranslations("media");
 
   return (
     <motion.section
@@ -27,7 +28,7 @@ export function HomeGuainiaMapSection() {
           className="h-auto w-full"
           height={871}
           priority={false}
-          src="/images/guainia-map.svg"
+          src={media("home.guainiaMap")}
           width={1808}
         />
       </motion.div>
