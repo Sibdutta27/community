@@ -775,3 +775,91 @@ model ContentVersion {
   version   Int      @default(1)
   updatedAt DateTime @updatedAt
 }
+
+/// Staff edits to a territory's presentation.
+///
+/// `TERRITORIES` in apps/web stays in git and stays authoritative. Only fields
+/// consumed at the RENDER boundary are overridable here — the resolution graph
+/// (`buildLookup`, `resolveTerritory`) is never fed from this table, so an
+/// edited alias cannot cause a lookup collision.
+///
+/// Deliberately absent: `slug` (the URL and `generateStaticParams`),
+/// `geometryKey` (an exact `===` join to the GeoJSON — editing it silently
+/// unmaps a territory), and `legalName`/`apiNames` (they back
+/// `ACCEPTED_YUCAYEKE_VALUES` and the `@IsIn` on enrollment step 1, so a change
+/// 400s members mid-enrollment). Those remain code changes on purpose.
+model TerritoryOverride {
+  id   String @id @default(uuid())
+  slug String @unique
+
+  displayName String?
+  cacique     String?
+
+  /// Rendered publicly as "Also known as". Distinct from the code's
+  /// `legacyNames`, which resolve old values and must never be shown.
+  altNames       String[] @default([])
+  municipalities String[] @default([])
+
+  /// "confirmed" | "oralTradition" — an editorial judgement the Nation owns.
+  status String?
+
+  publishedAt DateTime?
+  updatedBy   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// An image uploaded for the public site.
+///
+/// Sibling of Document, deliberately NOT a Document: that model is
+/// enrollment-scoped with verification state, and adding a website member to
+/// `DocumentType` would drag site imagery through the enrollment review queue.
+///
+/// Lives in a SEPARATE public bucket. The main bucket holds birth certificates
+/// and identity documents; serving site images from it would put that data one
+/// misconfigured prefix away from public.
+model ContentMedia {
+  id       String @id @default(uuid())
+  fileKey  String @unique
+  fileName String
+  mimeType String
+  fileSize Int
+
+  width  Int?
+  height Int?
+
+  /// Alt text, both locales — an image swap that drops alt text is an
+  /// accessibility regression the editor should not be able to cause silently.
+  altEn String?
+  altEs String?
+
+  uploadedBy String?
+
+  createdAt DateTime @default(now())
+
+  slots ContentImageSlot[]
+
+  @@index([createdAt])
+}
+
+/// A named, swappable image position on the site.
+///
+/// `slotKey` is validated against a git-defined registry, which also holds the
+/// shipped fallback — so a missing row here can never produce a broken image.
+model ContentImageSlot {
+  id      String @id @default(uuid())
+  slotKey String @unique
+
+  mediaId String?
+
+  publishedAt DateTime?
+  updatedBy   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media ContentMedia? @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+
+  @@index([mediaId])
+}

@@ -28,6 +28,34 @@ DTOs ↔ types ↔ BFF in sync.
 - **Ready (2026-07-20 sync):** T1, T2, T5
 - **Backlog (2026-07-20 sync):** T3, T4, T6
 - **In progress:** F1
+
+## Website Studio (2026-08-12)
+
+CMS inside the admin panel. Copy is stored as DB **overrides layered over the git catalogs**, so an
+unreachable API renders the site exactly as it shipped. Steps W1–W3 are Done and deployed.
+
+**Phase 0 (landed on main first, deliberately):** the Prisma models and migration for W5+W6, plus the
+Studio's tabs/routes/page shells. Both lanes would otherwise contend on `schema.prisma`,
+`AppRoutes.jsx` and `sections.js` — landing them up front is what makes W5 ‖ W6 safe.
+
+| Card   | Scope                                                                                    | Owns                                                                                                                       | Deps    |
+| ------ | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------- |
+| ~~W1~~ | ContentKey registry + `content:sync`                                                     | —                                                                                                                          | Done    |
+| ~~W2~~ | Override pipeline: models, `content` module, merge in `i18n/request.ts`, revalidate hook | —                                                                                                                          | Done    |
+| ~~W3~~ | Pages tab: EN/ES editor, sections, publish/revert, placeholder guard                     | —                                                                                                                          | Done    |
+| **W4** | Live preview pane + `?lang` → `x-locale` so Spanish previews in a third-party frame      | `Website.jsx`, `apps/web/middleware.ts`, `i18n/*`                                                                          | W3      |
+| **W5** | Yukayeke tab: `TerritoryOverride` module, `applyTerritoryOverride`, locked/editable UI   | `apps/api/.../content/territory*`, `apps/web/features/yucayeke/lib/apply-territory-override*`, `pages/Website/Yucayeke/**` | Phase 0 |
+| **W6** | Media: public bucket, presign/confirm, `remotePatterns`, slot registry, ~10 image swaps  | `apps/api/.../content/media*`, `apps/web/src/content/media-slots*`, `next.config.ts`, `pages/Website/Media/**`             | Phase 0 |
+| **W7** | History tab + docs + `website-studio` skill                                              | `pages/Website/History/**`, `docs/**`                                                                                      | W2      |
+
+**Parallel:** W5 ‖ W6 in worktrees; W4 + W7 on main. Each card owns disjoint paths — no shared file
+has two writers.
+
+**Method:** red → green → refactor. A failing test that names the defect goes in before the fix.
+
+**Done:** `turbo build|typecheck|lint` green · API jest + web Vitest green · deployed to btf-testing
+· live smoke green · migrations applied to `public` (**`prod_sim` still owes 4**).
+
 - **Done:** S0, S1, S2, S3 (mechanism, placeholder list), S4, S5, T0
 
 ---

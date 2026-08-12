@@ -4,6 +4,9 @@ import AdminLayout from "@/layouts/AdminLayout/AdminLayout.jsx";
 import Dashboard from "@/pages/Dashboard/Dashboard.jsx";
 
 import Website from "@/pages/Website/Website.jsx";
+import WebsiteYucayeke from "@/pages/Website/Yucayeke/WebsiteYucayeke.jsx";
+import WebsiteMedia from "@/pages/Website/Media/WebsiteMedia.jsx";
+import WebsiteHistory from "@/pages/Website/History/WebsiteHistory.jsx";
 
 import Users from "@/pages/Users/Users.jsx";
 import CreateUser from "@/pages/Users/CreateUser/CreateUser.jsx";
@@ -71,6 +74,9 @@ export default function AppRoutes() {
 
         {/* Website Studio */}
         <Route path="website" element={<Website />} />
+        <Route path="website/yucayeke" element={<WebsiteYucayeke />} />
+        <Route path="website/media" element={<WebsiteMedia />} />
+        <Route path="website/history" element={<WebsiteHistory />} />
 
         {/* Users */}
         <Route path="users" element={<Users />} />

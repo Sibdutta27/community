@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 
 import PageHeader from "@components/PageHeader/PageHeader";
 import Panel from "@components/Panel/Panel";
+import SectionNav from "@components/SectionNav/SectionNav";
 
 import useDebounceState from "@/hooks/useDebounceState";
 
@@ -34,6 +35,7 @@ import {
 } from "./hooks";
 
 import { findPage, WEBSITE_PAGES } from "./pages.config";
+import { WEBSITE_SECTION_ITEMS } from "./sections";
 
 /**
  * The Website Studio's Pages tab.
@@ -212,6 +214,8 @@ export default function Website() {
           </Box>
         }
       />
+
+      <SectionNav items={WEBSITE_SECTION_ITEMS} />
 
       {error ? (
         <Alert
