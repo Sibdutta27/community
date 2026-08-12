@@ -40,6 +40,11 @@ async function revert(page: Page, token: string) {
   );
 }
 
+// Serial on purpose. Every case here targets the same key and the shared
+// `afterEach` reverts it, so run in parallel one test's cleanup deletes what
+// another just published — a race in the test, not in the feature.
+test.describe.configure({ mode: "serial" });
+
 test.describe("website studio", () => {
   test.skip(
     !hasAdminCreds() || !API_BASE_URL,
