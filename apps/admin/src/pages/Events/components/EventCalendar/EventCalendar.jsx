@@ -259,9 +259,13 @@ function DayCell({ day, inMonth, isToday, events, onAdd, onOpenEvent }) {
       sx={{
         position: "relative",
 
-        minHeight: { xs: 76, md: 92 },
+        // A month of mostly-empty days does not need 92px per cell: six week
+        // rows spent ~550px before the card's own chrome, which is what made
+        // the calendar feel oversized. 62px still fits two event chips, and a
+        // busier day scrolls within the cell rather than growing the grid.
+        minHeight: { xs: 54, md: 62 },
 
-        p: 0.5,
+        p: 0.375,
 
         borderRight: "1px solid",
         borderBottom: "1px solid",
@@ -292,13 +296,13 @@ function DayCell({ day, inMonth, isToday, events, onAdd, onOpenEvent }) {
           alignItems: "center",
           justifyContent: "space-between",
           gap: 0.5,
-          mb: 0.5,
+          mb: 0.25,
         }}
       >
         <Box
           sx={{
-            width: 20,
-            height: 20,
+            width: 18,
+            height: 18,
             borderRadius: "999px",
 
             display: "flex",
@@ -332,21 +336,24 @@ function DayCell({ day, inMonth, isToday, events, onAdd, onOpenEvent }) {
         />
       </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-        {events.slice(0, 3).map((event) => (
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}>
+        {/* Two fit the resting cell height; beyond that the row grows rather
+            than hiding events behind a scrollbar inside a 62px box. The count
+            is always stated so a busy day never looks quiet. */}
+        {events.slice(0, 2).map((event) => (
           <EventChip key={event.id} event={event} onOpen={onOpenEvent} />
         ))}
 
-        {events.length > 3 ? (
+        {events.length > 2 ? (
           <Typography
             sx={{
               pl: 0.5,
-              fontSize: "0.7rem",
+              fontSize: "0.68rem",
               fontWeight: 600,
               color: "text.secondary",
             }}
           >
-            +{events.length - 3} more
+            +{events.length - 2} more
           </Typography>
         ) : null}
       </Box>

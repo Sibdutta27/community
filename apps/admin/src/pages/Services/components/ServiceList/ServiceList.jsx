@@ -1,26 +1,27 @@
-import { useCallback, useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import useDebounceState from "@/hooks/useDebounceState";
 
-import Table, { TableCell } from "@/components/ui/Table/Table";
+import Panel from "@/components/Panel/Panel";
 
 import { useServices, useServiceCategory } from "./hooks.js";
 
 import {
-  Typography,
+  Alert,
   Box,
   Button,
   Chip,
-  MenuItem,
-  TextField,
   InputAdornment,
+  MenuItem,
+  Skeleton,
+  TablePagination,
+  TextField,
+  Typography,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
 import GroupsIcon from "@mui/icons-material/Groups";
-
-import CategorySelect from "../CategorySelect/CategorySelect.jsx";
 
 import {
   SERVICE_STATUSES,
@@ -28,327 +29,247 @@ import {
   serviceStatusLabel,
 } from "../../serviceStatus.util.js";
 
-import styles from "./serviceList.module.css";
-
 /**
- * Program list.
+ * Programs, as a vertical list rather than a seven-column table.
  *
- * Columns are typographic rather than a row of disabled textareas, and the two
- * things staff actually scan for lead: whether the program is live, and how
- * many people signed up.
+ * A program is a small record with a long name and a description — exactly the
+ * shape a wide table handles worst. Spread across Program / Category / Status /
+ * Registrants / Contact / Featured / Edit, the name had 280px, the description
+ * clamped to two lines, and "Featured" was a column of em dashes because almost
+ * nothing is ever featured.
+ *
+ * Read down instead: name and status first, then the details that qualify it,
+ * then the two actions. The whole record is on one line of sight, the list
+ * starts immediately under the filters, and nothing scrolls sideways.
  */
 const ServiceList = () => {
-  /**
-   * Table filters
-   */
   const [filters, setFilters] = useState({
     page: 1,
     limit: 10,
     search: "",
     status: "",
+    categoryId: "",
   });
 
-  /**
-   * Debounced search only
-   */
-  const debouncedSearch = useDebounceState(filters.search, 1000);
+  const debouncedSearch = useDebounceState(filters.search, 500);
 
-  /**
-   * Prepared query filters
-   */
-  const queryFilters = useMemo(() => {
-    return {
-      ...filters,
-      search: debouncedSearch,
-    };
-  }, [filters, debouncedSearch]);
+  const queryFilters = useMemo(
+    () => ({ ...filters, search: debouncedSearch }),
+    [filters, debouncedSearch],
+  );
 
-  // Hooks for search services
   const {
-    data: ServiceData,
-    isFetching: ServiceFetching,
-    error: ServiceFetchingError,
+    data: serviceData,
+    isFetching: serviceFetching,
+    error: serviceError,
     refetch: refetchService,
   } = useServices(queryFilters);
 
-  // Hooks for search services category
-  const {
-    data: ServiceCategoryData,
-    isFetching: ServiceCategoryFetching,
-    refetch: refetchServiceCategory,
-  } = useServiceCategory({});
+  const { data: categoryData } = useServiceCategory({});
 
-  /**
-   * Handle realtime filter updates
-   */
-  const handleFilter = useCallback((rowsPerPage, page, filter) => {
-    setFilters((prev) => ({
-      ...prev,
-      page,
-      limit: rowsPerPage,
-      search: filter.search || "",
-      status: filter.status || "",
-      categoryId: filter.categoryId,
-    }));
-  }, []);
+  const update = (patch) =>
+    setFilters((prev) => ({ ...prev, page: 1, ...patch }));
 
-  /**
-   * Define realtime filters
-   */
-  const realtimeFilter = [
-    {
-      name: "categories",
-      render: (updateFilter) => (
-        <Box key="categories">
-          <CategorySelect
-            key="categories"
-            placeholder="Select Category..."
-            categorys={ServiceCategoryData?.data}
-            onChange={(id) => updateFilter("categoryId", id)}
-          />
-        </Box>
-      ),
-    },
-    {
-      name: "status",
-      render: (updateFilter, filterValue) => (
+  const rows = serviceData?.data ?? [];
+
+  if (serviceError) {
+    return (
+      <Alert
+        severity="error"
+        action={
+          <Button color="inherit" size="small" onClick={() => refetchService()}>
+            Retry
+          </Button>
+        }
+      >
+        Could not load programs.
+      </Alert>
+    );
+  }
+
+  return (
+    <Panel padding="none">
+      {/* Filters sit inside the same surface as the list so the programs
+          themselves start as close to the top as the controls allow. */}
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 1,
+          p: 1.25,
+          borderBottom: "1px solid var(--admin-border)",
+        }}
+      >
         <TextField
-          key="statusFilter"
-          name="status"
+          size="small"
+          placeholder="Search programs…"
+          value={filters.search}
+          onChange={(e) => update({ search: e.target.value })}
+          sx={{ flex: "1 1 220px" }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+        <TextField
+          select
+          size="small"
+          label="Category"
+          value={filters.categoryId}
+          onChange={(e) => update({ categoryId: e.target.value })}
+          sx={{ minWidth: 170 }}
+        >
+          <MenuItem value="">All categories</MenuItem>
+          {(categoryData?.data ?? []).map((category) => (
+            <MenuItem key={category.id} value={category.id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
           select
           size="small"
           label="Status"
-          value={filterValue || ""}
-          onChange={(e) => updateFilter(e.target.name, e.target.value)}
-          sx={{ minWidth: 180 }}
+          value={filters.status}
+          onChange={(e) => update({ status: e.target.value })}
+          sx={{ minWidth: 150 }}
         >
           <MenuItem value="">All statuses</MenuItem>
-
           {SERVICE_STATUSES.map((status) => (
             <MenuItem key={status.value} value={status.value}>
               {status.label}
             </MenuItem>
           ))}
         </TextField>
-      ),
-    },
-    {
-      name: "search",
-      render: (updateFilter, filterValue) => (
-        <TextField
-          key="searchField"
-          name="search"
-          placeholder="Search Program..."
-          size="small"
-          value={filterValue || ""}
-          onChange={(e) => updateFilter(e.target.name, e.target.value)}
-          className={styles.searchInput}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon className={styles.searchIcon} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-      ),
-    },
-  ];
+      </Box>
 
-  /**
-   * Columns for the data table
-   */
-  const columns = [
-    {
-      name: "Program",
-      minWidth: "280px",
-      grow: 2,
-      cell: (row) => (
-        <TableCell title={row.name}>
-          <Box sx={{ minWidth: 0, py: 0.5 }}>
-            <Box
-              component={Link}
-              to={`/services/edit/${row.id}`}
-              sx={{
-                display: "block",
-                fontWeight: 600,
-                fontSize: "0.88rem",
-                color: "text.primary",
-                textDecoration: "none",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                "&:hover": { color: "primary.main" },
-              }}
-            >
-              {row.name}
+      {serviceFetching ? (
+        <Box sx={{ p: 1.25 }}>
+          {[0, 1, 2, 3].map((n) => (
+            <Skeleton key={n} variant="rounded" height={56} sx={{ mb: 1 }} />
+          ))}
+        </Box>
+      ) : rows.length === 0 ? (
+        <Box sx={{ p: 3, textAlign: "center" }}>
+          <Typography variant="body2" color="text.secondary">
+            No programs match these filters.
+          </Typography>
+        </Box>
+      ) : (
+        rows.map((row, index) => (
+          <Box
+            key={row.id}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              px: 1.5,
+              py: 1.25,
+              borderTop: index === 0 ? "none" : "1px solid var(--admin-border)",
+              "&:hover": { bgcolor: "var(--admin-surface-muted)" },
+            }}
+          >
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  flexWrap: "wrap",
+                }}
+              >
+                <Typography
+                  component={Link}
+                  to={`/services/edit/${row.id}`}
+                  variant="body2"
+                  sx={{
+                    fontWeight: 700,
+                    color: "text.primary",
+                    textDecoration: "none",
+                    "&:hover": { color: "primary.main" },
+                  }}
+                >
+                  {row.name}
+                </Typography>
+
+                <Chip
+                  size="small"
+                  variant="outlined"
+                  color={serviceStatusColor(row.status)}
+                  label={serviceStatusLabel(row.status)}
+                />
+
+                {/* Only ever shown when true — as a column it was a stack of
+                    em dashes taking 140px of every row. */}
+                {row.isFeatured ? (
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    color="secondary"
+                    label="Featured"
+                  />
+                ) : null}
+              </Box>
+
+              <Typography
+                variant="caption"
+                sx={{ display: "block", color: "text.secondary" }}
+                noWrap
+              >
+                {[
+                  row.category?.name,
+                  row.location,
+                  [row.phone, row.email].filter(Boolean).join(" · "),
+                ]
+                  .filter(Boolean)
+                  .join("  ·  ") || "No details recorded"}
+              </Typography>
             </Box>
 
-            <Typography
-              variant="body2"
-              sx={{
-                mt: 0.25,
-                color: "text.secondary",
-                fontSize: "0.78rem",
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
-            >
-              {row.description || "No description"}
-            </Typography>
-          </Box>
-        </TableCell>
-      ),
-    },
-    {
-      name: "Category",
-      minWidth: "150px",
-      cell: (row) => (
-        <TableCell title="Category">
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {row?.category?.name || "—"}
-          </Typography>
-        </TableCell>
-      ),
-    },
-    {
-      name: "Status",
-      width: "150px",
-      cell: (row) => (
-        <TableCell title="Status">
-          <Chip
-            size="small"
-            variant="outlined"
-            color={serviceStatusColor(row.status)}
-            label={serviceStatusLabel(row.status)}
-          />
-        </TableCell>
-      ),
-    },
-    {
-      name: "Registrants",
-      minWidth: "150px",
-      cell: (row) => (
-        <TableCell title="Registrants">
-          <Button
-            component={Link}
-            to={`/services/${row.id}/registrations`}
-            size="small"
-            variant="outlined"
-            startIcon={<GroupsIcon />}
-          >
-            {row._count?.registrations ?? 0}
-          </Button>
-        </TableCell>
-      ),
-    },
-    {
-      name: "Contact",
-      minWidth: "220px",
-      cell: (row) => (
-        <TableCell title="Contact">
-          <Box sx={{ minWidth: 0 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                color: "text.primary",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {row.location || "—"}
-            </Typography>
-
-            <Typography
-              variant="body2"
-              sx={{
-                color: "text.secondary",
-                fontSize: "0.78rem",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {[row.phone, row.email].filter(Boolean).join(" · ") ||
-                "No contact details"}
-            </Typography>
-          </Box>
-        </TableCell>
-      ),
-    },
-    {
-      name: "Featured",
-      width: "140px",
-      cell: (row) => (
-        <TableCell title="Featured">
-          {row.isFeatured ? (
-            <Chip
+            <Button
+              component={Link}
+              to={`/services/${row.id}/registrations`}
               size="small"
               variant="outlined"
-              color="secondary"
-              label="Featured"
-            />
-          ) : (
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              —
-            </Typography>
-          )}
-        </TableCell>
-      ),
-    },
-    {
-      name: "Edit",
-      width: "110px",
-      cell: (row) => (
-        <TableCell title="Edit">
-          <Button
-            component={Link}
-            to={`/services/edit/${row.id}`}
-            size="small"
-            variant="contained"
-          >
-            Edit
-          </Button>
-        </TableCell>
-      ),
-    },
-  ];
+              startIcon={<GroupsIcon />}
+              sx={{ flexShrink: 0 }}
+            >
+              {row._count?.registrations ?? 0}
+            </Button>
 
-  if (ServiceFetchingError) {
-    return (
-      <Box className={styles.errorContainer}>
-        <Typography variant="h6" className={styles.errorText}>
-          Error fetching Service data.
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            refetchService();
-            refetchServiceCategory();
-          }}
-          className={styles.retryButton}
-        >
-          Retry
-        </Button>
-      </Box>
-    );
-  }
+            <Button
+              component={Link}
+              to={`/services/edit/${row.id}`}
+              size="small"
+              variant="text"
+              sx={{ flexShrink: 0 }}
+            >
+              Edit
+            </Button>
+          </Box>
+        ))
+      )}
 
-  return (
-    <Table
-      data={ServiceData?.data}
-      columns={columns}
-      loading={ServiceFetching || ServiceCategoryFetching}
-      defaultRowsParPage={10}
-      perPageOption={[10, 20, 30, 50, 100]}
-      totalRows={ServiceData?.count}
-      realtimeFilter={realtimeFilter}
-      bulkActionComponent={null}
-      handleChange={handleFilter}
-    />
+      <TablePagination
+        component="div"
+        count={serviceData?.count ?? 0}
+        page={Math.max(0, filters.page - 1)}
+        onPageChange={(_, page) =>
+          setFilters((prev) => ({ ...prev, page: page + 1 }))
+        }
+        rowsPerPage={filters.limit}
+        rowsPerPageOptions={[10, 20, 50]}
+        onRowsPerPageChange={(e) => update({ limit: Number(e.target.value) })}
+        sx={{ borderTop: "1px solid var(--admin-border)" }}
+      />
+    </Panel>
   );
 };
 
