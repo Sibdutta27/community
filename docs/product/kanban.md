@@ -44,11 +44,12 @@ Studio's tabs/routes/page shells. Both lanes would otherwise contend on `schema.
 | ~~W2~~ | Override pipeline: models, `content` module, merge in `i18n/request.ts`, revalidate hook | —                                                                                                                          | Done    |
 | ~~W3~~ | Pages tab: EN/ES editor, sections, publish/revert, placeholder guard                     | —                                                                                                                          | Done    |
 | ~~W4~~ | Live preview pane + `?lang` → `x-locale` so Spanish previews in a third-party frame      | `Website.jsx`, `apps/web/middleware.ts`, `i18n/*`                                                                          | W3      |
-| **W5** | Yukayeke tab: `TerritoryOverride` module, `applyTerritoryOverride`, locked/editable UI   | `apps/api/.../content/territory*`, `apps/web/features/yucayeke/lib/apply-territory-override*`, `pages/Website/Yucayeke/**` | Phase 0 |
-| **W6** | Media: public bucket, presign/confirm, `remotePatterns`, slot registry, ~10 image swaps  | `apps/api/.../content/media*`, `apps/web/src/content/media-slots*`, `next.config.ts`, `pages/Website/Media/**`             | Phase 0 |
+| ~~W5~~ | Yukayeke tab: `TerritoryOverride` module, `applyTerritoryOverride`, locked/editable UI   | `apps/api/.../content/territory*`, `apps/web/features/yucayeke/lib/apply-territory-override*`, `pages/Website/Yucayeke/**` | Phase 0 |
+| ~~W6~~ | Media: public bucket, presign/confirm, `remotePatterns`, slot registry, ~10 image swaps  | `apps/api/.../content/media*`, `apps/web/src/content/media-slots*`, `next.config.ts`, `pages/Website/Media/**`             | Phase 0 |
 | W7     | History tab **done**; docs + `website-studio` skill remain                               | `pages/Website/History/**`, `docs/**`                                                                                      | W2      |
 
-**Parallel:** W5 ‖ W6 in worktrees; W4 + W7 on main. Each card owns disjoint paths — no shared file
+**Parallel (done):** W5 ‖ W6 ran in worktrees; W4 + W7 on main. Integration cost seven
+conflicts, all in the shared payload plumbing both lanes extended. Each card owns disjoint paths — no shared file
 has two writers.
 
 **Method:** red → green → refactor. A failing test that names the defect goes in before the fix.

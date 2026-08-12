@@ -64,12 +64,13 @@ document/enrollment writes. Users also register for `Service`s and `Event`s. Fil
 
 ## Skills (where each lives)
 
-| Skill           | Scope                        | Purpose                                                                                         |
-| --------------- | ---------------------------- | ----------------------------------------------------------------------------------------------- |
-| `community-kb`  | project (`.claude/skills/`)  | refresh architecture docs + `categories.yaml`; `drift` flags stale docs/PRD; `record` to memory |
-| `change-router` | project                      | `locate` a change to files; `log` it to the changelog                                           |
-| `create-prd`    | global (`~/.claude/skills/`) | author a vertical-slice PRD (used for `docs/product/PRD.md`)                                    |
-| `style-guide`   | global                       | `check`/`refresh` the design-system docs (owns `docs/design-system*.md`)                        |
+| Skill            | Scope                        | Purpose                                                                                          |
+| ---------------- | ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| `community-kb`   | project (`.claude/skills/`)  | refresh architecture docs + `categories.yaml`; `drift` flags stale docs/PRD; `record` to memory  |
+| `website-studio` | project                      | the admin-panel CMS: content overrides, yukayeke fields, media slots — read before touching i18n |
+| `change-router`  | project                      | `locate` a change to files; `log` it to the changelog                                            |
+| `create-prd`     | global (`~/.claude/skills/`) | author a vertical-slice PRD (used for `docs/product/PRD.md`)                                     |
+| `style-guide`    | global                       | `check`/`refresh` the design-system docs (owns `docs/design-system*.md`)                         |
 
 Rule of thumb: durable, shareable facts → these in-repo docs; run-specific gotchas/preferences →
 private memory. Design-system docs are owned by `style-guide`; the PRD by `create-prd`; the
