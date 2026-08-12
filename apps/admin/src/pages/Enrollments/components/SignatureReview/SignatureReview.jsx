@@ -1,191 +1,107 @@
 // EnrollmentSignatureReview.jsx
 
-import styles from './signatureReview.module.css';
+import { useQuery } from "@tanstack/react-query";
 
-import { useQuery } from '@tanstack/react-query';
+import { Box, Chip, Skeleton } from "@mui/material";
 
-import {
-    Alert,
-    Chip,
-    Paper,
-    Skeleton,
-    Typography,
-} from '@mui/material';
+import { Cancel, Draw, Verified } from "@mui/icons-material";
 
-import {
-    Cancel,
-    Draw,
-    Verified,
-} from '@mui/icons-material';
+import { fetchEnrollmentStep1 } from "@/api/enrollment.api";
 
-import { fetchEnrollmentStep1 } from '@/api/enrollment.api';
+import { SectionHeader } from "@components/Panel/Panel";
+import { Fact, Facts } from "@components/RecordFields/RecordFields";
 
-export default function EnrollmentSignatureReview({
-    enrollmentId,
-}) {
+import { reviewQuery } from "../../reviewQuery";
+import StepUnavailable from "../../StepUnavailable";
 
-    const {
-        data,
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['admin-enrollment-step1', enrollmentId],
-        queryFn: () => fetchEnrollmentStep1(enrollmentId)
-    });
+export default function EnrollmentSignatureReview({ enrollmentId }) {
+  const { data, isLoading, error } = useQuery(
+    reviewQuery(["admin-enrollment-step1", enrollmentId], () =>
+      fetchEnrollmentStep1(enrollmentId),
+    ),
+  );
 
-    /**
-     * Loading UI
-     */
-    if (isLoading) {
-        return (
-            <Paper className={styles.card}>
-
-                <Skeleton
-                    variant="text"
-                    width={260}
-                    height={40}
-                />
-
-                <div className={styles.formGrid}>
-
-                    {[1, 2, 3].map((field) => (
-                        <div key={field}>
-                            <Skeleton
-                                variant="text"
-                                width={120}
-                                height={20}
-                            />
-
-                            <Skeleton
-                                variant="rounded"
-                                height={54}
-                            />
-                        </div>
-                    ))}
-
-                </div>
-
-            </Paper>
-        );
-    }
-
-    /**
-     * Error UI
-     */
-    if (error) {
-        return (
-            <Alert severity="error">
-                Failed to load e-signature data
-            </Alert>
-        );
-    }
-
-    const signature = data?.signature;
-
+  /**
+   * Loading UI
+   */
+  if (isLoading) {
     return (
-        <Paper className={styles.card}>
+      <Box>
+        <Skeleton variant="text" width={220} height={22} />
 
-            {/* HEADER */}
-            <div className={styles.cardTop}>
-
-                <Draw className={styles.cardIcon} />
-
-                <div>
-
-                    <Typography className={styles.cardTitle}>
-                        E-signature / Confirmation
-                    </Typography>
-
-                    <Typography
-                        className={styles.cardSubTitle}
-                    >
-                        Submission confirmation details
-                    </Typography>
-
-                </div>
-
-            </div>
-
-            {/* FIELDS */}
-            <div className={styles.formGrid}>
-
-                <InfoItem
-                    label="Signature Name"
-                    value={signature?.signatureName}
-                />
-
-                <InfoItem
-                    label="Signature Date"
-                    value={
-                        signature?.signatureDate
-                            ? new Date(
-                                signature.signatureDate,
-                            ).toLocaleDateString()
-                            : null
-                    }
-                />
-
-                <div className={styles.fieldGroup}>
-
-                    <Typography className={styles.fieldLabel}>
-                        Agreed to Terms
-                    </Typography>
-
-                    <div className={styles.fieldBox}>
-
-                        {
-                            signature?.agreedToTerms ? (
-                                <Chip
-                                    icon={<Verified />}
-                                    label="Agreed"
-                                    className={
-                                        styles.agreedChip
-                                    }
-                                />
-                            ) : (
-                                <Chip
-                                    icon={<Cancel />}
-                                    label="Not Agreed"
-                                    className={
-                                        styles.notAgreedChip
-                                    }
-                                />
-                            )
-                        }
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </Paper>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(3, minmax(0, 1fr))",
+            },
+            columnGap: 3,
+          }}
+        >
+          {[1, 2, 3].map((field) => (
+            <Box key={field} sx={{ py: 0.75 }}>
+              <Skeleton variant="text" width={90} height={14} />
+              <Skeleton variant="text" width="70%" height={18} />
+            </Box>
+          ))}
+        </Box>
+      </Box>
     );
-}
+  }
 
-/**
- * Info Item
- */
-function InfoItem({
-    label,
-    value,
-}) {
+  /**
+   * Error UI
+   */
+  if (error) {
+    return <StepUnavailable error={error} what="e-signature" />;
+  }
 
-    return (
-        <div className={styles.fieldGroup}>
+  const signature = data?.signature;
 
-            <Typography className={styles.fieldLabel}>
-                {label}
-            </Typography>
+  return (
+    <Box>
+      <Box
+        sx={{
+          pb: 0.75,
+          mb: 0.5,
+          borderBottom: "2px solid",
+          borderColor: "divider",
+        }}
+      >
+        <SectionHeader
+          icon={<Draw />}
+          title="E-signature"
+          description="How the applicant confirmed and submitted"
+        />
+      </Box>
 
-            <div className={styles.fieldBox}>
+      <Box component="dl" sx={{ m: 0 }}>
+        <Facts>
+          <Fact label="Signature Name" value={signature?.signatureName} />
 
-                <Typography className={styles.fieldValue}>
-                    {value || '-'}
-                </Typography>
+          <Fact
+            label="Signature Date"
+            value={
+              signature?.signatureDate
+                ? new Date(signature.signatureDate).toLocaleDateString()
+                : null
+            }
+          />
 
-            </div>
-
-        </div>
-    );
+          <Fact
+            label="Agreed to Terms"
+            value={
+              <Chip
+                icon={signature?.agreedToTerms ? <Verified /> : <Cancel />}
+                label={signature?.agreedToTerms ? "Agreed" : "Not agreed"}
+                color={signature?.agreedToTerms ? "success" : "error"}
+                variant="outlined"
+              />
+            }
+          />
+        </Facts>
+      </Box>
+    </Box>
+  );
 }

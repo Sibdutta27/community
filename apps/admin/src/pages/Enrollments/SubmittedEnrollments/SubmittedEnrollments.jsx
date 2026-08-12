@@ -1,28 +1,20 @@
-import React from 'react';
-import SubmittedEnrollmentsList from '../components/SubmittedEnrollmentList/EnrollmentList';
+import { Box } from "@mui/material";
 
-import {
-    Box,
-    Typography,
-} from '@mui/material';
+import PageHeader from "@components/PageHeader/PageHeader";
 
-import styles from './submittedEnrollments.module.css';
+import SubmittedEnrollmentsList from "../components/SubmittedEnrollmentList/EnrollmentList";
 
 const SubmittedEnrollments = () => {
-    return (
-        <section className={styles.page}>
-            <Box className={styles.header}>
-                <Typography
-                    variant="h4"
-                    className={styles.title}
-                >
-                    Submitted Enrollments
-                </Typography>
-            </Box>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <PageHeader
+        title="Submitted Enrollments"
+        description="Applications waiting for a decision. Open one to review it step by step."
+      />
 
-            <SubmittedEnrollmentsList />
-        </section>
-    );
+      <SubmittedEnrollmentsList />
+    </Box>
+  );
 };
 
 export default SubmittedEnrollments;

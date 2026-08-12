@@ -1,28 +1,20 @@
-import React from 'react';
-import EnrollmentList from './components/EnrollmentList/EnrollmentList';
+import { Box } from "@mui/material";
 
-import {
-    Box,
-    Typography,
-} from '@mui/material';
+import PageHeader from "@components/PageHeader/PageHeader";
 
-import styles from './enrollments.module.css';
+import EnrollmentList from "./components/EnrollmentList/EnrollmentList";
 
 const Enrollments = () => {
-    return (
-        <section className={styles.page}>
-            <Box className={styles.header}>
-                <Typography
-                    variant="h4"
-                    className={styles.title}
-                >
-                    Enrollments
-                </Typography>
-            </Box>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <PageHeader
+        title="Enrollments"
+        description="Every application, at any stage. Use the status tabs to narrow the list."
+      />
 
-            <EnrollmentList />
-        </section>
-    );
+      <EnrollmentList />
+    </Box>
+  );
 };
 
 export default Enrollments;

@@ -1,43 +1,34 @@
-import React from 'react';
-import UserList from './components/UserList/UserList';
+import { Link } from "react-router-dom";
 
-import { Link } from 'react-router-dom';
+import { Box, Button } from "@mui/material";
 
-import {
-    Box,
-    Button,
-    Typography,
-} from '@mui/material';
+import AddIcon from "@mui/icons-material/Add";
 
-import AddIcon from '@mui/icons-material/Add';
+import PageHeader from "@components/PageHeader/PageHeader";
 
-import styles from './users.module.css';
+import UserList from "./components/UserList/UserList";
 
 const Users = () => {
-    return (
-        <section className={styles.page}>
-            <Box className={styles.header}>
-                <Typography
-                    variant="h4"
-                    className={styles.title}
-                >
-                    Users
-                </Typography>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <PageHeader
+        title="Users"
+        description="Everyone with an account. Select rows to change roles in bulk."
+        action={
+          <Button
+            variant="contained"
+            component={Link}
+            to="/users/create"
+            startIcon={<AddIcon />}
+          >
+            Add User
+          </Button>
+        }
+      />
 
-                <Button
-                    variant="contained"
-                    component={Link}
-                    to="/users/create"
-                    startIcon={<AddIcon />}
-                    className={styles.addButton}
-                >
-                    Add User
-                </Button>
-            </Box>
-
-            <UserList />
-        </section>
-    );
+      <UserList />
+    </Box>
+  );
 };
 
 export default Users;

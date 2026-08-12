@@ -7,19 +7,21 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { Alert } from "@mui/material";
-
 import { fetchEnrollmentStep3 } from "@/api/enrollment.api";
 
 import KinshipReview, {
   KinshipReviewSkeleton,
 } from "../KinshipReview/KinshipReview";
 
+import { reviewQuery } from "../../reviewQuery";
+import StepUnavailable from "../../StepUnavailable";
+
 export default function EnrollmentStep3Review({ enrollmentId }) {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-enrollment-step3", enrollmentId],
-    queryFn: () => fetchEnrollmentStep3(enrollmentId),
-  });
+  const { data, isLoading, error } = useQuery(
+    reviewQuery(["admin-enrollment-step3", enrollmentId], () =>
+      fetchEnrollmentStep3(enrollmentId),
+    ),
+  );
 
   /**
    * Loading
@@ -32,7 +34,7 @@ export default function EnrollmentStep3Review({ enrollmentId }) {
    * Error
    */
   if (error) {
-    return <Alert severity="error">Failed to load paternal kinship data</Alert>;
+    return <StepUnavailable error={error} what="paternal kinship" />;
   }
 
   return (

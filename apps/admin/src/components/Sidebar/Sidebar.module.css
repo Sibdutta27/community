@@ -1,27 +1,28 @@
 .logoBox {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
+  min-width: 0;
 }
 
 .logoMark {
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 6px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #0a56a8, #4ea6dc);
+  background: var(--admin-primary);
   color: #fff;
-  font-weight: 800;
+  font-weight: 700;
+  font-size: 12px;
 }
 
 .logoBox h1 {
-  font-size: 17px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   line-height: 1.1;
+  white-space: nowrap;
 }
-
-.logoBox span {
-  font-size: 12px;
-  color: #9fd0ec;
-}
-

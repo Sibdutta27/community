@@ -98,8 +98,8 @@ const EventCalendar = () => {
           flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 1.5,
-          pb: 2,
+          gap: 1,
+          pb: 1.25,
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -142,12 +142,16 @@ const EventCalendar = () => {
             flexWrap: "wrap",
           }}
         >
-          <CategorySelect
-            value={categoryId}
-            placeholder="Select Category..."
-            categorys={categoryData?.data}
-            onChange={(id) => setCategoryId(id || "")}
-          />
+          {/* Bounded: CategorySelect is fullWidth, which let it eat the bar
+              and push "Today" onto a second line. */}
+          <Box sx={{ width: 200 }}>
+            <CategorySelect
+              value={categoryId}
+              placeholder="Category"
+              categorys={categoryData?.data}
+              onChange={(id) => setCategoryId(id || "")}
+            />
+          </Box>
 
           <Button
             size="small"
@@ -172,9 +176,9 @@ const EventCalendar = () => {
           <Typography
             key={label}
             sx={{
-              py: 1,
+              py: 0.5,
               textAlign: "center",
-              fontSize: "0.7rem",
+              fontSize: "0.65rem",
               fontWeight: 700,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
@@ -223,8 +227,8 @@ const EventCalendar = () => {
 
       <Typography
         sx={{
-          pt: 1.5,
-          fontSize: "0.78rem",
+          pt: 1,
+          fontSize: "0.72rem",
           color: "text.secondary",
         }}
       >
@@ -255,9 +259,9 @@ function DayCell({ day, inMonth, isToday, events, onAdd, onOpenEvent }) {
       sx={{
         position: "relative",
 
-        minHeight: { xs: 96, md: 124 },
+        minHeight: { xs: 76, md: 92 },
 
-        p: 0.75,
+        p: 0.5,
 
         borderRight: "1px solid",
         borderBottom: "1px solid",
@@ -293,15 +297,15 @@ function DayCell({ day, inMonth, isToday, events, onAdd, onOpenEvent }) {
       >
         <Box
           sx={{
-            width: 24,
-            height: 24,
+            width: 20,
+            height: 20,
             borderRadius: "999px",
 
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
 
-            fontSize: "0.76rem",
+            fontSize: "0.7rem",
             fontWeight: isToday ? 700 : 600,
 
             // Today is marked by an azul disc, not by colour alone.

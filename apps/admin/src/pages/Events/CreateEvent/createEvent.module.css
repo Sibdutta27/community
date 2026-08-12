@@ -1,28 +1,39 @@
-/* createUser.module.css */
+/* createEvent.module.css */
 
 .page {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.title {
-    font-weight: 700 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
 }
 
 .formContainer {
-    padding: 24px;
-    border-radius: 16px !important;
+  padding: 16px;
+  width: 100%;
 }
 
+/*
+   Two columns from `sm` up. Eleven fields stacked one-per-row is what made
+   this form a scrolling page; paired up it fits a laptop viewport. Fields that
+   need the room (description, URLs) opt back out with `.fullWidth`.
+*/
 .form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 16px;
+  align-items: start;
 }
 
-.submitButton {
-    height: 44px;
-    text-transform: none !important;
-    font-weight: 600 !important;
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  padding-top: 4px;
+  border-top: 1px solid var(--admin-border);
 }

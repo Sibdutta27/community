@@ -200,15 +200,12 @@ const CreateEvent = () => {
         component={Link}
         to="/events"
         startIcon={<ArrowBackIcon />}
-        sx={{
-          alignSelf: "flex-start",
-          color: "text.secondary",
-        }}
+        sx={{ color: "text.secondary", ml: -1 }}
       >
         Back to events
       </Button>
 
-      <Typography variant="h4" className={styles.title}>
+      <Typography component="h1" variant="h1">
         Create Event
       </Typography>
 
@@ -222,6 +219,7 @@ const CreateEvent = () => {
           <TextField
             label="Event Title"
             fullWidth
+            className={styles.fullWidth}
             {...register("title")}
             error={!!errors.title}
             helperText={errors.title?.message}
@@ -231,8 +229,9 @@ const CreateEvent = () => {
           <TextField
             label="Description"
             multiline
-            minRows={4}
+            minRows={3}
             fullWidth
+            className={styles.fullWidth}
             {...register("description")}
             error={!!errors.description}
             helperText={errors.description?.message}
@@ -383,20 +382,20 @@ const CreateEvent = () => {
 
             fullWidth
 
+            className={styles.fullWidth}
+
             {...register("externalUrl")}
           />
 
-          <Button
-            type="submit"
+          <div className={styles.actions}>
+            <Button component={Link} to="/events" variant="outlined">
+              Cancel
+            </Button>
 
-            variant="contained"
-
-            disabled={isPending}
-
-            className={styles.submitButton}
-          >
-            {isPending ? "Creating..." : "Create Event"}
-          </Button>
+            <Button type="submit" variant="contained" disabled={isPending}>
+              {isPending ? "Creating..." : "Create Event"}
+            </Button>
+          </div>
         </Box>
       </Paper>
     </section>

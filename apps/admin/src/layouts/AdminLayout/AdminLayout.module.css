@@ -13,5 +13,11 @@
 
 .pageContent {
   width: 100%;
-  padding: 28px;
+  padding: 16px 20px 24px;
+}
+
+@media (max-width: 640px) {
+  .pageContent {
+    padding: 12px 12px 20px;
+  }
 }

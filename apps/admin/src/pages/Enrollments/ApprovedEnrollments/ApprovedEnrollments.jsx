@@ -1,28 +1,20 @@
-import React from 'react';
-import ApprovedEnrollmentList from '../components/ApprovedEnrollmentList/EnrollmentList';
+import { Box } from "@mui/material";
 
-import {
-    Box,
-    Typography,
-} from '@mui/material';
+import PageHeader from "@components/PageHeader/PageHeader";
 
-import styles from './approvedEnrollments.module.css';
+import ApprovedEnrollmentList from "../components/ApprovedEnrollmentList/EnrollmentList";
 
 const ApprovedEnrollments = () => {
-    return (
-        <section className={styles.page}>
-            <Box className={styles.header}>
-                <Typography
-                    variant="h4"
-                    className={styles.title}
-                >
-                    Approved Enrollments
-                </Typography>
-            </Box>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <PageHeader
+        title="Approved Enrollments"
+        description="Applications that were approved. These members are enrolled."
+      />
 
-            <ApprovedEnrollmentList />
-        </section>
-    );
+      <ApprovedEnrollmentList />
+    </Box>
+  );
 };
 
 export default ApprovedEnrollments;
