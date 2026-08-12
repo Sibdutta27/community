@@ -10,7 +10,6 @@ import {
   Button,
   Chip,
   CircularProgress,
-  Paper,
   Skeleton,
   Typography,
 } from "@mui/material";
@@ -31,6 +30,9 @@ import {
   fetchEnrollmentStep4,
   verifyEnrollmentDocument,
 } from "@/api/enrollment.api";
+
+import { reviewQuery } from "../../reviewQuery";
+import StepUnavailable from "../../StepUnavailable";
 
 const DOCUMENT_TYPES = [
   "USER_PHOTO",
@@ -82,10 +84,11 @@ export default function EnrollmentStep4Review({ enrollmentId }) {
     isLoading,
     error,
     refetch: refetchStep4,
-  } = useQuery({
-    queryKey: ["admin-enrollment-step4", enrollmentId],
-    queryFn: () => fetchEnrollmentStep4(enrollmentId),
-  });
+  } = useQuery(
+    reviewQuery(["admin-enrollment-step4", enrollmentId], () =>
+      fetchEnrollmentStep4(enrollmentId),
+    ),
+  );
 
   /**
    * Verify mutation
@@ -140,11 +143,11 @@ export default function EnrollmentStep4Review({ enrollmentId }) {
     return (
       <div className={styles.loadingGrid}>
         {[1, 2, 3].map((item) => (
-          <Paper key={item} className={styles.categoryCard}>
-            <Skeleton variant="text" width={220} height={35} />
+          <div key={item} className={styles.categoryBlock}>
+            <Skeleton variant="text" width={200} height={22} />
 
-            <Skeleton variant="rounded" height={180} />
-          </Paper>
+            <Skeleton variant="rounded" height={104} />
+          </div>
         ))}
       </div>
     );
@@ -154,7 +157,7 @@ export default function EnrollmentStep4Review({ enrollmentId }) {
    * Error
    */
   if (error) {
-    return <Alert severity="error">Failed to load documents</Alert>;
+    return <StepUnavailable error={error} what="documents" />;
   }
 
   /**
@@ -169,7 +172,7 @@ export default function EnrollmentStep4Review({ enrollmentId }) {
   return (
     <div className={styles.container}>
       {missingRequiredTypes.length > 0 && (
-        <Alert severity="warning" sx={{ borderRadius: "16px" }}>
+        <Alert severity="warning">
           Missing required{" "}
           {missingRequiredTypes.length > 1 ? "documents" : "document"}:{" "}
           <strong>
@@ -185,149 +188,143 @@ export default function EnrollmentStep4Review({ enrollmentId }) {
 
       {data.map((group) => {
         if (!DOCUMENT_TYPES.includes(group.type)) {
-          return;
+          return null;
         }
 
         const documents = getGroupDocuments(group);
         const isRequired = REQUIRED_DOCUMENT_TYPES.includes(group.type);
 
         return (
-          <Paper key={group.type} className={styles.categoryCard}>
+          <section key={group.type} className={styles.categoryBlock}>
             {/* HEADER */}
             <div className={styles.categoryHeader}>
-              <div>
-                <Typography className={styles.categoryTitle}>
+              <div className={styles.categoryHeading}>
+                <Typography component="h3" className={styles.categoryTitle}>
                   {DOCUMENT_TITLES[group.type]}
                 </Typography>
 
-                <Typography className={styles.categorySubTitle}>
-                  {documents.length} document(s)
-                </Typography>
+                {isRequired && (
+                  <Chip label="Required" color="error" variant="outlined" />
+                )}
               </div>
 
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                {isRequired && (
-                  <Chip
-                    label="Required"
-                    color="error"
-                    variant="outlined"
-                    sx={{ fontWeight: 700 }}
-                  />
-                )}
-
-                <Chip
-                  label={group.isSingle ? "Single Upload" : "Multiple Uploads"}
-                  className={styles.typeChip}
-                />
-              </Box>
+              <Typography className={styles.categorySubTitle}>
+                {documents.length}
+                {group.isSingle ? " of 1" : ""} uploaded
+              </Typography>
             </div>
 
             {/* EMPTY */}
             {documents.length === 0 &&
               (isRequired ? (
-                <Alert severity="warning" sx={{ borderRadius: "16px" }}>
+                <Alert severity="warning">
                   No {DOCUMENT_TITLES[group.type]} uploaded — this document is
                   required for enrollment.
                 </Alert>
               ) : (
-                <div className={styles.emptyBox}>
+                <p className={styles.emptyLine}>
                   <InsertDriveFile />
-
-                  <Typography>No document uploaded</Typography>
-                </div>
+                  Nothing uploaded
+                </p>
               ))}
 
             {/* DOCUMENTS */}
-            <div className={styles.documentsGrid}>
-              {documents.map((document) => (
-                <div key={document.id} className={styles.documentCard}>
-                  {/* PREVIEW */}
-                  <div className={styles.previewBox}>
-                    <img
-                      src={document.url}
-                      alt={document.type}
-                      className={styles.previewImage}
-                    />
-                  </div>
-
-                  {/* BODY */}
-                  <div className={styles.documentBody}>
-                    <div>
-                      <Typography className={styles.documentTitle}>
-                        {DOCUMENT_TITLES[document.type]}
-                      </Typography>
-
-                      <Typography className={styles.documentMeta}>
-                        Uploaded:{" "}
-                        {new Date(document.uploadedAt).toLocaleDateString()}
-                      </Typography>
-
-                      <Typography className={styles.documentMeta}>
-                        Size: {(document.fileSize / 1024).toFixed(1)} KB
-                      </Typography>
+            {documents.length > 0 && (
+              <div className={styles.documentsGrid}>
+                {documents.map((document) => (
+                  <div key={document.id} className={styles.documentCard}>
+                    {/* PREVIEW */}
+                    <div className={styles.previewBox}>
+                      <img
+                        src={document.url}
+                        alt={DOCUMENT_TITLES[document.type]}
+                        className={styles.previewImage}
+                      />
                     </div>
 
-                    {/* STATUS */}
-                    <div className={styles.statusRow}>
-                      {document.verifiedByAdmin ? (
-                        <Chip
-                          icon={<Verified />}
-                          label="Approved"
-                          className={styles.approvedChip}
-                        />
-                      ) : (
-                        <Chip
-                          label="Not Approved"
-                          className={styles.pendingChip}
-                        />
-                      )}
-                    </div>
-
-                    {/* ACTIONS */}
-                    <div className={styles.actionRow}>
-                      <Button
-                        variant="outlined"
-                        startIcon={<Download />}
-                        href={document.url}
-                        target="_blank"
-                        className={styles.previewBtn}
+                    {/* BODY */}
+                    <div className={styles.documentBody}>
+                      {/* The group heading already names the type, so the tile
+                          carries only what differs between tiles: when it
+                          arrived, how big it is, and whether it is verified. */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 1,
+                        }}
                       >
-                        Preview
-                      </Button>
+                        <Typography className={styles.documentMeta}>
+                          {new Date(document.uploadedAt).toLocaleDateString()} ·{" "}
+                          {(document.fileSize / 1024).toFixed(0)} KB
+                        </Typography>
 
-                      {document.verifiedByAdmin ? (
+                        {document.verifiedByAdmin ? (
+                          <Chip
+                            icon={<Verified />}
+                            label="Verified"
+                            color="success"
+                            variant="outlined"
+                          />
+                        ) : (
+                          <Chip
+                            label="Unverified"
+                            color="warning"
+                            variant="outlined"
+                          />
+                        )}
+                      </Box>
+
+                      {/* ACTIONS */}
+                      <div className={styles.actionRow}>
                         <Button
                           variant="outlined"
-                          startIcon={<Close />}
-                          disabled={vefificationPanding}
-                          onClick={() => handleVerification(document.id, false)}
-                          className={styles.rejectBtn}
+                          startIcon={<Download />}
+                          href={document.url}
+                          target="_blank"
                         >
-                          Reject
+                          Open
                         </Button>
-                      ) : (
-                        <Button
-                          variant="contained"
-                          startIcon={
-                            vefificationPanding ? (
-                              <CircularProgress size={18} />
-                            ) : (
-                              <CheckCircle />
-                            )
-                          }
-                          disabled={vefificationPanding}
-                          onClick={() => handleVerification(document.id, true)}
-                          className={styles.approveBtn}
-                        >
-                          Approve
-                        </Button>
-                      )}
+
+                        {document.verifiedByAdmin ? (
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            startIcon={<Close />}
+                            disabled={vefificationPanding}
+                            onClick={() =>
+                              handleVerification(document.id, false)
+                            }
+                          >
+                            Unverify
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="contained"
+                            color="success"
+                            startIcon={
+                              vefificationPanding ? (
+                                <CircularProgress size={14} color="inherit" />
+                              ) : (
+                                <CheckCircle />
+                              )
+                            }
+                            disabled={vefificationPanding}
+                            onClick={() =>
+                              handleVerification(document.id, true)
+                            }
+                          >
+                            Verify
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </Paper>
+                ))}
+              </div>
+            )}
+          </section>
         );
       })}
     </div>

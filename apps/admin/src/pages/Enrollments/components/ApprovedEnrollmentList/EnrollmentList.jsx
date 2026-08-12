@@ -2,21 +2,21 @@ import { useCallback, useState, useMemo } from "react";
 import useDebounceState from "@/hooks/useDebounceState";
 
 import Table, { TableCell } from "@/components/ui/Table/Table";
+import StatusChip from "../StatusChip";
 
 import { useApprovedEnrollments } from "./hooks.js";
 
 import {
-    Avatar,
-    Typography,
-    Box,
-    Button,
-    TextField,
-    InputAdornment
+  Avatar,
+  Typography,
+  Box,
+  Button,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 import styles from "./enrollmentList.module.css";
-import { formatWords } from "@/utils/formatWord.util.js";
 
 // Define all enrollment status
 // const ENROLLMENT_STATUSES = [
@@ -31,227 +31,190 @@ import { formatWords } from "@/utils/formatWord.util.js";
  * Show all Enrollments in a table with filters and pagination.
  */
 const EnrollmentList = () => {
+  /**
+   * Table filters
+   */
+  const [filters, setFilters] = useState({
+    page: 1,
+    limit: 10,
+    status: "",
+    search: "",
+  });
 
-    /**
-     * Table filters
-     */
-    const [filters, setFilters] = useState({
-        page  : 1,
-        limit : 10,
-        status: "",
-        search: "",
-    });
+  /**
+   * Debounced search only
+   */
+  const debouncedSearch = useDebounceState(filters.search, 1000);
 
-    /**
-     * Debounced search only
-    */
-    const debouncedSearch = useDebounceState( filters.search, 1000 );
+  /**
+   * Prepared query filters
+   */
+  const queryFilters = useMemo(() => {
+    return {
+      ...filters,
+      search: debouncedSearch,
+    };
+  }, [filters, debouncedSearch]);
 
-    /**
-     * Prepared query filters
-     */
-    const queryFilters = useMemo(() => {
-        return {
-            ...filters,
-            search: debouncedSearch,
-        };
-    }, [filters, debouncedSearch]);
+  // Hooks for search users
+  const {
+    data: enrollmentData,
+    isFetching: enrollmentFetching,
+    error: enrollmentFetchingError,
+    refetch: refetchEnrollment,
+  } = useApprovedEnrollments(queryFilters);
 
-    // Hooks for search users
-    const {
-        data: enrollmentData,
-        isFetching: enrollmentFetching,
-        error: enrollmentFetchingError,
-        refetch: refetchEnrollment,
-    } = useApprovedEnrollments(queryFilters);
+  /**
+   * Handle realtime filter updates
+   */
+  const handleFilter = useCallback((rowsPerPage, page, filter) => {
+    setFilters((prev) => ({
+      ...prev,
+      page,
+      limit: rowsPerPage,
+      search: filter.search || "",
+    }));
+  }, []);
 
-    /**
-     * Handle realtime filter updates
-     */
-    const handleFilter = useCallback(
-        (rowsPerPage, page, filter) => {
-            setFilters((prev) => ({
-                ...prev,
-                page,
-                limit : rowsPerPage,
-                search: filter.search || "",
-            }));
-        },
-        []
-    );
+  /**
+   * Define realtime filters
+   */
+  const realtimeFilter = [
+    {
+      name: "search",
+      render: (updateFilter, filterValue) => (
+        <TextField
+          key="searchField"
+          name="search"
+          placeholder="Search by name or email..."
+          size="small"
+          value={filterValue || ""}
+          onChange={(e) => updateFilter(e.target.name, e.target.value)}
+          className={styles.searchInput}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon className={styles.searchIcon} />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+      ),
+    },
+  ];
 
-    /**
-     * Define realtime filters
-     */
-    const realtimeFilter = [
-        {
-            name: "search",
-            render: (updateFilter, filterValue) => (
-                <TextField
-                    key="searchField"
-                    name="search"
-                    placeholder="Search users..."
-                    size="small"
-                    value={filterValue || ""}
-                    onChange={(e) =>
-                        updateFilter(
-                            e.target.name,
-                            e.target.value
-                        )
-                    }
-                    className={styles.searchInput}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon
-                                        className={styles.searchIcon}
-                                    />
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                />
-            ),
-        },
-    ];
-
-
-    /**
-     * Columns for the data table
-     */
-    const columns = [
-        {
-            name: "Name",
-            minWidth: "180px",
-            cell: (row) => (
-                <TableCell title="Name">
-                    {/* <Link
+  /**
+   * Columns for the data table
+   */
+  const columns = [
+    {
+      name: "Name",
+      minWidth: "180px",
+      cell: (row) => (
+        <TableCell title="Name">
+          {/* <Link
                         to={`/users/edit/${row.id}`}
                         className={styles.userLink}
                     > */}
-                        <Avatar
-                            src={row.profilePicture}
-                            alt={row.name}
-                            className={styles.avatar}
-                        />
+          <Avatar
+            src={row.profilePicture}
+            alt={row.name}
+            className={styles.avatar}
+          />
 
-                        <Typography
-                            variant="body2"
-                            className={styles.userName}
-                        >
-                            { row.firstName || row.lastName ? `${row.firstName || ""} ${row.lastName || ""}`.trim() : row.user.name }
-                        </Typography>
-                    {/* </Link> */}
-                </TableCell>
-            ),
-        },
-        {
-            name: "Email",
-            minWidth: "220px",
-            cell: (row) => (
-                <TableCell title="Email">
-                    <Typography
-                        variant="body2"
-                        className={styles.email}
-                    >
-                        {row.user.email}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Status",
-            width: "100px",
-            cell: (row) => (
-                <TableCell title="Status">
-                    <Typography
-                        variant="body2"
-                        className={
-                            row.status === "APPROVED"
-                                ? styles.approvedStatus
-                                : row.status === "REJECTED"
-                                    ? styles.rejectedStatus
-                                    : row.status === "SUBMITTED"
-                                        ? styles.submittedStatus
-                                        : styles.draftStatus
-                        }
-                    >
-                        {formatWords(row.status)}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "ApprovedAt",
-            minWidth: "220px",
-            cell: (row) => (
-                <TableCell title="Approved At">
-                    <Typography
-                        variant="body2"
-                        className={styles.email}
-                    >
-                        {row.approvalDate}
-                    </Typography>
-                </TableCell>
-            ),
-        },
-        {
-            name: "Public ID",
-            minWidth: "180px",
-            cell: (row) => (
-                <TableCell title="Public ID">
-                    <Box className={styles.publicIdContainer}>
-                        <Typography
-                            variant="body2"
-                            className={styles.publicIdText}
-                        >
-                            {row.user.publicId}
-                        </Typography>
-                    </Box>
-                </TableCell>
-            ),
-        },
-    ];
+          <Typography variant="body2" className={styles.userName}>
+            {row.firstName || row.lastName
+              ? `${row.firstName || ""} ${row.lastName || ""}`.trim()
+              : row.user.name}
+          </Typography>
+          {/* </Link> */}
+        </TableCell>
+      ),
+    },
+    {
+      name: "Email",
+      minWidth: "220px",
+      cell: (row) => (
+        <TableCell title="Email">
+          <Typography variant="body2" className={styles.email}>
+            {row.user.email}
+          </Typography>
+        </TableCell>
+      ),
+    },
+    {
+      name: "Status",
+      width: "130px",
+      cell: (row) => (
+        <TableCell title="Status">
+          <StatusChip status={row.status} />
+        </TableCell>
+      ),
+    },
+    {
+      name: "ApprovedAt",
+      minWidth: "220px",
+      cell: (row) => (
+        <TableCell title="Approved At">
+          <Typography variant="body2" className={styles.email}>
+            {row.approvalDate}
+          </Typography>
+        </TableCell>
+      ),
+    },
+    {
+      name: "Public ID",
+      minWidth: "180px",
+      cell: (row) => (
+        <TableCell title="Public ID">
+          <Box className={styles.publicIdContainer}>
+            <Typography variant="body2" className={styles.publicIdText}>
+              {row.user.publicId}
+            </Typography>
+          </Box>
+        </TableCell>
+      ),
+    },
+  ];
 
-    if ( enrollmentFetchingError ) {
-        return (
-            <Box className={styles.errorContainer}>
-                <Typography variant="h6" className={styles.errorText}>
-                    Error fetching enrollments data.
-                </Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        refetchEnrollment();
-                    }}
-                    className={styles.retryButton}
-                >
-                    Retry
-                </Button>
-            </Box>
-        );
-    }
-
+  if (enrollmentFetchingError) {
     return (
-        <>
-            <Table
-                data={enrollmentData?.data}
-                columns={columns}
-                loading={
-                    enrollmentFetching
-                }
-                selectable={false}
-                defaultRowsParPage={10}
-                perPageOption={[10, 20, 30, 50, 100]}
-                totalRows={enrollmentData?.count}
-                realtimeFilter={realtimeFilter}
-                bulkActionComponent={null}
-                handleChange={handleFilter}
-            />
-        </>
+      <Box className={styles.errorContainer}>
+        <Typography variant="h6" className={styles.errorText}>
+          Error fetching enrollments data.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            refetchEnrollment();
+          }}
+          className={styles.retryButton}
+        >
+          Retry
+        </Button>
+      </Box>
     );
+  }
+
+  return (
+    <>
+      <Table
+        data={enrollmentData?.data}
+        columns={columns}
+        loading={enrollmentFetching}
+        selectable={false}
+        defaultRowsParPage={10}
+        perPageOption={[10, 20, 30, 50, 100]}
+        totalRows={enrollmentData?.count}
+        realtimeFilter={realtimeFilter}
+        bulkActionComponent={null}
+        handleChange={handleFilter}
+      />
+    </>
+  );
 };
 
 export default EnrollmentList;

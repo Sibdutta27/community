@@ -1,99 +1,42 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Box,
-  InputBase,
-  IconButton,
-  Badge,
-} from '@mui/material';
+import { AppBar, Box, Toolbar } from "@mui/material";
 
-import {
-  NotificationsNone,
-} from '@mui/icons-material';
+import UserSection from "./UserSection";
 
-import UserSection from './UserSection';
-import SearchSection from './SearchSection';
-
+/**
+ * The top bar.
+ *
+ * It used to be 80px tall and carry three things that were not doing any work:
+ * the product name ("Community") next to a sidebar that already says who we
+ * are, a notification bell hard-coded to "3" that led nowhere, and a global
+ * search box that was never wired to anything. All three are gone — every list
+ * screen has its own search that does work — so the bar now carries only the
+ * signed-in account, at 44px. That is ~36px handed back to every page.
+ */
 export default function Navbar() {
   return (
     <AppBar
       position="sticky"
       elevation={0}
       sx={{
-        background: 'rgba(255,255,255,0.8)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: '1px solid var(--admin-border)',
-        color: 'var(--admin-ink)',
+        background: "rgba(255,255,255,0.85)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderBottom: "1px solid var(--admin-border)",
+        color: "var(--admin-ink)",
+        boxShadow: "none",
       }}
     >
       <Toolbar
+        variant="dense"
         sx={{
-          display: 'flex',
-          justifyContent: {
-            xs: 'flex-end',
-            md: 'space-between',
-          },
-          gap: 2,
-          minHeight: '80px !important',
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 1.5,
+          minHeight: "44px !important",
+          px: { xs: 1.5, sm: 2 },
         }}
       >
-        {/* LEFT */}
-        <Box
-          sx={{
-            display: {
-              xs: 'none',
-              md: 'block',
-            },
-          }}
-        >
-          <Typography
-            variant="h4"
-            sx={{
-              color: 'var(--admin-primary)',
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              fontFamily: 'inherit'
-            }}
-          >
-            Community
-          </Typography>
-        </Box>
-
-        {/* RIGHT */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 3,
-          }}
-        >
-          {/* SEARCH */}
-          <SearchSection />
-
-          {/* NOTIFICATION */}
-          <IconButton
-            sx={{
-              color: 'var(--admin-muted)',
-
-              background:
-                'var(--admin-surface-muted)',
-
-              '&:hover': {
-                background: '#e4e9ef',
-              },
-            }}
-          >
-            <Badge
-              badgeContent={3}
-              color="error"
-            >
-              <NotificationsNone />
-            </Badge>
-          </IconButton>
-
-          {/* USER */}
+        <Box sx={{ flexShrink: 0 }}>
           <UserSection />
         </Box>
       </Toolbar>

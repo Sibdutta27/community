@@ -1,11 +1,20 @@
 import { createTheme } from "@mui/material/styles";
 
 /**
- * Azul-flag admin theme — premium light "governance" aesthetic mirrored from
- * the member app (apps/web): cool light surfaces, elevated white cards with
- * soft layered ink shadows, pill azul buttons, azul focus rings, Inter with
- * tight-tracked headings. Chrome (sidebar/navbar/login) is light glass, styled
- * in CSS Modules via the `--admin-*` tokens in styles/style.css.
+ * Azul-flag admin theme — a dense records-system aesthetic.
+ *
+ * This is the back office of a tribal enrollment registry: staff read
+ * applications, verify documents and decide on real people's citizenship. The
+ * chrome is therefore deliberately quiet — hairline borders, near-flat
+ * surfaces, small radii, tight type — so the DATA carries the page rather than
+ * the container it sits in.
+ *
+ * Density lives HERE, not at the call sites. Control heights, card padding,
+ * input sizing and table rhythm are all set once as component defaults; a page
+ * that wants the standard density should write no `sx` at all.
+ *
+ * Chrome (sidebar/navbar/login) is styled in CSS Modules via the `--admin-*`
+ * tokens in styles/style.css — keep the two in step.
  */
 
 const AZUL = "#0a56a8";
@@ -16,12 +25,12 @@ const MUTED = "#5a6472";
 const BORDER = "#e2e6eb";
 const SURFACE_MUTED = "#eef2f6";
 
-// Soft, layered, ink-tinted shadows (never pure black) — short negative spread.
+// Near-flat, ink-tinted elevation. A records system should not look like it is
+// floating; the border does the work and the shadow only separates layers.
 const SHADOW_CARD =
-  "0 28px 56px -40px rgba(20,26,34,0.35), 0 10px 24px -20px rgba(20,26,34,0.25)";
-const SHADOW_CARD_SOFT =
-  "0 18px 36px -28px rgba(20,26,34,0.22), 0 6px 16px -14px rgba(20,26,34,0.16)";
-const SHADOW_DROPDOWN = "0 16px 32px -20px rgba(20,26,34,0.3)";
+  "0 1px 2px rgba(20,26,34,0.06), 0 8px 20px -16px rgba(20,26,34,0.25)";
+const SHADOW_CARD_SOFT = "0 1px 2px rgba(20,26,34,0.05)";
+const SHADOW_DROPDOWN = "0 8px 24px -12px rgba(20,26,34,0.28)";
 
 const adminTheme = createTheme({
   palette: {
@@ -52,17 +61,29 @@ const adminTheme = createTheme({
       focus: "rgba(10,86,168,0.25)",
     },
   },
-  shape: { borderRadius: 12 },
+  shape: { borderRadius: 8 },
   typography: {
     fontFamily:
       'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    button: { textTransform: "none", fontWeight: 600 },
-    h1: { fontWeight: 700, letterSpacing: "-0.03em" },
-    h2: { fontWeight: 700, letterSpacing: "-0.03em" },
-    h3: { fontWeight: 700, letterSpacing: "-0.025em" },
-    h4: { fontWeight: 700, letterSpacing: "-0.025em" },
-    h5: { fontWeight: 600, letterSpacing: "-0.02em" },
-    h6: { fontWeight: 600, letterSpacing: "-0.02em" },
+
+    // Base body text is a notch below MUI's 16px. At a desk, reading a table,
+    // 14px is the comfortable size and it buys back a row of height everywhere.
+    fontSize: 14,
+
+    button: { textTransform: "none", fontWeight: 600, fontSize: "0.82rem" },
+
+    // A back office needs two or three heading sizes, not six escalating ones.
+    // Anything above h4 would only ever be used to shout.
+    h1: { fontWeight: 700, letterSpacing: "-0.02em", fontSize: "1.4rem" },
+    h2: { fontWeight: 700, letterSpacing: "-0.02em", fontSize: "1.25rem" },
+    h3: { fontWeight: 700, letterSpacing: "-0.02em", fontSize: "1.15rem" },
+    h4: { fontWeight: 700, letterSpacing: "-0.02em", fontSize: "1.05rem" },
+    h5: { fontWeight: 600, letterSpacing: "-0.01em", fontSize: "0.95rem" },
+    h6: { fontWeight: 600, letterSpacing: "-0.01em", fontSize: "0.88rem" },
+
+    body1: { fontSize: "0.875rem" },
+    body2: { fontSize: "0.82rem" },
+    caption: { fontSize: "0.75rem" },
   },
   components: {
     MuiCssBaseline: {
@@ -81,7 +102,7 @@ const adminTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: "none",
-          borderRadius: 16,
+          borderRadius: 10,
           border: `1px solid ${BORDER}`,
           boxShadow: SHADOW_CARD_SOFT,
         },
@@ -91,93 +112,127 @@ const adminTheme = createTheme({
     },
     MuiMenu: {
       styleOverrides: {
-        paper: { borderRadius: 12, boxShadow: SHADOW_DROPDOWN },
+        paper: { borderRadius: 8, boxShadow: SHADOW_DROPDOWN },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: { fontSize: "0.85rem", minHeight: 34, paddingBlock: 4 },
       },
     },
     MuiPopover: {
       styleOverrides: {
-        paper: { borderRadius: 12, boxShadow: SHADOW_DROPDOWN },
+        paper: { borderRadius: 8, boxShadow: SHADOW_DROPDOWN },
       },
     },
     MuiDialog: {
       styleOverrides: {
-        paper: { borderRadius: 16, boxShadow: SHADOW_CARD },
+        paper: { borderRadius: 10, boxShadow: SHADOW_CARD },
       },
     },
     MuiButton: {
-      defaultProps: { disableElevation: true },
+      // Small is the house size. A back office is mostly secondary actions;
+      // anything that wants to be bigger has to ask.
+      defaultProps: { disableElevation: true, size: "small" },
       styleOverrides: {
         root: {
-          borderRadius: 999,
+          // Square-ish, not pills. Pills read as consumer product; a registrar's
+          // tool should read as a form control.
+          borderRadius: 6,
           fontWeight: 600,
-          transition:
-            "color 200ms, background-color 200ms, border-color 200ms, box-shadow 200ms, transform 200ms",
-          "&:hover": { transform: "translateY(-1px)" },
-          "&:active": { transform: "translateY(1px)" },
+          // No lift, no glow — motion and shadow on every button is the single
+          // biggest source of "this feels like a marketing site".
+          transition: "color 150ms, background-color 150ms, border-color 150ms",
           "&:focus-visible": { outline: `2px solid ${AZUL}`, outlineOffset: 2 },
-          "@media (prefers-reduced-motion: reduce)": {
-            transition: "none",
-            "&:hover": { transform: "none" },
-            "&:active": { transform: "none" },
-          },
+          "@media (prefers-reduced-motion: reduce)": { transition: "none" },
         },
         containedPrimary: {
-          boxShadow: "0 12px 24px -18px rgba(10,86,168,0.45)",
-          "&:hover": {
-            boxShadow: "0 16px 30px -18px rgba(10,86,168,0.55)",
-            filter: "brightness(0.97)",
-            transform: "translateY(-1px)",
-          },
+          "&:hover": { backgroundColor: "#094a92" },
         },
         containedError: {
-          boxShadow: "0 12px 24px -18px rgba(179,38,30,0.45)",
-          "&:hover": {
-            boxShadow: "0 16px 30px -18px rgba(179,38,30,0.55)",
-            filter: "brightness(0.97)",
-            transform: "translateY(-1px)",
-          },
+          "&:hover": { backgroundColor: "#9c211a" },
         },
         outlined: {
           borderColor: BORDER,
           color: INK,
           backgroundColor: "#ffffff",
-          "&:hover": { backgroundColor: SURFACE_MUTED, borderColor: BORDER },
+          "&:hover": { backgroundColor: SURFACE_MUTED, borderColor: "#cfd6de" },
         },
-        sizeSmall: { height: 40, paddingInline: 16 },
-        sizeMedium: { height: 44, paddingInline: 20 },
-        sizeLarge: { height: 48, paddingInline: 24 },
+        sizeSmall: { height: 30, paddingInline: 10, fontSize: "0.8rem" },
+        sizeMedium: { height: 34, paddingInline: 14 },
+        sizeLarge: { height: 38, paddingInline: 18 },
       },
     },
     MuiIconButton: {
+      defaultProps: { size: "small" },
       styleOverrides: {
         root: {
+          borderRadius: 6,
           "&:focus-visible": { outline: `2px solid ${AZUL}`, outlineOffset: 2 },
         },
       },
     },
+    // Inputs default to the dense size everywhere, so forms stop being a
+    // column of 56px-tall controls.
+    MuiTextField: { defaultProps: { size: "small" } },
+    MuiSelect: { defaultProps: { size: "small" } },
+    MuiFormControl: { defaultProps: { size: "small" } },
+    MuiAutocomplete: { defaultProps: { size: "small" } },
+    MuiInputLabel: { styleOverrides: { root: { fontSize: "0.85rem" } } },
+    MuiFormHelperText: {
+      styleOverrides: { root: { fontSize: "0.72rem", marginTop: 2 } },
+    },
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
+          borderRadius: 6,
+          fontSize: "0.85rem",
           backgroundColor: "#ffffff",
           "& .MuiOutlinedInput-notchedOutline": { borderColor: BORDER },
-          "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#cfd6de" },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#cfd6de",
+          },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: AZUL,
             borderWidth: 1,
           },
-          "&.Mui-focused": {
-            boxShadow: "0 6px 16px -10px rgba(10,86,168,0.4)",
-          },
+          // A 1px ring, not a coloured cloud.
+          "&.Mui-focused": { boxShadow: `0 0 0 2px rgba(10,86,168,0.15)` },
         },
+        inputSizeSmall: { paddingBlock: 7.5 },
       },
     },
     MuiChip: {
-      styleOverrides: { root: { fontWeight: 600, borderRadius: 8 } },
+      defaultProps: { size: "small" },
+      styleOverrides: {
+        root: { fontWeight: 600, borderRadius: 5 },
+        sizeSmall: { height: 20, fontSize: "0.7rem" },
+        labelSmall: { paddingInline: 6 },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        root: { borderRadius: 6, paddingBlock: 2, fontSize: "0.82rem" },
+        icon: { paddingBlock: 6 },
+      },
+    },
+    MuiSkeleton: { styleOverrides: { root: { borderRadius: 4 } } },
+    MuiAvatar: {
+      styleOverrides: { root: { width: 28, height: 28, fontSize: "0.75rem" } },
+    },
+    MuiTooltip: {
+      styleOverrides: { tooltip: { fontSize: "0.72rem" } },
+    },
+    MuiListItemButton: {
+      styleOverrides: { root: { borderRadius: 6 } },
+    },
+    MuiListItemText: {
+      styleOverrides: { primary: { fontSize: "0.85rem", fontWeight: 500 } },
     },
     MuiTabs: {
       styleOverrides: {
-        indicator: { backgroundColor: AZUL, height: 3, borderRadius: 3 },
+        root: { minHeight: 36 },
+        indicator: { backgroundColor: AZUL, height: 2, borderRadius: 2 },
       },
     },
     MuiTab: {
@@ -185,6 +240,9 @@ const adminTheme = createTheme({
         root: {
           textTransform: "none",
           fontWeight: 600,
+          fontSize: "0.82rem",
+          minHeight: 36,
+          padding: "6px 12px",
           "&.Mui-selected": { color: AZUL },
         },
       },
@@ -192,10 +250,16 @@ const adminTheme = createTheme({
     MuiStepIcon: {
       styleOverrides: {
         root: {
+          fontSize: "1.25rem",
           color: "#cbd5e1",
           "&.Mui-active": { color: AZUL },
           "&.Mui-completed": { color: "#1f9d57" },
         },
+      },
+    },
+    MuiStepLabel: {
+      styleOverrides: {
+        label: { fontSize: "0.82rem", "&.Mui-active": { fontWeight: 700 } },
       },
     },
     MuiDivider: {

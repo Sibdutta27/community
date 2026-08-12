@@ -1,135 +1,111 @@
-import React from 'react'
-import {
-    Typography,
-    Box,
-    Avatar,
-    Skeleton,
-} from '@mui/material';
+import React from "react";
+import { Typography, Box, Avatar, Skeleton } from "@mui/material";
 
-import { useAccount } from './hooks/useAccount';
+import { useAccount } from "./hooks/useAccount";
 
 const UserSectionSkeleton = () => {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.5,
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1.5,
 
-                '& .MuiSkeleton-root': {
-                    bgcolor: 'var(--admin-surface-muted)',
-                },
-            }}
-        >
-            {/* Avatar Skeleton */}
-            <Skeleton
-                variant="circular"
-                width={42}
-                height={42}
-            />
+        "& .MuiSkeleton-root": {
+          bgcolor: "var(--admin-surface-muted)",
+        },
+      }}
+    >
+      {/* Avatar Skeleton */}
+      <Skeleton variant="circular" width={26} height={26} />
 
-            {/* Text Skeleton */}
-            <Box>
-                <Skeleton
-                    variant="text"
-                    width={100}
-                    height={24}
-                />
+      {/* Text Skeleton */}
+      <Box>
+        <Skeleton variant="text" width={100} height={24} />
 
-                <Skeleton
-                    variant="text"
-                    width={80}
-                    height={18}
-                />
-            </Box>
-        </Box>
-    );
+        <Skeleton variant="text" width={80} height={18} />
+      </Box>
+    </Box>
+  );
 };
 
-
 const UserSection = () => {
+  const { data, isLoading, isError } = useAccount();
 
-    const {
-        data,
-        isLoading,
-        isError,
-        error,
-    } = useAccount();
+  if (isLoading) {
+    return <UserSectionSkeleton />;
+  }
 
-    if (isLoading) {
-        return <UserSectionSkeleton />;
-    }
-
-    if (isError) {
-        return (
-            <Typography
-                variant="body2"
-                sx={{
-                    color: 'var(--admin-danger)',
-                    fontWeight: 600,
-                }}
-            >
-                Error loading user
-            </Typography>
-        );
-    }
-
-    const { name, role, profilePicture } = data.user;
-
+  if (isError) {
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.5,
-            }}
+      <Typography
+        variant="body2"
+        sx={{
+          color: "var(--admin-danger)",
+          fontWeight: 600,
+        }}
+      >
+        Error loading user
+      </Typography>
+    );
+  }
+
+  const { name, role, profilePicture } = data.user;
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1.5,
+      }}
+    >
+      {profilePicture ? (
+        <Avatar
+          sx={{
+            width: 26,
+            height: 26,
+          }}
         >
-            {
-                profilePicture ? (
-                    <Avatar
-                        sx={{
-                            width: 42,
-                            height: 42,
-                        }}
-                    >
-                        <img src={profilePicture} alt={name} />
-                    </Avatar>
-                ) : (
-                    <Avatar
-                        sx={{
-                            bgcolor: '#0a56a8',
-                            width: 42,
-                            height: 42,
-                            fontWeight: 700,
-                        }}
-                    >
-                        {name.charAt(0)}
-                    </Avatar>
-                )
-            }
+          <img src={profilePicture} alt={name} />
+        </Avatar>
+      ) : (
+        <Avatar
+          sx={{
+            bgcolor: "#0a56a8",
+            width: 26,
+            height: 26,
+            fontWeight: 700,
+          }}
+        >
+          {name.charAt(0)}
+        </Avatar>
+      )}
 
-            <Box>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: 'var(--admin-ink)',
-                        fontWeight: 600,
-                    }}
-                >
-                    {name}
-                </Typography>
+      <Box sx={{ display: { xs: "none", sm: "block" } }}>
+        <Typography
+          sx={{
+            color: "var(--admin-ink)",
+            fontWeight: 600,
+            fontSize: "0.8rem",
+            lineHeight: 1.2,
+          }}
+        >
+          {name}
+        </Typography>
 
-                <Typography
-                    variant="caption"
-                    sx={{
-                        color: 'var(--admin-muted)',
-                    }}
-                >
-                    {role === 'ADMIN' ? 'Administrator' : 'User'}
-                </Typography>
-            </Box>
-        </Box>
-    )
-}
+        <Typography
+          sx={{
+            color: "var(--admin-muted)",
+            fontSize: "0.7rem",
+            lineHeight: 1.2,
+          }}
+        >
+          {role === "ADMIN" ? "Administrator" : "User"}
+        </Typography>
+      </Box>
+    </Box>
+  );
+};
 
 export default UserSection;

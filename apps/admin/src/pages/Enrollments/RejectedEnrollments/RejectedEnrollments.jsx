@@ -1,28 +1,20 @@
-import React from 'react';
-import RejectedEnrollmentList from '../components/RejectedEnrollmentList/EnrollmentList';
+import { Box } from "@mui/material";
 
-import {
-    Box,
-    Typography,
-} from '@mui/material';
+import PageHeader from "@components/PageHeader/PageHeader";
 
-import styles from './rejectedEnrollments.module.css';
+import RejectedEnrollmentList from "../components/RejectedEnrollmentList/EnrollmentList";
 
 const RejectedEnrollments = () => {
-    return (
-        <section className={styles.page}>
-            <Box className={styles.header}>
-                <Typography
-                    variant="h4"
-                    className={styles.title}
-                >
-                    Rejected Enrollments
-                </Typography>
-            </Box>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <PageHeader
+        title="Rejected Enrollments"
+        description="Applications that were not approved."
+      />
 
-            <RejectedEnrollmentList />
-        </section>
-    );
+      <RejectedEnrollmentList />
+    </Box>
+  );
 };
 
 export default RejectedEnrollments;

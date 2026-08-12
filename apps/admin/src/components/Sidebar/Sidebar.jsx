@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 
 import {
-  Dashboard,
   People,
   ChevronLeft,
   ChevronRight,
@@ -24,6 +23,8 @@ import {
   ExpandMore,
   Assignment,
   PendingActions,
+  TaskAlt,
+  Cancel,
   Diversity3,
   FactCheck,
   Construction,
@@ -31,9 +32,15 @@ import {
   Feedback as FeedbackIcon,
 } from "@mui/icons-material";
 
-const drawerWidth = 260;
-const collapsedWidth = 85;
+const drawerWidth = 216;
+const collapsedWidth = 60;
 
+/**
+ * Icons here are wayfinding, not decoration — they all inherit the rail's ink
+ * colour so the only coloured thing in the sidebar is the active item. The
+ * enrollment children used to be four differently-tinted clipboards (yellow,
+ * celeste, green, red), which read as status badges but were purely ornamental.
+ */
 const menuItems = [
   {
     label: "Users",
@@ -42,29 +49,29 @@ const menuItems = [
   },
   {
     label: "Enrollments",
-    icon: <Assignment sx={{ color: "#facc15" }} />,
+    icon: <Assignment />,
     children: [
       {
-        label: "All Enrollments",
-        icon: <Assignment sx={{ color: "#4ea6dc" }} />,
+        label: "All",
+        icon: <Assignment />,
         path: "/enrollments/all",
       },
 
       {
         label: "Submitted",
-        icon: <PendingActions sx={{ color: "#f59e0b" }} />,
+        icon: <PendingActions />,
         path: "/enrollments/submitted",
       },
 
       {
-        label: "Confirmed",
-        icon: <Assignment sx={{ color: "#22c55e" }} />,
+        label: "Approved",
+        icon: <TaskAlt />,
         path: "/enrollments/approved",
       },
 
       {
         label: "Rejected",
-        icon: <Assignment sx={{ color: "#c42032" }} />,
+        icon: <Cancel />,
         path: "/enrollments/rejected",
       },
     ],
@@ -106,14 +113,30 @@ const menuItems = [
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
-  const [openMenus, setOpenMenus] = useState({});
 
   const { pathname } = useLocation();
 
-  const toggleMenu = (menu) => {
+  /**
+   * A group starts open when you are already somewhere inside it. Previously
+   * the Enrollments group defaulted shut on every load, so landing on
+   * /enrollments/submitted showed a collapsed rail that gave no clue where you
+   * were — you had to open the group to find your own current page.
+   * `undefined` means "not touched yet", so an explicit toggle still wins.
+   */
+  const [openMenus, setOpenMenus] = useState({});
+
+  const isGroupOpen = (item) => {
+    if (openMenus[item.label] !== undefined) {
+      return openMenus[item.label];
+    }
+
+    return item.children.some((child) => pathname.startsWith(child.path));
+  };
+
+  const toggleMenu = (item) => {
     setOpenMenus((prev) => ({
       ...prev,
-      [menu]: !prev[menu],
+      [item.label]: !isGroupOpen(item),
     }));
   };
 
@@ -138,39 +161,43 @@ export default function Sidebar() {
         },
       }}
     >
-      {/* HEADER */}
+      {/* HEADER — same 44px as the top bar, so the two rules line up */}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: collapsed ? "center" : "space-between",
 
-          px: 2,
-          py: 2,
-          height: 80,
+          px: 1,
+          height: 44,
+          flexShrink: 0,
         }}
       >
         {!collapsed && (
           <div className={styles.logoBox}>
             <div className={styles.logoMark}>A</div>
             <div>
-              <h1>Admin</h1>
+              <h1>Community</h1>
             </div>
           </div>
         )}
 
         <IconButton
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           onClick={() => setCollapsed(!collapsed)}
           sx={{
             color: "var(--admin-muted)",
-            background: "var(--admin-surface-muted)",
 
             "&:hover": {
-              background: "#e4e9ef",
+              background: "var(--admin-surface-muted)",
             },
           }}
         >
-          {collapsed ? <ChevronRight /> : <ChevronLeft />}
+          {collapsed ? (
+            <ChevronRight fontSize="small" />
+          ) : (
+            <ChevronLeft fontSize="small" />
+          )}
         </IconButton>
       </Box>
 
@@ -181,7 +208,7 @@ export default function Sidebar() {
       />
 
       {/* MENU */}
-      <List sx={{ px: 1, py: 2 }}>
+      <List sx={{ px: 0.75, py: 1 }}>
         {menuItems.map((item) => (
           <Box key={item.label}>
             {/* NORMAL MENU */}
@@ -198,9 +225,10 @@ export default function Sidebar() {
                       : undefined
                   }
                   sx={{
-                    borderRadius: 3,
-                    mb: 1,
-                    minHeight: 50,
+                    mb: 0.25,
+                    minHeight: 32,
+                    py: 0.5,
+                    px: 1,
 
                     "&:hover": {
                       background: "var(--admin-hover-bg)",
@@ -212,6 +240,7 @@ export default function Sidebar() {
                       "& .MuiListItemIcon-root": {
                         color: "var(--admin-active-fg)",
                       },
+                      "& .MuiListItemText-primary": { fontWeight: 600 },
                     },
                   }}
                 >
@@ -219,8 +248,9 @@ export default function Sidebar() {
                     sx={{
                       color: "var(--admin-muted)",
                       minWidth: 0,
-                      mr: collapsed ? 0 : 2,
+                      mr: collapsed ? 0 : 1.25,
                       justifyContent: "center",
+                      "& svg": { fontSize: "1.15rem" },
                     }}
                   >
                     {item.icon}
@@ -236,11 +266,12 @@ export default function Sidebar() {
               <>
                 <Tooltip title={collapsed ? item.label : ""} placement="right">
                   <ListItemButton
-                    onClick={() => toggleMenu(item.label)}
+                    onClick={() => toggleMenu(item)}
                     sx={{
-                      borderRadius: 3,
-                      minHeight: 50,
-                      mb: 1,
+                      minHeight: 32,
+                      py: 0.5,
+                      px: 1,
+                      mb: 0.25,
 
                       "&:hover": {
                         background: "var(--admin-hover-bg)",
@@ -251,8 +282,9 @@ export default function Sidebar() {
                       sx={{
                         color: "var(--admin-muted)",
                         minWidth: 0,
-                        mr: collapsed ? 0 : 2,
+                        mr: collapsed ? 0 : 1.25,
                         justifyContent: "center",
+                        "& svg": { fontSize: "1.15rem" },
                       }}
                     >
                       {item.icon}
@@ -262,10 +294,10 @@ export default function Sidebar() {
                       <>
                         <ListItemText primary={item.label} />
 
-                        {openMenus[item.label] ? (
-                          <ExpandLess />
+                        {isGroupOpen(item) ? (
+                          <ExpandLess sx={{ fontSize: "1.05rem" }} />
                         ) : (
-                          <ExpandMore />
+                          <ExpandMore sx={{ fontSize: "1.05rem" }} />
                         )}
                       </>
                     )}
@@ -273,15 +305,12 @@ export default function Sidebar() {
                 </Tooltip>
 
                 {
-                  <Collapse
-                    in={openMenus[item.label]}
-                    timeout="auto"
-                    unmountOnExit
-                  >
+                  <Collapse in={isGroupOpen(item)} timeout="auto" unmountOnExit>
                     <List
                       component="div"
                       disablePadding
                       sx={{
+                        ml: 2,
                         borderLeft: "1px solid var(--admin-border)",
                       }}
                     >
@@ -291,10 +320,10 @@ export default function Sidebar() {
                           component={NavLink}
                           to={child.path}
                           sx={{
-                            pl: 3.5,
-                            borderRadius: 3,
-                            mb: 1,
-                            minHeight: 45,
+                            pl: 1.25,
+                            minHeight: 28,
+                            py: 0.25,
+                            mb: 0.25,
 
                             "&:hover": {
                               background: "var(--admin-hover-bg)",
@@ -306,13 +335,16 @@ export default function Sidebar() {
                               "& .MuiListItemIcon-root": {
                                 color: "var(--admin-active-fg)",
                               },
+                              "& .MuiListItemText-primary": { fontWeight: 600 },
                             },
                           }}
                         >
                           <ListItemIcon
                             sx={{
                               color: "var(--admin-muted)",
-                              minWidth: 35,
+                              minWidth: 0,
+                              mr: 1,
+                              "& svg": { fontSize: "1rem" },
                             }}
                           >
                             {child.icon}

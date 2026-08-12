@@ -1,22 +1,19 @@
 // KinshipReview.jsx
 //
-// Shared renderer for the kinship (Ancestry) review cards.
+// Shared renderer for the kinship (Ancestry) review rows.
 // Step 2 (maternal) and Step 3 (paternal) both render three
-// ancestor cards with the same shape:
+// ancestor entries with the same shape:
 // { name, dateOfBirth, nationality, municipality, yucayeke, isBorikuaTaino,
 //   verificationStatus }
 // An ancestor can be null — every field falls back to '—'.
 // When `enrollmentId` is provided and an entry carries a `relation`,
-// the card header shows the admin-only verification select.
+// the row header shows the admin-only verification select.
 
-import styles from "./kinshipReview.module.css";
-
-import { MenuItem, Paper, Select, Skeleton, Typography } from "@mui/material";
+import { Box, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 
 import {
   CalendarMonth,
   Diversity3,
-  FamilyRestroom,
   Home,
   LocationOn,
   Public,
@@ -27,6 +24,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 import { verifyAncestry } from "@/api/enrollment.api";
+
+import { Fact, Facts } from "@components/RecordFields/RecordFields";
+import { formatBoolean } from "@/utils/formatBoolean.util";
 
 const VERIFICATION_OPTIONS = [
   { value: "UNVERIFIED", label: "Unverified" },
@@ -70,11 +70,10 @@ function VerificationSelect({ enrollmentId, relation, status, queryKey }) {
 
   return (
     <Select
-      size="small"
       value={status || "UNVERIFIED"}
       onChange={handleChange}
       disabled={isPending}
-      sx={{ minWidth: 190 }}
+      sx={{ minWidth: 176, "& .MuiSelect-select": { fontSize: "0.8rem" } }}
     >
       {VERIFICATION_OPTIONS.map((option) => (
         <MenuItem key={option.value} value={option.value}>
@@ -85,28 +84,66 @@ function VerificationSelect({ enrollmentId, relation, status, queryKey }) {
   );
 }
 
+/**
+ * Three ancestors, each a titled band of facts.
+ *
+ * This used to be three separate 28px-padded, 24px-radius, bordered cards with
+ * a 58px icon tile and five fake-input field boxes apiece. The relation and the
+ * ancestor's name are what a reviewer scans for, so they lead the row; the
+ * verification control stays on the same line because setting it IS the task.
+ */
 export default function KinshipReview({ entries, enrollmentId, queryKey }) {
   return (
-    <div className={styles.container}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       {entries.map((entry) => (
-        <Paper key={entry.label} className={styles.kinshipCard}>
+        <Box component="section" key={entry.label}>
           {/* HEADER */}
-          <div className={styles.cardHeader}>
-            <div className={styles.headerLeft}>
-              <div className={styles.iconBox}>
-                <FamilyRestroom />
-              </div>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              gap: 1,
 
-              <div>
-                <Typography className={styles.relation}>
-                  {entry.label}
-                </Typography>
+              pb: 0.75,
+              mb: 0.5,
+              borderBottom: "2px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 1,
+                minWidth: 0,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "0.65rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  color: "text.secondary",
+                  flexShrink: 0,
+                }}
+              >
+                {entry.label}
+              </Typography>
 
-                <Typography className={styles.fullName}>
-                  {entry.person?.name || "—"}
-                </Typography>
-              </div>
-            </div>
+              <Typography
+                sx={{
+                  fontSize: "0.95rem",
+                  fontWeight: 700,
+                  letterSpacing: "-0.01em",
+                  color: entry.person?.name ? "text.primary" : "text.secondary",
+                }}
+              >
+                {entry.person?.name || "Not provided"}
+              </Typography>
+            </Box>
 
             {enrollmentId && entry.relation && entry.person && (
               <VerificationSelect
@@ -116,105 +153,84 @@ export default function KinshipReview({ entries, enrollmentId, queryKey }) {
                 queryKey={queryKey}
               />
             )}
-          </div>
+          </Box>
 
           {/* BODY */}
-          <div className={styles.grid}>
-            {entry.showDateOfBirth && (
-              <InfoItem
-                icon={<CalendarMonth />}
-                label="Date of Birth"
-                value={
-                  entry.person?.dateOfBirth
-                    ? new Date(entry.person.dateOfBirth).toLocaleDateString()
-                    : null
-                }
+          <Box component="dl" sx={{ m: 0 }}>
+            <Facts>
+              {entry.showDateOfBirth && (
+                <Fact
+                  icon={<CalendarMonth />}
+                  label="Date of Birth"
+                  value={
+                    entry.person?.dateOfBirth
+                      ? new Date(entry.person.dateOfBirth).toLocaleDateString()
+                      : null
+                  }
+                />
+              )}
+
+              <Fact
+                icon={<Public />}
+                label="Nationality"
+                value={entry.person?.nationality}
               />
-            )}
 
-            <InfoItem
-              icon={<Public />}
-              label="Nationality"
-              value={entry.person?.nationality}
-            />
+              <Fact
+                icon={<LocationOn />}
+                label="Municipality"
+                value={entry.person?.municipality}
+              />
 
-            <InfoItem
-              icon={<LocationOn />}
-              label="Municipality"
-              value={entry.person?.municipality}
-            />
+              <Fact
+                icon={<Home />}
+                label="Yucayeke"
+                value={entry.person?.yucayeke}
+              />
 
-            <InfoItem
-              icon={<Home />}
-              label="Yucayeke"
-              value={entry.person?.yucayeke}
-            />
-
-            <InfoItem
-              icon={<Diversity3 />}
-              label="Borikua Taíno Heritage"
-              value={formatBoolean(entry.person?.isBorikuaTaino)}
-            />
-          </div>
-        </Paper>
+              <Fact
+                icon={<Diversity3 />}
+                label="Borikua Taíno Heritage"
+                value={formatBoolean(entry.person?.isBorikuaTaino)}
+              />
+            </Facts>
+          </Box>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 }
 
 /**
- * Loading skeleton (three ancestor cards)
+ * Loading skeleton (three ancestor rows)
  */
 export function KinshipReviewSkeleton() {
   return (
-    <div className={styles.loadingContainer}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       {[1, 2, 3].map((item) => (
-        <Paper key={item} className={styles.kinshipCard}>
-          <Skeleton variant="text" width={200} height={40} />
+        <Box key={item}>
+          <Skeleton variant="text" width={200} height={22} />
 
-          <div className={styles.grid}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, minmax(0, 1fr))",
+                lg: "repeat(3, minmax(0, 1fr))",
+              },
+              columnGap: 3,
+            }}
+          >
             {[1, 2, 3, 4].map((field) => (
-              <div key={field}>
-                <Skeleton variant="text" width={120} height={18} />
-
-                <Skeleton variant="rounded" height={54} />
-              </div>
+              <Box key={field} sx={{ py: 0.75 }}>
+                <Skeleton variant="text" width={90} height={14} />
+                <Skeleton variant="text" width="70%" height={18} />
+              </Box>
             ))}
-          </div>
-        </Paper>
+          </Box>
+        </Box>
       ))}
-    </div>
-  );
-}
-
-/**
- * Format nullable boolean
- */
-function formatBoolean(value) {
-  if (value === true) {
-    return "Yes";
-  }
-
-  if (value === false) {
-    return "No";
-  }
-
-  return null;
-}
-
-/**
- * Info Item
- */
-function InfoItem({ icon, label, value }) {
-  return (
-    <div className={styles.fieldGroup}>
-      <Typography className={styles.fieldLabel}>{label}</Typography>
-
-      <div className={styles.fieldBox}>
-        <div className={styles.fieldIcon}>{icon}</div>
-
-        <Typography className={styles.fieldValue}>{value || "—"}</Typography>
-      </div>
-    </div>
+    </Box>
   );
 }
