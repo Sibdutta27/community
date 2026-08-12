@@ -5,13 +5,17 @@ const cookieJar = vi.hoisted(() => new Map<string, string>());
 // Website Studio content is fetched here. Stubbed per-test so the suite never
 // depends on a network call; the default is "nothing published", which is also
 // the state the site ships in.
-const contentOverrides = vi.hoisted(() => ({
-  current: {} as Record<string, { en?: string; es?: string }>,
+const siteContent = vi.hoisted(() => ({
+  overrides: {} as Record<string, { en?: string; es?: string }>,
+  media: {} as Record<string, { url: string }>,
 }));
 
 vi.mock("@/i18n/content-overrides", () => ({
   CONTENT_CACHE_TAG: "site-content",
-  getContentOverrides: async () => contentOverrides.current,
+  getSiteContent: async () => ({
+    overrides: siteContent.overrides,
+    media: siteContent.media,
+  }),
   __resetContentOverrideCache: () => {},
 }));
 
@@ -38,6 +42,10 @@ type ResolvedRequestConfig = Readonly<{
   messages: {
     nav: { enrollToday: string };
     home: { hero: { ctaEnroll: string } };
+    media: {
+      brand: { logo: string };
+      home: { hero: { portrait: Record<string, string> } };
+    };
   };
 }>;
 
@@ -95,11 +103,12 @@ describe("i18n request config (Website Studio content)", () => {
   });
 
   afterEach(() => {
-    contentOverrides.current = {};
+    siteContent.overrides = {};
+    siteContent.media = {};
   });
 
   it("serves published copy over the shipped catalog", async () => {
-    contentOverrides.current = {
+    siteContent.overrides = {
       "nav.enrollToday": { en: "Join the Nation", es: "Únete a la Nación" },
     };
 
@@ -110,7 +119,7 @@ describe("i18n request config (Website Studio content)", () => {
 
   it("serves the Spanish override when the locale is Spanish", async () => {
     cookieJar.set("community_locale", "es");
-    contentOverrides.current = {
+    siteContent.overrides = {
       "nav.enrollToday": { en: "Join the Nation", es: "Únete a la Nación" },
     };
 
@@ -120,7 +129,7 @@ describe("i18n request config (Website Studio content)", () => {
   });
 
   it("leaves untouched keys on their shipped value", async () => {
-    contentOverrides.current = {
+    siteContent.overrides = {
       "nav.enrollToday": { en: "Join the Nation" },
     };
 
@@ -137,5 +146,46 @@ describe("i18n request config (Website Studio content)", () => {
     const config = await resolveRequestConfig();
 
     expect(config.messages.nav.enrollToday).toBe("Enroll Today");
+  });
+});
+
+describe("i18n request config (site images)", () => {
+  beforeEach(() => {
+    cookieJar.clear();
+  });
+
+  afterEach(() => {
+    siteContent.media = {};
+  });
+
+  // The reserved namespace has to be on the same messages object next-intl
+  // already ships to the client, or `t("media.…")` works on the server and
+  // throws in a client component.
+  it("exposes the shipped image under the media namespace", async () => {
+    const config = await resolveRequestConfig();
+
+    expect(config.messages.media.brand.logo).toBe("/images/logo.png");
+  });
+
+  it("serves an assigned image over the shipped one", async () => {
+    siteContent.media = {
+      "brand.logo": { url: "https://cdn.test/site-media/new-logo.png" },
+    };
+
+    const config = await resolveRequestConfig();
+
+    expect(config.messages.media.brand.logo).toBe(
+      "https://cdn.test/site-media/new-logo.png",
+    );
+  });
+
+  // Media is unconfigured in every environment today, so this is the path the
+  // site is actually on: no rows, every slot on its git default.
+  it("renders every slot from git when nothing is assigned", async () => {
+    const config = await resolveRequestConfig();
+
+    expect(config.messages.media.home.hero.portrait["1"]).toBe(
+      "/images/member1.png",
+    );
   });
 });

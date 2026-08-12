@@ -1,3 +1,9 @@
+import {
+  MEDIA_NAMESPACE,
+  MEDIA_SLOT_KEYS,
+  MEDIA_SLOTS,
+  type ContentMediaMap,
+} from "@/content/media-slots";
 import type { Locale } from "@/i18n/config";
 
 /**
@@ -90,4 +96,71 @@ function applyOverride(target: Messages, keyPath: string, value: string) {
 
 function isIndexable(value: unknown): boolean {
   return typeof value === "object" && value !== null;
+}
+
+/**
+ * Attach the resolved site images as a reserved `media` namespace.
+ *
+ * Riding on the message tree is what makes `t("media.brand.logo")` work in
+ * server AND client components with no second fetch and no extra provider:
+ * next-intl already carries these messages across the boundary, so an image
+ * swap costs nothing that translated copy does not already cost.
+ *
+ * The registry drives the loop, not the payload. Every declared slot always
+ * gets a value — the database row if it resolved to a URL, otherwise the image
+ * that shipped in git — and a payload entry for a slot the registry does not
+ * declare is dropped. So the namespace is total (no slot can be missing) and
+ * closed (no slot can be invented).
+ */
+export function withMediaNamespace<T extends Messages>(
+  messages: T,
+  media: ContentMediaMap,
+): T & { media: Record<string, unknown> } {
+  const namespace: Record<string, unknown> = {};
+
+  for (const slotKey of MEDIA_SLOT_KEYS) {
+    const configured = media[slotKey]?.url;
+
+    const source =
+      typeof configured === "string" && configured.trim().length > 0
+        ? configured
+        : MEDIA_SLOTS[slotKey];
+
+    writeNested(namespace, slotKey, source);
+  }
+
+  // A shallow copy is enough: the namespace object is freshly built here and
+  // nothing below `messages` is touched, so the shared catalog singleton stays
+  // exactly as imported.
+  return { ...messages, [MEDIA_NAMESPACE]: namespace } as T & {
+    media: Record<string, unknown>;
+  };
+}
+
+/**
+ * Expand `"home.hero.portrait.1"` into nested objects.
+ *
+ * `t("media.home.hero.portrait.1")` resolves by walking the tree one dot
+ * segment at a time. A flat map keyed by the dotted string type-checks and
+ * reads back fine in a test, and renders nothing on the page.
+ */
+function writeNested(
+  target: Record<string, unknown>,
+  keyPath: string,
+  value: string,
+) {
+  const segments = keyPath.split(".");
+  const leaf = segments.pop() as string;
+
+  let cursor = target;
+
+  for (const segment of segments) {
+    if (!isIndexable(cursor[segment])) {
+      cursor[segment] = {};
+    }
+
+    cursor = cursor[segment] as Record<string, unknown>;
+  }
+
+  cursor[leaf] = value;
 }

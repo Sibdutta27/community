@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 
 /**
@@ -59,6 +61,11 @@ export function BrandMark({
   showSubtitle = true,
   compact = false,
 }: BrandMarkProps) {
+  // The seal is a Website Studio slot. `media` is the reserved namespace the
+  // i18n request config injects, so this resolves to the assigned image or —
+  // as in every environment today — to the one that ships in git.
+  const media = useTranslations("media");
+
   const variant = compact
     ? brandMarkVariants.compact
     : brandMarkVariants.default;
@@ -73,7 +80,7 @@ export function BrandMark({
             className={variant.image}
             fill
             sizes={compact ? "44px" : "56px"}
-            src="/images/logo.png"
+            src={media("brand.logo")}
           />
         </div>
       </div>

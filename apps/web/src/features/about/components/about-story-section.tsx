@@ -14,6 +14,7 @@ const storyStatIds = ["members", "regions", "access"] as const;
 
 export function AboutStorySection() {
   const t = useTranslations("about.story");
+  const media = useTranslations("media");
 
   return (
     <motion.section
@@ -63,7 +64,7 @@ export function AboutStorySection() {
               className="object-cover"
               fill
               sizes="(min-width: 1024px) 42vw, 100vw"
-              src="/images/taino-nature.svg"
+              src={media("about.story")}
             />
           </motion.div>
         </div>

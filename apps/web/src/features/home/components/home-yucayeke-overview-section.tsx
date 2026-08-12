@@ -27,6 +27,7 @@ const regionCards = [
 
 export function HomeYucayekeOverviewSection() {
   const t = useTranslations("home.yucayeke.overview");
+  const media = useTranslations("media");
 
   return (
     <motion.article
@@ -45,7 +46,7 @@ export function HomeYucayekeOverviewSection() {
               fill
               priority={false}
               sizes="(min-width: 1024px) 38vw, 92vw"
-              src="/images/yucayeke-map.svg"
+              src={media("yucayeke.mapIllustration")}
             />
           </div>
         </motion.div>
