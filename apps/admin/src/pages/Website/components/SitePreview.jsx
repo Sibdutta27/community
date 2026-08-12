@@ -124,10 +124,14 @@ export default function SitePreview({ path = "/", reloadToken }) {
         ref={frameRef}
         src={src}
         title="Live site preview"
-        // No allow-same-origin: the preview never needs to reach into this
-        // page, and withholding it keeps a cross-origin document from
-        // touching admin state.
-        sandbox="allow-scripts allow-forms allow-popups"
+        // `allow-same-origin` is required, not optional: without it the frame
+        // gets an opaque origin and the site's own scripts throw on
+        // document.cookie, so the preview renders but never hydrates. It costs
+        // nothing here — the site is a different origin from the admin, so it
+        // still cannot reach into this page. What the sandbox does buy is the
+        // absence of allow-top-navigation: the framed page cannot navigate the
+        // admin out from under whoever is editing.
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
         sx={{
           width: "100%",
           height: { xs: 420, lg: 640 },
