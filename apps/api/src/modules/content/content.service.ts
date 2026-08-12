@@ -9,6 +9,7 @@ import {
 import { DatabaseService } from '@/database/database.service';
 import { ContentRevisionAction } from '@/generated/prisma/enums';
 
+import { buildPublicMediaUrl } from './config';
 import { extractPlaceholders, isEditableKeyPath } from './content.util';
 
 /** The single ContentVersion row. */
@@ -83,10 +84,15 @@ export class ContentService {
      * retired — a key a developer removed must stop being served even if an
      * override outlived it. Deliberately unpaginated and unauthenticated: it
      * is read behind every page render and is cached at the edge.
+     *
+     * Image slot assignments ride along under `media` rather than getting
+     * their own endpoint: the site already blocks on this fetch once per
+     * render, and a second round-trip on that path would cost more than the
+     * one field is worth.
      */
     public async getPublishedMessages() {
 
-        const [rows, version] = await Promise.all([
+        const [rows, version, slots] = await Promise.all([
             this.database.contentString.findMany({
                 where: {
                     publishedAt: { not: null },
@@ -107,6 +113,22 @@ export class ContentService {
             this.database.contentVersion.findUnique({
                 where: { id: VERSION_ID },
             }),
+
+            this.database.contentImageSlot.findMany({
+                where: { publishedAt: { not: null } },
+
+                select: {
+                    slotKey: true,
+
+                    media: {
+                        select: {
+                            fileKey: true,
+                            altEn  : true,
+                            altEs  : true,
+                        },
+                    },
+                },
+            }),
         ]);
 
         const overrides: Record<string, { en?: string; es?: string }> = {};
@@ -126,7 +148,52 @@ export class ContentService {
         return {
             version: version?.version ?? 0,
             overrides,
+            media  : this.buildMediaPayload(slots),
         };
+    }
+
+    /**
+     * Published slot assignments, keyed by slot.
+     *
+     * A slot is only served when there is an actual URL to serve — the image
+     * still exists, and `S3_PUBLIC_URL` is set. Anything short of that is
+     * omitted, and the web app renders the image that shipped in git rather
+     * than a broken one. That is why the registry holds the default: an
+     * unresolvable slot degrades to "as shipped", never to "missing".
+     */
+    private buildMediaPayload(
+        slots: ReadonlyArray<{
+            slotKey: string;
+            media: { fileKey: string; altEn: string | null; altEs: string | null } | null;
+        }>,
+    ) {
+        const media: Record<
+            string,
+            { url: string; altEn: string | null; altEs: string | null }
+        > = {};
+
+        for (const slot of slots) {
+            if (!slot.media) {
+                continue;
+            }
+
+            const url = buildPublicMediaUrl(
+                process.env.S3_PUBLIC_URL,
+                slot.media.fileKey,
+            );
+
+            if (!url) {
+                continue;
+            }
+
+            media[slot.slotKey] = {
+                url,
+                altEn: slot.media.altEn,
+                altEs: slot.media.altEs,
+            };
+        }
+
+        return media;
     }
 
     /**

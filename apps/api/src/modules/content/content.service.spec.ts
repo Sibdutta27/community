@@ -46,6 +46,10 @@ function buildService(overrides: Record<string, unknown> = {}) {
         upsert    : jest.fn().mockResolvedValue({ id: 'site', version: 5 }),
     };
 
+    const contentImageSlot = {
+        findMany: jest.fn().mockResolvedValue([]),
+    };
+
     const tx = { contentString, contentRevision, contentVersion };
 
     const database = {
@@ -53,13 +57,22 @@ function buildService(overrides: Record<string, unknown> = {}) {
         contentString,
         contentRevision,
         contentVersion,
+        contentImageSlot,
         $transaction: jest.fn(async (cb: (t: unknown) => unknown) => cb(tx)),
         ...overrides,
     };
 
     const service = new ContentService(database as never);
 
-    return { service, database, contentKey, contentString, contentRevision, contentVersion };
+    return {
+        service,
+        database,
+        contentKey,
+        contentString,
+        contentRevision,
+        contentVersion,
+        contentImageSlot,
+    };
 }
 
 describe('ContentService.saveDraft — placeholder gate', () => {
@@ -337,6 +350,86 @@ describe('ContentService.getPublishedMessages', () => {
                     publishedAt: { not: null },
                     contentKey : { editable: true, retiredAt: null },
                 },
+            }),
+        );
+    });
+});
+
+describe('ContentService.getPublishedMessages — image slots', () => {
+
+    const ASSIGNED_SLOT = {
+        slotKey: 'brand.logo',
+        media  : {
+            fileKey: 'site-media/abc-new-logo.png',
+            altEn  : 'The seal',
+            altEs  : 'El sello',
+        },
+    };
+
+    afterEach(() => {
+        delete process.env.S3_PUBLIC_URL;
+    });
+
+    // Published slot assignments ride on the same payload the site already
+    // fetches behind every render. A second endpoint would be a second
+    // network hop on the critical path for one field.
+    it('serves a published slot assignment under `media`', async () => {
+        process.env.S3_PUBLIC_URL = 'https://cdn.example.org';
+
+        const { service, contentImageSlot } = buildService();
+        contentImageSlot.findMany.mockResolvedValue([ASSIGNED_SLOT]);
+
+        const result = await service.getPublishedMessages();
+
+        expect(result.media['brand.logo']).toEqual({
+            url  : 'https://cdn.example.org/site-media/abc-new-logo.png',
+            altEn: 'The seal',
+            altEs: 'El sello',
+        });
+    });
+
+    it('always returns a media field, even with nothing assigned', async () => {
+        const { service } = buildService();
+
+        await expect(service.getPublishedMessages()).resolves.toHaveProperty(
+            'media',
+            {},
+        );
+    });
+
+    // Media storage is unconfigured in every environment today. Without a
+    // public base URL there is no URL to serve, and a half-built one would
+    // render as a broken image instead of the shipped default.
+    it('omits slots when no public media URL is configured', async () => {
+        const { service, contentImageSlot } = buildService();
+        contentImageSlot.findMany.mockResolvedValue([ASSIGNED_SLOT]);
+
+        const result = await service.getPublishedMessages();
+
+        expect(result.media).toEqual({});
+    });
+
+    it('omits a slot whose image was deleted out from under it', async () => {
+        process.env.S3_PUBLIC_URL = 'https://cdn.example.org';
+
+        const { service, contentImageSlot } = buildService();
+        contentImageSlot.findMany.mockResolvedValue([
+            { slotKey: 'brand.logo', media: null },
+        ]);
+
+        const result = await service.getPublishedMessages();
+
+        expect(result.media).toEqual({});
+    });
+
+    it('asks the database for published slots only', async () => {
+        const { service, contentImageSlot } = buildService();
+
+        await service.getPublishedMessages();
+
+        expect(contentImageSlot.findMany).toHaveBeenCalledWith(
+            expect.objectContaining({
+                where: { publishedAt: { not: null } },
             }),
         );
     });
