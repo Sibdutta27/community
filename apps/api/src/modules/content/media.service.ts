@@ -21,6 +21,7 @@ import {
 } from './config';
 
 import { PublicMediaStorageService } from './publicMediaStorage.service';
+import { ContentService } from './content.service';
 
 export type PresignMediaInput = Readonly<{
     fileName: string;
@@ -45,6 +46,7 @@ export class MediaService {
     constructor(
         private readonly database: DatabaseService,
         private readonly storage: PublicMediaStorageService,
+        private readonly contentService: ContentService,
     ) { }
 
     /**
@@ -227,6 +229,11 @@ export class MediaService {
             },
         });
 
+        // Same treatment copy and territories get. Without this an image swap
+        // sat behind the 60s revalidate window while every other kind of edit
+        // was live in about a second.
+        await this.contentService.requestSiteRevalidation();
+
         return { success: true, slotKey };
     }
 
@@ -246,6 +253,8 @@ export class MediaService {
             // Already on the default. Clearing an unassigned slot is the
             // outcome the caller asked for, not an error.
             .catch(() => undefined);
+
+        await this.contentService.requestSiteRevalidation();
 
         return { success: true, slotKey };
     }

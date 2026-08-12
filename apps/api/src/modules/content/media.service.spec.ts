@@ -33,9 +33,16 @@ function buildService(storageOverrides: Record<string, unknown> = {}) {
         ...storageOverrides,
     };
 
-    const service = new MediaService(database as never, storage as never);
+    const contentService = { requestSiteRevalidation: jest.fn() };
 
-    return { service, database, contentMedia, contentImageSlot, storage };
+    const service = new MediaService(
+        database as never,
+        storage as never,
+        contentService as never,
+    );
+
+    return {
+        contentService, service, database, contentMedia, contentImageSlot, storage };
 }
 
 function upload(overrides: Record<string, unknown> = {}) {
@@ -325,5 +332,30 @@ describe('the web media-slots registry mirror', () => {
         for (const slotKey of MEDIA_SLOT_KEYS) {
             expect(MEDIA_SLOTS[slotKey].defaultPath).toBe(web[slotKey]);
         }
+    });
+});
+
+/**
+ * Copy and territory changes bust the web app's content cache the moment they
+ * publish. Image slots were the odd one out — an assignment sat behind the
+ * 60s revalidate window, so a swapped photograph appeared up to a minute
+ * after every other kind of edit. Measured on the deployed stack: ~24s.
+ */
+describe('MediaService — cache invalidation', () => {
+
+    it('busts the site cache when a slot is assigned', async () => {
+        const { service, contentService } = buildService();
+
+        await service.assignSlot('brand.logo', 'media-1', {});
+
+        expect(contentService.requestSiteRevalidation).toHaveBeenCalled();
+    });
+
+    it('busts the site cache when a slot is cleared', async () => {
+        const { service, contentService } = buildService();
+
+        await service.clearSlot('brand.logo');
+
+        expect(contentService.requestSiteRevalidation).toHaveBeenCalled();
     });
 });
