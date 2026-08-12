@@ -4,7 +4,9 @@ import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
+import { applyTerritoryOverride } from "../lib/apply-territory-override";
 import { MAP_VIEWBOX, type TerritoryShape } from "../lib/geometry";
+import { useTerritoryOverrides } from "../lib/territory-overrides-context";
 
 type BorikenMapProps = Readonly<{
   shapes: readonly TerritoryShape[];
@@ -38,6 +40,19 @@ export function BorikenMap({
   const t = useTranslations("yucayekeMap");
   const isInteractive = variant === "interactive";
 
+  // A render boundary like any other: the labels on the map must say the same
+  // thing the list beside them says. The shapes stay joined to the GeoJSON by
+  // `geometryKey`, which no override can reach.
+  const overrides = useTerritoryOverrides();
+
+  const viewOf = (shape: TerritoryShape) =>
+    shape.territory === null
+      ? null
+      : applyTerritoryOverride(
+          shape.territory,
+          overrides[shape.territory.slug],
+        );
+
   return (
     <svg
       viewBox={`0 0 ${MAP_VIEWBOX.width} ${MAP_VIEWBOX.height}`}
@@ -50,7 +65,8 @@ export function BorikenMap({
         const isHighlighted = shape.geometryKey === highlightedKey;
         const isSelected = shape.geometryKey === selectedKey;
         const isHovered = shape.geometryKey === hoveredKey;
-        const isOralTradition = shape.territory?.status === "oralTradition";
+        const view = viewOf(shape);
+        const isOralTradition = view?.status === "oralTradition";
 
         const fill = isHighlighted
           ? "var(--primary)"
@@ -63,10 +79,9 @@ export function BorikenMap({
             ? "var(--accent)"
             : "var(--border)";
 
-        const territoryLabel =
-          shape.territory?.displayName ?? shape.geometryKey;
-        const ariaLabel = shape.territory?.cacique
-          ? `${territoryLabel} — ${t("labels.cacique", { name: shape.territory.cacique })}`
+        const territoryLabel = view?.displayName ?? shape.geometryKey;
+        const ariaLabel = view?.cacique
+          ? `${territoryLabel} — ${t("labels.cacique", { name: view.cacique })}`
           : territoryLabel;
 
         return (
@@ -131,7 +146,7 @@ export function BorikenMap({
               fontSize={11}
               fontWeight={600}
             >
-              {shape.territory?.displayName ?? shape.geometryKey}
+              {viewOf(shape)?.displayName ?? shape.geometryKey}
             </text>
           ))
         : null}

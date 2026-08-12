@@ -8,6 +8,7 @@ import {
   normalizeTerritoryName,
   resolveTerritory,
   TERRITORIES,
+  TERRITORY_SLUGS,
 } from "./territories";
 
 /**
@@ -342,5 +343,32 @@ describe("alias resolution safety", () => {
         `"${name}" no longer resolves`,
       ).not.toBeNull();
     }
+  });
+});
+
+describe("Website Studio mirror", () => {
+  /**
+   * The API keeps its own copy of this table so it can refuse an override
+   * keyed on a slug the site does not have, and so the admin panel — a
+   * separate app with no import path into here — can show what it is
+   * overriding.
+   *
+   * Only the slugs are load-bearing, and they are the half that fails
+   * silently: add a 22nd territory here and forget the mirror, and the Studio
+   * simply cannot edit it while the API rejects every write for it, with
+   * nothing anywhere saying why. Read as text rather than imported because
+   * the two apps have separate TypeScript projects.
+   */
+  it("keeps the API's slug mirror in step with this table", () => {
+    const mirror = readFileSync(
+      join(process.cwd(), "../api/src/modules/content/territory.catalog.ts"),
+      "utf8",
+    );
+
+    const mirroredSlugs = [
+      ...mirror.matchAll(/^\s+slug\s*:\s*'([^']+)'/gm),
+    ].map((match) => match[1]);
+
+    expect(mirroredSlugs).toEqual([...TERRITORY_SLUGS]);
   });
 });

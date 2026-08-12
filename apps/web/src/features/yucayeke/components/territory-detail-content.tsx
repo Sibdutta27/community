@@ -14,6 +14,7 @@ import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 
 import { resolveTerritory, type Territory } from "../content/territories";
 import { buildTerritoryShapes } from "../lib/geometry";
+import { useTerritoryView } from "../lib/territory-overrides-context";
 import { useYucayekeGeometryQuery } from "../lib/yucayeke-map-queries";
 import { BorikenMap } from "./boriken-map";
 import { TerritoryStatusBadge } from "./territory-info-card";
@@ -30,11 +31,15 @@ type TerritoryDetailContentProps = Readonly<{
  * the optional hand-written long-form sections.
  */
 export function TerritoryDetailContent({
-  territory,
+  territory: canonicalTerritory,
   children,
 }: TerritoryDetailContentProps) {
   const t = useTranslations("yucayeke.territory");
   const tMap = useTranslations("yucayekeMap");
+
+  // The render boundary: the page below shows the Nation's edited names, while
+  // the slug, geometry key and resolver stay on the canonical record.
+  const territory = useTerritoryView(canonicalTerritory);
 
   const geometryQuery = useYucayekeGeometryQuery();
   const profileQuery = useOptionalProfileInfoQuery();

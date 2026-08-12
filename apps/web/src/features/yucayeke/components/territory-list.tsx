@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 import { TERRITORIES, type Territory } from "../content/territories";
+import { useTerritoryOverrides } from "../lib/territory-overrides-context";
+import { applyTerritoryOverride } from "../lib/apply-territory-override";
 
 type TerritoryListProps = Readonly<{
   selectedSlug: string | null;
@@ -28,6 +30,7 @@ export function TerritoryList({
   className,
 }: TerritoryListProps) {
   const t = useTranslations("yucayekeMap");
+  const overrides = useTerritoryOverrides();
 
   return (
     <ul
@@ -40,6 +43,14 @@ export function TerritoryList({
       {TERRITORIES.map((territory) => {
         const isSelected = territory.slug === selectedSlug;
         const isOwn = territory.slug === highlightedSlug;
+
+        // Rendered from the edited names, but `onSelect` hands back the
+        // canonical record: selection state, the map join and every lookup
+        // downstream must stay on what the code shipped.
+        const view = applyTerritoryOverride(
+          territory,
+          overrides[territory.slug],
+        );
 
         return (
           <li key={territory.slug}>
@@ -67,14 +78,14 @@ export function TerritoryList({
             >
               <span className="min-w-0">
                 <span className="block truncate text-[13px] font-semibold">
-                  {territory.displayName}
+                  {view.displayName}
                   {isOwn ? (
                     <span className="text-primary ml-1.5 text-[11px] font-semibold">
                       • {t("labels.yourTerritory")}
                     </span>
                   ) : null}
                 </span>
-                {territory.cacique ? (
+                {view.cacique ? (
                   <span
                     className={cn(
                       "block truncate text-[12px]",
@@ -83,7 +94,7 @@ export function TerritoryList({
                         : "text-muted-foreground",
                     )}
                   >
-                    {t("labels.cacique", { name: territory.cacique })}
+                    {t("labels.cacique", { name: view.cacique })}
                   </span>
                 ) : null}
               </span>
@@ -98,11 +109,11 @@ export function TerritoryList({
                   aria-hidden="true"
                   className={cn(
                     "size-2 rounded-full",
-                    territory.status === "confirmed"
+                    view.status === "confirmed"
                       ? "bg-accent"
                       : "border-muted-foreground border bg-transparent",
                   )}
-                  title={t(`status.${territory.status}`)}
+                  title={t(`status.${view.status}`)}
                 />
               </span>
             </button>

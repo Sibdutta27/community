@@ -4,11 +4,13 @@ import {
   __resetContentOverrideCache,
   CONTENT_CACHE_TAG,
   getContentOverrides,
+  getTerritoryOverrides,
 } from "@/i18n/content-overrides";
 
 const payload = {
   version: 3,
   overrides: { "home.hero.title": { en: "Kaya!", es: "¡Kaya!" } },
+  territories: { aymaco: { displayName: "Aymamón" } },
 };
 
 type FetchOptions = {
@@ -94,6 +96,12 @@ describe("getContentOverrides", () => {
     await expect(getContentOverrides()).resolves.toEqual({});
   });
 
+  it("ignores an overrides field of the wrong shape", async () => {
+    mockFetch(() => okResponse({ overrides: ["not", "a", "map"] }));
+
+    await expect(getContentOverrides()).resolves.toEqual({});
+  });
+
   // The belt-and-braces layer: once this process has seen good content, an API
   // outage must not drop every override at once.
   it("keeps serving the last good payload after the API goes down", async () => {
@@ -103,5 +111,52 @@ describe("getContentOverrides", () => {
     mockFetch(() => Promise.reject(new Error("gone")));
 
     await expect(getContentOverrides()).resolves.toEqual(payload.overrides);
+  });
+});
+
+describe("getTerritoryOverrides", () => {
+  beforeEach(() => {
+    __resetContentOverrideCache();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("returns the published territory overrides", async () => {
+    mockFetch(() => okResponse(payload));
+
+    await expect(getTerritoryOverrides()).resolves.toEqual(payload.territories);
+  });
+
+  /**
+   * The reason territories ride on the copy payload at all. Two fetches would
+   * double the cost of the read that sits in front of every single render, to
+   * deliver a few dozen names — and would let copy and territory data drift
+   * apart between two cache windows.
+   */
+  it("shares one fetch with the copy overrides", async () => {
+    const spy = mockFetch(() => okResponse(payload));
+
+    await Promise.all([getContentOverrides(), getTerritoryOverrides()]);
+
+    expect(spy.mock.calls.map((call) => call[0])).toEqual(
+      new Array(spy.mock.calls.length).fill(spy.mock.calls[0][0]),
+    );
+    expect(spy.mock.calls[0][1]?.next?.tags).toContain(CONTENT_CACHE_TAG);
+  });
+
+  // Same argument as the copy overrides: the shipped territory table is always
+  // a valid site, so no failure here may reach the render.
+  it("falls back to nothing when the API is unreachable", async () => {
+    mockFetch(() => Promise.reject(new Error("ECONNREFUSED")));
+
+    await expect(getTerritoryOverrides()).resolves.toEqual({});
+  });
+
+  it("ignores a payload with no territories field", async () => {
+    mockFetch(() => okResponse({ version: 1, overrides: {} }));
+
+    await expect(getTerritoryOverrides()).resolves.toEqual({});
   });
 });
