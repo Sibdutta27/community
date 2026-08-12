@@ -89,6 +89,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
   const logoutMutation = useLogoutMutation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isMobileAccountOpen, setIsMobileAccountOpen] = useState(false);
   const [openMenuLabel, setOpenMenuLabel] = useState<string | null>(null);
   const profileMenuRef = useRef<HTMLDivElement | null>(null);
   const profileTriggerRef = useRef<HTMLButtonElement | null>(null);
@@ -168,6 +169,7 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
       await logoutMutation.mutateAsync();
       queryClient.clear();
       setIsMobileMenuOpen(false);
+      setIsMobileAccountOpen(false);
       setIsProfileMenuOpen(false);
       router.replace("/sign-in");
       router.refresh();
@@ -369,7 +371,17 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
             className="size-9 lg:hidden"
             size="icon"
             variant="ghost"
-            onClick={() => setIsMobileMenuOpen((value) => !value)}
+            onClick={() =>
+              setIsMobileMenuOpen((value) => {
+                // Collapsing the drawer resets the account section, so
+                // reopening it always starts from the same state.
+                if (value) {
+                  setIsMobileAccountOpen(false);
+                }
+
+                return !value;
+              })
+            }
           >
             {isMobileMenuOpen ? (
               <X aria-hidden="true" />
@@ -381,22 +393,100 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
 
         {isMobileMenuOpen ? (
           <div className={navbarMobilePanelClass} id="protected-mobile-menu">
-            <div className="border-border/80 bg-surface-muted/80 flex items-center gap-3 rounded-2xl border p-3">
-              <div className={cn(avatarBaseClass, "size-12")}>
-                {getInitials(user.name)}
-                <span className={cn(avatarBadgeClass, "size-4")}>
-                  <ShieldCheck aria-hidden="true" className="size-2.5" />
-                </span>
-              </div>
+            {/* The member's own card is the account control on mobile: the
+                desktop avatar menu is inside a `lg:flex` container, so without
+                this disclosure there is no route to /profile on a phone at
+                all. Chevron + hover carry the affordance — a plain card gave
+                no hint that anything lived underneath it. */}
+            <div className="border-border/80 bg-surface-muted/80 rounded-2xl border">
+              <button
+                aria-controls="protected-mobile-account-menu"
+                aria-expanded={isMobileAccountOpen}
+                aria-haspopup="menu"
+                className="hover:bg-surface-muted focus-visible:ring-ring focus-visible:ring-offset-surface flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-inset"
+                type="button"
+                onClick={() => setIsMobileAccountOpen((value) => !value)}
+              >
+                <div className={cn(avatarBaseClass, "size-12 shrink-0")}>
+                  {getInitials(user.name)}
+                  <span className={cn(avatarBadgeClass, "size-4")}>
+                    <ShieldCheck aria-hidden="true" className="size-2.5" />
+                  </span>
+                </div>
 
-              <div className="min-w-0">
-                <p className="text-foreground truncate text-sm font-semibold">
-                  {user.name}
-                </p>
-                <p className="text-muted-foreground truncate text-xs">
-                  Member ID: {user.publicId ?? user.id}
-                </p>
-              </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-foreground truncate text-sm font-semibold">
+                    {user.name}
+                  </p>
+                  <p className="text-muted-foreground truncate text-xs">
+                    Member ID: {user.publicId ?? user.id}
+                  </p>
+                </div>
+
+                <ChevronDown
+                  aria-hidden="true"
+                  className={cn(
+                    "text-muted-foreground size-4 shrink-0 transition-transform duration-200 motion-reduce:transition-none",
+                    isMobileAccountOpen && "rotate-180",
+                  )}
+                />
+              </button>
+
+              {isMobileAccountOpen ? (
+                <div
+                  aria-label="Account"
+                  className="border-border/70 grid gap-1 border-t p-2"
+                  id="protected-mobile-account-menu"
+                  role="menu"
+                >
+                  <Link
+                    aria-current={
+                      isActivePath(pathname, "/profile") ? "page" : undefined
+                    }
+                    className={cn(
+                      mobileNavLinkClass(isActivePath(pathname, "/profile")),
+                      // py-3 over the shared py-2.5: these are the drawer's
+                      // account actions and need a full touch target.
+                      "flex items-center gap-2 py-3",
+                    )}
+                    href="/profile"
+                    role="menuitem"
+                    onClick={() => {
+                      setIsMobileAccountOpen(false);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <User aria-hidden="true" className="size-4 shrink-0" />
+                    Profile
+                  </Link>
+
+                  <button
+                    className={cn(
+                      mobileNavLinkClass(false),
+                      "flex w-full cursor-pointer items-center gap-2 py-3 text-left",
+                    )}
+                    role="menuitem"
+                    type="button"
+                    onClick={handleLogout}
+                  >
+                    {isLoggingOut ? (
+                      <Loader2
+                        aria-hidden="true"
+                        className="size-4 shrink-0 animate-spin"
+                      />
+                    ) : (
+                      <LogOut aria-hidden="true" className="size-4 shrink-0" />
+                    )}
+                    {isLoggingOut ? "Signing out..." : "Sign out"}
+                  </button>
+
+                  {logoutError ? (
+                    <p className="text-destructive px-3 py-2 text-xs leading-5">
+                      {logoutError}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
 
             <nav aria-label="Main" className="mt-4 grid gap-1">
@@ -447,29 +537,6 @@ export function ProtectedNavbar({ user }: Readonly<{ user: AuthUser }>) {
 
               <LanguageSwitcher variant="row" />
             </nav>
-
-            <button
-              className="border-border bg-surface text-foreground hover:bg-surface-muted focus-visible:ring-ring focus-visible:ring-offset-background mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border px-4 py-3 text-sm font-semibold whitespace-nowrap shadow-[0_12px_24px_-18px_rgba(20,26,34,0.18)] transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-              onClick={handleLogout}
-              type="button"
-            >
-              {isLoggingOut ? (
-                <Loader2
-                  className="size-4 shrink-0 animate-spin"
-                  aria-hidden="true"
-                />
-              ) : (
-                <LogOut className="size-4 shrink-0" aria-hidden="true" />
-              )}
-              <span className="leading-none whitespace-nowrap">
-                {isLoggingOut ? "Signing out..." : "Sign out"}
-              </span>
-            </button>
-            {logoutError ? (
-              <p className="text-destructive mt-3 text-sm leading-6">
-                {logoutError}
-              </p>
-            ) : null}
           </div>
         ) : null}
       </div>

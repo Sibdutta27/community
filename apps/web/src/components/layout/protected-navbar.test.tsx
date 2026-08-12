@@ -1,4 +1,4 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ProtectedNavbar } from "@/components/layout/protected-navbar";
@@ -170,6 +170,84 @@ describe("ProtectedNavbar", () => {
     expect(
       screen.getByRole("menuitem", { name: "Services" }),
     ).toBeInTheDocument();
+  });
+
+  describe("mobile account disclosure", () => {
+    const openMobilePanel = () => {
+      renderWithIntl(<ProtectedNavbar user={user} />);
+      fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+
+      const panelId = screen
+        .getByRole("button", { name: "Close menu" })
+        .getAttribute("aria-controls") as string;
+
+      return document.getElementById(panelId) as HTMLElement;
+    };
+
+    // The regression this whole disclosure exists for: the desktop account
+    // menu sits in a `lg:flex` container, so before this the mobile drawer
+    // had no route to /profile whatsoever.
+    it("reaches the profile page from the mobile drawer", () => {
+      const panel = openMobilePanel();
+
+      fireEvent.click(
+        within(panel).getByRole("button", { name: /Test Member/ }),
+      );
+
+      expect(
+        within(panel).getByRole("menuitem", { name: "Profile" }),
+      ).toHaveAttribute("href", "/profile");
+    });
+
+    it("keeps the account actions collapsed until the card is tapped", () => {
+      const panel = openMobilePanel();
+      const trigger = within(panel).getByRole("button", {
+        name: /Test Member/,
+      });
+
+      expect(trigger).toHaveAttribute("aria-expanded", "false");
+      expect(within(panel).queryByRole("menuitem")).toBeNull();
+
+      fireEvent.click(trigger);
+
+      expect(trigger).toHaveAttribute("aria-expanded", "true");
+      const menu = within(panel).getByRole("menu", { name: "Account" });
+      expect(trigger).toHaveAttribute("aria-controls", menu.id);
+      expect(
+        within(menu).getByRole("menuitem", { name: /Sign out/ }),
+      ).toBeInTheDocument();
+    });
+
+    // Two sign-out controls in one small drawer is worse than one; the card
+    // is now the single account surface, mirroring desktop.
+    it("offers exactly one sign-out control", () => {
+      const panel = openMobilePanel();
+      fireEvent.click(
+        within(panel).getByRole("button", { name: /Test Member/ }),
+      );
+
+      // Counted across both roles on purpose: the control this replaced was a
+      // plain button, so a regression would reappear as one.
+      expect([
+        ...within(panel).queryAllByRole("button", { name: /Sign out/ }),
+        ...within(panel).queryAllByRole("menuitem", { name: /Sign out/ }),
+      ]).toHaveLength(1);
+    });
+
+    it("collapses the account section when the drawer is closed and reopened", () => {
+      const panel = openMobilePanel();
+      fireEvent.click(
+        within(panel).getByRole("button", { name: /Test Member/ }),
+      );
+      expect(
+        within(panel).getByRole("menu", { name: "Account" }),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole("button", { name: "Close menu" }));
+      fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+
+      expect(screen.queryByRole("menu", { name: "Account" })).toBeNull();
+    });
   });
 
   it("closes the Programs menu on Escape", () => {
