@@ -341,3 +341,48 @@ describe('ContentService.getPublishedMessages', () => {
         );
     });
 });
+
+describe('ContentService.getRevisions', () => {
+
+    it('returns the newest change first — history reads backwards', async () => {
+        const { service, contentRevision } = buildService();
+
+        await service.getRevisions({});
+
+        expect(contentRevision.findMany).toHaveBeenCalledWith(
+            expect.objectContaining({ orderBy: { createdAt: 'desc' } }),
+        );
+    });
+
+    it('paginates', async () => {
+        const { service, contentRevision } = buildService();
+
+        await service.getRevisions({ page: 3, limit: 10 });
+
+        expect(contentRevision.findMany).toHaveBeenCalledWith(
+            expect.objectContaining({ skip: 20, take: 10 }),
+        );
+    });
+
+    // "What happened to the hero title?" is the question history is opened to
+    // answer, and scrolling a site-wide log to find one key is not an answer.
+    it('filters to a single key when asked', async () => {
+        const { service, contentRevision } = buildService();
+
+        await service.getRevisions({ keyPath: 'home.hero.title' });
+
+        expect(contentRevision.findMany).toHaveBeenCalledWith(
+            expect.objectContaining({ where: { keyPath: 'home.hero.title' } }),
+        );
+    });
+
+    it('counts the same filtered set, not the whole log', async () => {
+        const { service, contentRevision } = buildService();
+
+        await service.getRevisions({ keyPath: 'home.hero.title' });
+
+        expect(contentRevision.count).toHaveBeenCalledWith({
+            where: { keyPath: 'home.hero.title' },
+        });
+    });
+});

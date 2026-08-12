@@ -60,6 +60,7 @@ export async function getContentRevisions(params = {}) {
     params: {
       page: params.page,
       limit: params.limit,
+      keyPath: params.keyPath || undefined,
     },
   });
 

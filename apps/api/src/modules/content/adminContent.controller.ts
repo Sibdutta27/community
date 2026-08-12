@@ -47,10 +47,12 @@ export class AdminContentController {
     async getRevisions(
         @Query('page') page?: string,
         @Query('limit') limit?: string,
+        @Query('keyPath') keyPath?: string,
     ) {
         return this.contentService.getRevisions({
             page : Number(page) || 1,
             limit: Number(limit) || 20,
+            keyPath,
         });
     }
 

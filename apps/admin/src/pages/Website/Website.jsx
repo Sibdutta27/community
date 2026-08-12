@@ -25,6 +25,7 @@ import SectionNav from "@components/SectionNav/SectionNav";
 import useDebounceState from "@/hooks/useDebounceState";
 
 import ContentGroup from "./components/ContentGroup";
+import SitePreview from "./components/SitePreview";
 
 import {
   useContentKeys,
@@ -49,6 +50,8 @@ export default function Website() {
   const [pageId, setPageId] = useState(WEBSITE_PAGES[0].id);
   const [search, setSearch] = useState("");
   const [openGroup, setOpenGroup] = useState(null);
+  // Bumped on publish so the preview stops showing the previous wording.
+  const [publishedAt, setPublishedAt] = useState(0);
 
   const debouncedSearch = useDebounceState(search, 250);
 
@@ -150,6 +153,8 @@ export default function Website() {
     try {
       const result = await publish.mutateAsync();
 
+      setPublishedAt(Date.now());
+
       toast.success(
         result.published === 1
           ? "1 change is now live"
@@ -233,7 +238,11 @@ export default function Website() {
           sx={{
             display: "grid",
             gap: 1.5,
-            gridTemplateColumns: { xs: "1fr", md: "220px minmax(0, 1fr)" },
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "200px minmax(0, 1fr)",
+              xl: "200px minmax(0, 1fr) minmax(0, 0.9fr)",
+            },
             alignItems: "start",
           }}
         >
@@ -345,6 +354,12 @@ export default function Website() {
               </Box>
             )}
           </Panel>
+
+          {/* Below xl the preview would squeeze both columns; there it moves
+              under the editor rather than fighting it for width. */}
+          <Box sx={{ gridColumn: { xs: "1 / -1", xl: "auto" } }}>
+            <SitePreview path={page.previewPath} reloadToken={publishedAt} />
+          </Box>
         </Box>
       )}
     </Box>

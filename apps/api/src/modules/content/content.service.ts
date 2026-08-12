@@ -386,20 +386,36 @@ export class ContentService {
         return { discarded: result.count };
     }
 
-    public async getRevisions(query: { page?: number; limit?: number }) {
+    /**
+     * The change log, newest first.
+     *
+     * `keyPath` narrows it to one string, because "what happened to the hero
+     * title?" is the question history gets opened to answer, and scrolling a
+     * site-wide log to find one key is not an answer.
+     */
+    public async getRevisions(query: {
+        page?: number;
+        limit?: number;
+        keyPath?: string;
+    }) {
 
         const page = query.page || 1;
         const limit = query.limit || 20;
         const skip = (page - 1) * limit;
 
+        const where = query.keyPath ? { keyPath: query.keyPath } : {};
+
         const [data, count] = await Promise.all([
             this.database.contentRevision.findMany({
+                where,
                 skip,
                 take   : limit,
                 orderBy: { createdAt: 'desc' },
             }),
 
-            this.database.contentRevision.count(),
+            // Counted over the same filter — a filtered page with a total from
+            // the whole log paginates into empty pages.
+            this.database.contentRevision.count({ where }),
         ]);
 
         return { data, count };

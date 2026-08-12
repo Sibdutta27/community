@@ -1,8 +1,13 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import { getRequestConfig } from "next-intl/server";
 
-import { LOCALE_COOKIE_NAME, resolveLocale } from "@/i18n/config";
+import {
+  isLocale,
+  LOCALE_COOKIE_NAME,
+  PREVIEW_LOCALE_HEADER,
+  resolveLocale,
+} from "@/i18n/config";
 import { getContentOverrides } from "@/i18n/content-overrides";
 import { mergeMessages } from "@/i18n/merge-messages";
 
@@ -17,8 +22,17 @@ import { mergeMessages } from "@/i18n/merge-messages";
  * with no CMS at all.
  */
 export default getRequestConfig(async () => {
-  const cookieStore = await cookies();
-  const locale = resolveLocale(cookieStore.get(LOCALE_COOKIE_NAME)?.value);
+  const [cookieStore, headerStore] = await Promise.all([cookies(), headers()]);
+
+  // The admin panel previews this site in an iframe, where `community_locale`
+  // is a third-party cookie the browser will not send. The preview asks for a
+  // language with `?lang=`, which middleware forwards as a request header.
+  // Only known locales are honoured, so the header cannot smuggle a path.
+  const previewLocale = headerStore.get(PREVIEW_LOCALE_HEADER);
+
+  const locale = isLocale(previewLocale)
+    ? resolveLocale(previewLocale)
+    : resolveLocale(cookieStore.get(LOCALE_COOKIE_NAME)?.value);
 
   const [defaults, overrides] = await Promise.all([
     import(`../../messages/${locale}.json`).then((module) => module.default),

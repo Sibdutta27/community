@@ -15,12 +15,18 @@ vi.mock("@/i18n/content-overrides", () => ({
   __resetContentOverrideCache: () => {},
 }));
 
+// Request headers the middleware may have set (the Studio preview's `?lang`).
+const headerJar = vi.hoisted(() => new Map<string, string>());
+
 vi.mock("next/headers", () => ({
   cookies: async () => ({
     get: (name: string) =>
       cookieJar.has(name)
         ? { name, value: cookieJar.get(name) as string }
         : undefined,
+  }),
+  headers: async () => ({
+    get: (name: string) => headerJar.get(name.toLowerCase()) ?? null,
   }),
 }));
 
@@ -52,6 +58,7 @@ async function resolveRequestConfig(): Promise<ResolvedRequestConfig> {
 describe("i18n request config (cookie-based locale)", () => {
   beforeEach(() => {
     cookieJar.clear();
+    headerJar.clear();
   });
 
   it("defaults to English when no locale cookie is set", async () => {
@@ -92,6 +99,7 @@ describe("i18n request config (cookie-based locale)", () => {
 describe("i18n request config (Website Studio content)", () => {
   beforeEach(() => {
     cookieJar.clear();
+    headerJar.clear();
   });
 
   afterEach(() => {
@@ -137,5 +145,52 @@ describe("i18n request config (Website Studio content)", () => {
     const config = await resolveRequestConfig();
 
     expect(config.messages.nav.enrollToday).toBe("Enroll Today");
+  });
+});
+
+// The Studio previews the live site in an iframe. The `community_locale`
+// cookie is third-party in that frame and browsers will not send it, so the
+// preview asks for a language with `?lang=`, which the middleware forwards as
+// a request header. Without this the Spanish preview would silently render
+// English.
+describe("i18n request config (preview locale header)", () => {
+  beforeEach(() => {
+    cookieJar.clear();
+    headerJar.clear();
+  });
+
+  it("uses the preview header when no cookie is present", async () => {
+    headerJar.set("x-locale", "es");
+
+    const config = await resolveRequestConfig();
+
+    expect(config.locale).toBe("es");
+    expect(config.messages.nav.enrollToday).toBe("Inscríbete Hoy");
+  });
+
+  it("lets the preview header win over the visitor's cookie", async () => {
+    cookieJar.set("community_locale", "en");
+    headerJar.set("x-locale", "es");
+
+    const config = await resolveRequestConfig();
+
+    expect(config.locale).toBe("es");
+  });
+
+  it("ignores an unsupported header value rather than trusting it", async () => {
+    cookieJar.set("community_locale", "es");
+    headerJar.set("x-locale", "fr");
+
+    const config = await resolveRequestConfig();
+
+    expect(config.locale).toBe("es");
+  });
+
+  it("ignores a garbage header value", async () => {
+    headerJar.set("x-locale", "../../etc/passwd");
+
+    const config = await resolveRequestConfig();
+
+    expect(config.locale).toBe("en");
   });
 });
