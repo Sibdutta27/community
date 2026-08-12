@@ -66,6 +66,19 @@ export class AdminUserController {
     }
 
     /**
+     * Get a user's consent record, resolved through their enrollment.
+     *
+     * Grouped with the other `:id` routes; the extra segment means `@Get(':id')`
+     * cannot shadow it (unlike `role-counts`, which genuinely must come first).
+     */
+    @Get(':id/consents')
+    async getUserConsents(
+        @Param('id') id: string,
+    ) {
+        return this.adminUserService.getUserConsents(id);
+    }
+
+    /**
      * Get single user
      */
     @Get(':id')

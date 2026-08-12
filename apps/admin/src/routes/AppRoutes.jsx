@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import AdminLayout from "@/layouts/AdminLayout/AdminLayout.jsx";
 
+import Dashboard from "@/pages/Dashboard/Dashboard.jsx";
+
 import Users from "@/pages/Users/Users.jsx";
 import CreateUser from "@/pages/Users/CreateUser/CreateUser.jsx";
 import EditUser from "@/pages/Users/EditUsers/EditUser.jsx";
@@ -59,7 +61,11 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/users" replace />} />
+        {/* The overview is the landing screen: it says what is waiting for
+            staff. It used to be unrouted entirely, with `/` dropping straight
+            into the user table. */}
+        <Route index element={<Dashboard />} />
+        <Route path="dashboard" element={<Navigate to="/" replace />} />
 
         {/* Users */}
         <Route path="users" element={<Users />} />

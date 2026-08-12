@@ -5,8 +5,11 @@ import { Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 import PageHeader from "@components/PageHeader/PageHeader";
+import SectionNav from "@components/SectionNav/SectionNav";
 
 import UserList from "./components/UserList/UserList";
+
+import { USER_SECTION_ITEMS } from "./sections";
 
 const Users = () => {
   return (
@@ -25,6 +28,8 @@ const Users = () => {
           </Button>
         }
       />
+
+      <SectionNav items={USER_SECTION_ITEMS} />
 
       <UserList />
     </Box>

@@ -37,6 +37,62 @@ export class AdminUserService {
     }
 
     /**
+     * Get a user's consent record.
+     *
+     * Consent acceptances hang off the Enrollment, not the User, so a member
+     * who has never started one has no consents rather than an error — the
+     * caller renders that as an empty state, which is a real answer.
+     */
+    async getUserConsents(id: string) {
+
+        const user = await this.database.user.findUnique({
+            where: {
+                id,
+            },
+
+            include: {
+                enrollment: {
+                    include: {
+                        consent: {
+                            include: {
+                                consent: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        if (!user.enrollment) {
+            return {
+                hasEnrollment  : false,
+                consentAccepted: false,
+                consents       : [],
+            };
+        }
+
+        return {
+            hasEnrollment  : true,
+            enrollmentId   : user.enrollment.id,
+            consentAccepted: user.enrollment.consentAccepted,
+
+            consents: user.enrollment.consent.map((c) => ({
+                id        : c.consent.id,
+                key       : c.consent.key,
+                version   : c.consent.version,
+                title     : c.consent.title,
+                required  : c.consent.required,
+                accepted  : c.accepted,
+                acceptedAt: c.acceptedAt,
+            })),
+        };
+    }
+
+    /**
      * Update user
      */
     async updateUser(

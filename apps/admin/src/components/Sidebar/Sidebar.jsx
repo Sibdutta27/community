@@ -16,17 +16,14 @@ import {
 } from "@mui/material";
 
 import {
+  SpaceDashboard,
   People,
   ChevronLeft,
   ChevronRight,
   ExpandLess,
   ExpandMore,
   Assignment,
-  PendingActions,
-  TaskAlt,
-  Cancel,
   Diversity3,
-  FactCheck,
   Construction,
   Event,
   Feedback as FeedbackIcon,
@@ -43,51 +40,35 @@ const collapsedWidth = 60;
  */
 const menuItems = [
   {
+    label: "Overview",
+    icon: <SpaceDashboard />,
+    path: "/",
+    end: true,
+  },
+  // The consent catalog is a page of this section (see Users/sections.js), so
+  // the rail stays lit while staff are editing it.
+  {
     label: "Users",
     icon: <People />,
     path: "/users",
+    alsoActiveOn: ["/consents"],
   },
+  // One entry, not five. The list itself carries All/Draft/Submitted/Approved/
+  // Rejected tabs with live counts, so the four children were a second
+  // navigation for the same filter — and the rail's version had no counts.
+  // `alsoActiveOn` keeps the rail lit on the legacy status URLs and on an
+  // open application.
   {
     label: "Enrollments",
     icon: <Assignment />,
-    children: [
-      {
-        label: "All",
-        icon: <Assignment />,
-        path: "/enrollments/all",
-      },
-
-      {
-        label: "Submitted",
-        icon: <PendingActions />,
-        path: "/enrollments/submitted",
-      },
-
-      {
-        label: "Approved",
-        icon: <TaskAlt />,
-        path: "/enrollments/approved",
-      },
-
-      {
-        label: "Rejected",
-        icon: <Cancel />,
-        path: "/enrollments/rejected",
-      },
-    ],
+    path: "/enrollments/all",
+    alsoActiveOn: ["/enrollments"],
   },
   {
     label: "Cultural Connection",
     icon: <Diversity3 />,
     path: "/cultural-connections",
   },
-  {
-    label: "Consents",
-    icon: <FactCheck />,
-    path: "/consents",
-  },
-  // Programs and Events are flat: each surface carries its own section bar
-  // (Programs | Categories), so the sidebar no longer duplicates the split.
   // Programs and Events are flat: each surface carries its own section bar
   // (Programs | Categories), so the sidebar no longer duplicates the split.
   // `alsoActiveOn` keeps the rail lit while staff are on the categories tab —
@@ -173,11 +154,22 @@ export default function Sidebar() {
           flexShrink: 0,
         }}
       >
+        {/* Same seal and same wordmark as the member app's navbar — staff and
+            members should see one product, not two. "Admin" is the surface
+            label underneath, mirroring the member mark's title/subtitle
+            lockup rather than inventing a second name. */}
         {!collapsed && (
           <div className={styles.logoBox}>
-            <div className={styles.logoMark}>A</div>
-            <div>
-              <h1>Community</h1>
+            <img
+              alt=""
+              className={styles.logoMark}
+              src="/logo.png"
+              width={26}
+              height={26}
+            />
+            <div className={styles.logoText}>
+              <h1>Taíno Nation of Borikén</h1>
+              <span>Admin</span>
             </div>
           </div>
         )}
@@ -217,6 +209,9 @@ export default function Sidebar() {
                 <ListItemButton
                   component={NavLink}
                   to={item.path}
+                  // Without `end`, `to="/"` matches every route and the
+                  // Overview item would stay lit across the whole app.
+                  end={item.end}
                   className={
                     item.alsoActiveOn?.some((prefix) =>
                       pathname.startsWith(prefix),

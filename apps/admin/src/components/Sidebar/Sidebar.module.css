@@ -5,24 +5,41 @@
   min-width: 0;
 }
 
+/* The seal itself, same asset the member app's navbar renders. */
 .logoMark {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   flex-shrink: 0;
-  border-radius: 6px;
-  display: grid;
-  place-items: center;
-  background: var(--admin-primary);
-  color: #fff;
-  font-weight: 700;
-  font-size: 12px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  border: 1px solid var(--admin-border);
 }
 
+.logoText {
+  min-width: 0;
+}
+
+/* Uppercase and tracked like the member wordmark, sized down to survive the
+   216px rail on one line. Never wraps: a governance mark that breaks across
+   two lines stops reading as a mark. */
 .logoBox h1 {
   margin: 0;
-  font-size: 13px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  line-height: 1.2;
   white-space: nowrap;
+  color: var(--admin-text);
+}
+
+.logoBox span {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  line-height: 1.2;
+  color: var(--admin-muted);
 }

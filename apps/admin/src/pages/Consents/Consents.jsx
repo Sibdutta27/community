@@ -1,43 +1,46 @@
-import React from 'react';
-import ConsentList from './components/ConsentList/ConsentList';
+import { Link } from "react-router-dom";
 
-import { Link } from 'react-router-dom';
+import { Box, Button } from "@mui/material";
 
-import {
-    Box,
-    Button,
-    Typography,
-} from '@mui/material';
+import AddIcon from "@mui/icons-material/Add";
 
-import AddIcon from '@mui/icons-material/Add';
+import PageHeader from "@components/PageHeader/PageHeader";
+import SectionNav from "@components/SectionNav/SectionNav";
 
-import styles from './consents.module.css';
+import { USER_SECTION_ITEMS } from "../Users/sections";
 
+import ConsentList from "./components/ConsentList/ConsentList";
+
+/**
+ * The consent CATALOG — which consents the Nation asks for, and at which
+ * version. What an individual member agreed to is on their user record.
+ *
+ * Rendered under the membership section bar so the two stay visibly related:
+ * editing the catalog changes what every future member is asked.
+ */
 const Consents = () => {
-    return (
-        <section className={styles.page}>
-            <Box className={styles.header}>
-                <Typography
-                    variant="h4"
-                    className={styles.title}
-                >
-                    Consents
-                </Typography>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <PageHeader
+        title="Consent catalog"
+        description="The consents members are asked to accept. Publishing a new version changes what future applicants see."
+        action={
+          <Button
+            variant="contained"
+            component={Link}
+            to="/consents/create"
+            startIcon={<AddIcon />}
+          >
+            Add Consent
+          </Button>
+        }
+      />
 
-                <Button
-                    variant="contained"
-                    component={Link}
-                    to="/consents/create"
-                    startIcon={<AddIcon />}
-                    className={styles.addButton}
-                >
-                    Add Consent
-                </Button>
-            </Box>
+      <SectionNav items={USER_SECTION_ITEMS} />
 
-            <ConsentList />
-        </section>
-    );
+      <ConsentList />
+    </Box>
+  );
 };
 
 export default Consents;

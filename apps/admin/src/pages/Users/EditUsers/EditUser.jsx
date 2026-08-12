@@ -1,264 +1,217 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm } from "react-hook-form";
 
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import {
-    Box,
-    Button,
-    Paper,
-    FormControl,
-    FormHelperText,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-    Typography,
-} from '@mui/material';
-
-import { toast } from 'react-toastify';
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-    useUser,
-    useUpdateUser,
-} from '../hooks/useUser';
+  Box,
+  Button,
+  Paper,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 
-import styles from './editUser.module.css';
+import { toast } from "react-toastify";
 
-const USER_ROLES = [
-    'USER',
-    'ADMIN',
-    'MODERATOR',
-];
+import { useUser, useUpdateUser } from "../hooks/useUser";
+
+import UserConsents from "../components/UserConsents/UserConsents";
+
+import styles from "./editUser.module.css";
+
+const USER_ROLES = ["USER", "ADMIN", "MODERATOR"];
 
 /**
  * Validation schema
  */
 const schema = z.object({
-    name: z
-        .string()
-        .min(2, 'Name must be at least 2 characters'),
+  name: z.string().min(2, "Name must be at least 2 characters"),
 
-    role: z.enum([
-        'USER',
-        'ADMIN',
-        'MODERATOR',
-    ]),
+  role: z.enum(["USER", "ADMIN", "MODERATOR"]),
 
-    password: z
-        .string()
-        .min(3, 'Password must be at least 3 characters')
-        .optional()
-        .or(z.literal('')),
+  password: z
+    .string()
+    .min(3, "Password must be at least 3 characters")
+    .optional()
+    .or(z.literal("")),
 });
 
 const EditUser = () => {
+  const { id: userId } = useParams();
 
-    const { id: userId } = useParams();
+  /**
+   * Fetch user
+   */
+  const { data: userData } = useUser(userId);
 
-    /**
-     * Fetch user
-     */
-    const {
-        data: userData,
-    } = useUser(userId);
+  /**
+   * Update mutation
+   */
+  const { mutateAsync: updateUserMut, isPending: updatingUser } =
+    useUpdateUser();
 
-    /**
-     * Update mutation
-     */
-    const {
-        mutateAsync: updateUserMut,
-        isPending: updatingUser,
-    } = useUpdateUser();
+  /**
+   * Form
+   */
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
 
-    /**
-     * Form
-     */
-    const {
-        control,
-        handleSubmit,
-        reset,
-        formState: {
-            errors,
-        },
-    } = useForm({
-        resolver: zodResolver(schema),
+    defaultValues: {
+      name: "",
+      role: "USER",
+      password: "",
+    },
+  });
 
-        defaultValues: {
-            name: '',
-            role: 'USER',
-            password: '',
-        },
-    });
+  /**
+   * Reset form
+   */
+  useEffect(() => {
+    if (userData) {
+      reset({
+        name: userData.name || "",
+        role: userData.role || "USER",
+        password: "",
+      });
+    }
+  }, [userData, reset]);
 
-    /**
-     * Reset form
-     */
-    useEffect(() => {
-        if (userData) {
-            reset({
-                name: userData.name || '',
-                role: userData.role || 'USER',
-                password: '',
-            });
-        }
-    }, [userData, reset]);
-
-    /**
-     * Submit
-     */
-    const onSubmit = async (data) => {
-
-        const payload = {
-            name: data.name,
-            role: data.role,
-        };
-
-        /**
-         * Only send password if entered
-         */
-        if (data.password?.trim()) {
-            payload.password = data.password;
-        }
-
-        try {
-
-            await updateUserMut({
-                id: userId,
-                data: payload,
-            });
-
-            toast.success('User updated successfully');
-
-        } catch (error) {
-
-            const message =
-                error.response?.data?.message ||
-                error.message ||
-                'Failed to update user';
-
-            toast.error(message);
-        }
+  /**
+   * Submit
+   */
+  const onSubmit = async (data) => {
+    const payload = {
+      name: data.name,
+      role: data.role,
     };
 
-    return (
-        <section className={styles.page}>
+    /**
+     * Only send password if entered
+     */
+    if (data.password?.trim()) {
+      payload.password = data.password;
+    }
 
-            <Typography
-                variant="h4"
-                className={styles.title}
-            >
-                Edit User
-            </Typography>
+    try {
+      await updateUserMut({
+        id: userId,
+        data: payload,
+      });
 
-            <Paper className={styles.formContainer}>
+      toast.success("User updated successfully");
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to update user";
 
-                <Box
-                    component="form"
-                    onSubmit={handleSubmit(onSubmit)}
-                    className={styles.form}
-                >
-                    {/* Public ID */}
-                    <TextField
-                        label="Public ID"
-                        value={userData?.publicId || ''}
-                        fullWidth
-                        disabled
-                    />
+      toast.error(message);
+    }
+  };
 
-                    {/* Email */}
-                    <TextField
-                        label="Email"
-                        value={userData?.email || ''}
-                        fullWidth
-                        disabled
-                    />
+  return (
+    <section className={styles.page}>
+      <Typography variant="h4" className={styles.title}>
+        Edit User
+      </Typography>
 
-                    {/* Name */}
-                    <Controller
-                        name="name"
-                        control={control}
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-                                label="Name"
-                                fullWidth
-                                error={!!errors.name}
-                                helperText={errors.name?.message}
-                            />
-                        )}
-                    />
-                    {/* Role */}
-                    <Controller
-                        name="role"
-                        control={control}
-                        render={({ field }) => (
-                            <FormControl
-                                fullWidth
-                                error={!!errors.role}
-                            >
-                                <InputLabel>
-                                    Role
-                                </InputLabel>
+      <Paper className={styles.formContainer}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          className={styles.form}
+        >
+          {/* Public ID */}
+          <TextField
+            label="Public ID"
+            value={userData?.publicId || ""}
+            fullWidth
+            disabled
+          />
 
-                                <Select
-                                    {...field}
-                                    label="Role"
-                                >
-                                    {USER_ROLES.map((role) => (
-                                        <MenuItem
-                                            key={role}
-                                            value={role}
-                                        >
-                                            {role}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
+          {/* Email */}
+          <TextField
+            label="Email"
+            value={userData?.email || ""}
+            fullWidth
+            disabled
+          />
 
-                                <FormHelperText>
-                                    {errors.role?.message}
-                                </FormHelperText>
-                            </FormControl>
-                        )}
-                    />
+          {/* Name */}
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Name"
+                fullWidth
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
+            )}
+          />
+          {/* Role */}
+          <Controller
+            name="role"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth error={!!errors.role}>
+                <InputLabel>Role</InputLabel>
 
-                    {/* Password */}
-                    <Controller
-                        name="password"
-                        control={control}
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-                                type="password"
-                                label="New Password (Optional)"
-                                fullWidth
-                                error={!!errors.password}
-                                helperText={
-                                    errors.password?.message ||
-                                    'Leave empty to keep current password'
-                                }
-                            />
-                        )}
-                    />
+                <Select {...field} label="Role">
+                  {USER_ROLES.map((role) => (
+                    <MenuItem key={role} value={role}>
+                      {role}
+                    </MenuItem>
+                  ))}
+                </Select>
 
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        disabled={updatingUser}
-                    >
-                        {updatingUser
-                            ? 'Updating...'
-                            : 'Update User'}
-                    </Button>
+                <FormHelperText>{errors.role?.message}</FormHelperText>
+              </FormControl>
+            )}
+          />
 
-                </Box>
+          {/* Password */}
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="password"
+                label="New Password (Optional)"
+                fullWidth
+                error={!!errors.password}
+                helperText={
+                  errors.password?.message ||
+                  "Leave empty to keep current password"
+                }
+              />
+            )}
+          />
 
-            </Paper>
+          <Button type="submit" variant="contained" disabled={updatingUser}>
+            {updatingUser ? "Updating..." : "Update User"}
+          </Button>
+        </Box>
+      </Paper>
 
-        </section>
-    );
+      <UserConsents userId={userId} />
+    </section>
+  );
 };
 
 export default EditUser;
