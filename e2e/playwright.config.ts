@@ -47,5 +47,12 @@ export default defineConfig({
       testDir: "./tests/admin",
       use: { ...devices["Desktop Chrome"], baseURL: ADMIN_BASE_URL },
     },
+    {
+      // The Website Studio round-trip spans both apps, so it takes no
+      // baseURL and addresses each one explicitly.
+      name: "cms",
+      testDir: "./tests/cms",
+      use: { ...devices["Desktop Chrome"] },
+    },
   ],
 });

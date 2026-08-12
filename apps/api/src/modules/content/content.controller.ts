@@ -10,9 +10,15 @@ import { ContentService } from './content.service';
  * returns only published overrides for keys that are still editable and live,
  * so it can never leak a draft.
  *
- * The cache header is load-bearing — the API runs serverless with no shared
- * in-process cache, so the edge is what stops this becoming a database query
- * per page view. The web app caches on top of it as well.
+ * Deliberately NOT edge-cached. An earlier version set
+ * `s-maxage=60, stale-while-revalidate=600`, which quietly defeated the whole
+ * publish flow: the web app busts its own Data Cache on the revalidate hook,
+ * re-fetches, and Vercel hands back the SAME stale copy — so a published edit
+ * stayed invisible for up to ten minutes while every layer reported success.
+ *
+ * Caching belongs one level up, in the web app's Data Cache, because that is
+ * the layer the publish hook can actually invalidate. The load here is one
+ * small query per revalidation per region, not one per page view.
  */
 @Controller('content')
 export class ContentController {
@@ -20,7 +26,7 @@ export class ContentController {
     constructor(private readonly contentService: ContentService) { }
 
     @Get('messages')
-    @Header('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600')
+    @Header('Cache-Control', 'no-store')
     async getMessages() {
         return this.contentService.getPublishedMessages();
     }
