@@ -144,9 +144,11 @@ export function DashboardEnrollmentSection() {
         </div>
 
         <div className="px-4 py-5 sm:px-8 sm:py-10">
-          <h2 className="text-foreground text-[1.85rem] leading-tight font-semibold tracking-tight sm:text-2xl">
+          {/* The page's <h1>. The dashboard hero that used to hold it was
+              removed; without this the outline would start at <h2>. */}
+          <h1 className="text-foreground text-[1.85rem] leading-tight font-semibold tracking-tight sm:text-2xl">
             {t("enrollment.sectionTitle")}
-          </h2>
+          </h1>
 
           {sectionErrorMessage ? (
             <div

@@ -844,12 +844,6 @@
     }
   },
   "dashboard": {
-    "hero": {
-      "titlePrefix": "Enrollment",
-      "titleHighlight": "Application",
-      "titleSuffix": "Portal",
-      "description": "Start your enrollment application, track your progress, and reconnect with your Taíno heritage. Each step brings you closer to official tribal membership and community connection."
-    },
     "enrollment": {
       "eyebrow": "Enrollment Dashboard",
       "description": "Complete your application and track your progress",

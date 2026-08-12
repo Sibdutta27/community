@@ -844,12 +844,6 @@
     }
   },
   "dashboard": {
-    "hero": {
-      "titlePrefix": "Portal de",
-      "titleHighlight": "Solicitud",
-      "titleSuffix": "de Inscripción",
-      "description": "Comience su solicitud de inscripción, siga su progreso y reconéctese con su herencia taína. Cada paso lo acerca más a la membresía tribal oficial y a la conexión con la comunidad."
-    },
     "enrollment": {
       "eyebrow": "Panel de Inscripción",
       "description": "Complete su solicitud y siga su progreso",
