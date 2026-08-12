@@ -10,9 +10,70 @@ import { DatabaseService } from '@/database/database.service';
 import { ContentRevisionAction } from '@/generated/prisma/enums';
 
 import { extractPlaceholders, isEditableKeyPath } from './content.util';
+import { getCatalogTerritory, isTerritoryStatus } from './territory.catalog';
 
 /** The single ContentVersion row. */
 const VERSION_ID = 'site';
+
+/** One territory's published override, as the public payload carries it. */
+export interface PublishedTerritoryOverride {
+    displayName?: string;
+    cacique?: string;
+    altNames?: string[];
+    municipalities?: string[];
+    status?: string;
+}
+
+interface TerritoryOverrideRow {
+    slug: string;
+    displayName: string | null;
+    cacique: string | null;
+    altNames: string[];
+    municipalities: string[];
+    status: string | null;
+}
+
+/**
+ * Shape the stored rows into the layer the web app applies at its render
+ * boundary. Three rules, each of which exists to stop a stored row doing
+ * damage the code cannot undo:
+ *
+ * - a slug the code no longer ships is dropped, exactly as the write path
+ *   refuses to create one;
+ * - a status outside the two-value union is dropped — the site draws a badge
+ *   from it and asks next-intl for a `status.<value>` message, so a third
+ *   value takes the page down rather than looking wrong;
+ * - an empty list is not an override. Prisma defaults both list columns to
+ *   `[]`, so a row created to change only the cacique arrives with empty
+ *   lists; sending them would erase the municipalities the code ships as a
+ *   side effect of an unrelated edit.
+ */
+function buildTerritoryOverrides(rows: readonly TerritoryOverrideRow[]) {
+
+    const territories: Record<string, PublishedTerritoryOverride> = {};
+
+    for (const row of rows) {
+        if (!getCatalogTerritory(row.slug)) {
+            continue;
+        }
+
+        const entry: PublishedTerritoryOverride = {};
+
+        if (row.displayName) entry.displayName = row.displayName;
+        if (row.cacique) entry.cacique = row.cacique;
+        if (row.altNames?.length) entry.altNames = row.altNames;
+        if (row.municipalities?.length) {
+            entry.municipalities = row.municipalities;
+        }
+        if (isTerritoryStatus(row.status)) entry.status = row.status;
+
+        if (Object.keys(entry).length > 0) {
+            territories[row.slug] = entry;
+        }
+    }
+
+    return territories;
+}
 
 export interface SaveDraftInput {
     en?: string | null;
@@ -41,8 +102,11 @@ export class ContentService {
      * runs, so a failure here only means the change appears within the web
      * app's revalidate window instead of immediately. It must never turn a
      * successful publish into a failed request.
+     *
+     * Public so `TerritoryService` can bust the same cache: both surfaces feed
+     * the one `/content/messages` payload, so they must invalidate together.
      */
-    private async requestSiteRevalidation() {
+    public async requestSiteRevalidation() {
 
         const webBaseUrl = process.env.WEB_BASE_URL?.trim();
         const secret = process.env.CONTENT_REVALIDATE_SECRET?.trim();
@@ -83,10 +147,15 @@ export class ContentService {
      * retired — a key a developer removed must stop being served even if an
      * override outlived it. Deliberately unpaginated and unauthenticated: it
      * is read behind every page render and is cached at the edge.
+     *
+     * Territory overrides ride along here rather than getting their own
+     * endpoint: the web app already makes exactly one cached fetch in front of
+     * every render, and a second one would double that cost to deliver a few
+     * dozen names.
      */
     public async getPublishedMessages() {
 
-        const [rows, version] = await Promise.all([
+        const [rows, version, territoryRows] = await Promise.all([
             this.database.contentString.findMany({
                 where: {
                     publishedAt: { not: null },
@@ -107,6 +176,19 @@ export class ContentService {
             this.database.contentVersion.findUnique({
                 where: { id: VERSION_ID },
             }),
+
+            this.database.territoryOverride.findMany({
+                where: { publishedAt: { not: null } },
+
+                select: {
+                    slug          : true,
+                    displayName   : true,
+                    cacique       : true,
+                    altNames      : true,
+                    municipalities: true,
+                    status        : true,
+                },
+            }),
         ]);
 
         const overrides: Record<string, { en?: string; es?: string }> = {};
@@ -126,6 +208,7 @@ export class ContentService {
         return {
             version: version?.version ?? 0,
             overrides,
+            territories: buildTerritoryOverrides(territoryRows),
         };
     }
 

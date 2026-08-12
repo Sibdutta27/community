@@ -46,6 +46,10 @@ function buildService(overrides: Record<string, unknown> = {}) {
         upsert    : jest.fn().mockResolvedValue({ id: 'site', version: 5 }),
     };
 
+    const territoryOverride = {
+        findMany: jest.fn().mockResolvedValue([]),
+    };
+
     const tx = { contentString, contentRevision, contentVersion };
 
     const database = {
@@ -53,13 +57,22 @@ function buildService(overrides: Record<string, unknown> = {}) {
         contentString,
         contentRevision,
         contentVersion,
+        territoryOverride,
         $transaction: jest.fn(async (cb: (t: unknown) => unknown) => cb(tx)),
         ...overrides,
     };
 
     const service = new ContentService(database as never);
 
-    return { service, database, contentKey, contentString, contentRevision, contentVersion };
+    return {
+        service,
+        database,
+        contentKey,
+        contentString,
+        contentRevision,
+        contentVersion,
+        territoryOverride,
+    };
 }
 
 describe('ContentService.saveDraft — placeholder gate', () => {
@@ -339,5 +352,118 @@ describe('ContentService.getPublishedMessages', () => {
                 },
             }),
         );
+    });
+});
+
+/**
+ * Territory overrides ride along on the public payload rather than getting
+ * their own endpoint: the web app already makes exactly one cached fetch in
+ * front of every render, and a second one would double that cost to deliver a
+ * few dozen names.
+ */
+describe('ContentService.getPublishedMessages — territories', () => {
+
+    it('serves a published territory override', async () => {
+        const { service, territoryOverride } = buildService();
+        territoryOverride.findMany.mockResolvedValue([
+            {
+                slug          : 'aymaco',
+                displayName   : 'Aymamón',
+                cacique       : null,
+                altNames      : ['Aimako'],
+                municipalities: [],
+                status        : 'oralTradition',
+            },
+        ]);
+
+        const result = await service.getPublishedMessages();
+
+        expect(result.territories.aymaco).toEqual({
+            displayName: 'Aymamón',
+            altNames   : ['Aimako'],
+            status     : 'oralTradition',
+        });
+    });
+
+    it('asks only for rows that have actually been published', async () => {
+        const { service, territoryOverride } = buildService();
+
+        await service.getPublishedMessages();
+
+        expect(territoryOverride.findMany).toHaveBeenCalledWith(
+            expect.objectContaining({
+                where: { publishedAt: { not: null } },
+            }),
+        );
+    });
+
+    // A row created for one field arrives with `[]` in both list columns. Sent
+    // as an override, an empty list would erase the municipalities the code
+    // ships — so an empty list is not an override at all.
+    it('omits empty lists rather than telling the site to erase them', async () => {
+        const { service, territoryOverride } = buildService();
+        territoryOverride.findMany.mockResolvedValue([
+            {
+                slug          : 'aymaco',
+                displayName   : null,
+                cacique       : 'Aymamón',
+                altNames      : [],
+                municipalities: [],
+                status        : null,
+            },
+        ]);
+
+        const result = await service.getPublishedMessages();
+
+        expect(result.territories.aymaco).toEqual({ cacique: 'Aymamón' });
+    });
+
+    it('omits a row that overrides nothing at all', async () => {
+        const { service, territoryOverride } = buildService();
+        territoryOverride.findMany.mockResolvedValue([
+            {
+                slug          : 'aymaco',
+                displayName   : null,
+                cacique       : null,
+                altNames      : [],
+                municipalities: [],
+                status        : null,
+            },
+        ]);
+
+        const result = await service.getPublishedMessages();
+
+        expect(result.territories).toEqual({});
+    });
+
+    // Same argument as the slug gate on the write path: a row the code has no
+    // territory for can only confuse the merge on the other side.
+    it('drops a row whose slug the code no longer ships', async () => {
+        const { service, territoryOverride } = buildService();
+        territoryOverride.findMany.mockResolvedValue([
+            { slug: 'atlantis', displayName: 'Atlantis', altNames: [], municipalities: [] },
+        ]);
+
+        const result = await service.getPublishedMessages();
+
+        expect(result.territories).toEqual({});
+    });
+
+    it('never serves a status the site cannot render', async () => {
+        const { service, territoryOverride } = buildService();
+        territoryOverride.findMany.mockResolvedValue([
+            {
+                slug          : 'aymaco',
+                displayName   : null,
+                cacique       : null,
+                altNames      : [],
+                municipalities: [],
+                status        : 'unconfirmed',
+            },
+        ]);
+
+        const result = await service.getPublishedMessages();
+
+        expect(result.territories).toEqual({});
     });
 });
