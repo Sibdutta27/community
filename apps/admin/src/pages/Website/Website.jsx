@@ -238,10 +238,15 @@ export default function Website() {
           sx={{
             display: "grid",
             gap: 1.5,
+            // Three columns from lg up: pages, editor, live site. The
+            // preview is a fixed track rather than a fraction so it keeps a
+            // usable width instead of collapsing as the editor grows — and
+            // the editor takes every pixel left over.
             gridTemplateColumns: {
               xs: "1fr",
-              md: "200px minmax(0, 1fr)",
-              xl: "200px minmax(0, 1fr) minmax(0, 0.9fr)",
+              md: "168px minmax(0, 1fr)",
+              lg: "168px minmax(0, 1fr) 380px",
+              xl: "184px minmax(0, 1fr) 460px",
             },
             alignItems: "start",
           }}
@@ -355,9 +360,11 @@ export default function Website() {
             )}
           </Panel>
 
-          {/* Below xl the preview would squeeze both columns; there it moves
-              under the editor rather than fighting it for width. */}
-          <Box sx={{ gridColumn: { xs: "1 / -1", xl: "auto" } }}>
+          {/* Below lg there is no honest way to show three columns, and a
+              full-width frame stacked under the editor pushes the fields off
+              screen — so the pane is simply absent and the header's
+              open-in-a-new-tab link carries the job. */}
+          <Box sx={{ display: { xs: "none", lg: "block" } }}>
             <SitePreview path={page.previewPath} reloadToken={publishedAt} />
           </Box>
         </Box>

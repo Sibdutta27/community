@@ -145,11 +145,16 @@ export default function ContentField({ field, onSave, onRevert, saving }) {
         ) : null}
       </Box>
 
+      {/* `auto-fit` rather than a viewport breakpoint: the editor column is
+          far narrower than the window once the preview claims its track, so a
+          `md:` rule would put two 240px fields into a 200px space. This drops
+          to one column when the pair no longer fits, wherever that happens. */}
       <Box
         sx={{
           display: "grid",
           gap: 1.5,
-          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
         }}
       >
         <TextField
