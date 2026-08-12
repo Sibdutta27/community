@@ -17,7 +17,8 @@ src/
   routes/         # AppRoutes.jsx, ProtectedRoutes.jsx
   layouts/        # AdminLayout (Sidebar + Navbar + <Outlet/>)
   pages/          # Login, Users, Enrollments, Services, Events, Consents,
-                  #   CulturalConnections, ServiceCategories, EventCategories, Dashboard
+                  #   CulturalConnections, ServiceCategories, EventCategories, Dashboard,
+                  #   Website (the Website Studio: Pages / Yukayeke / Media / History)
   components/     # Navbar, Sidebar, StatCard, ui/Table (rdt wrapper), ui/Checkbox
   hooks/          # useDebounceState, useDebouncedFunction, useSearch, useThrottle
   utils/  styles/style.css  main.jsx

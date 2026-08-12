@@ -45,6 +45,22 @@ src/
 
 ## Gotchas (read before touching the areas they cover)
 
+- **The catalogs are the source of truth; the CMS only layers on top.** Staff edit copy in the
+  admin panel's Website Studio, and `src/i18n/request.ts` merges those published overrides over
+  `messages/{en,es}.json` via `content-overrides.ts` + `merge-messages.ts`. If the API is
+  unreachable the merge gets `{}` and the site renders exactly as it shipped — that fallback is
+  the whole reason overrides are stored instead of the catalog. Three rules keep it safe:
+  `merge-messages` **clones before writing** (the imported JSON is a module singleton shared by
+  every request), it only ever replaces a string that already exists, and the content fetch uses
+  **native `fetch` with `next: {revalidate, tags}`** — the axios client bypasses Next's Data
+  Cache and would make it a real API call per render.
+- **Do not put a shared-cache header on `GET /content/messages`.** The web busts its Data Cache
+  on publish and re-fetches; an `s-maxage` in front of the API hands back the same stale copy and
+  the edit never appears. Guarded by `apps/api/.../content.controller.spec.ts`.
+- **`middleware.ts` now matches every page**, not just the four guarded routes, so the Website
+  Studio's `?lang=` preview parameter can be forwarded as an `x-locale` request header. Public
+  paths take an early return that does nothing else — keep it that way.
+
 - **Public pages must use `useOptionalProfileInfoQuery`** (`features/profile/lib/profile-queries.ts`),
   not `useProfileInfoQuery`. `requestJson`'s default 401 handler hard-redirects to `/sign-in`,
   which would bounce every signed-out visitor off `/yucayeke` and `/yucayeke/[slug]`. Separate

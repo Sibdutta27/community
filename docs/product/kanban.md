@@ -43,15 +43,23 @@ Studio's tabs/routes/page shells. Both lanes would otherwise contend on `schema.
 | ~~W1~~ | ContentKey registry + `content:sync`                                                     | —                                                                                                                          | Done    |
 | ~~W2~~ | Override pipeline: models, `content` module, merge in `i18n/request.ts`, revalidate hook | —                                                                                                                          | Done    |
 | ~~W3~~ | Pages tab: EN/ES editor, sections, publish/revert, placeholder guard                     | —                                                                                                                          | Done    |
-| **W4** | Live preview pane + `?lang` → `x-locale` so Spanish previews in a third-party frame      | `Website.jsx`, `apps/web/middleware.ts`, `i18n/*`                                                                          | W3      |
+| ~~W4~~ | Live preview pane + `?lang` → `x-locale` so Spanish previews in a third-party frame      | `Website.jsx`, `apps/web/middleware.ts`, `i18n/*`                                                                          | W3      |
 | **W5** | Yukayeke tab: `TerritoryOverride` module, `applyTerritoryOverride`, locked/editable UI   | `apps/api/.../content/territory*`, `apps/web/features/yucayeke/lib/apply-territory-override*`, `pages/Website/Yucayeke/**` | Phase 0 |
 | **W6** | Media: public bucket, presign/confirm, `remotePatterns`, slot registry, ~10 image swaps  | `apps/api/.../content/media*`, `apps/web/src/content/media-slots*`, `next.config.ts`, `pages/Website/Media/**`             | Phase 0 |
-| **W7** | History tab + docs + `website-studio` skill                                              | `pages/Website/History/**`, `docs/**`                                                                                      | W2      |
+| W7     | History tab **done**; docs + `website-studio` skill remain                               | `pages/Website/History/**`, `docs/**`                                                                                      | W2      |
 
 **Parallel:** W5 ‖ W6 in worktrees; W4 + W7 on main. Each card owns disjoint paths — no shared file
 has two writers.
 
 **Method:** red → green → refactor. A failing test that names the defect goes in before the fix.
+
+**Caught this way (W4):** the public content read carried `s-maxage=60,
+stale-while-revalidate=600`, which defeated the whole publish flow — the web app
+busts its Data Cache on the revalidate hook, re-fetches, and the edge hands back the
+same stale copy. Every layer reported success while the edit stayed invisible. Local
+runs all passed; there is no edge in front of a dev server. Found only by the
+cross-app e2e (`e2e/tests/cms`, new `cms` project), now guarded by
+`content.controller.spec.ts`.
 
 **Done:** `turbo build|typecheck|lint` green · API jest + web Vitest green · deployed to btf-testing
 · live smoke green · migrations applied to `public` (**`prod_sim` still owes 4**).
