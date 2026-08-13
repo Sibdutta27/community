@@ -137,8 +137,23 @@ export function YucayekeMapPageContent() {
           </div>
         </motion.div>
 
-        {/* Row 1, right: the territory list sits beside the map. */}
-        <motion.aside variants={fadeInUpItem} className="min-w-0">
+        {/* Row 1, right: the territory list sits beside the map — desktop
+            only. On a phone the same grid stacks it BETWEEN the map and the
+            reading panel, and a 21-row column of names pushed the panel a
+            screen and a half below the tap that opened it. Hidden there so
+            the mobile page reads map → description.
+
+            Nothing is lost by hiding it: `BorikenMap` renders each territory
+            as a real `role="button"` path with `tabIndex={0}`, an accessible
+            name and Enter/Space activation (see boriken-map.test.tsx), so the
+            map itself is the keyboard/AT peer of this list. The two
+            territories with no polygon are unreachable on the map, but they
+            are reachable in the directory that follows this section on the
+            same page — which is visible at every width. */}
+        <motion.aside
+          variants={fadeInUpItem}
+          className="hidden min-w-0 lg:block"
+        >
           <SurfaceCard padding="compact">
             <TerritoryList
               selectedSlug={selected?.slug ?? null}
