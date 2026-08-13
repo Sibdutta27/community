@@ -12,27 +12,34 @@ import { resolveTerritory } from "@/features/yucayeke/content/territories";
 import { buildTerritoryShapes } from "@/features/yucayeke/lib/geometry";
 import { useYucayekeGeometryQuery } from "@/features/yucayeke/lib/yucayeke-map-queries";
 
+import { CARD_GRADIENT, CELESTE_GLOW } from "./tribal-id-card-face";
+
 /**
  * The reverse face of the tribal ID: the member's ancestral yucayeke.
  *
- * Chrome is deliberately identical to `tribal-identification-card` — same
- * gradient, glow, border, radius and padding — so flipping the deck reads
- * as turning one physical card over rather than swapping two components.
- * Keep the two in sync if either is restyled.
+ * Chrome is deliberately identical to the ID face — same gradient, glow,
+ * border, radius and padding — so flipping the deck reads as turning one
+ * physical card over rather than swapping two components. The gradient and
+ * glow are imported rather than restated so the two cannot drift; the border,
+ * radius and padding classes below still have to be kept in step by hand.
  */
-const CARD_GRADIENT =
-  "linear-gradient(150deg, #ffffff 0%, #eef5fc 55%, #e3eefb 100%)";
-const CELESTE_GLOW =
-  "radial-gradient(circle at 88% 12%, rgba(78,166,220,0.18), transparent 55%)";
 
 type YucayekeIdentityCardProps = Readonly<{
   yucayekeValue: string | null;
   yucayekeUnknown: boolean;
+  /**
+   * Card only, no action row. The marketing hero spins this face opposite the
+   * bare ID face: the buttons would break the height match the two faces need
+   * to share a grid cell, and they would be links inside an `inert`,
+   * continuously rotating element.
+   */
+  bare?: boolean;
 }>;
 
 export function YucayekeIdentityCard({
   yucayekeValue,
   yucayekeUnknown,
+  bare = false,
 }: YucayekeIdentityCardProps) {
   const t = useTranslations("profile.yucayekeCard");
   const media = useTranslations("media");
@@ -178,31 +185,33 @@ export function YucayekeIdentityCard({
       </div>
 
       {/* Actions sit below the card, matching the ID face's button row. */}
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        {territory ? (
-          <>
-            <Button asChild size="sm">
-              <Link href="/yucayeke">{t("explore")}</Link>
-            </Button>
-            <Button asChild size="sm" variant="outline">
-              <Link href={`/yucayeke/${territory.slug}`}>
-                {t("learnMore", { name: territory.displayName })}
-              </Link>
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button asChild size="sm">
-              <Link href="/yucayeke">{t("explore")}</Link>
-            </Button>
-            {!yucayekeUnknown ? (
-              <Button asChild size="sm" variant="outline">
-                <Link href="/enrollment">{t("unassignedCta")}</Link>
+      {bare ? null : (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          {territory ? (
+            <>
+              <Button asChild size="sm">
+                <Link href="/yucayeke">{t("explore")}</Link>
               </Button>
-            ) : null}
-          </>
-        )}
-      </div>
+              <Button asChild size="sm" variant="outline">
+                <Link href={`/yucayeke/${territory.slug}`}>
+                  {t("learnMore", { name: territory.displayName })}
+                </Link>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button asChild size="sm">
+                <Link href="/yucayeke">{t("explore")}</Link>
+              </Button>
+              {!yucayekeUnknown ? (
+                <Button asChild size="sm" variant="outline">
+                  <Link href="/enrollment">{t("unassignedCta")}</Link>
+                </Button>
+              ) : null}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

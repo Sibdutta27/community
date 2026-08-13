@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import enMessages from "../../messages/en.json";
+
 const cookieJar = vi.hoisted(() => new Map<string, string>());
 
 // Website Studio content is fetched here. Stubbed per-test so the suite never
@@ -145,7 +147,12 @@ describe("i18n request config (Website Studio content)", () => {
 
     const config = await resolveRequestConfig();
 
-    expect(config.messages.home.hero.ctaEnroll).toBe("Start Your Enrollment");
+    // Compared against the catalog rather than a copied literal: the claim is
+    // that publishing one key does not disturb another, which should not need
+    // restating every time a marketing string is reworded.
+    expect(config.messages.home.hero.ctaEnroll).toBe(
+      enMessages.home.hero.ctaEnroll,
+    );
   });
 
   // The whole safety argument for storing overrides rather than moving the

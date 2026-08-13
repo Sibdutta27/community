@@ -48,10 +48,14 @@
     "hero": {
       "title": "Welcome to <highlight>Taíno Nation of Borikén</highlight>",
       "subtitle": "Reconnect with your ancestral roots, preserve your lineage, and join a sovereign community dedicated to honoring our Indigenous heritage and cultural identity.",
-      "ctaEnroll": "Start Your Enrollment",
+      "ctaEnroll": "Start Enrollment",
       "ctaExplore": "Explore Community",
       "memberAvatarAlt": "Community member portrait {index}",
-      "tribalCitizens": "<count>500+</count> Tribal Citizens"
+      "tribalCitizens": "<count>500+</count> Tribal Citizens",
+      "card": {
+        "aria": "A sample Taíno Nation of Borikén tribal identification card, turning slowly to show the ancestral territory map on its reverse. The card is blank — the details are filled in when you enroll.",
+        "caption": "Your card, waiting to be issued"
+      }
     },
     "heritage": {
       "label": "About Our Platform",
@@ -1226,7 +1230,8 @@
       },
       "badges": {
         "pending": "Pending verification",
-        "preview": "Preview"
+        "preview": "Preview",
+        "unissued": "Unissued"
       },
       "cta": {
         "enrollNow": "Enroll Now",

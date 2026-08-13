@@ -51,7 +51,11 @@
       "ctaEnroll": "Comienza tu Inscripción",
       "ctaExplore": "Explora la Comunidad",
       "memberAvatarAlt": "Retrato de miembro de la comunidad {index}",
-      "tribalCitizens": "<count>500+</count> Ciudadanos Tribales"
+      "tribalCitizens": "<count>500+</count> Ciudadanos Tribales",
+      "card": {
+        "aria": "Una tarjeta de identificación tribal de muestra de la Nación Taíno de Borikén, girando lentamente para mostrar el mapa del territorio ancestral en su reverso. La tarjeta está en blanco — los datos se completan cuando te inscribes.",
+        "caption": "Tu tarjeta, esperando ser emitida"
+      }
     },
     "heritage": {
       "label": "Sobre Nuestra Plataforma",
@@ -1226,7 +1230,8 @@
       },
       "badges": {
         "pending": "Pendiente de verificación",
-        "preview": "Vista Previa"
+        "preview": "Vista Previa",
+        "unissued": "Sin Emitir"
       },
       "cta": {
         "enrollNow": "Inscríbete Ahora",
