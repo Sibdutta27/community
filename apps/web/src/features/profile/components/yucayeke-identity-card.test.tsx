@@ -47,12 +47,30 @@ describe("YucayekeIdentityCard", () => {
       expect(screen.getByText("Your Yukayeke")).toBeInTheDocument();
 
       // A sample card belongs to nobody, so it must not attest to a specific
-      // territory, a cacique, or a confirmation status.
+      // territory, a named cacique, or a confirmation status.
       expect(screen.queryByText(/Wainia|Guanía/)).toBeNull();
-      expect(screen.queryByText(/Cacique/)).toBeNull();
+      expect(screen.queryByText(/Agüeybaná/)).toBeNull();
       expect(
         screen.queryByText(/Historically documented|Oral tradition/i),
       ).toBeNull();
+    });
+
+    it("keeps every field a filled card carries, blank", () => {
+      renderWithIntl(
+        <YucayekeIdentityCard
+          sample
+          yucayekeUnknown={false}
+          yucayekeValue={null}
+        />,
+      );
+
+      // The labels are the point: the card should read as a form waiting to
+      // be filled, not as a card missing rows.
+      expect(screen.getByText("Ancestral territory")).toBeInTheDocument();
+      expect(screen.getByText("Yukayeke")).toBeInTheDocument();
+      expect(screen.getByText(/Cacique/)).toBeInTheDocument();
+      expect(screen.getByText("Present-day")).toBeInTheDocument();
+      expect(screen.getByText("Unissued")).toBeInTheDocument();
     });
 
     it("drops the action row that would sit inside the rotating card", () => {

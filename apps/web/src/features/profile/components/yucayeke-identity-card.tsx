@@ -103,7 +103,14 @@ export function YucayekeIdentityCard({
             </div>
           </div>
 
-          {territory && !sample ? (
+          {/* The blank card keeps the badge slot filled, but says what it is
+              rather than attesting a territory's status — same word the ID
+              face carries, because it is the same unissued card. */}
+          {sample ? (
+            <span className="bg-secondary text-secondary-foreground inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[0.5rem] font-semibold tracking-[0.06em] uppercase">
+              {t("unissued")}
+            </span>
+          ) : territory ? (
             <span className="bg-secondary text-secondary-foreground inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[0.5rem] font-semibold tracking-[0.06em] uppercase">
               {territory.status === "confirmed" ? (
                 <ShieldCheck aria-hidden="true" className="size-2.5" />
@@ -155,7 +162,17 @@ export function YucayekeIdentityCard({
                 <p className="text-foreground text-[1.3rem] leading-none font-semibold tracking-[-0.03em]">
                   {sample ? t("sampleName") : territory!.displayName}
                 </p>
-                {!sample && territory!.cacique ? (
+                {sample ? (
+                  // The label stays and only the name is withheld, so the
+                  // blank card shows the same fields a filled one carries.
+                  <p className="text-muted-foreground mt-1.5 flex items-center gap-1.5 text-[0.58rem] font-semibold tracking-[0.12em] uppercase">
+                    {t("caciqueLabel")} ·
+                    <span
+                      aria-hidden="true"
+                      className="bg-primary/12 inline-block h-[0.45rem] w-[4.75rem] rounded-full"
+                    />
+                  </p>
+                ) : territory!.cacique ? (
                   <p className="text-muted-foreground mt-1.5 text-[0.58rem] font-semibold tracking-[0.12em] uppercase">
                     {t("caciqueLabel")} · {territory!.cacique}
                   </p>
