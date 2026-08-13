@@ -12,9 +12,9 @@ type HeritageCardTone = "mint" | "cream" | "lilac";
 // Minimal B&W design system: the legacy tones all resolve to the same
 // neutral surface so existing callers keep working without earthy tints.
 const toneClasses: Record<HeritageCardTone, string> = {
-  mint: "bg-surface",
-  cream: "bg-surface",
-  lilac: "bg-surface",
+  mint: "bg-background",
+  cream: "bg-background",
+  lilac: "bg-background",
 };
 
 type HeritageCardProps = {

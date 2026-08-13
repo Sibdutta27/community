@@ -28,7 +28,7 @@ export function HomeEnrollmentFaqSection() {
   return (
     <motion.section
       id="enrollment-faq"
-      className="bg-background overflow-hidden"
+      className="bg-surface overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.12 }}
@@ -84,14 +84,14 @@ export function HomeEnrollmentFaqSection() {
               return (
                 <motion.article
                   key={itemId}
-                  className="border-border bg-surface shadow-card-soft overflow-hidden rounded-2xl border"
+                  className="border-border bg-background shadow-card-soft overflow-hidden rounded-2xl border"
                   variants={fadeInUpItem}
                 >
                   <h3>
                     <button
                       aria-controls={`faq-panel-${itemId}`}
                       aria-expanded={isOpen}
-                      className="focus-visible:ring-ring flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-4 text-left focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none sm:px-4.5 sm:py-4.5 lg:px-5"
+                      className="focus-visible:ring-ring flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-4 text-left focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset sm:px-4.5 sm:py-4.5 lg:px-5"
                       type="button"
                       onClick={() =>
                         setOpenItemId((currentId) =>

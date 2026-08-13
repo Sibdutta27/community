@@ -12,7 +12,7 @@ type HomeMissionFeatureProps = {
 export function HomeMissionFeature({ label }: HomeMissionFeatureProps) {
   return (
     <motion.div
-      className="border-border bg-surface text-foreground shadow-card-soft flex items-center gap-3 rounded-2xl border px-5 py-5 sm:px-6 sm:py-6"
+      className="border-border bg-surface-muted text-foreground shadow-card-soft flex items-center gap-3 rounded-2xl border px-5 py-5 sm:px-6 sm:py-6"
       variants={fadeInUpItem}
     >
       <div className="bg-foreground text-background flex size-10 shrink-0 items-center justify-center rounded-full sm:size-11">

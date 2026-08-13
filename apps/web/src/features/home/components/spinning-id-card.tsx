@@ -5,10 +5,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
-import {
-  SAMPLE_CARD_YUCAYEKE,
-  SAMPLE_ID_CARD,
-} from "@/features/home/content/sample-id-card";
+import { SAMPLE_ID_CARD } from "@/features/home/content/sample-id-card";
 import { TribalIdCardFace } from "@/features/profile/components/tribal-id-card-face";
 import { YucayekeIdentityCard } from "@/features/profile/components/yucayeke-identity-card";
 
@@ -204,9 +201,9 @@ export function SpinningIdCard() {
             inert
           >
             <YucayekeIdentityCard
-              bare
+              sample
               yucayekeUnknown={false}
-              yucayekeValue={SAMPLE_CARD_YUCAYEKE}
+              yucayekeValue={null}
             />
           </div>
         </div>

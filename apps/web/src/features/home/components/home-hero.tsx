@@ -37,6 +37,7 @@ export function HomeHero() {
 
   return (
     <PageHeroSection
+      backgroundClassName={sharedStyles.heroBackdrop}
       containerClassName={sharedStyles.sectionContainer}
       innerClassName={heroLayoutClassName}
     >
@@ -59,22 +60,27 @@ export function HomeHero() {
           {t("subtitle")}
         </motion.p>
 
+        {/* `flex-col-reverse` is doing real work: the DOM order puts the quiet
+            CTA first so it sits on the LEFT of the desktop row, but stacked on
+            a phone that would push the primary action below the secondary.
+            Reversing the column restores primary-first there without changing
+            the row. */}
         <motion.div
-          className="mt-7 flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:gap-2.5"
+          className="mt-7 flex flex-col-reverse items-start gap-1.5 sm:flex-row sm:items-center sm:gap-2.5"
           variants={fadeInUpItem}
         >
+          {/* Stacked at the bottom on narrow screens, the ghost's own padding
+              would indent its label past the column edge every other line of
+              copy sits on. Pulled back by exactly that padding, and only while
+              stacked. */}
+          <Button asChild className="-ml-6 sm:ml-0" size="lg" variant="ghost">
+            <Link href="/community">{t("ctaExplore")}</Link>
+          </Button>
           <Button asChild size="lg" variant="emphasis">
             <Link href="/dashboard">
               <span>{t("ctaEnroll")}</span>
               <ArrowRight />
             </Link>
-          </Button>
-          {/* Stacked under the primary on narrow screens, the ghost's own
-              padding would indent its label past the column edge every other
-              line of copy sits on. Pulled back by exactly that padding, and
-              only while stacked. */}
-          <Button asChild className="-ml-6 sm:ml-0" size="lg" variant="ghost">
-            <Link href="/community">{t("ctaExplore")}</Link>
           </Button>
         </motion.div>
 

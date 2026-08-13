@@ -28,18 +28,21 @@ type YucayekeIdentityCardProps = Readonly<{
   yucayekeValue: string | null;
   yucayekeUnknown: boolean;
   /**
-   * Card only, no action row. The marketing hero spins this face opposite the
-   * bare ID face: the buttons would break the height match the two faces need
-   * to share a grid cell, and they would be links inside an `inert`,
-   * continuously rotating element.
+   * Unissued presentation, for the marketing hero: the island drawn whole with
+   * no territory singled out, "Your Yukayeke" where a name would be, and a
+   * ruled blank for the municipalities — the reverse of the blank ID face it
+   * spins opposite. No status pill (nothing is being attested) and no action
+   * row: those buttons would break the height the two faces share in one grid
+   * cell, and they would be links inside an `inert`, continuously rotating
+   * element.
    */
-  bare?: boolean;
+  sample?: boolean;
 }>;
 
 export function YucayekeIdentityCard({
   yucayekeValue,
   yucayekeUnknown,
-  bare = false,
+  sample = false,
 }: YucayekeIdentityCardProps) {
   const t = useTranslations("profile.yucayekeCard");
   const media = useTranslations("media");
@@ -100,7 +103,7 @@ export function YucayekeIdentityCard({
             </div>
           </div>
 
-          {territory ? (
+          {territory && !sample ? (
             <span className="bg-secondary text-secondary-foreground inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[0.5rem] font-semibold tracking-[0.06em] uppercase">
               {territory.status === "confirmed" ? (
                 <ShieldCheck aria-hidden="true" className="size-2.5" />
@@ -110,7 +113,7 @@ export function YucayekeIdentityCard({
           ) : null}
         </div>
 
-        {territory ? (
+        {sample || territory ? (
           <>
             {/* Mirrors the ID's body: portrait left, identity fields right.
                 The map takes the photo's slot, which gives it the full body
@@ -139,7 +142,9 @@ export function YucayekeIdentityCard({
                     className="absolute inset-0 h-full w-full"
                     variant="preview"
                     shapes={shapes}
-                    highlightedKey={territory.geometryKey}
+                    // Whole island, nothing singled out: the sample card is
+                    // nobody's, so highlighting a territory would claim one.
+                    highlightedKey={sample ? null : territory!.geometryKey}
                   />
                 ) : (
                   <div className="bg-secondary/60 absolute inset-0 animate-pulse rounded-lg" />
@@ -148,27 +153,36 @@ export function YucayekeIdentityCard({
 
               <div className="flex min-w-0 flex-1 flex-col justify-center">
                 <p className="text-foreground text-[1.3rem] leading-none font-semibold tracking-[-0.03em]">
-                  {territory.displayName}
+                  {sample ? t("sampleName") : territory!.displayName}
                 </p>
-                {territory.cacique ? (
+                {!sample && territory!.cacique ? (
                   <p className="text-muted-foreground mt-1.5 text-[0.58rem] font-semibold tracking-[0.12em] uppercase">
-                    {t("caciqueLabel")} · {territory.cacique}
+                    {t("caciqueLabel")} · {territory!.cacique}
                   </p>
                 ) : null}
               </div>
             </div>
 
             <div className="border-border mt-2.5 flex shrink-0 items-end justify-between gap-2 border-t pt-2.5">
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-muted-foreground text-[0.46rem] font-semibold tracking-[0.12em] uppercase">
                   {t("municipalitiesLabel")}
                 </p>
-                <p className="text-foreground truncate text-[0.72rem] font-semibold">
-                  {territory.municipalities.join(" · ")}
-                </p>
+                {sample ? (
+                  // Matches the ruled blanks on the ID face — the reverse of an
+                  // unissued card is unissued too.
+                  <span
+                    aria-hidden="true"
+                    className="bg-primary/12 mt-1 block h-[0.5rem] w-[62%] rounded-full"
+                  />
+                ) : (
+                  <p className="text-foreground truncate text-[0.72rem] font-semibold">
+                    {territory!.municipalities.join(" · ")}
+                  </p>
+                )}
               </div>
 
-              {territory.geometryKey === null ? (
+              {!sample && territory!.geometryKey === null ? (
                 <span className="border-border bg-surface text-muted-foreground shrink-0 rounded-full border px-2 py-0.5 text-[0.5rem] font-semibold tracking-[0.06em] uppercase">
                   {t("notMapped")}
                 </span>
@@ -185,7 +199,7 @@ export function YucayekeIdentityCard({
       </div>
 
       {/* Actions sit below the card, matching the ID face's button row. */}
-      {bare ? null : (
+      {sample ? null : (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {territory ? (
             <>

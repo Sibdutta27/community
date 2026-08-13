@@ -31,7 +31,7 @@ export function HomeYucayekeOverviewSection() {
 
   return (
     <motion.article
-      className="border-border bg-surface shadow-card mt-8 w-full rounded-2xl border p-5 sm:p-6"
+      className="border-border bg-background shadow-card mt-8 w-full rounded-2xl border p-5 sm:p-6"
       variants={fadeInUpItem}
     >
       <div className="grid gap-4 lg:grid-cols-2 lg:items-start lg:gap-6">

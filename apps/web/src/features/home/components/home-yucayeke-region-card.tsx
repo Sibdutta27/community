@@ -19,7 +19,7 @@ export function HomeYucayekeRegionCard({
 }: HomeYucayekeRegionCardProps) {
   return (
     <motion.article
-      className="border-border bg-surface shadow-card-soft rounded-xl border px-3 py-3.5 text-center"
+      className="border-border bg-background shadow-card-soft rounded-xl border px-3 py-3.5 text-center"
       variants={fadeInUpItem}
     >
       <div className="border-border bg-surface-muted mx-auto flex size-9 items-center justify-center rounded-full border">

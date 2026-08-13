@@ -13,7 +13,7 @@ export function HomeGuainiaMapSection() {
 
   return (
     <motion.section
-      className="bg-background overflow-hidden"
+      className="bg-surface overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}

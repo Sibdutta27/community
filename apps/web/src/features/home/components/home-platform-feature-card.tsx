@@ -17,7 +17,7 @@ export function HomePlatformFeatureCard({
 }: HomePlatformFeatureCardProps) {
   return (
     <motion.article
-      className="border-border bg-surface shadow-card-soft rounded-2xl border p-5 sm:p-6"
+      className="border-border bg-background shadow-card-soft rounded-2xl border p-5 sm:p-6"
       variants={fadeInUpItem}
     >
       {/* The platform-feature SVGs are self-contained white glyphs; the ink

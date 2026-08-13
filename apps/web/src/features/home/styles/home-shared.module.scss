@@ -28,3 +28,47 @@
      reserved for primary CTAs, the active step and focus rings. */
   color: var(--foreground);
 }
+
+/*
+ * Hero backdrop: a faint square grid under the existing ink wash.
+ *
+ * It starts hard under the navbar and is masked away before the section ends,
+ * so the hero reads as a surface with structure that dissolves into the white
+ * sections below rather than stopping at a seam. Lines are ink-tinted through
+ * `color-mix` on the `--foreground` token — no raw hex enters the palette —
+ * and sit at 4.5%, which is legible as texture and invisible as lines.
+ *
+ * Replaces `PageHeroSection`'s default wash rather than layering over it: the
+ * radial is restated as the third background layer here so the whole stack
+ * shares one mask.
+ */
+.heroBackdrop {
+  --hero-grid-line: color-mix(in srgb, var(--foreground) 4.5%, transparent);
+
+  background-image:
+    linear-gradient(to right, var(--hero-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hero-grid-line) 1px, transparent 1px),
+    radial-gradient(
+      circle at top,
+      color-mix(in srgb, var(--foreground) 4%, transparent),
+      transparent 40%
+    );
+  background-position:
+    0 0,
+    0 0,
+    0 0;
+  background-size:
+    4rem 4rem,
+    4rem 4rem,
+    100% 100%;
+
+  /* Fades the whole backdrop out over the last third, so the grid never meets
+     the next section as a visible edge. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 62%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+}

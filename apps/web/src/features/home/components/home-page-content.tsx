@@ -10,7 +10,7 @@ import { HomeEnrollmentProcessSection } from "./home-enrollment-process-section"
 
 export function HomePageContent() {
   return (
-    <main className="bg-background">
+    <main className="bg-surface">
       <HomeHero />
       <HomeHeritageSection />
       <HomeEnrollmentProcessSection />
