@@ -44,19 +44,51 @@ describe("HomeHero", () => {
     }
   });
 
-  it("lays the hero out as a left-aligned two-column grid", () => {
+  it("centres the copy until lg, then left-aligns it beside the card", () => {
     renderWithIntl(<HomeHero />);
 
     const column = screen.getByRole("heading", { level: 1 }).parentElement;
-    expect(column?.className).toContain("items-start");
-    expect(column?.className).toContain("text-left");
+    // Unprefixed = the phone; `lg:` = once the card sits alongside. Asserted
+    // as whole classes: `items-start` alone would also match `lg:items-start`
+    // and let a regression through.
+    const classes = column?.className.split(/\s+/) ?? [];
+    expect(classes).toContain("items-center");
+    expect(classes).toContain("text-center");
+    expect(classes).toContain("lg:items-start");
+    expect(classes).toContain("lg:text-left");
 
     // The centred reading column the shared shell defaults to must be gone,
     // or the card has nowhere to sit.
     const layout = column?.parentElement;
     expect(layout?.className).toContain("grid");
-    expect(layout?.className).not.toContain("text-center");
     expect(layout?.className).not.toContain("max-w-4xl");
+  });
+
+  it("puts the card between the pitch and the actions on a phone", () => {
+    renderWithIntl(<HomeHero />);
+
+    const layout = screen.getByRole("heading", { level: 1 }).parentElement
+      ?.parentElement;
+    const blocks = Array.from(layout?.children ?? []);
+
+    const pitch = blocks.findIndex((b) => b.querySelector("h1"));
+    const card = blocks.findIndex((b) => b.querySelector('[role="img"]'));
+    const actions = blocks.findIndex((b) =>
+      b.querySelector('a[href="/dashboard"]'),
+    );
+
+    // DOM order IS the mobile order — the desktop arrangement is explicit
+    // grid placement on top of it, so this ordering is what phones get.
+    expect(pitch).toBe(0);
+    expect(card).toBe(1);
+    expect(actions).toBe(2);
+
+    // …and at lg the card must jump to the second column, spanning both copy
+    // rows, or the desktop layout collapses back to a single stack.
+    expect(blocks[card].className).toContain("lg:col-start-2");
+    expect(blocks[card].className).toContain("lg:row-span-2");
+    expect(blocks[actions].className).toContain("lg:col-start-1");
+    expect(blocks[actions].className).toContain("lg:row-start-2");
   });
 
   it("anchors the hero with the sample tribal ID card", () => {
