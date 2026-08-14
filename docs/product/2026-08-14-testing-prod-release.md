@@ -6,8 +6,9 @@ serving. **The branch has been pushed; the database step has NOT been done.** Re
 
 ## What moved
 
-`testing-prod` fast-forwarded `4f81716` → `84bcb79` — 42 commits, no merge, no
-conflicts, nothing on `testing-prod` that was not already in `btf-testing`.
+`testing-prod` fast-forwarded from `4f81716` — no merge, no conflicts, nothing on
+`testing-prod` that was not already in `btf-testing`. It now tracks `btf-testing`
+commit for commit; both were verified serving an identical render at 1440px.
 
 `origin/main` is untouched, still at `2496d41` ("Initial project upload",
 2026-05-18). It is not the source of either deployment and is deliberately left
@@ -73,11 +74,6 @@ safe.
 note, not a statement that runs. They create new tables and enums and add three
 nullable columns to `Enrollment`. No column is `NOT NULL` without a default, so no
 existing row can fail the migration and no existing data is touched.
-
-Note the earlier record that `20260812010000` was applied to the `public` schema
-only — `prod_sim` (or whichever schema this deployment uses) still needs it. Confirm
-the target schema before running; Prisma schema-qualifies its SQL, so a run aimed at
-the wrong lane silently hits `public`.
 
 ## Step 3 — after the migrations
 
