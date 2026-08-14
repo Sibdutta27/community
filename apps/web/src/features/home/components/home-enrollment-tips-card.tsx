@@ -19,7 +19,7 @@ export function HomeEnrollmentTipsCard({ tips }: HomeEnrollmentTipsCardProps) {
 
   return (
     <motion.article
-      className="border-border bg-background text-foreground shadow-card-soft rounded-2xl border p-5 sm:p-6"
+      className="border-border bg-surface text-foreground shadow-card-soft rounded-2xl border p-5 sm:p-6"
       variants={fadeInUpItem}
     >
       <Image

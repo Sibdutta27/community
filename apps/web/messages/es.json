@@ -1429,7 +1429,7 @@
   },
   "yucayekeMap": {
     "title": "Yukayekes de Borikén",
-    "subtitle": "Los territorios ancestrales del pueblo taíno de Borikén. Selecciona un territorio en el mapa o en la lista para conocerlo.",
+    "subtitle": "Los territorios ancestrales del pueblo taíno de Borikén. Selecciona un territorio en el mapa para conocerlo.",
     "mapAriaLabel": "Mapa interactivo de los territorios yukayeke de Borikén",
     "listAriaLabel": "Lista de territorios",
     "disclaimer": "Los límites territoriales son reconstrucciones interpretativas a partir de fuentes históricas y orales — no son líneas de agrimensura.",
@@ -1443,7 +1443,7 @@
       "notMapped": "Aún sin cartografiar",
       "yourTerritory": "Tu yukayeke",
       "yourTerritoryChip": "Tu yukayeke: {name}",
-      "selectPrompt": "Selecciona un territorio en el mapa o en la lista para leer sobre él.",
+      "selectPrompt": "Selecciona un territorio en el mapa para leer sobre él.",
       "readMore": "Leer sobre {name}",
       "exploreHeading": "Explora los territorios"
     },

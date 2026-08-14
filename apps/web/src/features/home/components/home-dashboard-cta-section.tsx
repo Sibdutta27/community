@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { fadeInUpContainer, fadeInUpItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
+import { HomeSectionBackdrop } from "./home-section-backdrop";
 import sharedStyles from "../styles/home-shared.module.scss";
 
 export function HomeDashboardCtaSection() {
@@ -17,16 +18,18 @@ export function HomeDashboardCtaSection() {
 
   return (
     <motion.section
-      className="bg-surface overflow-hidden"
+      className="bg-background relative overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.12 }}
       variants={fadeInUpContainer}
     >
+      <HomeSectionBackdrop />
+
       <div
         className={cn(
           sharedStyles.sectionContainer,
-          "pt-2 pb-10 sm:pb-12 lg:pb-14",
+          "relative pt-2 pb-10 sm:pb-12 lg:pb-14",
         )}
       >
         <motion.article

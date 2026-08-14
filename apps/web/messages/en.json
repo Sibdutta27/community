@@ -1429,7 +1429,7 @@
   },
   "yucayekeMap": {
     "title": "Yukayekes of Borikén",
-    "subtitle": "The ancestral territories of the Taíno people of Borikén. Select a territory on the map or in the list to learn about it.",
+    "subtitle": "The ancestral territories of the Taíno people of Borikén. Select a territory on the map to learn about it.",
     "mapAriaLabel": "Interactive map of the yukayeke territories of Borikén",
     "listAriaLabel": "Territory list",
     "disclaimer": "Territory boundaries are interpretive reconstructions from historical and oral sources — not survey lines.",
@@ -1443,7 +1443,7 @@
       "notMapped": "Not yet mapped",
       "yourTerritory": "Your yukayeke",
       "yourTerritoryChip": "Your yukayeke: {name}",
-      "selectPrompt": "Select a territory on the map or in the list to read about it.",
+      "selectPrompt": "Select a territory on the map to read about it.",
       "readMore": "Read about {name}",
       "exploreHeading": "Explore the territories"
     },

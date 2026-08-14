@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { HomeEnrollmentCta } from "@/features/home/components/home-enrollment-cta";
 import { HomeEnrollmentResourcesSection } from "@/features/home/components/home-enrollment-resources-section";
 import { HomeEnrollmentStepCard } from "@/features/home/components/home-enrollment-step-card";
+import { HomeSectionBackdrop } from "./home-section-backdrop";
 import sharedStyles from "../styles/home-shared.module.scss";
 
 // Governance restyle: marketing step numbers are neutral (charcoal on a warm
@@ -49,14 +50,19 @@ export function HomeEnrollmentProcessSection() {
 
   return (
     <motion.section
-      className="bg-surface overflow-hidden"
+      className="bg-background relative overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.12 }}
       variants={fadeInUpContainer}
     >
+      <HomeSectionBackdrop />
+
       <div
-        className={cn(sharedStyles.sectionContainer, "py-10 sm:py-12 lg:py-14")}
+        className={cn(
+          sharedStyles.sectionContainer,
+          "relative py-10 sm:py-12 lg:py-14",
+        )}
       >
         <div className="mx-auto max-w-5xl text-center">
           <motion.p

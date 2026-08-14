@@ -43,11 +43,11 @@
  * shares one mask.
  */
 .heroBackdrop {
-  --hero-grid-line: color-mix(in srgb, var(--foreground) 4.5%, transparent);
+  --grid-line: color-mix(in srgb, var(--foreground) 4.5%, transparent);
 
   background-image:
-    linear-gradient(to right, var(--hero-grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--hero-grid-line) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
     radial-gradient(
       circle at top,
       color-mix(in srgb, var(--foreground) 4%, transparent),
@@ -71,4 +71,36 @@
     transparent 100%
   );
   mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+}
+
+/*
+ * The hero's grid, reused on the tinted sections further down the page.
+ *
+ * Two differences from `.heroBackdrop`: no radial wash (that one belongs to
+ * the top of the page, under the navbar), and the mask fades at BOTH ends
+ * rather than only the bottom — a mid-page section has white above it as well
+ * as below, so the grid has to arrive and leave rather than start on an edge.
+ */
+.sectionBackdrop {
+  --grid-line: color-mix(in srgb, var(--foreground) 4.5%, transparent);
+
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 24%,
+    #000 76%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 24%,
+    #000 76%,
+    transparent 100%
+  );
 }

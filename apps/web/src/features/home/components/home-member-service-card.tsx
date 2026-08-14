@@ -30,7 +30,7 @@ export function HomeMemberServiceCard({
 }: HomeMemberServiceCardProps) {
   return (
     <motion.article
-      className="border-border bg-background shadow-card-soft flex h-full flex-col rounded-2xl border p-5 sm:p-6"
+      className="border-border bg-surface shadow-card-soft flex h-full flex-col rounded-2xl border p-5 sm:p-6"
       variants={fadeInUpItem}
     >
       <div className="flex items-center gap-3">

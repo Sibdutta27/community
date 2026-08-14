@@ -41,9 +41,12 @@ export function HomeHero() {
       containerClassName={sharedStyles.sectionContainer}
       innerClassName={heroLayoutClassName}
     >
-      <div className="flex flex-col items-start text-left">
+      {/* Centred while the hero is one stacked column, left-aligned only once
+          the card moves alongside it at `lg` — a left-aligned column of text
+          sitting above a centred card reads as a mistake on a phone. */}
+      <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
         <motion.h1
-          className="text-foreground max-w-2xl text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.02] font-semibold tracking-[-0.04em]"
+          className="text-foreground max-w-2xl text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.04] font-semibold tracking-[-0.035em] text-balance"
           variants={fadeInUpItem}
         >
           {t.rich("title", {
@@ -54,7 +57,7 @@ export function HomeHero() {
         </motion.h1>
 
         <motion.p
-          className="text-muted-foreground mt-5 max-w-xl text-sm leading-6 sm:text-base"
+          className="text-muted-foreground mt-5 max-w-lg text-[0.95rem] leading-7 text-pretty sm:text-base"
           variants={fadeInUpItem}
         >
           {t("subtitle")}
@@ -66,14 +69,14 @@ export function HomeHero() {
             Reversing the column restores primary-first there without changing
             the row. */}
         <motion.div
-          className="mt-7 flex flex-col-reverse items-start gap-1.5 sm:flex-row sm:items-center sm:gap-2.5"
+          className="mt-8 flex flex-col-reverse items-center gap-2 sm:flex-row sm:gap-3"
           variants={fadeInUpItem}
         >
-          {/* Stacked at the bottom on narrow screens, the ghost's own padding
-              would indent its label past the column edge every other line of
-              copy sits on. Pulled back by exactly that padding, and only while
-              stacked. */}
-          <Button asChild className="-ml-6 sm:ml-0" size="lg" variant="ghost">
+          {/* Leftmost in the desktop row, the ghost's own padding would indent
+              its label past the column edge every other line of copy sits on.
+              Pulled back by exactly that padding — and only there, since
+              everything below `lg` is centred and has no edge to meet. */}
+          <Button asChild className="lg:-ml-6" size="lg" variant="ghost">
             <Link href="/community">{t("ctaExplore")}</Link>
           </Button>
           <Button asChild size="lg" variant="emphasis">
@@ -85,7 +88,7 @@ export function HomeHero() {
         </motion.div>
 
         <motion.div
-          className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
+          className="mt-9 flex flex-col items-center gap-3 sm:flex-row"
           variants={fadeInUpItem}
         >
           <motion.div
