@@ -25,9 +25,9 @@ const memberAvatarSlots = [
 /**
  * Three blocks, laid out two different ways.
  *
- * On a phone they run in DOM order — heading, card, actions — so the card is
- * the thing you meet right after the pitch, and the buttons sit under it where
- * a thumb already is.
+ * On a phone they run in DOM order — heading, actions, card — so the pitch
+ * runs straight into the buttons and the card follows as the thing you can
+ * play with.
  *
  * At `lg` the copy takes a two-row column on the left and the card spans both
  * rows on the right, off a symmetric split, sitting beside the copy as an
@@ -73,35 +73,41 @@ export function HomeHero() {
         </motion.p>
       </div>
 
-      {/* Block 2 — the card. Second on a phone, right-hand column at `lg`,
-          where it spans both copy rows and centres against them. */}
-      <motion.div
-        className="flex w-full justify-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-full lg:items-center lg:justify-start"
-        variants={fadeInScaleItem}
-      >
-        <SpinningIdCard />
-      </motion.div>
-
-      {/* Block 3 — the actions, under the card on a phone so they land where a
-          thumb already is, and under the copy at `lg`. */}
+      {/* Block 2 — the actions, straight under the copy at every width. */}
       <div className="flex flex-col items-center text-center lg:col-start-1 lg:row-start-2 lg:items-start lg:text-left">
-        {/* `flex-col-reverse` is doing real work: the DOM order puts the quiet
-            CTA first so it sits on the LEFT of the desktop row, but stacked on
-            a phone that would push the primary action below the secondary.
-            Reversing the column restores primary-first there without changing
-            the row. */}
+        {/* One row — quiet CTA left, flag-red right — at every width a phone
+            actually is. Both shrink below `sm`, overriding the `size="lg"` cva
+            values rather than replacing the size, so the desktop row is
+            untouched: at `lg` proportions the pair needs ~405px and a 390px
+            phone offers 362px of content box.
+
+            `flex-wrap` is the safety valve, not the intent. Even shrunk the
+            pair needs ~324px, which clears 360px and 375px phones but not a
+            320px one — there it wraps to two rows rather than overflowing the
+            viewport and clipping a button against the section's
+            `overflow-hidden`. */}
         <motion.div
-          className="flex flex-col-reverse items-center gap-2 sm:flex-row sm:gap-3"
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3"
           variants={fadeInUpItem}
         >
           {/* Leftmost in the desktop row, the ghost's own padding would indent
               its label past the column edge every other line of copy sits on.
               Pulled back by exactly that padding — and only there, since
               everything below `lg` is centred and has no edge to meet. */}
-          <Button asChild className="lg:-ml-6" size="lg" variant="ghost">
+          <Button
+            asChild
+            className="h-11 px-3 text-sm sm:h-12 sm:px-6 sm:text-base lg:-ml-6"
+            size="lg"
+            variant="ghost"
+          >
             <Link href="/community">{t("ctaExplore")}</Link>
           </Button>
-          <Button asChild size="lg" variant="emphasis">
+          <Button
+            asChild
+            className="h-11 px-3 text-sm sm:h-12 sm:px-6 sm:text-base [&_svg]:size-4 sm:[&_svg]:size-5"
+            size="lg"
+            variant="emphasis"
+          >
             <Link href="/dashboard">
               <span>{t("ctaEnroll")}</span>
               <ArrowRight />
@@ -148,6 +154,17 @@ export function HomeHero() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Block 3 — the card. Last on a phone, so the pitch runs straight into
+          the buttons; at `lg` explicit placement lifts it into the right-hand
+          column beside the copy, spanning both rows. DOM order is therefore
+          the mobile order only. */}
+      <motion.div
+        className="flex w-full justify-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-full lg:items-center lg:justify-start"
+        variants={fadeInScaleItem}
+      >
+        <SpinningIdCard />
+      </motion.div>
     </PageHeroSection>
   );
 }

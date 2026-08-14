@@ -34,14 +34,32 @@ describe("HomeHero", () => {
     expect(secondary.className).not.toContain("border-border");
   });
 
-  it("sizes both CTAs down from the old xl pill", () => {
+  it("sizes both CTAs down from the old xl pill, and again on a phone", () => {
     renderWithIntl(<HomeHero />);
 
     for (const name of [/Start Enrollment/, "Explore Community"]) {
-      const cta = screen.getByRole("link", { name });
-      expect(cta.className).toContain("h-12");
-      expect(cta.className).not.toContain("h-14");
+      const classes = screen.getByRole("link", { name }).className.split(/\s+/);
+
+      // Whole classes, not substrings — `toContain("h-12")` would also be
+      // satisfied by `sm:h-12` and let the mobile sizing regress silently.
+      expect(classes).toContain("h-11"); // phone: the two fit on one row
+      expect(classes).toContain("sm:h-12"); // and grow back from `sm` up
+      expect(classes).not.toContain("h-12"); // the cva default is overridden
+      expect(classes).not.toContain("h-14"); // never the old xl pill
     }
+  });
+
+  it("keeps the CTAs on one row at every width", () => {
+    renderWithIntl(<HomeHero />);
+
+    const row = screen.getByRole("link", {
+      name: /Start Enrollment/,
+    }).parentElement;
+    const classes = row?.className.split(/\s+/) ?? [];
+
+    expect(classes).toContain("flex");
+    expect(classes).not.toContain("flex-col");
+    expect(classes).not.toContain("flex-col-reverse");
   });
 
   it("centres the copy until lg, then left-aligns it beside the card", () => {
@@ -64,7 +82,7 @@ describe("HomeHero", () => {
     expect(layout?.className).not.toContain("max-w-4xl");
   });
 
-  it("puts the card between the pitch and the actions on a phone", () => {
+  it("runs pitch → actions → card on a phone", () => {
     renderWithIntl(<HomeHero />);
 
     const layout = screen.getByRole("heading", { level: 1 }).parentElement
@@ -80,8 +98,8 @@ describe("HomeHero", () => {
     // DOM order IS the mobile order — the desktop arrangement is explicit
     // grid placement on top of it, so this ordering is what phones get.
     expect(pitch).toBe(0);
-    expect(card).toBe(1);
-    expect(actions).toBe(2);
+    expect(actions).toBe(1);
+    expect(card).toBe(2);
 
     // …and at lg the card must jump to the second column, spanning both copy
     // rows, or the desktop layout collapses back to a single stack.
