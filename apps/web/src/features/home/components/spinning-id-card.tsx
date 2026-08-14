@@ -175,7 +175,7 @@ export function SpinningIdCard() {
   return (
     <div
       aria-label={t("aria")}
-      className="relative w-full max-w-[22rem] lg:max-w-none"
+      className="relative w-full max-w-[22rem] lg:max-w-[27rem]"
       role="img"
     >
       <div className="[perspective:1600px]">
@@ -218,7 +218,11 @@ export function SpinningIdCard() {
         style={{ opacity: 0.5 }}
       />
 
-      <p className="text-muted-foreground mt-3 text-center text-[0.72rem] font-semibold tracking-[0.1em] uppercase">
+      {/* Desktop only. On a phone the card is followed immediately by the
+          buttons, and a line of caption between them just pushed the primary
+          action further from the thumb. The card reads as unissued on its own
+          face — the caption is a nicety, not the message. */}
+      <p className="text-muted-foreground mt-3 hidden text-center text-[0.72rem] font-semibold tracking-[0.1em] uppercase lg:block">
         {t("caption")}
       </p>
     </div>

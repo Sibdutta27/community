@@ -37,7 +37,7 @@ const memberAvatarSlots = [
  * breakpoint.
  */
 const heroLayoutClassName =
-  "grid w-full grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:grid-rows-[auto_auto] lg:items-start lg:gap-x-14 lg:gap-y-8 xl:gap-x-20";
+  "grid w-full grid-cols-1 gap-y-7 lg:grid-cols-[minmax(0,34rem)_minmax(0,1fr)] lg:grid-rows-[auto_auto] lg:items-start lg:gap-x-10 lg:gap-y-8 xl:grid-cols-[minmax(0,38rem)_minmax(0,1fr)] xl:gap-x-12";
 
 export function HomeHero() {
   const t = useTranslations("home.hero");
@@ -76,7 +76,7 @@ export function HomeHero() {
       {/* Block 2 — the card. Second on a phone, right-hand column at `lg`,
           where it spans both copy rows and centres against them. */}
       <motion.div
-        className="flex w-full justify-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-full lg:items-center lg:justify-end"
+        className="flex w-full justify-center lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-full lg:items-center lg:justify-start"
         variants={fadeInScaleItem}
       >
         <SpinningIdCard />
@@ -110,7 +110,7 @@ export function HomeHero() {
         </motion.div>
 
         <motion.div
-          className="mt-7 flex flex-col items-center gap-3 sm:flex-row"
+          className="mt-4 flex flex-col items-center gap-3 sm:flex-row lg:mt-7"
           variants={fadeInUpItem}
         >
           <motion.div
